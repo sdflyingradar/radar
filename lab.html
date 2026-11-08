@@ -1,0 +1,1903 @@
+<!doctype html>
+<html lang="en" data-skin="glossy" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SD Flying Radar · lab</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="claude:viewport-fit-sides" content="cover">
+
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="SD Radar">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#ffffff">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;1,6..96,500&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: weather story on top, then one full-width card per day.
+   Inside a card the three home sites get big panels, Torrey a row, the rest a compact strip.
+   Same paper/ink look as the PG logbook; colour is reserved for day quality (1-5) and the day type. */
+:root {
+  --bg: #ffffff; --surface: #ffffff; --sunk: #f3f4f3; --ink: #0b0b0b; --muted: #676d69; --line: #e2e4e2;
+  --q0: #d8402f; --q1: #ee8a1c; --q2: #f1c72b; --q3: #5fb24f; --q4: #3aa457; --q5: #2f7fcf;
+  --font-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --font-body: "Work Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-data: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font-body); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-block: 24px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 20px; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 500; margin: 0; line-height: 1.1; text-wrap: balance; }
+h1 { font-size: clamp(2.1rem, 6vw, 3.4rem); letter-spacing: -0.02em; }
+h1 em { font-style: italic; }
+h2 { font-size: 1.1rem; font-family: var(--font-body); font-weight: 600; }
+.eyebrow { font-size: .68rem; text-transform: uppercase; letter-spacing: .16em; color: var(--muted); font-weight: 500; }
+.muted { color: var(--muted); }
+.mono { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+a { color: inherit; }
+button { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); padding: 6px 12px; min-height: 34px; cursor: pointer; }
+button:hover { border-color: var(--ink); }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+header.top { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; justify-content: space-between; padding-bottom: 2px; }
+header.top h1 { font-family: var(--font-body); font-weight: 700; font-size: 1.9rem; letter-spacing: -0.01em; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+header.top h1 .logo { width: 78px; height: 78px; flex: 0 0 auto; }
+/* wordmark: two lines, "Radar" in the wing's orange, chevrons exactly the height of the small letters (1ex) */
+header.top h1 .wm { display: flex; flex-direction: column; line-height: .98; font-weight: 800; font-size: 2.15rem; letter-spacing: -0.02em; }
+header.top h1 .wm1 { color: #2b1d14; } header.top h1 .wm2 { color: #c26a24; white-space: nowrap; }
+header.top h1 .chev3 { height: 1ex; width: auto; vertical-align: baseline; margin-left: .12em; }
+.fresh.bottom { margin: 12px 2px 0; }
+header.top h1 .sub { font-weight: 400; font-size: .9rem; color: var(--muted); letter-spacing: 0; }
+.fresh { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: .84rem; color: var(--muted); }
+.fresh button { font-size: .8rem; min-height: 30px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; }
+/* day card header: row 1 day + date, row 2 weather notices, row 3 sites; all on one left edge */
+details.day > summary.hd { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; row-gap: 8px; align-items: center; }
+details.day > summary.hd .exp { width: 30px; height: 26px; }
+details.day > summary.hd .when { grid-column: 1; display: flex; align-items: baseline; gap: 6px; flex-wrap: nowrap; overflow: visible; }
+details.day > summary.hd .when small { margin: 0 !important; display: inline !important; }
+details.day > summary.hd .exp { grid-column: 2; grid-row: 1; }
+details.day > summary.hd .notes { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+details.day > summary.hd .notes .rx { margin: 0 !important; height: 24px; box-sizing: border-box; display: inline-flex; align-items: center; overflow: visible; }
+details.day > summary.hd .sum { grid-column: 1 / -1; margin: 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+details.day > summary.hd .sum .sc { margin: 0; }
+details.day > summary.hd > .mods { grid-column: 1 / -1; justify-self: end; margin-top: -2px; }
+/* wide screens: the model names sit at the end of the sites row instead of on a line of their own */
+@media (min-width: 760px) {
+  details.day > summary.hd .sum { grid-column: 1; }
+  details.day > summary.hd > .mods { grid-column: 2; grid-row: 3; align-self: end; margin: 0 0 2px; }
+  details.day > summary.hd:not(:has(.notes)) > .mods { grid-row: 2; }
+}
+details.fold, #sources { min-width: 0; max-width: 100%; }
+.tablewrap { max-width: 100%; overflow-x: auto; }
+.rules { border-collapse: collapse; font-size: .82rem; margin: 4px 0 10px; width: 100%; max-width: 680px; }
+.rules th { text-align: left; font-weight: 600; padding: 5px 12px 5px 0; vertical-align: top; white-space: nowrap; }
+.rules td { padding: 5px 0; color: #33404c; } .rules tr + tr { border-top: 1px solid var(--line); }
+.howlink { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 6px; background: #fff; color: #2b1d14; font-weight: 600; text-decoration: none; box-shadow: 0 0 0 1px rgba(20,30,40,.16), 0 2px 6px -3px rgba(20,30,40,.3); }
+.howlink:hover { box-shadow: 0 0 0 1.5px #c26a24; }
+.rx-why { --rxc: #444b52; }
+/* the top of a day card (day, date, weather pills) is the coloured band; the sites sit on silver below */
+details.day > summary.hd .band { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px;
+  align-items: center; margin: -12px -14px 0; padding: 7px 14px 7px; }
+/* the day's colour sits only behind the day and date; pills and sites are on silver */
+:root[data-skin="glossy"] details.day[data-date] { background: linear-gradient(180deg, #e3e7ec, #eef1f4) !important; }
+:root[data-skin="glossy"] details.day[data-date] > summary.hd { background: linear-gradient(180deg, #e3e7ec, #e8ebef) !important; }
+/* day cards stand out from the page: a slightly deeper silver, a firmer edge and a soft lift */
+:root[data-skin="glossy"] details.day[data-date] { background: linear-gradient(180deg, #dce1e7, #e7eaee) !important;
+  border: 1px solid rgba(15,25,40,.28) !important; box-shadow: 0 1px 0 rgba(255,255,255,.7) inset, 0 3px 10px -3px rgba(15,25,40,.35), 0 1px 2px rgba(15,25,40,.12) !important; }
+:root[data-skin="glossy"] details.day[data-date] > summary.hd { background: linear-gradient(180deg, #dce1e7, #e1e5ea) !important; }
+/* the day's quality is a small status chip next to the date; the card itself stays silver */
+details.day[data-date] .band { padding: 10px 14px 0; margin-bottom: -8px; }
+details.day[data-date] .when .dn { font-size: 1.4rem; line-height: 1.1; }
+.dchip { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 10px; font-size: .62rem; font-weight: 700;
+  letter-spacing: .05em; text-transform: uppercase; color: #fff; background: var(--qc); white-space: nowrap; align-self: center; }
+.dchip.lt { color: #2b1d14; }
+/* day card spacing: even breathing room between the three rows, on every screen */
+details.day > summary.hd.hd { row-gap: 10px; padding: 12px 14px 10px; }
+details.day > summary.hd .notes { gap: 6px; }
+details.day > summary.hd .sum { gap: 8px; }
+details.day > summary.hd > .mods { margin-top: -4px; line-height: 1.2; }
+/* weather notices: one neutral look, an icon says what it is; dark only for a strong signal */
+details.day > summary.hd .notes .rx, details.day > summary.hd .notes .rx.rx-weak, details.day > summary.hd .notes .rx.rx-soft {
+  background: rgba(255,255,255,.8) !important; color: #26303a !important; box-shadow: 0 0 0 1px rgba(20,30,40,.16) !important;
+  border: 0 !important; border-radius: 5px; font-size: .66rem; font-weight: 600; letter-spacing: .03em; padding: 0 8px; gap: 5px; }
+details.day > summary.hd .notes .rx .rq { opacity: .85; font-weight: 600; }
+.rx .ic { font-style: normal; font-size: .82rem; line-height: 1; }
+.rx .ic-svg { width: .62rem; height: .82rem; flex: 0 0 auto; }
+/* site pills: bigger than the weather notices; XC a small bonus tag */
+details.day > summary.hd .sum .sc { font-size: 1rem; min-height: 48px; padding: 7px 14px 7px; border-radius: 8px; justify-content: center; }
+details.day > summary.hd .sum .sc .sc-t { gap: 6px; }
+details.day > summary.hd .sum .sc .sc-bar { display: none; }   /* bar under the site name: off for now */
+details.day > summary.hd .sum .sc .xcmark { font-size: .56rem; padding: 1px 4px; letter-spacing: .05em; border-radius: 3px; }
+@media (max-width: 640px) { details.day > summary.hd .sum .sc { font-size: .95rem; min-height: 48px; padding: 7px 12px; } }
+.of5 { font-size: .72em; font-weight: 500; opacity: .65; margin-left: 1px; }
+.srcnote { font-size: .72rem; color: var(--muted); margin: 10px 2px 0; }
+.banner { border: 1px solid var(--line); border-left: 3px solid var(--q0); padding: 9px 14px; font-size: .88rem; display: grid; gap: 4px; }
+
+/* weather card: same frame as the days, neutral colour */
+.story .wlist { display: grid; }
+.story .wsec { background: color-mix(in srgb, var(--ink) 10%, var(--surface)); font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: 7px 18px; border-top: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); border-bottom: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); }
+.story .wsec + .wrow { border-top: 0 !important; }
+.story .wrow.wlink { font-size: .84rem; }
+.story .wrow { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px 14px; padding: 8px 18px; font-size: .92rem; }
+.story .wrow + .wrow { border-top: 1px solid var(--line); }
+.story .wk { color: var(--muted); font-size: .86rem; }
+#story > .hd { grid-template-columns: auto minmax(0, 1fr); }
+#story > .hd .when { white-space: normal; }
+#story > .hd .when small { white-space: nowrap; }
+#story > .hd .flags { justify-self: end; display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; }
+@media (max-width: 640px) { #story > .hd { grid-template-columns: 1fr; } #story > .hd .flags { justify-self: start; justify-content: flex-start; } }
+.daynav a { border-radius: 4px; }
+@media (max-width: 640px) { .story .wrow, .story .wsec { padding-inline: 14px; } }
+.flags { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.tag { font-size: .72rem; border: 1px solid var(--line); border-radius: 3px; padding: 0 6px; color: var(--muted); white-space: nowrap; }
+.tag.ink { border-color: var(--ink); color: var(--ink); }
+details.fold > summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+details.fold > summary::-webkit-details-marker { display: none; }
+details.fold > summary h2::after { content: " +"; color: var(--muted); font-family: var(--font-data); font-size: .9rem; }
+details.fold[open] > summary h2::after { content: " −"; }
+details.fold > :not(summary) { margin-top: 10px; }
+
+.chip { display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-data); font-size: .78rem; }
+.chip i { width: 10px; height: 10px; display: inline-block; }
+.xcmark { font-family: var(--font-body); font-weight: 600; font-size: .66rem; letter-spacing: .06em; background: var(--ink); color: var(--bg); padding: 1px 5px; border-radius: 3px; }
+
+/* day cards */
+.days { display: grid; gap: 18px; }
+.day { border: 2px solid color-mix(in srgb, var(--ink) 75%, transparent); border-left: 6px solid var(--qc); border-radius: 4px; overflow: hidden; background: var(--surface); display: grid; scroll-margin-top: 12px; }
+.day > .hd { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 18px; align-items: baseline; padding: 12px 18px 10px; background: linear-gradient(180deg, color-mix(in srgb, var(--qc) 20%, var(--surface)), color-mix(in srgb, var(--qc) 30%, var(--surface))); border-bottom: 1px solid color-mix(in srgb, var(--qc) 45%, var(--line)); }
+.day .when { font-family: var(--font-body); font-weight: 600; font-size: 1.15rem; white-space: nowrap; }
+.day .when small { font-weight: 400; font-size: .85rem; color: var(--muted); margin-left: 8px; }
+.day .headline { margin: 0; font-size: .9rem; }
+.big { font-family: var(--font-body); font-weight: 600; font-variant-numeric: tabular-nums; font-size: 1.35rem; line-height: 1; white-space: nowrap; }
+.big small { font-size: .7rem; color: var(--muted); }
+
+.list { display: grid; }
+.srow { display: grid; grid-template-columns: 128px minmax(70px, 180px) 52px minmax(0, 1fr); gap: 4px 14px; align-items: center;
+  padding: 10px 18px; border: 0; background: transparent; width: 100%; text-align: left; min-height: 0; cursor: pointer; color: var(--ink); }
+.srow:hover, .srow[aria-expanded="true"] { background: color-mix(in srgb, var(--ink) 4%, transparent); }
+.srow .nm { font-family: var(--font-body); font-weight: 500; font-size: .98rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.srow .rt { font-family: var(--font-body); font-weight: 600; font-variant-numeric: tabular-nums; font-size: 1rem; text-align: right; white-space: nowrap; }
+.srow .tx { display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: baseline; min-width: 0; }
+.list > .srow + .srow, .minor > .srow { border-top: 1px solid var(--line); }
+.srow.coast { border-top-color: color-mix(in srgb, var(--ink) 22%, transparent) !important; }
+.minor { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); column-gap: 0; border-top: 1px solid color-mix(in srgb, var(--ink) 22%, transparent); }
+.minor > .srow:nth-child(-n+2) { border-top: 0; }
+@media (max-width: 840px) { .minor > .srow:nth-child(2) { border-top: 1px solid var(--line); } }
+.srow.small { padding-block: 7px; grid-template-columns: 128px minmax(60px, 110px) 46px minmax(0, 1fr); }
+.srow.small .nm { font-weight: 400; font-size: .86rem; color: var(--muted); }
+.srow.small .rt { font-size: .86rem; font-weight: 500; color: var(--muted); }
+.srow.small .note, .srow.small .lab { font-size: .74rem; }
+.srow.small .note { color: var(--muted); }
+.srow.small { grid-template-columns: 110px minmax(50px, 90px) 46px minmax(0, 1fr); }
+.srow.small .tx { flex-wrap: nowrap; overflow: hidden; white-space: nowrap; }
+.srow.small .tx .note { overflow: hidden; text-overflow: ellipsis; }
+.srow.small .tag { font-size: .66rem; padding: 0 4px; }
+@media (max-width: 640px) {
+  .srow, .srow.small { grid-template-columns: minmax(0, 1fr) 90px 48px; padding-inline: 14px; }
+  .srow .tx { grid-column: 1 / -1; }
+  .srow.small .tx { white-space: normal; flex-wrap: wrap; }
+}
+.label { display: inline-flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.lab { font-size: .86rem; font-weight: 600; }
+.note { font-size: .86rem; margin: 0; }
+
+/* 1-5 bar with flyable (2.5) and XC (3.5) marks */
+.bar { height: 8px; background: var(--sunk); position: relative; display: block; }
+.bar i { position: absolute; inset: 0 auto 0 0; display: block; }
+.bar::before, .bar::after { content: ""; position: absolute; top: -2px; bottom: -2px; width: 1px; background: var(--muted); opacity: .5; }
+.bar::before { left: 50%; } .bar::after { left: 70%; }
+.bar.thin { height: 5px; }
+
+.row { display: grid; grid-template-columns: 110px minmax(80px, 200px) 46px minmax(0, 1fr); gap: 12px; align-items: center; padding: 8px 16px; border: 0; border-top: 1px solid var(--line); background: transparent; width: 100%; text-align: left; min-height: 0; cursor: pointer; }
+.row .nm { font-family: var(--font-display); font-size: 1.05rem; }
+@media (max-width: 560px) { .row { grid-template-columns: 80px minmax(0, 1fr) 40px; } .row .note { grid-column: 1 / -1; } }
+.others { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); border-top: 1px solid var(--line); }
+.mini { padding: 8px 16px; display: grid; gap: 3px; border: 0; background: transparent; text-align: left; min-height: 0; width: 100%; cursor: pointer; align-content: start; }
+.mini .t { display: flex; justify-content: space-between; gap: 6px; font-size: .8rem; }
+.mini .t span:first-child { color: var(--muted); }
+.mini .note { font-size: .74rem; color: var(--muted); }
+
+.det { grid-column: 1 / -1; border-bottom: 1px solid var(--line); border-top: 1px solid var(--ink); padding: 12px 16px 14px; display: grid; gap: 10px; font-size: .84rem; background: var(--surface); }
+.factors { display: grid; gap: 6px; max-width: 720px; }
+/* opened site: two compact sections, what makes the number and what is only good to know */
+.dsec { display: grid; gap: 6px; max-width: 720px; }
+/* second level: name, label + what made the number, pills; no bar, no number (the colour says it) */
+.srow.srow, .srow.small.small { grid-template-columns: minmax(0, 1fr); row-gap: 4px; }
+.srow .tx { grid-column: 1 / -1; }
+.srow .nmrow { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 10px; min-width: 0; }
+.dscore.sm { margin: 0; padding: 0; border-radius: 0; background: none; box-shadow: none; }
+.dscore.sm b { font-size: 1.05rem; } .dscore.sm .dsl { font-size: .75rem; margin-right: 4px; } .dscore.sm small { font-size: .7rem; }
+@media (min-width: 760px) {
+  .srow.srow, .srow.small.small { grid-template-columns: 150px minmax(0, 1fr); column-gap: 14px; }
+  .srow .tx { grid-column: 1 / -1; } .srow .spills { grid-column: 1 / -1 !important; }
+}
+.fresh-top { margin: 2px 0 0; font-size: .74rem; color: var(--muted); }
+.wa { display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; }
+.wa svg { width: .8em; height: .8em; }
+.wa svg.lift { width: 1.05em; height: .9em; margin-right: 3px; }
+.wa small { font-size: .78em; opacity: .7; margin-left: 1px; }
+.facts .sep { margin: 0 6px; opacity: .5; }
+.hstrip { display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; max-width: 520px; }
+.hstrip .hc { height: 14px; border-radius: 2px; box-shadow: inset 0 0 0 1.5px rgba(38,48,58,.75); }
+.hstrip .hl:first-of-type, .hstrip .hl:last-child { white-space: nowrap; }
+.hstrip .hl { font-size: .58rem; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.hstrip .hc { grid-row: 1; }
+.hstrip .hl { grid-row: 3; }
+.hstrip .wbr { grid-row: 2; height: 9px; margin: 1px 2px 0; }
+.hstrip .wbr svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.hstrip .wbr path { fill: none; stroke: #26303a; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.hstrip .wbr.glass path { stroke: #b07a2a; stroke-dasharray: 3 3; }
+/* one text system: body .78rem, captions .72rem, every chip and section head .62rem capitals */
+.dh, .gk, .steps .st, .srow .spills .rx, details.day > summary.hd .notes .rx { font-size: .62rem !important; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+.gk, .steps .st { height: 21px; display: inline-flex; align-items: center; padding: 0 7px; border-radius: 5px; }
+.factor .fk, .factor .fv, .srow .facts { font-size: .78rem; }
+.factor .fs { font-size: .72rem; }
+.srow .facts { font-size: .78rem; color: #33404c; font-variant-numeric: tabular-nums; }
+.srow.small .facts { font-size: .72rem; }
+.srow .spills { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 5px; }
+.srow .spills .rx { margin: 0; height: 21px; padding: 0 7px; gap: 4px; border-radius: 5px; font-size: .6rem; font-weight: 600; letter-spacing: .03em;
+  text-transform: uppercase; background: rgba(255,255,255,.8); color: #26303a; box-shadow: 0 0 0 1px rgba(20,30,40,.16); border: 0; display: inline-flex; align-items: center; }
+.srow .spills .rx.strong { background: #26303a; color: #fff; box-shadow: none; }
+.srow .spills .dv { font-weight: 800; }
+.dscore { justify-self: start; width: max-content; display: inline-flex; align-items: baseline; gap: 2px; padding: 3px 12px; border-radius: 6px; margin-bottom: 8px;
+  background: color-mix(in srgb, var(--rc) 45%, #fff); box-shadow: 0 0 0 1px rgba(20,30,40,.12); font-variant-numeric: tabular-nums; }
+.dscore .dsl { font-size: .95rem; font-weight: 600; margin-right: 6px; }
+.dscore b { font-size: 1.35rem; font-weight: 800; } .dscore small { font-size: .8rem; opacity: .7; }
+.dsec + .dsec { margin-top: 10px; }
+.dh { font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.steps { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; font-size: .74rem; }
+.steps .st { padding: 2px 7px; border-radius: 4px; background: rgba(255,255,255,.75); box-shadow: 0 0 0 1px rgba(20,30,40,.12); font-variant-numeric: tabular-nums; }
+.steps .st.neg { color: #8a2c1d; }
+.steps .st.fin { font-weight: 700; background: color-mix(in srgb, var(--rc) 55%, #fff); }
+.steps .arr { color: var(--muted); font-size: .7rem; }
+.gks { display: flex; flex-wrap: wrap; gap: 5px; }
+.gk { font-size: .72rem; padding: 2px 8px; border-radius: 4px; background: rgba(255,255,255,.6); box-shadow: 0 0 0 1px rgba(20,30,40,.1); color: #33404c; }
+.factor { display: grid; grid-template-columns: 110px minmax(0, 1fr) 96px; gap: 2px 12px; align-items: center; }
+.factor .fk { font-size: .8rem; }
+.factor .fv { font-variant-numeric: tabular-nums; font-weight: 500; font-size: .86rem; text-align: right; white-space: nowrap; }
+.factor .fs { grid-column: 2 / -1; font-size: .72rem; color: var(--muted); margin-top: -2px; }
+.factor .fbar { height: 8px; background: var(--sunk); position: relative; }
+.factor .fbar i { position: absolute; inset: 0 auto 0 0; display: block; }
+@media (max-width: 560px) { .factor { grid-template-columns: 92px minmax(0, 1fr) 96px; gap: 2px 10px; } }
+
+.inds { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; font-size: .78rem; }
+.ind { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; }
+.ind i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .76rem; color: var(--muted); align-items: center; }
+.legend .chip i { width: 18px; height: 8px; }
+section.panel { display: grid; gap: 10px; }
+section.panel > header { border-bottom: 1px solid var(--ink); padding-bottom: 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline; }
+.tablewrap { overflow-x: auto; }
+table.src { border-collapse: collapse; width: 100%; font-size: .82rem; }
+table.src th, table.src td { text-align: left; padding: 7px 12px 7px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.src th { font-size: .62rem; text-transform: uppercase; letter-spacing: .14em; color: var(--muted); font-weight: 500; }
+td.mono { font-family: var(--font-data); }
+.ok { color: var(--q3); } .bad { color: var(--q0); }
+.links { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 8px; }
+.links a { border: 1px solid var(--line); padding: 9px 12px; text-decoration: none; display: grid; gap: 2px; }
+.links a:hover { border-color: var(--ink); }
+.links small { color: var(--muted); font-size: .74rem; }
+.how { font-size: .86rem; max-width: 90ch; display: grid; gap: 6px; }
+.how p { margin: 0; }
+footer { border-top: 1px solid var(--ink); padding-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; font-size: .78rem; color: var(--muted); }
+footer .presets { display: flex; gap: 6px; }
+.snaps[open] { flex-basis: 100%; }
+footer button[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+/* sticky day buttons (phone and desktop) */
+.daynav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--bg); display: flex; gap: 6px; overflow-x: auto; padding: 8px 0; border-bottom: 1px solid var(--line); scrollbar-width: none; }
+.daynav::-webkit-scrollbar { display: none; }
+.daynav a { flex: 0 0 auto; text-decoration: none; display: grid; justify-items: center; gap: 1px; min-width: 54px; padding: 5px 8px; border: 1px solid var(--line); border-bottom: 4px solid var(--qc); background: var(--surface); }
+.daynav a b { font-weight: 500; font-size: .8rem; }
+.daynav a span { font-family: var(--font-data); font-size: .72rem; color: var(--muted); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+.day { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 74px); }
+
+/* bottom sheet for site details on phones */
+.scrim { position: fixed; inset: 0; z-index: 40; background: color-mix(in srgb, var(--ink) 35%, transparent); }
+.sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 41; max-height: 82vh; overflow-y: auto; background: var(--surface); border-top: 2px solid var(--ink);
+  padding: 8px max(16px, env(safe-area-inset-right, 0px)) calc(18px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  display: grid; gap: 10px; font-size: .86rem; box-shadow: 0 -8px 24px color-mix(in srgb, var(--ink) 18%, transparent); }
+@media (min-width: 761px) { .sheet { left: 50%; right: auto; width: min(720px, 100vw); transform: translateX(-50%); border: 2px solid var(--ink); border-bottom: 0; border-radius: 14px 14px 0 0; } }
+.sheet .grab { justify-self: center; width: 44px; height: 4px; background: var(--line); border-radius: 2px; }
+.sheet .close { position: absolute; top: 6px; right: max(10px, env(safe-area-inset-right, 0px)); min-height: 36px; min-width: 36px; padding: 0; font-size: 1.1rem; }
+.sheet .when { font-size: .74rem; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; }
+@media (prefers-reduced-motion: no-preference) { .sheet { animation: up .18s ease-out; } @keyframes up { from { transform: translateY(30%); opacity: .4; } } }
+
+/* phone: tighter cards */
+@media (max-width: 760px) {
+  .wrap { gap: 14px; padding-block: 14px 36px; }
+  .day > .hd { padding: 10px 14px 8px; }
+  .day .when { font-size: 1.25rem; }
+  .big { font-size: 1.25rem; }
+  .note { font-size: .82rem; }
+  .legend { display: none; }
+  
+  .factor { grid-template-columns: 92px minmax(0, 1fr) 96px; }
+}
+/* day type: the strongest signal on a card */
+.rx { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-body); font-weight: 700; font-size: .78rem; letter-spacing: .06em;
+  text-transform: uppercase; color: #fff; background: var(--rxc); padding: 3px 9px; border-radius: 999px; white-space: nowrap; vertical-align: middle; }
+.rx .rq { font-weight: 500; text-transform: none; letter-spacing: 0; opacity: .85; }
+.rx.sm { font-size: .6rem; padding: 0 5px; letter-spacing: .04em; }
+.rx-front { --rxc: #34508f; } .rx-pre { --rxc: #6b7899; } .rx-post { --rxc: #11827f; }
+.rx-sa { --rxc: #d2691e; } .rx-rain { --rxc: #2f6fb3; } .rx-cloud { --rxc: #5d6b7a; }
+.rx.rx-weak { background: transparent !important; color: var(--rxc); box-shadow: inset 0 0 0 1.5px var(--rxc) !important; }
+.rx.rx-soft { background: transparent !important; color: #2f6fb3; box-shadow: inset 0 0 0 1.5px #2f6fb3 !important; }
+.day > .hd .when .rx + .rx { margin-left: 5px; }
+.wk-d .rx.sm + .rx.sm { margin-top: 2px; } .rx-switch { --rxc: #b8860b; }
+.day .when .rx { margin-left: 10px; }
+details.day > summary { list-style: none; cursor: pointer; }
+/* week grid */
+.wk { display: grid; gap: 6px; border: 2.5px solid var(--ink); border-radius: 12px; padding: 10px; background: var(--surface); }
+.wk-h, .wk-r { display: grid; grid-template-columns: 76px repeat(var(--cols), minmax(0, 1fr)); gap: 6px; align-items: stretch; }
+.wk-h span { font-size: .66rem; font-weight: 600; color: var(--muted); text-align: center; text-transform: uppercase; letter-spacing: .04em; }
+.wk-d { display: grid; justify-items: start; align-content: center; gap: 1px; padding: 2px 0; border: 0; background: transparent; text-align: left; min-height: 0; cursor: pointer; }
+.wk-d b { font-size: .92rem; } .wk-d small { font-size: .7rem; color: var(--muted); }
+.wk-d .rx.sm { font-size: .5rem; margin-top: 2px; padding: 0 4px; letter-spacing: .02em; }
+.wk-c { display: flex; align-items: center; justify-content: center; gap: 4px; min-height: 48px; padding: 4px; border-radius: 8px; cursor: pointer;
+  background: color-mix(in srgb, var(--rc) 30%, var(--surface)); border: 1.25px solid color-mix(in srgb, var(--ink) 70%, transparent); }
+.wk-c b { font-size: 1.25rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.wk-c .xcmark { font-size: .55rem; padding: 0 4px; }
+.wk-c .trend { margin: 0; font-size: .6rem; }
+.wk-c.empty { display: flex; align-items: center; justify-content: center; color: var(--muted); }
+.wk-s { grid-column: 2 / -1; font-size: .74rem; color: var(--muted); margin-top: -2px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.wk-x { border: 1px solid color-mix(in srgb, var(--ink) 55%, transparent); border-radius: 999px; padding: 0 7px; min-height: 0; font-size: .72rem; background: color-mix(in srgb, var(--q4) 18%, var(--surface)); }
+.wk-x .xcmark { font-size: .5rem; padding: 0 3px; }
+.wk-why { text-transform: none; font-weight: 600; color: var(--ink); }
+.dsl { display: grid; gap: 6px; }
+.ds { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 10px; align-items: center; text-align: left; min-height: 0; padding: 8px 10px; border-radius: 8px;
+  background: color-mix(in srgb, var(--rc) 14%, var(--surface)); border: 1.25px solid color-mix(in srgb, var(--ink) 60%, transparent); box-shadow: inset 3px 0 0 var(--rc); }
+.ds-n { font-size: 1.3rem; text-align: center; }
+.ds-t { display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: baseline; }
+.ds-nm { font-weight: 600; }
+.sheet .when .rx, .sheet .when .why { margin-left: 6px; text-transform: uppercase; }
+.sheet .when .why { font-size: .62rem; border: 1.5px solid var(--ink); border-radius: 999px; padding: 0 6px; color: var(--ink); }
+#story > .hd { position: relative; padding-right: 44px; }
+#story > .hd .exp { position: absolute; right: 12px; top: 10px; }
+.day > .hd .when { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 0; white-space: normal; min-width: 0; }
+.day > .hd .when small { white-space: nowrap; }
+.day > .hd .when .rx, .day > .hd .when .why { white-space: nowrap; }
+#story > .hd .ov { grid-column: 1 / -1; font-size: .92rem; font-weight: 500; margin-top: 2px; }
+#story[open] > .hd { border-bottom: 1.5px solid var(--ink); }
+details.day > summary::-webkit-details-marker { display: none; }
+details.day:not([open]) > summary { border-bottom: 0 !important; }
+.day > .hd .sum { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 4px; }
+.sc { display: inline-flex; align-items: center; gap: 4px; font-size: .78rem; padding: 2px 8px; border-radius: 999px;
+  background: color-mix(in srgb, var(--rc) 22%, var(--surface)); border: 1px solid color-mix(in srgb, var(--ink) 55%, transparent); font-variant-numeric: tabular-nums; }
+.sc b { font-weight: 600; }
+@media (max-width: 640px) { .sc { font-size: .72rem; padding: 2px 7px; } }
+.wk-h span { line-height: 1.15; align-self: end; }
+.sc .xcmark { font-size: .55rem; padding: 0 4px; }
+.sx { font-size: .74rem; color: var(--muted); margin-left: 4px; }
+details.day[open] > summary .sum, details.day[open] > summary > .mods { display: none; }
+.exp { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--ink); background: var(--surface); display: inline-flex; align-items: center; justify-content: center; align-self: center; flex: 0 0 auto; }
+.chev { display: block; width: 9px; height: 9px; border-right: 2.5px solid var(--ink); border-bottom: 2.5px solid var(--ink); transform: translateY(-2px) rotate(45deg); transition: transform .15s ease; }
+details.day[open] > summary .chev { transform: translateY(2px) rotate(-135deg); }
+/* a smaller open button on each site row (second layer), so it's clear a site opens too */
+.srow { position: relative; padding-right: 46px !important; }
+.exp.sm { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; }
+.exp.sm .chev { width: 6px; height: 6px; border-width: 0 2px 2px 0; }
+.srow[aria-expanded="true"] .exp.sm .chev { transform: translateY(1px) rotate(-135deg); }
+details.day > summary.hd { grid-template-columns: minmax(0, 1fr) 34px; align-items: center; }
+details.day > summary.hd .when { flex-wrap: nowrap; overflow: hidden; }
+details.day > summary.hd .when .rx { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.rx-s { display: none; }
+@media (max-width: 640px) { details.day > summary.hd .rx { letter-spacing: .02em; font-size: .56rem; padding: 2px 6px; } }
+.dn-s { display: none; }
+.frz { font-size: .66rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--ink); border: 1px dashed color-mix(in srgb, var(--ink) 50%, transparent); border-radius: 4px; padding: 0 6px; margin-right: 4px; }
+.flown { padding: 6px 18px; font-size: .8rem; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--ink) 4%, var(--surface)); }
+.arch-back { justify-self: start; }
+.arch-h { margin: 0; font-size: .82rem; color: var(--muted); }
+.day > .hd .when small.rel { font-size: .8rem; font-weight: 500; color: var(--ink); margin-left: 5px; }
+.day > .hd .when small.rel + small { margin-left: 5px; }
+@media (max-width: 430px) { details.day > summary.hd .when.has-rx small.rel + small { display: none; } }
+.wk-d small.rel { font-size: .7rem; font-weight: 500; color: var(--ink); }
+@media (max-width: 430px) { details.day > summary.hd .when.has-rx .dn-l { display: none; } details.day > summary.hd .when.has-rx .dn-s { display: inline; } }
+/* day-type and rain pills travel together: next to the date when there is room, else on the next line */
+.day > .hd .when .pills { display: inline-flex; gap: 5px; align-items: center; margin-left: 8px; white-space: nowrap; }
+.day > .hd .when .pills .rx { margin: 0; }
+details.day > summary.hd .when { flex-wrap: wrap; row-gap: 4px; }
+/* phones: the pills get their own line under the day and wrap instead of being cut off; labels shorten */
+@media (max-width: 640px) {
+  details.day > summary.hd .when .pills { flex: 1 0 100%; margin-left: 0; flex-wrap: wrap; white-space: normal; row-gap: 4px; }
+  details.day > summary.hd .when .pills .rx { overflow: visible; flex: 0 0 auto; }
+  .rx .lg { display: none; }
+}
+.day > .hd .sum .why { margin: 0 4px 0 0; font-size: .66rem; }
+/* which models fed the day's ratings, bottom right of each card */
+.mods { font-size: .66rem; color: var(--muted); font-weight: 400; letter-spacing: .02em; white-space: nowrap; }
+.day > .hd .sum .mods { margin-left: auto; align-self: flex-end; }
+.sc.watch { border-width: 2px; border-style: solid; font-weight: 600; }
+
+.srow.watch:not(.shy) .nm::before { content: "★ "; }
+.sc.shy { background: transparent !important; border: 1px dashed color-mix(in srgb, var(--ink) 35%, transparent); color: var(--muted); font-size: .7rem; padding: 1px 7px; }
+.srow.watch.shy { filter: grayscale(1); opacity: .5; }
+.nwsr { font-size: .7rem; font-weight: 600; color: var(--ink); border: 1.5px dashed var(--ink); border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
+.nwsrow { font-size: .8rem; font-weight: 600; padding: 6px 14px; border-bottom: 1px dashed color-mix(in srgb, var(--ink) 40%, transparent); }
+.mods-b { display: block; text-align: right; padding: 6px 14px 8px; }
+details.day:not([open]) > .mods-b { display: none; }
+@media (max-width: 640px) {
+  details.day > summary.hd { gap: 4px 10px; }
+  details.day > summary.hd .when { font-size: 1.1rem; }
+  details.day > summary.hd .when small { margin-left: 6px; font-size: .78rem; }
+  details.day > summary.hd .when .rx { font-size: .6rem; padding: 2px 7px; margin-left: 7px; }
+}
+.trend { display: inline-flex; align-items: baseline; gap: 1px; font-size: .62rem; font-weight: 700; margin-right: 4px; vertical-align: 1px; }
+.trend small { font-size: .58rem; font-weight: 500; color: var(--muted); }
+.trend.up { color: var(--q4); } .trend.down { color: var(--q0); }
+.daynav a span.n .trend { margin: 0 0 0 2px; }
+.day .why { margin-left: 8px; display: inline-flex; vertical-align: middle; font-size: .7rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+  border: 1.5px solid var(--ink); border-radius: 999px; padding: 1px 8px; color: var(--ink); background: var(--surface); }
+.daynav a span.rx { color: #fff; font-family: var(--font-body); font-size: .56rem; }
+.daynav a span.rx .rq { display: none; }
+.empty { padding: 30px; border: 1px dashed var(--ink); text-align: center; }
+
+/* ---------- site tiles and day tabs ---------- */
+.daynav a b { font-size: .74rem; font-weight: 600; color: var(--muted); letter-spacing: .02em; }
+.daynav a span.n { font-family: var(--font-body); font-size: 1.15rem; font-weight: 700; line-height: 1; color: var(--ink); display: inline-flex; align-items: center; gap: 4px; }
+.daynav a span.n .xcmark { font-size: .55rem; padding: 1px 4px; }
+.daynav a { gap: 3px; min-width: 58px; padding: 6px 8px 7px; }
+.det { margin: 0; }
+.srow { transition: background-color .12s ease; }
+
+/* Tinted: each site is a flat tile washed in its own rating colour */
+.day { border: 2.5px solid var(--ink); border-radius: 12px; }
+.day > .hd { background: color-mix(in srgb, var(--qc) 22%, var(--surface)); border-bottom: 1.5px solid var(--ink); }
+.list { gap: 6px; padding: 10px; }
+.minor { gap: 6px; border-top: 0; }
+.srow, .srow.coast { border: 1.25px solid color-mix(in srgb, var(--ink) 70%, transparent) !important; border-radius: 8px; background: color-mix(in srgb, var(--rc) 9%, var(--surface)); box-shadow: inset 3px 0 0 var(--rc); }
+.srow:hover { background: color-mix(in srgb, var(--rc) 15%, var(--surface)); }
+.srow[aria-expanded="true"] { border-bottom-color: transparent !important; border-radius: 8px 8px 0 0; background: color-mix(in srgb, var(--rc) 15%, var(--surface)); }
+.det { margin-top: -6px; border: 1.25px solid color-mix(in srgb, var(--ink) 70%, transparent); border-top: 1px dashed var(--line); border-radius: 0 0 8px 8px; background: color-mix(in srgb, var(--sunk) 80%, var(--surface)); box-shadow: inset 3px 0 0 var(--line); }
+.daynav a { border: 1.5px solid var(--ink); border-radius: 8px; background: color-mix(in srgb, var(--qc) 22%, var(--surface)); }
+
+
+/* ---------- optional glossy skin (button next to Light/Dark) ---------- */
+:root[data-skin="glossy"] { --gl-hl: rgba(255,255,255,.95); --gl-hl2: rgba(255,255,255,.55); --gl-sh: rgba(20,32,56,.16); --gl-sh2: rgba(20,32,56,.08); --gl-page: linear-gradient(180deg, #eef1f5, #f8f9fb 40%, #eef1f5); }
+:root[data-skin="glossy"] body { background: var(--gl-page); background-attachment: fixed; }
+:root[data-skin="glossy"] body::before { background: transparent; }
+:root[data-skin="glossy"] .day { border: 0; border-radius: 22px; overflow: hidden;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 96%, transparent), color-mix(in srgb, var(--surface) 88%, transparent));
+  box-shadow: inset 0 1px 0 var(--gl-hl), 0 1px 2px var(--gl-sh2), 0 14px 34px -14px var(--gl-sh); }
+:root[data-skin="glossy"] .day > .hd { border-bottom: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--qc) 55%, var(--surface)), color-mix(in srgb, var(--qc) 34%, var(--surface))); }
+:root[data-skin="glossy"] #story > .hd { background: linear-gradient(180deg, color-mix(in srgb, var(--ink) 8%, var(--surface)), var(--surface)); }
+:root[data-skin="glossy"] .day > .hd .when { letter-spacing: -.01em; }
+:root[data-skin="glossy"] .exp { border: 0; background: linear-gradient(180deg, var(--surface), color-mix(in srgb, var(--ink) 7%, var(--surface)));
+  box-shadow: inset 0 1px 0 var(--gl-hl), 0 1px 2px var(--gl-sh2), 0 3px 8px -2px var(--gl-sh); }
+:root[data-skin="glossy"] .rx { background: linear-gradient(180deg, color-mix(in srgb, var(--rxc) 80%, #fff), var(--rxc)); box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 2px 6px -2px var(--gl-sh); }
+:root[data-skin="glossy"] .why { border: 0; background: linear-gradient(180deg, var(--surface), color-mix(in srgb, var(--ink) 8%, var(--surface))); box-shadow: inset 0 1px 0 var(--gl-hl), 0 1px 3px var(--gl-sh2); }
+:root[data-skin="glossy"] .sc { border: 0; padding: 3px 10px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 38%, var(--surface)), color-mix(in srgb, var(--rc) 60%, var(--surface)));
+  box-shadow: inset 0 1px 0 var(--gl-hl2), 0 1px 2px var(--gl-sh2), 0 3px 8px -4px var(--gl-sh); }
+:root[data-skin="glossy"] .list { gap: 8px; padding: 12px; }
+:root[data-skin="glossy"] .srow, :root[data-skin="glossy"] .srow.coast { border: 0 !important; border-radius: 16px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 22%, var(--surface)), color-mix(in srgb, var(--rc) 40%, var(--surface)));
+  box-shadow: inset 0 1px 0 var(--gl-hl), inset 5px 0 0 var(--rc), 0 1px 2px var(--gl-sh2), 0 6px 16px -8px var(--gl-sh); }
+:root[data-skin="glossy"] .srow:active { transform: scale(.99); }
+:root[data-skin="glossy"] .srow[aria-expanded="true"] { border-radius: 16px 16px 0 0; box-shadow: inset 0 1px 0 var(--gl-hl), inset 4px 0 0 var(--rc); }
+:root[data-skin="glossy"] .det { border: 0; border-radius: 0 0 16px 16px; margin-top: -8px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--ink) 4%, var(--surface)), var(--surface)); box-shadow: inset 4px 0 0 var(--line), 0 6px 16px -8px var(--gl-sh); }
+:root[data-skin="glossy"] .bar, :root[data-skin="glossy"] .factor .fbar { border-radius: 999px; overflow: hidden; background: color-mix(in srgb, var(--ink) 9%, var(--surface)); box-shadow: inset 0 1px 2px var(--gl-sh2); }
+:root[data-skin="glossy"] .bar i, :root[data-skin="glossy"] .factor .fbar i { border-radius: 999px; background-image: linear-gradient(180deg, rgba(255,255,255,.45), rgba(255,255,255,0) 60%) !important; }
+:root[data-skin="glossy"] .bar::before, :root[data-skin="glossy"] .bar::after { opacity: .25; }
+:root[data-skin="glossy"] .wk { border: 0; border-radius: 22px; padding: 12px; box-shadow: inset 0 1px 0 var(--gl-hl), 0 1px 2px var(--gl-sh2), 0 14px 34px -14px var(--gl-sh); }
+:root[data-skin="glossy"] .wk-c { border: 0; border-radius: 14px;
+  background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0) 55%), linear-gradient(180deg, color-mix(in srgb, var(--rc) 50%, var(--surface)), color-mix(in srgb, var(--rc) 75%, var(--surface)));
+  box-shadow: inset 0 1px 0 var(--gl-hl), 0 1px 2px var(--gl-sh2), 0 5px 12px -5px var(--gl-sh); }
+:root[data-skin="glossy"] .wk-c:active { transform: scale(.97); }
+:root[data-skin="glossy"] .sheet { border: 0; border-radius: 22px 22px 0 0; box-shadow: 0 -12px 40px -8px var(--gl-sh);
+  background: linear-gradient(180deg, var(--surface), color-mix(in srgb, var(--ink) 3%, var(--surface))); }
+:root[data-skin="glossy"] .ds { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 22%, var(--surface)), color-mix(in srgb, var(--rc) 40%, var(--surface))); border: 0; border-radius: 14px; box-shadow: inset 0 1px 0 var(--gl-hl), inset 4px 0 0 var(--rc), 0 1px 2px var(--gl-sh2), 0 4px 10px -6px var(--gl-sh); }
+:root[data-skin="glossy"] .xcmark { border-radius: 5px; background: linear-gradient(180deg, color-mix(in srgb, var(--ink) 75%, #888), var(--ink)); }
+:root[data-skin="glossy"] .fresh button, :root[data-skin="glossy"] footer button { border: 0; border-radius: 999px; padding-inline: 14px;
+  background: linear-gradient(180deg, var(--surface), color-mix(in srgb, var(--ink) 7%, var(--surface))); box-shadow: inset 0 1px 0 var(--gl-hl), 0 1px 2px var(--gl-sh2), 0 3px 8px -3px var(--gl-sh); }
+:root[data-skin="glossy"] footer button[aria-pressed="true"] { box-shadow: inset 0 0 0 1.5px var(--ink), 0 1px 2px var(--gl-sh2); }
+
+/* glossy: cards stand out (fine ring + deeper shadow), darker weather card */
+:root[data-skin="glossy"] .day { box-shadow: 0 0 0 1px rgba(15,25,40,.16), inset 0 1px 0 var(--gl-hl), 0 2px 4px rgba(15,25,40,.10), 0 18px 40px -16px rgba(15,25,40,.38); }
+:root[data-skin="glossy"] .srow, :root[data-skin="glossy"] .srow.coast { box-shadow: 0 0 0 1px rgba(15,25,40,.14), inset 0 1px 0 var(--gl-hl), inset 5px 0 0 var(--rc), 0 2px 3px rgba(15,25,40,.08), 0 8px 18px -10px rgba(15,25,40,.35); }
+:root[data-skin="glossy"] .wk { box-shadow: 0 0 0 1px rgba(15,25,40,.16), inset 0 1px 0 var(--gl-hl), 0 2px 4px rgba(15,25,40,.10), 0 18px 40px -16px rgba(15,25,40,.38); }
+:root[data-skin="glossy"] .wk-c { box-shadow: 0 0 0 1px rgba(15,25,40,.14), inset 0 1px 0 var(--gl-hl), 0 2px 3px rgba(15,25,40,.08), 0 6px 14px -6px rgba(15,25,40,.35); }
+:root[data-skin="glossy"] .sc { box-shadow: 0 0 0 1px rgba(15,25,40,.14), inset 0 1px 0 var(--gl-hl2), 0 2px 6px -3px rgba(15,25,40,.3); }
+:root[data-skin="glossy"] #story { background: linear-gradient(180deg, #e3e7ec, #eef1f4); }
+:root[data-skin="glossy"] #story > .hd { background: linear-gradient(180deg, #cfd5dc, #dde2e8); border-bottom-color: rgba(15,25,40,.18); }
+:root[data-skin="glossy"] #story .wsec { background: #c9d0d8; border-color: rgba(15,25,40,.18); }
+:root[data-skin="glossy"] #story .wrow + .wrow { border-top-color: rgba(15,25,40,.12); }
+:root[data-skin="glossy"] .day > .hd { background: linear-gradient(180deg, color-mix(in srgb, var(--qc) 66%, var(--surface)), color-mix(in srgb, var(--qc) 44%, var(--surface))); }
+:root[data-skin="glossy"] .srow, :root[data-skin="glossy"] .srow.coast { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 30%, var(--surface)), color-mix(in srgb, var(--rc) 52%, var(--surface))); }
+:root[data-skin="glossy"] .sc { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 48%, var(--surface)), color-mix(in srgb, var(--rc) 72%, var(--surface))); }
+:root[data-skin="glossy"] .wk-c { background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0) 55%), linear-gradient(180deg, color-mix(in srgb, var(--rc) 62%, var(--surface)), color-mix(in srgb, var(--rc) 88%, var(--surface))); }
+:root[data-skin="glossy"] .ds { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 30%, var(--surface)), color-mix(in srgb, var(--rc) 52%, var(--surface))); }
+
+/* tighter corners everywhere (both looks) */
+.day, :root[data-skin="glossy"] .day, .wk, :root[data-skin="glossy"] .wk { border-radius: 7px; }
+.srow, .srow.coast, :root[data-skin="glossy"] .srow, :root[data-skin="glossy"] .srow.coast,
+.ds, :root[data-skin="glossy"] .ds, .wk-c, :root[data-skin="glossy"] .wk-c { border-radius: 5px; }
+.srow[aria-expanded="true"], :root[data-skin="glossy"] .srow[aria-expanded="true"] { border-radius: 5px 5px 0 0; }
+.det, :root[data-skin="glossy"] .det { border-radius: 0 0 5px 5px; }
+.sc, :root[data-skin="glossy"] .sc, .wk-x, .why, :root[data-skin="glossy"] .why { border-radius: 4px; }
+.rx { border-radius: 4px; }
+.sheet, :root[data-skin="glossy"] .sheet { border-radius: 8px 8px 0 0; }
+:root[data-skin="glossy"] .fresh button, :root[data-skin="glossy"] footer button { border-radius: 5px; }
+.exp { border-radius: 6px; }
+:root[data-skin="glossy"] .bar, :root[data-skin="glossy"] .factor .fbar, :root[data-skin="glossy"] .bar i, :root[data-skin="glossy"] .factor .fbar i { border-radius: 2px; }
+
+/* chip with a small rating bar under the name */
+.sc { flex-direction: column; align-items: stretch; gap: 3px; padding-bottom: 4px; }
+.sc-t { display: inline-flex; align-items: center; gap: 4px; }
+.sc-bar { display: block; height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--ink) 16%, var(--surface)); overflow: hidden; box-shadow: inset 0 0 0 .5px color-mix(in srgb, var(--ink) 25%, transparent); }
+.sc-bar i { display: block; height: 100%; border-radius: 2px; background: color-mix(in srgb, var(--rc) 80%, #000); }
+:root[data-skin="glossy"] .sc-bar i { background-image: linear-gradient(180deg, rgba(255,255,255,.4), rgba(255,255,255,0) 70%); }
+
+footer .btnlink { font-size: .8rem; min-height: 30px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 5px; background: var(--surface); color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; }
+:root[data-skin="glossy"] footer .btnlink { border: 0; background: linear-gradient(180deg, var(--surface), color-mix(in srgb, var(--ink) 7%, var(--surface))); box-shadow: inset 0 1px 0 var(--gl-hl), 0 1px 2px var(--gl-sh2), 0 3px 8px -3px var(--gl-sh); }
+
+/* tiny colour legend above the footer */
+.qlegend { display: grid; gap: 3px; width: 100%; max-width: 420px; margin: 18px auto 22px; }
+/* computer screens: a bigger logo and wordmark */
+@media (min-width: 760px) {
+  header.top h1 .logo { width: 116px; height: 116px; }
+  header.top h1 .wm { font-size: 3.1rem; }
+  header.top h1 { gap: 16px; }
+}
+.qbar { height: 6px; border-radius: 3px; box-shadow: inset 0 0 0 .5px color-mix(in srgb, var(--ink) 25%, transparent);
+  background: linear-gradient(90deg, var(--q0) 0 19.6%, transparent 19.6% 20.4%, var(--q1) 20.4% 39.6%, transparent 39.6% 40.4%, var(--q2) 40.4% 59.6%, transparent 59.6% 60.4%, var(--q4) 60.4% 79.6%, transparent 79.6% 80.4%, var(--q5) 80.4% 100%); box-shadow: none; border-radius: 2px; }
+.qlab { display: grid; grid-template-columns: repeat(5, 1fr); font-size: .62rem; color: var(--muted); }
+.qlab span { text-align: center !important; }
+.qlab span { flex: 1; text-align: center; } .qlab span:first-child { text-align: left; } .qlab span:last-child { text-align: right; }
+/* day cards take the weather card's solid silver; the weather card itself goes a shade quieter */
+:root[data-skin="glossy"] details.day[data-date] { background: linear-gradient(180deg, color-mix(in srgb, var(--qc) 14%, #e3e7ec), color-mix(in srgb, var(--qc) 8%, #eef1f4)); }
+details.day[data-date] { border-left: 1px solid rgba(15,25,40,.18) !important; }
+:root[data-skin="glossy"] details.day[data-date] > summary.hd { background: linear-gradient(180deg, color-mix(in srgb, var(--qc) 30%, #cfd5dc), color-mix(in srgb, var(--qc) 20%, #dde2e8)); border-bottom-color: rgba(15,25,40,.18); }
+:root[data-skin="glossy"] #story { background: linear-gradient(180deg, #eef1f4, #f5f6f8); }
+:root[data-skin="glossy"] #story > .hd { background: linear-gradient(180deg, #e6e9ed, #eef1f4); }
+:root[data-skin="glossy"] #story .wsec { background: #e1e5ea; }
+
+/* compact site cards (first layer): label beside the name, tighter padding and pills */
+.srow .nmw { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.srow .nmw .nm { flex: 0 1 auto; min-width: 0; }
+.srow .nmw .lab { flex: 0 0 auto; font-size: .8rem; }
+.srow .nmw .xcmark { flex: none; align-self: center; }
+.srow.srow, .srow.small.small { padding-top: 7px; padding-bottom: 7px; row-gap: 3px; }
+.list { gap: 5px; padding: 8px; }
+:root[data-skin="glossy"] .list { gap: 6px; padding: 8px; }
+.srow .spills { gap: 4px; margin-top: 1px; }
+.srow .spills .rx { height: 19px; padding: 0 6px; }
+.dscore.sm b { font-size: 1rem; }
+
+/* day pills: a site name never wraps; on a narrow phone a row may hold three */
+details.day > summary.hd .sum .sc, details.day > summary.hd .sum .sc.sc { white-space: nowrap; min-height: 30px; padding: 3px 10px !important; font-size: .9rem; }
+/* trip areas on a day San Diego is flyable: a size smaller */
+details.day > summary.hd .sum .sc.sc.trip { font-size: .76rem; min-height: 26px; padding: 2px 9px !important; align-self: center; }
+
+/* site cards: warnings and notes on the first row, right after the name and label */
+.srow .nmw { flex-wrap: wrap; align-items: center; row-gap: 4px; flex: 1 1 0; min-width: 0; }
+.srow .nmrow .dscore { flex: 0 0 auto; align-self: flex-start; }
+.srow .nmw .spills .rx { flex: 0 0 auto; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.srow .nmw .spills { display: contents; }
+.srow .nmw { column-gap: 6px; }
+.srow .nmw .lab { margin-right: 2px; }
+.srow .nmw .nm, .srow .nmw .lab, .srow .nmw .xcmark { flex: 0 0 auto; overflow: visible; text-overflow: clip; }
+
+/* top right: the way in to "what this is and how it works" — quiet but easy to find */
+header.top { position: relative; }
+.therm { margin: 0 -17px; max-width: none; }
+.dsec:has(> .therm) { max-width: none; }
+.therm svg { display: block; width: 100%; height: auto; border-radius: 6px; }
+.wc.avg b { font-weight: 800; }
+.howbtn { position: absolute; top: 4px; right: 0; display: inline-block; white-space: nowrap; padding: 5px 12px; border-radius: 999px;
+  border: 1.25px solid color-mix(in srgb, #2b1d14 45%, transparent); background: rgba(255,255,255,.7); color: #2b1d14; font-weight: 600; font-size: .78rem; text-decoration: none; }
+.howbtn:hover { border-color: #c26a24; color: #c26a24; }
+@media (max-width: 480px) { .howbtn { font-size: .72rem; padding: 4px 10px; } .howbtn .hl2 { display: none; } }
+/* quiet sounding pill in the weather overview's empty corner (first layer) */
+#story > summary.hd { position: relative; }
+#sndrow { display: flex; justify-content: flex-end; gap: 8px; margin: -4px 4px 10px; }
+.sndq { position: static; display: inline-block; margin: 0; padding: 2px 9px; border-radius: 999px; border: 1px solid color-mix(in srgb, currentColor 22%, transparent); color: var(--muted, #6b6b6b) !important; font-size: .78rem; text-decoration: none !important; white-space: nowrap; }
+.sndq:hover { color: #c26a24 !important; border-color: #c26a24; }
+/* bottom: the disclaimer */
+.disclaimer { font-size: .76rem; line-height: 1.55; color: #4a3b30; border-top: 1px solid var(--line); padding: 14px 2px 4px; display: grid; gap: 7px; max-width: 90ch; }
+.disclaimer h2 { font-size: .82rem; font-weight: 700; margin: 0; color: #2b1d14; }
+.disclaimer p { margin: 0; }
+
+/* site card: mini hour strip, 9 am to 6 pm, the flying window outlined */
+.srow .mstrip { grid-column: 1 / -1; display: flex; align-items: center; gap: 5px; max-width: 300px; margin-top: 2px; }
+.srow .mstrip b { font-size: .55rem; font-weight: 600; color: var(--muted); line-height: 1; flex: 0 0 auto; }
+.srow .mstrip .mcells { flex: 1 1 auto; display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; }
+.srow .mstrip i { height: 7px; border-radius: 2px; box-shadow: inset 0 0 0 1px rgba(38,48,58,.55); }
+.srow .mstrip i { position: relative; }
+.srow[aria-expanded="true"] .mstrip, .srow[aria-expanded="true"] .wtab { display: none; }   /* open: the third level takes over */   /* open: the big strip below takes over */
+.srow .mstrip { margin-top: 9px; }
+.srow .mstrip .mcells { position: relative; }
+.srow .mstrip em { position: absolute; bottom: calc(100% + 2px); font-size: 8.5px; line-height: 1; font-weight: 600; font-style: normal; color: var(--muted); white-space: nowrap; }
+.srow .mstrip i.none { box-shadow: inset 0 0 0 1px rgba(38,48,58,.35); opacity: .7; }
+
+
+/* touch tooltip */
+.tip { position: fixed; z-index: 50; background: #26303a; color: #fff; font-size: .78rem; line-height: 1.35; padding: 6px 9px; border-radius: 6px; box-shadow: 0 4px 14px rgba(0,0,0,.25); pointer-events: none; }
+
+/* day boxes: line 2 of every day card, always six, lit when they apply */
+details.day > summary.hd .notes { margin-top: -3px; }
+details.day > summary.hd .sum { margin-top: 3px; }
+.sig { display: inline-flex; flex-wrap: nowrap; gap: 4px; margin-right: 2px; }
+.sig .g { height: 24px; min-width: 24px; padding: 0 4px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;
+  background: #fff; border: 1.25px solid color-mix(in srgb, #26303a 35%, transparent); color: #26303a; font-size: .66rem; font-weight: 800; letter-spacing: .04em;
+  opacity: .28; filter: grayscale(1); box-sizing: border-box; }
+.sig .g .ic-svg { width: 15px; height: 15px; }
+.sig .g .ic { font-style: normal; font-size: .95rem; line-height: 1; }
+.sig .g.on { opacity: 1; filter: none; }
+.sig .g.xc.on { background: #3aa457; border-color: #2f8f4a; color: #fff; box-shadow: 0 0 0 2px rgba(58,164,87,.25), 0 0 10px rgba(58,164,87,.6); }
+.sig .g.up.on { border-color: #3aa457; box-shadow: 0 0 0 2px rgba(58,164,87,.22), 0 0 12px rgba(58,164,87,.6); }
+.sig .g.lid.on { border-color: #d64545; box-shadow: 0 0 0 2px rgba(214,69,69,.2), 0 0 12px rgba(214,69,69,.55); }   /* bad news glows red */
+.sig .g.glass.on { border-color: #3aa457; color: #b98a00; box-shadow: 0 0 0 2px rgba(58,164,87,.22), 0 0 12px rgba(58,164,87,.6); }   /* good news glows green; the sun stays sun-coloured */
+.sig .g.wind.on, .sig .g.rain.on, .sig .g.cloud.on { border-color: #d64545; color: #c23434; box-shadow: 0 0 0 2px rgba(214,69,69,.2), 0 0 12px rgba(214,69,69,.55); }
+/* possible / mild: a softer, dashed version of the same glow */
+.sig .g.on.dim { opacity: .75; border-style: dashed; box-shadow: 0 0 0 1px rgba(0,0,0,0), 0 0 6px color-mix(in srgb, currentColor 35%, transparent); }
+.sig .g.xc.on.dim { background: transparent; color: #2f8f4a; border-color: #3aa457; }
+.sig .g.up.on.dim, .sig .g.glass.on.dim { box-shadow: 0 0 6px rgba(58,164,87,.45); }
+.sig .g.lid.on.dim, .sig .g.wind.on.dim, .sig .g.rain.on.dim, .sig .g.cloud.on.dim { box-shadow: 0 0 6px rgba(214,69,69,.45); }
+.srow .spills .rx .ic-svg { width: 13px; height: 13px; }
+
+/* "glassy" chips, like glass-off on the site cards: no fill, a light inner edge and a soft shadow. Used for the
+   XC tag next to a site name and the day-type pills on the box row (a dark day-type pill stays dark) */
+details.day > summary.hd .sum .sc .xcmark, :root[data-skin="glossy"] details.day > summary.hd .sum .sc .xcmark,
+details.day > summary.hd .notes > .rx:not(.strong), details.day > summary.hd .notes > .rx.rx-weak, details.day > summary.hd .notes > .rx.rx-soft {
+  background: transparent !important; background-image: none !important; color: #26303a !important; border: 0 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 2px 6px -2px rgba(20,32,56,.16), 0 0 0 1px rgba(20,32,56,.10) !important; }
+details.day > summary.hd .sum .sc .xcmark, :root[data-skin="glossy"] details.day > summary.hd .sum .sc .xcmark {
+  font-size: .6rem; font-weight: 700; letter-spacing: .03em; padding: 2px 6px; border-radius: 5px; }
+/* day types that are clearly good or bad glow like the boxes: green good, red bad; a weaker signal (fewer
+   models) is the dashed, softer version; a neutral type stays plain */
+details.day > summary.hd .notes > .rx.good.good { color: #23753c !important; box-shadow: 0 0 0 1.5px #3aa457, 0 0 10px rgba(58,164,87,.5) !important; }
+details.day > summary.hd .notes > .rx.bad.bad { color: #b42f2f !important; box-shadow: 0 0 0 1.5px #d64545, 0 0 10px rgba(214,69,69,.5) !important; }
+details.day > summary.hd .notes > .rx.good.good.soft, details.day > summary.hd .notes > .rx.bad.bad.soft { opacity: .8; outline: 1.5px dashed currentColor; outline-offset: -1.5px; }
+details.day > summary.hd .notes > .rx.good.good.soft { box-shadow: 0 0 6px rgba(58,164,87,.4) !important; }
+details.day > summary.hd .notes > .rx.bad.bad.soft { box-shadow: 0 0 6px rgba(214,69,69,.4) !important; }
+
+/* the day's level as a plain dot, red to blue (the words on tap or hover) */
+.ddot { display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: var(--dc); align-self: center; flex: none;
+  box-shadow: 0 0 0 2px rgba(255,255,255,.75), 0 1px 3px rgba(20,32,56,.3); margin-left: 4px; }
+
+/* the day type (Santa Ana, switch day, post-frontal ...) gets its own row under the day boxes, only when there is one */
+details.day > summary.hd .notes > .sig { flex: 0 0 100%; }
+/* computer: the day type sits next to the boxes; phone: on its own row under them */
+@media (min-width: 700px) { details.day > summary.hd .notes > .sig { flex: 0 0 auto; margin-right: 6px; } }
+
+/* the day's level in words, coloured red to blue (text, no background); yellow and orange a shade darker to read */
+.dword { font-size: .85rem; font-weight: 800; letter-spacing: .02em; white-space: nowrap; align-self: baseline; margin-left: 4px; line-height: 1;
+  color: color-mix(in srgb, var(--dc) 78%, #000); }
+
+/* spacing: day boxes, then (if any) the day type a little apart, then the sites close under it */
+details.day > summary.hd .notes { row-gap: 12px; }
+details.day > summary.hd .notes:has(> .rx) + .sum { margin-top: -4px; }
+
+/* good boxes (XC, glass-off, thermals), a small gap, then the bad ones (lid, windy, rain, cloud) */
+.sig .sig-gap { width: 6px; flex: none; }
+
+/* XC tag everywhere in the glassy style of the first layer */
+.xcmark, :root[data-skin="glossy"] .xcmark { background: transparent !important; background-image: none !important; color: #26303a !important; border: 0 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 2px 6px -2px rgba(20,32,56,.16), 0 0 0 1px rgba(20,32,56,.10) !important;
+  font-weight: 700; letter-spacing: .03em; border-radius: 5px; }
+/* site cards: the chips start on their own row under the name and label */
+.srow > .spills { display: flex !important; grid-column: 1 / -1; flex-wrap: wrap; gap: 4px; margin-top: 1px; }
+/* the weather overview: a light, quiet card, clearly apart from the heavier day cards */
+#story.day, :root[data-skin="glossy"] #story.day { background: rgba(255,255,255,.72) !important; background-image: none !important;
+  border: 1px solid rgba(20,32,56,.08) !important; box-shadow: 0 1px 3px -1px rgba(20,32,56,.08) !important; }
+#story.day > .hd, :root[data-skin="glossy"] #story.day > .hd { background: transparent !important; background-image: none !important; border-bottom-color: rgba(20,32,56,.08) !important; }
+#story .wsec, :root[data-skin="glossy"] #story .wsec { background: rgba(240,243,246,.8) !important; border-color: rgba(20,32,56,.08) !important; }
+#story.day > .hd .exp { box-shadow: none !important; border: 1px solid rgba(20,32,56,.12) !important; background: transparent !important; }
+
+/* ===== layout: quiet white cards; the day in a side column with a verdict-coloured accent bar, models at its
+   foot; signals, day type and sites on the right, sites in an even grid ===== */
+body{background:#f3f5f8}
+html body details.day:not(#story){background:#fff!important;background-image:none!important;border:1px solid #e3e7ec!important;box-shadow:0 1px 2px rgba(16,24,40,.06)!important;border-radius:12px!important;overflow:hidden}
+html body details.day:not(#story) > summary.hd{background:transparent!important;background-image:none!important;display:grid!important;grid-template-columns:96px minmax(0,1fr)!important;column-gap:12px!important;row-gap:8px!important;position:relative;padding:0!important;border:0!important}
+html body details.day:not(#story) > summary.hd .band{grid-column:1;grid-row:1 / span 3;align-self:stretch;display:flex!important;flex-direction:column;justify-content:space-between;gap:8px;padding:12px 6px 12px 16px;margin:0!important;box-shadow:inset -1px 0 0 #eef0f3}
+html body details.day:not(#story) .band .when{align-self:stretch!important;margin:0!important;width:100%;text-align:left!important;justify-content:flex-start!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:1px!important;white-space:normal!important}
+html body details.day:not(#story) .band .when .dn{font-size:1.5rem!important;line-height:1.05}
+html body details.day:not(#story) .band .when small{font-size:.74rem!important;margin:0!important}
+html body details.day:not(#story) .band .when .dword{font-size:.95rem!important;font-weight:800!important;margin:6px 0 0!important;line-height:1.15;white-space:normal!important}
+html body details.day:not(#story) .band .mods{align-self:stretch!important;margin-left:0!important;padding:0!important;display:block!important;font-size:.6rem!important;line-height:1.35;color:#98a2b3!important;margin:0!important;text-align:left!important;letter-spacing:0;white-space:normal!important;overflow-wrap:anywhere;max-width:100%}
+html body details.day:not(#story) .band .exp{position:absolute!important;right:8px;top:10px;border:0!important;background:transparent!important;box-shadow:none!important;width:22px!important}
+html body details.day:not(#story) > summary.hd .notes{grid-column:2;grid-row:1;padding:15px 32px 0 0!important;margin:0!important}
+html body details.day:not(#story) > summary.hd .sum{grid-column:2;grid-row:2;margin:0 0 14px!important;align-self:start;padding-right:12px;display:grid!important;grid-template-columns:repeat(auto-fill,minmax(118px,1fr))!important;gap:6px!important}
+html body details.day:not(#story) > summary.hd .sum .sc.sc.sc{min-height:28px!important;font-size:.74rem!important;padding:1px 8px!important;justify-content:center!important;min-width:0;border-radius:8px!important;
+  background:color-mix(in srgb,var(--rc) 42%,#fff)!important;background-image:none!important;border:0!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--rc) 60%,#fff)!important}
+html body details.day:not(#story) > summary.hd .sum .sc.sc.sc.trip{min-height:28px!important;font-size:.68rem!important}
+html body details.day:not(#story) > summary.hd .sum .sc.sc.sc .sc-t{width:100%;justify-content:space-between;align-items:center!important;min-width:0;gap:4px!important}
+html body details.day:not(#story) > summary.hd .sum .sc.sc.sc{align-items:center!important}
+html body details.day:not(#story) > summary.hd .sum .sc.sc.sc .sc-t b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html body details.day:not(#story) > summary.hd .sum .sc.sc.sc .xcmark{font-size:.54rem!important;padding:1px 4px!important}
+html body details.day:not(#story) > summary.hd .sig .g.g{height:22px!important;min-width:22px!important;padding:0 3px!important}
+html body details.day:not(#story) > summary.hd .sig{gap:3px!important}
+html body details.day:not(#story) > summary.hd .sig .g.g:not(.on){background:transparent!important;border-color:#e6e9ee!important;opacity:.55}
+html body details.day:not(#story)[open] > summary.hd{border-bottom:1px solid #eef0f3!important}
+html body #story.day.day.day{background:transparent!important;border:0!important;box-shadow:none!important}
+@media (min-width:700px){
+  html body details.day:not(#story) > summary.hd{grid-template-columns:132px minmax(0,1fr)!important;grid-template-rows:auto auto!important;align-content:center}
+  html body details.day:not(#story) > summary.hd .band{grid-row:1 / span 2;padding:14px 10px 14px 20px}
+  html body details.day:not(#story) > summary.hd .notes{align-self:end;padding-top:16px!important}
+  html body details.day:not(#story) > summary.hd .sum{align-self:start;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))!important;gap:8px!important;margin-bottom:16px!important}
+  html body details.day:not(#story) > summary.hd .sum .sc.sc.sc{font-size:.88rem!important;min-height:34px!important}
+  html body details.day:not(#story) .band .mods{font-size:.64rem!important} }
+
+/* site cards inside an opened day: quiet white too, the score as a coloured accent bar and a light tint */
+html body details.day:not(#story) .list .srow.srow{background:color-mix(in srgb,var(--rc) 10%,#fff)!important;background-image:none!important;border-radius:10px!important;
+  box-shadow:inset 4px 0 0 var(--rc), 0 0 0 1px #e6e9ee!important}
+html body details.day:not(#story) .list .srow.srow .exp{box-shadow:none!important;background:transparent!important;border:0!important}
+html body details.day:not(#story) .list .srow.srow[aria-expanded="true"]{background:color-mix(in srgb,var(--rc) 14%,#fff)!important}
+html body details.day:not(#story) .list .srow.srow .spills .rx:not(.strong){background:#fff!important;box-shadow:0 0 0 1px #e6e9ee!important}
+/* strong pills (e.g. a cloud deck that takes points off) stay dark with white text, so they never turn white on white */
+html body details.day:not(#story) .list .srow.srow .spills .rx.strong{background:#26303a!important;color:#fff!important;box-shadow:none!important}
+html body details.day:not(#story) .list{background:#fff}
+
+/* phone: day-type pills smaller than the site names so two fit side by side; site pills hug their text */
+html body details.day:not(#story) > summary.hd .notes > .rx.rx{font-size:.56rem!important;letter-spacing:.02em!important;padding:0 6px!important;height:21px!important;gap:4px!important}
+html body details.day:not(#story) > summary.hd .notes > .rx.rx .ic-svg, html body details.day:not(#story) > summary.hd .notes > .rx.rx .ic{width:11px;height:11px;font-size:.7rem}
+html body details.day:not(#story) > summary.hd .notes{row-gap:8px!important;column-gap:5px!important}
+html body details.day:not(#story) > summary.hd .sum .sc.sc.sc, html body details.day:not(#story) > summary.hd .sum .sc.sc.sc.trip{min-height:25px!important;padding:2px 8px!important;line-height:1.15}
+html body details.day:not(#story) > summary.hd .sum .sc.sc.sc .xcmark{padding:0 4px!important;line-height:1.3}
+/* computer: more room between the signals, the day type and the sites */
+@media (min-width:700px){
+  html body details.day:not(#story) > summary.hd{row-gap:16px!important;column-gap:24px!important}
+  html body details.day:not(#story) > summary.hd .notes{padding-top:22px!important;column-gap:10px!important}
+  html body details.day:not(#story) > summary.hd .notes > .sig{margin-right:14px!important}
+  html body details.day:not(#story) > summary.hd .notes > .rx.rx{font-size:.64rem!important;height:24px!important;padding:0 9px!important}
+  html body details.day:not(#story) > summary.hd .sum{gap:12px!important;margin-bottom:22px!important;padding-right:24px!important}
+  html body details.day:not(#story) > summary.hd .sum .sc.sc.sc, html body details.day:not(#story) > summary.hd .sum .sc.sc.sc.trip{min-height:32px!important;padding:4px 12px!important}
+  html body details.day:not(#story) > summary.hd .sig .g.g{height:26px!important;min-width:26px!important}
+  html body details.day:not(#story) > summary.hd .sig{gap:5px!important}
+}
+
+/* computer: sites sized to their names (no grid, no empty space in a pill); the right side starts at the top,
+   the signals just below the top of the day name */
+@media (min-width:700px){
+  html body details.day:not(#story) > summary.hd{align-content:start!important}
+  html body details.day:not(#story) > summary.hd .notes{align-self:start!important;padding-top:20px!important}
+  html body details.day:not(#story) > summary.hd .sum{display:flex!important;flex-wrap:wrap!important;gap:10px!important}
+  html body details.day:not(#story) > summary.hd .sum .sc.sc.sc{justify-content:center!important}
+  html body details.day:not(#story) > summary.hd .sum .sc.sc.sc .sc-t{width:auto!important;gap:8px!important}
+}
+
+/* computer: the day-type warnings get their own row under the signals */
+@media (min-width:700px){ html body details.day:not(#story) > summary.hd .notes > .sig.sig{flex:0 0 100%!important;margin-right:0!important} html body details.day:not(#story) > summary.hd .notes{row-gap:12px!important} }
+
+/* opened day: each site its own white card on a grey tray, with clear gaps, so they don't blur together */
+html body details.day:not(#story) .list{background:#fff!important;padding:10px!important;display:flex;flex-direction:column;gap:10px}
+html body details.day:not(#story) .list .srow.srow{background:#fff!important;margin:0!important;box-shadow:inset 5px 0 0 var(--rc), 0 0 0 1px #dfe3e8, 0 2px 4px -2px rgba(16,24,40,.12)!important;border-top:0!important}
+html body details.day:not(#story) .list .srow.srow[aria-expanded="true"]{background:#fff!important}
+
+/* an opened site: its colour stripe runs on down the detail, card and detail read as one piece */
+html body details.day:not(#story) .list .det.det{margin:-10px 0 0!important;border:0!important;border-radius:0 0 10px 10px!important;background:#fff!important;
+  box-shadow:inset 5px 0 0 var(--rc), 0 0 0 1px #dfe3e8, 0 2px 4px -2px rgba(16,24,40,.12)!important;padding-left:22px!important}
+html body details.day:not(#story) .list .srow.srow[aria-expanded="true"]{border-radius:10px 10px 0 0!important;box-shadow:inset 5px 0 0 var(--rc), 0 0 0 1px #dfe3e8!important}
+
+/* the day's colour bar runs the full height of the card, down past the last site when the day is open */
+html body details.day:not(#story){position:relative}
+html body details.day:not(#story)::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--dc);z-index:2;pointer-events:none}
+
+/* page background a clear step greyer than the white cards */
+html, html body { background: #dde2e8 !important; background-image: none !important; }
+/* the white cards lift off the grey: a crisper edge and a soft shadow */
+html body details.day:not(#story){border-color:#d5dbe2!important;box-shadow:0 1px 2px rgba(16,24,40,.08),0 4px 12px -4px rgba(16,24,40,.12)!important}
+
+/* site cards in an opened day: a quiet tint of their own score colour, so neighbours separate easily */
+html body details.day:not(#story) .list .srow.srow, html body details.day:not(#story) .list .srow.srow[aria-expanded="true"], html body details.day:not(#story) .list .det.det{background:color-mix(in srgb,var(--rc) 13%,#fff)!important}
+
+/* site groups: a tiny grey label with a thin line, on the first layer and in an opened day */
+html body details.day > summary.hd .sum .sgrp, html body details.day .list .sgrp {
+  grid-column: 1 / -1; flex: 0 0 100%; display: flex; align-items: center; gap: 8px;
+  font-size: .58rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #98a2b3; line-height: 1; margin: 2px 0 -1px; }
+html body details.day > summary.hd .sum .sgrp::after, html body details.day .list .sgrp::after { content: ""; flex: 1; height: 1px; background: #e4e7ec; }
+html body details.day .list .sgrp { margin: 4px 2px -2px; font-size: .62rem; }
+
+/* first-layer site pills: skinnier */
+html body details.day:not(#story) > summary.hd .sum .sc.sc.sc, html body details.day:not(#story) > summary.hd .sum .sc.sc.sc.trip{min-height:21px!important;padding:0 8px!important;line-height:1.1}
+@media (min-width:700px){ html body details.day:not(#story) > summary.hd .sum .sc.sc.sc, html body details.day:not(#story) > summary.hd .sum .sc.sc.sc.trip{min-height:26px!important;padding:1px 12px!important} }
+
+/* ridge site (Torrey): launch wind under each hour, arrow for where it blows, speed and gust */
+.hstrip .hw { grid-row: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.05; font-size: .62rem; color: #26303a; font-variant-numeric: tabular-nums;
+  margin-top: 3px; padding: 3px 0; min-height: 26px; background: rgba(38,48,58,.05); border-radius: 4px; }
+.hstrip .hw i { display: block; width: 10px; height: 12px; margin: 0 auto 2px; }
+.hstrip .hw i svg { display: block; width: 100%; height: 100%; fill: currentColor; }
+.hstrip .hw b { display: block; text-align: center; font-weight: 700; letter-spacing: -.03em; }
+.hstrip .hw small { display: block; text-align: center; font-size: .5rem; font-weight: 500; color: var(--muted); }
+.hstrip .hw.lo { color: #98a2b3; }
+.hstrip .hw.hi { color: #c23434; }
+.hstrip:has(.hw) .wbr { grid-row: 3; }
+.hstrip:has(.hw) .hl { grid-row: 4; }
+
+/* Torrey: score strip plus a launch-wind row per model (HRRR, RRFS, EC), arrow over 7g11 */
+.hwt { display: grid; grid-template-columns: 26px repeat(10, minmax(0, 1fr)); gap: 1px; max-width: 540px; align-items: center; }
+.hwt .hh { font-size: .56rem; color: var(--muted); text-align: center; font-weight: 600; }
+.hwt .ml { font-size: .52rem; font-weight: 700; color: #475467; align-self: stretch; display: flex; align-items: center; padding-left: 2px; border-radius: 3px 0 0 3px; }
+.hwt .hc { height: 14px; border-radius: 2px; box-shadow: inset 0 0 0 1.5px rgba(38,48,58,.75); }
+.hwt .wc { display: flex; flex-direction: column; align-items: center; line-height: 1.05; padding: 3px 0; color: #26303a; font-variant-numeric: tabular-nums; min-width: 0; }
+.hwt .z { background: rgba(38,48,58,.045); }
+.hwt .wc i { font-style: normal; font-weight: 800; font-size: .62rem; display: inline-block; }
+.hwt .wc b { font-size: .56rem; font-weight: 700; letter-spacing: -.045em; white-space: nowrap; }
+.hwt .wc b small { font-size: .47rem; font-weight: 500; opacity: .75; letter-spacing: -.03em; }
+.hwt .wc.lo { color: #98a2b3; }
+.hwt .wc.hi { color: #c23434; }
+@media (max-width: 380px) { .hwt .wc b small { display: block; text-align: center; } }
+
+/* the wind table right on Torrey's site card */
+.srow .wtab { display: block; flex: 0 0 100%; width: 100%; margin-top: 6px; padding-right: 30px; }
+.srow .wtab .hwt { max-width: none; }
+.srow .wtab .hwt .wc b small { display: block; text-align: center; }
+.srow .wtab .hwt .wc b { font-size: .6rem; }
+/* compact: one averaged row, smaller cells, gust beside the speed */
+.srow .wtab { margin-top: 4px; }
+.srow .wtab .hwt { row-gap: 2px; }
+.srow .wtab .hwt .hc { height: 9px; }
+.srow .wtab .hwt .hh { font-size: .5rem; }
+.srow .wtab .hwt .wc { padding: 1px 0; line-height: 1; }
+.srow .wtab .hwt .wc i { width: 8px; height: 9px; margin-bottom: 0; }
+.srow .wtab .hwt .wc b { font-size: .56rem; }
+.srow .wtab .hwt .wc b small { display: inline; font-size: .44rem; }
+.hwt .wc.late { opacity: .45; }   /* after sunset: wind only, greyed */
+.hwt .wc i { display: block; width: 10px; height: 12px; margin-bottom: 1px; }
+.hwt .wc i svg { display: block; width: 100%; height: 100%; fill: currentColor; }
+/* wind table: every model row and every cell shaded the same, one quiet box per hour */
+.hwt .wc, .hwt .wc.z { background: rgba(38,48,58,.05); border-radius: 4px; }
+.hwt .ml, .hwt .ml.z { background: transparent; }
+.hwt .wc.late > * { opacity: .45; } .hwt .wc.late { opacity: 1; }
+.hwt { row-gap: 3px; }
+.hwt .wc b { display: block; text-align: center; }
+.hwt .wc i { margin: 0 auto 1px; }
+
+/* wind cells everywhere: speed and gust always on one line ("10g15"), shrinking to fit the cell */
+.hwt .wc b, .hstrip .hw b, .srow .wtab .hwt .wc b { display: block; white-space: nowrap; text-align: center; font-size: min(.6rem, 2.75vw); letter-spacing: -.06em; overflow: hidden; }
+.hwt .wc b small, .hstrip .hw b small, .srow .wtab .hwt .wc b small { display: inline !important; font-size: .78em; margin-left: .5px; }
+
+/* third level: compact, to sit with the small thermal panel */
+html body .det .dsec { gap: 4px; }
+html body .det .dsec + .dsec { margin-top: 4px; }
+html body .det .dh { font-size: .5rem !important; letter-spacing: .08em; }
+html body .det .factors { gap: 3px; }
+html body .det .factor { grid-template-columns: 66px minmax(0, 1fr) 74px; gap: 0 8px; }
+html body .det .factor .fk, html body .det .factor .fv { font-size: .6rem; }
+html body .det .factor .fs { font-size: .54rem; margin-top: -1px; }
+html body .det .factor .fbar { height: 4px; }
+html body .det .steps { gap: 3px 4px; }
+html body .det .steps .st { height: 15px; padding: 0 5px; font-size: .48rem !important; }
+
+/* thermal panel: day back / forward */
+.tnav { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 17px 2px; }
+.tnav .tnd { font-size: .74rem; font-weight: 600; color: var(--muted); }
+.tnb { font: inherit; font-size: .8rem; font-weight: 700; padding: 5px 12px; border-radius: 999px; border: 1px solid #d5dbe2; background: #fff; color: #26303a; cursor: pointer; min-width: 72px; }
+.tnb:disabled { opacity: .35; cursor: default; }
+.tnb:not(:disabled):hover { border-color: #26303a; }
+/* sounding button in the radar orange, black text */
+.sndq, .sndq:visited { background: #c26a24 !important; color: #111 !important; border: 0 !important; font-weight: 700; padding: 5px 14px !important; box-shadow: 0 1px 3px rgba(43,29,20,.25); }
+.sndq:hover { background: #d97b31 !important; color: #111 !important; }
+/* site-card chips glow like the first-layer signals */
+html body details.day:not(#story) .list .srow.srow .spills .rx.warn, html body details.day:not(#story) .list .srow.srow .spills .rx.warn.strong {
+  background: #fff !important; color: #b42f2f !important; box-shadow: 0 0 0 1.5px #d64545, 0 0 8px rgba(214,69,69,.45) !important; }
+html body details.day:not(#story) .list .srow.srow .spills .rx.ok {
+  background: #fff !important; color: #23753c !important; box-shadow: 0 0 0 1.5px #3aa457, 0 0 8px rgba(58,164,87,.45) !important; }
+html body details.day .list .srow.srow .spills .rx.warn .ic-svg, html body details.day .list .srow.srow .spills .rx.warn .ic { color: #c23434; }
+/* "Cross-country" fits the side column on one line: a size smaller */
+html body details.day:not(#story) .band .when .dword.long { font-size: .68rem !important; white-space: nowrap !important; letter-spacing: -.01em; }
+@media (min-width: 700px) { html body details.day:not(#story) .band .when .dword.long { font-size: .9rem !important; } }
+/* Torrey's wind table on a computer: the full card width, not the narrow first column */
+.srow .wtab { grid-column: 1 / -1; }
+@media (min-width: 700px) { .srow .wtab .hwt { max-width: 640px; } .srow .wtab .hwt .wc b { font-size: .78rem; } .srow .wtab .hwt .wc b small { font-size: .62rem; } .srow .wtab .hwt .hh, .srow .wtab .hwt .ml { font-size: .7rem; } .srow .wtab .hwt .wc i { width: 12px; height: 14px; } }
+.ov .grad { white-space: nowrap; color: var(--muted, #6b7280); font-variant-numeric: tabular-nums; }
+.ov .grad.weak { color: #b07a12; } .ov .grad.sa { color: #b42f2f; font-weight: 600; }
+/* little asset tiles above the days: quiet, white, a tiny icon and a live number */
+#assets { display: flex; gap: 8px; margin: -2px 0 12px; flex-wrap: wrap; justify-content: flex-end; }
+.asset { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px 4px 5px; border-radius: 10px; background: rgba(255,255,255,.75);
+  border: 1px solid #d5dbe2; color: #26303a; text-decoration: none; line-height: 1.1; }
+.asset svg { width: 26px; height: 26px; flex: none; filter: drop-shadow(0 1px 1px rgba(0,0,0,.12)); }
+.asset b { display: block; font-size: .8rem; font-weight: 700; }
+.asset small { display: block; font-size: .7rem; color: #6b7280; margin-top: 1px; font-variant-numeric: tabular-nums; }
+.asset small.weak { color: #b07a12; } .asset small.sa { color: #b42f2f; font-weight: 600; }
+.asset:hover { background: #fff; border-color: #c26a24; }
+/* ===== LAB: opened-day layouts (html[data-lay] = list | grid | tiles) ===== */
+#labbar { position: fixed; left: 50%; bottom: max(10px, env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 50; display: flex; align-items: center; gap: 4px;
+  padding: 4px; border-radius: 999px; background: #1f2937; box-shadow: 0 6px 20px -6px rgba(0,0,0,.45); font: 600 .74rem/1 system-ui, sans-serif; }
+#labbar b { color: #fbbf24; padding: 0 8px 0 10px; letter-spacing: .08em; font-size: .66rem; }
+#labbar button { border: 0; border-radius: 999px; padding: 8px 13px; background: transparent; color: #cbd5e1; font: inherit; cursor: pointer; }
+#labbar button[aria-pressed="true"] { background: #fff; color: #111827; }
+html[data-lay="grid"] body details.day:not(#story) .list, html[data-lay="tiles"] body details.day:not(#story) .list {
+  display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px !important; align-items: stretch; }
+html[data-lay="tiles"] body details.day:not(#story) .list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px !important; }
+@media (min-width: 700px) {
+  html[data-lay="grid"] body details.day:not(#story) .list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px !important; }
+  html[data-lay="tiles"] body details.day:not(#story) .list { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px !important; }
+}
+html[data-lay] body details.day:not(#story) .list .sgrp { grid-column: 1 / -1; margin: 6px 0 -2px !important; }
+html[data-lay] body details.day:not(#story) .list .sgrp:first-child { margin-top: 0 !important; }
+/* the tile */
+html[data-lay="grid"] body details.day:not(#story) .list .srow.srow, html[data-lay="tiles"] body details.day:not(#story) .list .srow.srow {
+  margin: 0 !important; padding: 9px 10px 10px 13px !important; display: flex !important; flex-direction: column; align-items: stretch; gap: 5px;
+  border-radius: 10px !important; min-width: 0; text-align: left; transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease; }
+html[data-lay] body details.day:not(#story) .list .srow.srow .exp { display: none !important; }
+html[data-lay="grid"] body details.day:not(#story) .list .srow .nmrow, html[data-lay="tiles"] body details.day:not(#story) .list .srow .nmrow { align-items: flex-start; gap: 6px; }
+html[data-lay="grid"] body details.day:not(#story) .list .srow .nmw, html[data-lay="tiles"] body details.day:not(#story) .list .srow .nmw { flex-direction: column; align-items: flex-start; gap: 1px; }
+html[data-lay="grid"] body details.day:not(#story) .list .srow .nm, html[data-lay="tiles"] body details.day:not(#story) .list .srow .nm { font-size: .9rem; line-height: 1.15; white-space: normal; }
+html[data-lay="grid"] body details.day:not(#story) .list .srow .lab, html[data-lay="tiles"] body details.day:not(#story) .list .srow .lab { font-size: .7rem !important; }
+html[data-lay] body details.day:not(#story) .list .srow .dscore .dsl { display: none; }
+html[data-lay="grid"] body details.day:not(#story) .list .srow .tx { display: block; font-size: .7rem; line-height: 1.35; }
+html[data-lay="grid"] body details.day:not(#story) .list .srow .tx .facts { font-size: .7rem; }
+html[data-lay="grid"] body details.day:not(#story) .list .srow .mstrip { max-width: none; margin-top: auto; padding-top: 10px; }
+html[data-lay="grid"] body details.day:not(#story) .list .srow .spills .rx:nth-child(n+3) { display: none; }
+html[data-lay="grid"] body details.day:not(#story) .list .srow .wtab { display: none; }
+/* Torrey takes the whole row in the grid and keeps its wind table */
+html[data-lay="grid"] body details.day:not(#story) .list .srow[data-site="torrey"] { grid-column: 1 / -1; }
+html[data-lay="grid"] body details.day:not(#story) .list .srow[data-site="torrey"] .wtab { display: block; }
+html[data-lay="grid"] body details.day:not(#story) .list .srow[data-site="torrey"][aria-expanded="true"] .wtab { display: none; }
+/* tiles: name, verdict and score only, like the first layer */
+html[data-lay="tiles"] body details.day:not(#story) .list .srow .tx, html[data-lay="tiles"] body details.day:not(#story) .list .srow .spills,
+html[data-lay="tiles"] body details.day:not(#story) .list .srow .mstrip, html[data-lay="tiles"] body details.day:not(#story) .list .srow .wtab { display: none !important; }
+html[data-lay="tiles"] body details.day:not(#story) .list .srow.srow { padding: 8px 8px 8px 11px !important; min-height: 58px; justify-content: center; }
+html[data-lay="tiles"] body details.day:not(#story) .list .srow .nm { font-size: .82rem; }
+html[data-lay="tiles"] body details.day:not(#story) .list .srow .nmrow { flex-direction: column-reverse; align-items: flex-start; }
+html[data-lay="tiles"] body details.day:not(#story) .list .srow .warn-dot { display: inline-block; }
+/* the open tile: lifted, with a ring in its own colour */
+html[data-lay="grid"] body details.day:not(#story) .list .srow.srow[aria-expanded="true"], html[data-lay="tiles"] body details.day:not(#story) .list .srow.srow[aria-expanded="true"] {
+  border-radius: 10px !important; box-shadow: inset 5px 0 0 var(--rc), 0 0 0 2px var(--rc), 0 6px 16px -8px rgba(0,0,0,.35) !important; transform: translateY(-1px); }
+html[data-lay] body details.day:not(#story) .list:has(.srow[aria-expanded="true"]) .srow.srow:not([aria-expanded="true"]) { opacity: .62; }
+/* the third level: full width under the row, with a little notch pointing at the open tile */
+html[data-lay="grid"] body details.day:not(#story) .list .det.det, html[data-lay="tiles"] body details.day:not(#story) .list .det.det {
+  grid-column: 1 / -1; margin: 4px 0 4px !important; border-radius: 12px !important; position: relative;
+  box-shadow: inset 5px 0 0 var(--rc), 0 0 0 1px #dfe3e8, 0 10px 24px -14px rgba(0,0,0,.35) !important; }
+html[data-lay="grid"] body details.day:not(#story) .list .det.det::before, html[data-lay="tiles"] body details.day:not(#story) .list .det.det::before {
+  content: ""; position: absolute; top: -7px; left: calc(var(--ax, 40px) - 7px); width: 14px; height: 14px; transform: rotate(45deg);
+  background: inherit; box-shadow: -1px -1px 0 #dfe3e8; border-radius: 2px 0 0 0; }
+html[data-lay] body details.day:not(#story) .list .det.lab-in { animation: labIn .28s cubic-bezier(.2,.8,.2,1); transform-origin: var(--ax, 50%) 0; }
+@keyframes labIn { from { opacity: 0; transform: translateY(-6px) scaleY(.96); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { html[data-lay] body details.day:not(#story) .list .det.lab-in { animation: none; } }
+html[data-lay="grid"] body details.day:not(#story) .list .srow .nmw, html[data-lay="tiles"] body details.day:not(#story) .list .srow .nmw { flex: 1 1 0; min-width: 0; }
+html[data-lay="grid"] body details.day:not(#story) .list .srow .nmw .nm, html[data-lay="tiles"] body details.day:not(#story) .list .srow .nmw .nm { overflow-wrap: anywhere; flex: 0 1 auto; max-width: 100%; }
+html[data-lay] body details.day:not(#story) .list .srow .dscore { flex: none; }
+/* on a computer the full-width third level splits: the thermal panel left, the score and notes right */
+@media (min-width: 900px) {
+  html[data-lay="grid"] body details.day:not(#story) .list .det.det, html[data-lay="tiles"] body details.day:not(#story) .list .det.det {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); column-gap: 22px; align-items: start; }
+  html[data-lay="grid"] body details.day:not(#story) .list .det.det > .dsec:first-child, html[data-lay="tiles"] body details.day:not(#story) .list .det.det > .dsec:first-child { grid-row: 1 / span 3; }
+  html[data-lay="grid"] body details.day:not(#story) .list .det.det > .dsec:not(:first-child), html[data-lay="tiles"] body details.day:not(#story) .list .det.det > .dsec:not(:first-child) { grid-column: 2; margin-top: 0; }
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1><svg class="logo" viewBox="0 0 512 512" aria-hidden="true"><circle cx="256" cy="256" r="246" fill="#f3e5d8"/><circle cx="256" cy="256" r="236" fill="none" stroke="#c8a27c" stroke-width="10"/>
+<g fill="none" stroke="#c8a27c" stroke-width="5" stroke-opacity=".7"><circle cx="256" cy="256" r="160"/><circle cx="256" cy="256" r="84"/></g>
+<path d="M256 256 L256 20 A236 236 0 0 1 460 138 Z" fill="#c8a27c" fill-opacity=".45"/><ellipse cx="256" cy="420" rx="118" ry="20" fill="#9b7356"/>
+<path d="M170 318 h172 q-6 92 -86 96 q-80 -4 -86 -96 z" fill="#6f4e37"/>
+<ellipse cx="256" cy="318" rx="86" ry="14" fill="#9b7356"/><ellipse cx="256" cy="318" rx="72" ry="9" fill="#3b2a20"/>
+<path d="M340 334 q44 -2 40 30 q-4 30 -50 28" fill="none" stroke="#6f4e37" stroke-width="15" stroke-linecap="round"/><g fill="none" stroke="#7a5a44" stroke-linecap="round" stroke-dasharray="2 14" stroke-width="9">
+<path d="M256 296 C 330 290, 330 258, 256 254 C 186 250, 186 222, 256 218 C 318 214, 316 190, 256 186 C 206 182, 210 166, 256 164" opacity=".8"/></g>
+<g fill="#ffffff" stroke="#c8a27c" stroke-width="6" stroke-linejoin="round"><path d="M178 150 a30 30 0 0 1 32 -44 a46 46 0 0 1 88 -6 a34 34 0 0 1 40 50 a20 20 0 0 1 -6 2 h-150 a20 20 0 0 1 -4 -2 z"/></g>
+<circle cx="236" cy="128" r="6" fill="#3b2a20"/><circle cx="276" cy="128" r="6" fill="#3b2a20"/>
+<ellipse cx="220" cy="140" rx="10" ry="6" fill="#f6a9b8"/><ellipse cx="292" cy="140" rx="10" ry="6" fill="#f6a9b8"/>
+<path d="M248 140 q8 7 16 0" fill="none" stroke="#3b2a20" stroke-width="4" stroke-linecap="round"/><g transform="translate(338 214) rotate(-16) scale(1.25)">
+<path d="M-44 6 Q-40 -18 0 -22 Q40 -18 44 6 Q40 -4 0 -8 Q-40 -4 -44 6 Z" fill="#e07a2f" stroke="#2b1d14" stroke-width="3" stroke-linejoin="round"/>
+<g stroke="#2b1d14" stroke-width="1.6" opacity=".55"><path d="M-22 -16 L-22 -6"/><path d="M0 -21 L0 -8"/><path d="M22 -16 L22 -6"/></g>
+<g stroke="#2b1d14" stroke-width="1.6" fill="none" opacity=".8"><path d="M-40 4 L-3 34"/><path d="M-18 -6 L-2 34"/><path d="M18 -6 L2 34"/><path d="M40 4 L3 34"/></g>
+<circle cx="0" cy="38" r="6" fill="#2b1d14"/><path d="M-5 42 L5 42 L3 48 L-3 48 Z" fill="#2b1d14"/></g></svg><span class="wm"><span class="wm1">SD Flying</span><span class="wm2">Radar<svg class="chev3" viewBox="0 0 228 100" aria-hidden="true"><path d="M0 0 H42 L68 50 L42 100 H0 L26 50 Z" fill="#c26a24"/><path d="M80 0 H122 L148 50 L122 100 H80 L106 50 Z" fill="#7a5a44"/><path d="M160 0 H202 L228 50 L202 100 H160 L186 50 Z" fill="#b39a85"/></svg></span></span></h1>
+    <p class="fresh-top" id="freshTop"></p>
+    <a class="howbtn" href="how.html">What this is<span class="hl2">&nbsp;&amp; how it works</span> <span aria-hidden="true">→</span></a>
+  </header>
+
+  <div id="warn"></div>
+  <details class="story day" id="story" aria-label="Weather" style="--qc: var(--muted)"></details>
+
+
+  <div class="days" id="days"><div class="empty">Loading forecast…</div></div>
+  <section class="days" id="arch" aria-label="Archive" hidden></section>
+  <div class="qlegend" aria-label="Rating colours">
+    <span class="qbar"></span>
+    <span class="qlab"><span>1 no go</span><span>2 marginal</span><span>3 local</span><span>4 XC</span><span>5 Great XC</span></span>
+  </div>
+
+
+
+  <details class="fold" id="sources">
+    <summary><h2>Sources &amp; freshness</h2><span class="muted mono" id="procAt"></span></summary>
+    <div class="tablewrap"><table class="src" id="tSrc"></table></div>
+  </details>
+
+  <section class="disclaimer" aria-label="Disclaimer">
+    <h2>Before you fly</h2>
+    <p>Paragliding and hang gliding can seriously injure or kill you. SD Flying Radar is a free, experimental hobby project: an automatic, optimistic reading of weather models that can be wrong, late or incomplete. It isn't an official weather briefing or a site guide, and it isn't affiliated with the National Weather Service, USHPA or any club, chapter or landowner. A site appearing here doesn't mean it is open, legal or right for you; site rules, ratings, permits, closures and airspace are yours to check.</p>
+    <p><b>The decision to fly is always yours.</b> Look at the real forecast and the conditions on launch, talk to local pilots and your instructor, and stay within your rating and experience. When in doubt, don't launch.</p>
+    <p>Everything here is provided as is, with no warranty of any kind, including accuracy or fitness for any purpose. By using this page you accept the risks of your own flying and of relying on it. To the fullest extent the law allows, you release the author and contributors from any claim, they are not liable for any loss, injury, death or damage connected with this page, and you agree to hold them harmless from claims arising from your use of it. If that doesn't work for you, please don't use this page.</p>
+  </section>
+  <div id="notes"></div>
+  <div class="fresh bottom">
+      <span id="fresh"></span>
+      <button type="button" id="reload">Reload</button>
+    </div>
+  <footer>
+    <span id="foot"></span>
+    <button type="button" id="archBtn" hidden title="Every past day as the radar forecast it that day">Archive</button>
+    <a id="runNow" class="btnlink" href="#" target="_blank" rel="noopener" hidden title="Opens GitHub, where you press Run workflow">Start new forecast run</a>
+  </footer>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Site details" hidden></div>
+<script id="seed" type="application/json"></script>
+<script src="scripts/region/panel.js?v=202611071045"></script>
+<script>
+(() => {
+"use strict";
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const TZ = "America/Los_Angeles";
+const fmtWhen = (iso) => {
+  if (!iso) return "–";
+  const d = new Date(iso);
+  return isNaN(d) ? esc(iso) : d.toLocaleString("en-US", { timeZone: TZ, weekday: "short", hour: "numeric", minute: "2-digit" });
+};
+const ago = (iso) => {
+  const m = Math.round((Date.now() - new Date(iso)) / 60000);
+  if (!isFinite(m)) return "";
+  return m < 60 ? `${m} min ago` : m < 2880 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} days ago`;
+};
+const q = (r) => [0, 0, 1, 2, 4, 5][Math.max(1, Math.min(5, Math.round(r)))];   // same colour as the number shown
+/* continuous colour for a rating: blends between the 1-5 colours, so a 3.4 sits between 3 and 4 */
+const QSTOP = { 1: "--q0", 2: "--q1", 3: "--q2", 4: "--q4", 5: "--q5" };
+const qgrad = (r) => {
+  if (r == null) return "var(--q0)";
+  // shaded smoothly between the levels: a 2.5 sits halfway between orange (2) and yellow (3)
+  const x = Math.max(1, Math.min(5, r)), lo = Math.floor(x), hi = Math.min(5, lo + 1);
+  const t = Math.round((x - lo) * 100);
+  if (!t || hi === lo) return `var(${QSTOP[lo]})`;
+  return `color-mix(in srgb, var(${QSTOP[lo]}) ${100 - t}%, var(${QSTOP[hi]}))`;
+};
+const qv = (r) => (r == null ? qgrad(r) : qgrad(Math.round(r * 2) / 2));   // sites: the colour of the score shown (x.0 / x.5)
+const ft = (v) => (v == null ? "–" : (Math.round(v / 100) * 100).toLocaleString());
+const pct = (p) => (p == null ? "–" : `${Math.round(p * 100)}%`);
+const r1 = (r) => (r == null ? "–" : String(Math.max(1, Math.min(5, Math.round(r)))));
+const RX = { "Front": ["front", "Front"], "Pre-frontal": ["pre", "Pre-frontal"], "Post-frontal": ["post", "Post-frontal"],
+  "Santa Ana": ["sa", "Santa Ana"], "Switch day": ["switch", "Switch day"], "Pre/post-frontal": ["prepost", "Pre/post-frontal"] };
+/* weather-pill icons: one small symbol per kind of notice */
+const ICON = { "Front": "≋", "Pre-frontal": "↗", "Post-frontal": "★", "Santa Ana": "⇇", "Switch day": "⇆", "Pre/post-frontal": "⇅",
+  cloud: "☁", warn: "⚠" };
+/* the rain drop is drawn, so it stays one colour on every phone (the emoji is always blue) */
+const DROP = '<svg class="ic-svg" viewBox="0 0 12 16" aria-hidden="true"><path d="M6 1 C6 1 1.2 7 1.2 10.2 A4.8 4.8 0 0 0 10.8 10.2 C10.8 7 6 1 6 1 Z" fill="currentColor"/></svg>';
+const ico = (k) => (k === "rain" ? DROP : SIG[k] || `<i class="ic" aria-hidden="true">${ICON[k]}\uFE0E</i>`);
+/* the day boxes' symbols; the same ones mark the matching chips on the site cards */
+const SIG = {
+  up: '<svg class="ic-svg" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5 L13.5 7.5 H10 V14.5 H6 V7.5 H2.5 Z" fill="#3aa457"/></svg>',
+  lid: '<svg class="ic-svg" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2" width="12" height="2.2" rx="1" fill="currentColor"/><path d="M8 6 L11.5 9.6 H9.4 V14.5 H6.6 V9.6 H4.5 Z" fill="#ee8a1c"/></svg>',
+  windy: '<svg class="ic-svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M1.5 5.5 H10 A2 2 0 1 0 8 3.5"/><path d="M1.5 8.5 H13 A2 2 0 1 1 11 10.5"/><path d="M1.5 11.5 H7"/></svg>',
+  glass: '<svg class="ic-svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4.6 11.5 A3.4 3.4 0 0 1 11.4 11.5" fill="#f1c72b" stroke="#c98a00"/><path d="M1.5 11.5 H14.5"/><path d="M8 3.2 V5.4 M3.4 5.4 L4.8 6.8 M12.6 5.4 L11.2 6.8 M1.6 8.9 H3.2 M12.8 8.9 H14.4"/><path d="M4.5 14 H11.5" opacity=".55"/></svg>',
+};
+/* the day boxes: always the same six in the same place, lit by the home sites (Little Black, Blossom, Elsinore).
+   Good news lights up when any of them has it, a warning when most of them do; tap or hover says where. */
+function dayBoxes(d) {
+  const loc = [["lb", "Little Black"], ["blossom", "Blossom"], ["elsinore", "Elsinore"]].filter(([k]) => d.sites[k]).map(([k, n]) => [n, d.sites[k]]);
+  const who = (f) => loc.filter(([, c]) => f(c)).map(([n]) => n);
+  const climb = (c) => (c.wstar != null ? Math.max(0, (c.core || 1.4) * c.wstar - (c.sink || 1.1)) : 0);
+  const most = Math.max(2, Math.ceil(loc.length / 2));
+  /* the models behind a site's score (HRRR, RRFS ... as used), and the share of them that show something */
+  const used = (c) => Object.values(c.diag || {}).filter((m) => m.used);
+  const share = (c, f) => { const m = used(c); return m.length ? m.filter(f).length / m.length : 0; };
+  const agree = (names, f) => names.length && names.every((n) => share(loc.find(([x]) => x === n)[1], f) >= 0.6);
+  const mLow = (m) => (m.why || []).some((w) => w === "lid" || w === "weak") || (m.w != null && 1.4 * m.w - 1.1 < 0.5);
+  const mWindy = (m) => (m.why || []).some((w) => ["windy", "gusty", "aloft", "strong"].includes(w))
+    || (m.wind && (m.wind[1] >= 10 || m.wind[2] > 18)) || (m.aloft && m.aloft[1] >= 13);
+  /* on or off; only XC and rain also have a dim "possible" state. Optimistic: good news lights up when any home
+     site has it, a warning only when most do and the models agree */
+  const xc = who((c) => c.xc);
+  const xcMaybe = who((c) => !c.xc && ((c.p_xc || 0) >= 0.3 || used(c).some((m) => m.r >= 3.5)));
+  const upDim = who((c) => c.rating >= 3 && climb(c) >= 1.2);
+  const glass = who((c) => (c.tags || []).includes("glass-off") || c.label === "Glass-off");
+  const low = who((c) => (c.why || []).some((w) => w === "lid" || w === "weak") || climb(c) < 0.5);
+  const lidOn = !upDim.length && low.length >= most;
+  const windy = who((c) => (c.tags || []).includes("windy") || (c.why || []).some((w) => ["windy", "gusty", "aloft", "strong"].includes(w)));
+  const windOn = windy.length >= most;
+  const rp = d.rain_p || 0, ok = d.cloud ? d.cloud.okta : 0;
+  const lv = (full, dim) => (full ? 2 : dim ? 1 : 0);
+  const b = (l, cls, inner, tip) => `<span class="g ${cls}${l ? " on" : ""}${l === 1 ? " dim" : ""}" title="${esc(tip)}">${inner}</span>`;
+  const names = (a) => a.join(", ");
+  const xcL = lv(xc.length, xcMaybe.length), upL = lv(upDim.length, 0), glL = lv(glass.length, 0);
+  const lidL = lv(lidOn && agree(low, mLow), 0), wL = lv(windOn && agree(windy, mWindy), 0);
+  return `<span class="sig">${
+    b(xcL, "xc", "XC", xcL ? `XC: ${names(xcL === 2 ? xc : xcMaybe)}${xcL === 1 ? " (some models)" : ""}` : "XC: not this day")}${
+    b(glL, "glass", SIG.glass, glL ? `Glass-off: ${names(glass)}` : "Glass-off: not this day")}${
+    b(upL, "up", SIG.up, upL ? `Good height and climbs: ${names(upDim)}` : "Good height and climbs: not this day")}<span class="sig-gap" aria-hidden="true"></span>${
+    b(lidL, "lid", SIG.lid, lidL ? `Low lid / inversion, weak thermals: ${names(low)}` : "Low lid: no")}${
+    b(wL, "wind", SIG.windy, wL ? `Windy: ${names(windy)}` : "Windy: no")}${
+    b(lv(rp >= 0.6, rp >= 0.3), "rain", DROP, `Rain: ${Math.round(rp * 100)}% of model runs${rp >= 0.3 && rp < 0.6 ? " (possible)" : ""}`)}${
+    b(lv(ok >= 6, 0), "cloud", `<i class="ic" aria-hidden="true">${ICON.cloud}\uFE0E</i>`, d.cloud ? `Cloud: mid/high ${ok}/8` : "Cloud: clear")}</span>`;
+}
+/* trend since about a day ago: an arrow when the shown number changed */
+const trendHtml = (c) => "";   // trend arrows switched off
+const trendHtmlOld = (c) => {
+  if (!c || c.was == null) return "";
+  const now = Math.max(1, Math.min(5, Math.round(c.rating))), was = Math.max(1, Math.min(5, Math.round(c.was)));
+  if (now === was) return "";
+  const up = now > was;
+  return `<span class="trend ${up ? "up" : "down"}" title="was ${was} in the forecast ${up ? "earlier" : "earlier"}">${up ? "▲" : "▼"}<small>${was}</small></span>`;
+};
+/* rain across the San Diego sites: a pill on the day from 50% of runs wet */
+/* one rain pill per day: the models' share of wet runs (50%+ across the SD sites) and/or the NWS naming showers */
+const rainPill = (d, small) => {
+  const wet = d.rain_p != null && d.rain_p >= 0.5;
+  if (!wet && !d.nws_rain) return "";
+  const nws = d.nws_rain ? '<span class="lg"> · NWS</span>' : "";
+  const txt = wet ? `${Math.round(d.rain_p * 100)}% Rain${nws}` : `Showers${nws}`;
+  const tip = [wet && "share of model runs with rain at Torrey, Little Black, Blossom and Elsinore", d.nws_rain && "the NWS discussion mentions showers this day"].filter(Boolean).join("; ");
+  return `<span class="rx rx-rain${small ? " sm" : ""}${wet ? "" : " rx-soft"}${d.rain_p >= 0.6 ? " strong" : ""}" title="${esc(tip)}">${small ? "" : ico("rain")}${txt}</span>`;
+};
+/* mid/high cloud (cirrus, alto-) over the SD sites from 10 am to sunset: a heads-up, never part of the rating */
+const cloudPill = (d) => {
+  const c = d.cloud; if (!c || !c.level) return "";
+  const tip = `mid/high cloud ${c.okta}/8 over Torrey, Little Black, Blossom and Elsinore, 10 am to sunset; sun at the ground ${Math.round(c.sun_loss * 100)}% below clear sky`;
+  return `<span class="rx rx-cloud${c.weak ? " rx-weak" : ""}${c.level === "shade" && !c.weak ? " strong" : ""}" title="${esc(tip)}">${ico("cloud")}${c.okta}/8 <span class="lg">high </span>cloud</span>`;
+};
+const regimeHtml = (rg, small) => {
+  if (!rg || !rg.type || !RX[rg.type]) return "";
+  const pctTxt = rg.agree != null && rg.agree < 0.995 ? `${Math.round(rg.agree * 100)}%` : "";   // share of models that agree
+  const label = rg.weak && rg.type === "Front" ? "Weak front" : rg.type;       // a pointer worth checking, not a big rainy front
+  const name = small ? esc(rg.weak && rg.type === "Front" ? "Weak front" : RX[rg.type][1]) : `<span class="rx-l">${esc(label)}</span><span class="rx-s">${esc(label)}</span>`;
+  const strong = !rg.weak && (rg.agree == null || rg.agree >= 0.75);
+  /* good for flying, bad, or neutral (a weak front, pre-frontal) */
+  const tone = rg.type === "Front" ? (rg.weak ? "" : "bad") : rg.type === "Santa Ana" ? "bad"
+    : ["Post-frontal", "Pre/post-frontal", "Switch day"].includes(rg.type) ? "good" : "";
+  const toneCls = tone ? ` ${tone}${(rg.agree ?? 1) < 0.75 ? " soft" : ""}` : "";
+  return `<span class="rx rx-${RX[rg.type][0]}${small ? " sm" : ""}${rg.weak ? " rx-weak" : ""}${strong && !tone ? " strong" : ""}${toneCls}" title="${esc(Object.entries(rg.models || {}).map(([m, t]) => { const gg = ((rg.features || {})[m] || {}).grad; return `${m}: ${t || "–"}${rg.type === "Santa Ana" && gg != null ? ` (LAX–DAG ${gg.toFixed(1)} mb)` : ""}`; }).join(" · "))}">${small ? "" : ico(rg.type === "Santa Ana" ? "warn" : rg.type)}${name}${pctTxt && !small ? ` <span class="rq">(${pctTxt})</span>` : ""}</span>`;
+};
+
+
+
+function dayLabel(dstr) {
+  const d = new Date(dstr + "T12:00:00");
+  const now = new Date(new Date().toLocaleString("en-US", { timeZone: TZ }));
+  const diff = Math.round((new Date(dstr + "T00:00:00") - new Date(now.toDateString())) / 86400000);
+  /* always the weekday; "today" / "tomorrow" ride along small */
+  const rel = diff === 0 ? "today" : "";
+  return { long: d.toLocaleDateString("en-US", { weekday: "long" }), short: d.toLocaleDateString("en-US", { weekday: "short" }), rel,
+           date: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }) };
+}
+
+let BY;
+
+function render(data) {
+  const SITES = data.sites;
+  BY = Object.fromEntries(SITES.map((s) => [s.id, s]));
+  const main = SITES.filter((s) => s.tier === "main");
+  const coast = SITES.filter((s) => s.tier === "coast");
+  const other = SITES.filter((s) => s.tier !== "main" && s.tier !== "coast" && s.tier !== "watch");
+  /* watch sites (Owens) stay hidden unless they stand out as fantastic */
+  const WATCH_MIN = 4.5;
+  const watchSites = SITES.filter((s) => s.tier === "watch");
+  const watchOn = (d, s) => (d.sites[s.id]?.rating ?? 0) >= WATCH_MIN;
+  /* collapsed card: only when it stands out (starred, full colour); the open card always lists it, greyed below 4.5 */
+  const watchPill = (d) => watchSites.filter((s) => d.sites[s.id]).map((s) => {
+    const c = d.sites[s.id];
+    return watchOn(d, s) ? `<span class="sc watch" style="--rc:${qv(c.rating)}">★ <b>${esc(s.short)}</b></span>` : "";
+  }).join("");
+  const big = SITES.filter((s) => s.tier === "main" || s.tier === "coast");   // in sites.json order: Torrey, LB, Blossom, Elsinore
+
+  /* freshness */
+  const src = data.sources || [];
+  const okN = src.filter((s) => s.status !== "failed").length;
+  $("#fresh").innerHTML = `Updated ${fmtWhen(data.generated)} · <a href="#sources">${okN}/${src.length} sources</a>`;
+  const tick = () => { $("#freshTop").textContent = `updated ${ago(data.generated)}`; };
+  tick(); clearInterval(window._freshT); window._freshT = setInterval(tick, 60000);
+  $("#procAt").textContent = `processed ${fmtWhen(data.generated)}`;
+  const ageH = (Date.now() - new Date(data.generated)) / 3600000, warn = [];
+  if (data.sample) warn.push("This page shows <b>sample data</b> to demonstrate the layout. Real forecasts appear after the GitHub Action runs.");
+  if (ageH > 8) warn.push(`The forecast is <b>${Math.round(ageH)} hours old</b>. The scheduled update may have failed.`);
+  const failed = src.filter((s) => s.status === "failed");
+  $("#warn").innerHTML = warn.length ? `<div class="banner">${warn.map((w) => `<span>${w}</span>`).join("")}</div>` : "";
+  /* minor source hiccups go to the bottom of the page, not the top */
+  $("#notes").innerHTML = failed.length ? `<p class="srcnote">Missing on the last run: ${failed.map((s) => esc(s.name)).join(", ")}.</p>` : "";
+
+  /* weather story from the NWS discussion */
+  const n = data.nws;
+  const sm = n && n.summary && ((n.summary.pattern || []).length || (n.summary.flying || []).length) ? n.summary : null;
+  const bl = (n && (n.bullets && n.bullets.length ? n.bullets : [n.synopsis].filter(Boolean))) || [];
+  const group = (title, items) => items && items.length ? `<div class="grp"><span class="eyebrow">${title}</span><ul>${items.map((b) => `<li>${esc(b)}</li>`).join("")}</ul></div>` : "";
+  const lines = (title, items) => (items && items.length ? `<div class="wsec">${esc(title)}</div>` : "") + (items || []).map((b) => `<div class="wrow"><span>${esc(b)}</span></div>`).join("");
+  /* the observed LAX-DAG pressure gradient now (negative = offshore; -4 mb a real Santa Ana) */
+  const gr = data.gradient && data.gradient.now != null ? data.gradient.now : null;
+  const grTxt = gr != null ? `<span class="grad${gr <= -4 ? " sa" : gr <= -2 ? " weak" : ""}" title="LAX minus Barstow-Daggett sea-level pressure, observed (negative = offshore; about -2 weak, -4 Santa Ana, -6 strong)">LAX–DAG ${gr > 0 ? "+" : ""}${gr.toFixed(1)} mb</span>` : "";
+  const ov = data.overview ? `<span class="ov">${esc(data.overview)}</span>` : "";   // the gradient has its own tile below
+  const SNDQ = `<a class="sndq" href="sounding.html" title="Latest weather balloon (Miramar / Edwards)" onclick="event.stopPropagation()">Sounding →</a>`;
+  $("#story").innerHTML = n ? `
+    <summary class="hd"><span class="when">Weather Overview</span>
+      <span class="flags">${(n.flags || []).map((f) => `<span class="tag">${esc(f)}</span>`).join("")}</span><span class="exp" aria-hidden="true"><i class="chev"></i></span>${ov}</summary>
+    <div class="wlist">${sm ? lines("Pattern", sm.pattern) + lines("For flying", sm.flying) : lines("Outlook", bl)}</div>`
+      + `<div class="wrow wlink"><span><a href="${esc(n.url)}" target="_blank" rel="noopener">Full NWS discussion</a> <span class="muted">· ${fmtWhen(n.issued)}</span></span></div>`
+    : `<summary class="hd"><span class="when">Weather Overview</span>${ov}</summary>`;
+
+
+  /* two quiet tiles above the days: the morning balloon and the LAX-DAG gradient, each with its number */
+  {
+    let row = document.getElementById("assets");
+    if (!row) { row = document.createElement("div"); row.id = "assets"; $("#story").after(row); }
+    const g = data.gradient && data.gradient.now != null ? data.gradient.now : null;
+    const gcls = g == null ? "" : g <= -4 ? " sa" : g <= -2 ? " weak" : "";
+    /* little round badges: a white balloon with its orange payload on sky, and a barometer dial whose needle leans with the gradient */
+    const BAL = `<svg viewBox="0 0 28 28" aria-hidden="true"><defs><linearGradient id="asky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bcd9f3"/><stop offset="1" stop-color="#e9f2fb"/></linearGradient></defs>
+      <circle cx="14" cy="14" r="13.5" fill="url(#asky)"/><path d="M3 21 Q9 17.6 14 19.6 T25.6 19 A13.5 13.5 0 0 1 2.4 19.8 Z" fill="#c9d6bd"/>
+      <path d="M14 16.4 Q12.8 18.8 14 21" fill="none" stroke="#64748b" stroke-width=".8"/>
+      <ellipse cx="14" cy="9.4" rx="6" ry="7" fill="#fff" stroke="#9fb1c4" stroke-width=".8"/><ellipse cx="11.8" cy="7" rx="1.7" ry="2.4" fill="#eef3f8"/>
+      <rect x="12.9" y="21" width="2.2" height="1.8" rx=".4" fill="#c26a24"/></svg>`;
+    const ang = g == null ? -20 : Math.max(-60, Math.min(60, g * 12)); /* 0 mb straight up, offshore leans left */
+    const ndl = g == null ? "#64748b" : g <= -4 ? "#b42f2f" : g <= -2 ? "#c78a14" : "#26303a";
+    const PRS = `<svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13.5" fill="#f3e5d8"/><circle cx="14" cy="14" r="10.6" fill="#fff" stroke="#c8a27c" stroke-width="1"/>
+      <path d="M6.2 18.6 A8.6 8.6 0 0 1 9.1 7.2" fill="none" stroke="#e8b4b4" stroke-width="2.2"/><path d="M9.1 7.2 A8.6 8.6 0 0 1 14 5.4" fill="none" stroke="#f1d39a" stroke-width="2.2"/>
+      <g stroke="#9b7356" stroke-width=".8">${[-60, -30, 0, 30, 60].map((t) => `<path d="M14 4.6 V6.4" transform="rotate(${t} 14 14)"/>`).join("")}</g>
+      <path d="M14 14 L14 6.6" stroke="${ndl}" stroke-width="1.7" stroke-linecap="round" transform="rotate(${ang} 14 14)"/><circle cx="14" cy="14" r="1.8" fill="${ndl}"/>
+      <text x="14" y="21.6" text-anchor="middle" font-size="4" font-weight="700" fill="#9b7356" font-family="system-ui,sans-serif">mb</text></svg>`;
+    row.innerHTML = `<a class="asset" href="sounding.html" title="Latest weather balloon from Miramar: thermal tops, cloudbase, inversions">${BAL}<span><b>Sounding</b><small id="as-snd">morning balloon</small></span></a>`
+      + `<a class="asset" href="lax-dag.html" title="LAX minus Barstow-Daggett pressure: the Santa Ana measure, observed and by model">${PRS}<span><b>LAX–DAG</b><small class="${gcls.trim()}">${g != null ? `${g > 0 ? "+" : ""}${g.toFixed(1)} mb${g <= -4 ? " · Santa Ana" : g <= -2 ? " · offshore" : ""}` : "pressure gradient"}</small></span></a>`;
+    fetch(`data/sounding/nkx_latest.json?t=${Date.now()}`, { cache: "no-store" }).then((r) => r.json()).then((j) => {
+      const fh = j.forecast_high && j.forecast_high.thermal_tops;
+      const el = document.getElementById("as-snd");
+      if (el && fh && fh.median_ft) el.textContent = `tops ~${fh.median_ft.toLocaleString()} ft ${j.forecast_high.label || ""}`.trim();
+    }).catch(() => {});
+  }
+
+  /* models that rated this day (HRRR+RRFS, then RRFS with NAM/ECMWF help, then global only) */
+  const MODEL_ORDER = ["HRRR", "RRFS", "NAM", "ECMWF", "GFS", "ICON"];
+  const dayModels = (d) => {
+    const seen = new Set();
+    Object.values(d.sites || {}).forEach((c) => Object.keys((c && c.models) || {}).forEach((m) => seen.add(m)));
+    const list = [...MODEL_ORDER.filter((m) => seen.has(m)), ...[...seen].filter((m) => !MODEL_ORDER.includes(m)).sort()];
+    return list.map(esc).join(" · ");
+  };
+  /* day cards */
+  const TRIPS = new Set(["soboba", "marshall", "santabarbara", "owens"]);
+  /* an opened day: Torrey on top, then the San Diego mountain sites in the usual order, then the trips */
+  const everySite = big.concat(other);
+  const TRIP_ORDER = ["soboba", "marshall", "santabarbara", "owens"];
+  const listSites = {
+    coast: everySite.filter((s) => s.id === "torrey"),
+    mtn: everySite.filter((s) => s.id !== "torrey" && !TRIPS.has(s.id)),
+    trips: TRIP_ORDER.map((id) => everySite.find((s) => s.id === id)).filter(Boolean),
+  };
+  const cardFor = (d, i) => {
+    DAYKEY[i] = d;
+    const L = dayLabel(d.date);
+    /* the day's score is the best San Diego site; the trips (Soboba, Marshall, Santa Barbara, Owens) never set it */
+    /* the day colour says whether it is a good local thermal day: Little Black, Blossom and Elsinore only
+       (a Torrey-only day or a great day at Marshall or Soboba does not make the day green) */
+    const sdCells = Object.entries(d.sites || {}).filter(([k, c]) => DAY_SITES.has(k) && c && c.rating != null).map(([, c]) => c);
+    const bm = sdCells.slice().sort((a, b) => b.rating - a.rating)[0];
+    /* card colour: one of five colours (red, orange, yellow, green, blue) from the best San Diego site */
+    const dayLvl = bm ? Math.max(1, Math.min(5, Math.round(bm.rating))) : 0;
+    const cardCol = !DAY_COLOUR ? "#e4e7eb" : bm ? `var(${QSTOP[Math.max(1, Math.min(5, Math.round(bm.rating)))]})` : "var(--line)";
+    const open = openDays.has(d.date);
+    /* which models and which run: today's final run once frozen, otherwise the latest run */
+    const runAt = d.frozen_at || data.generated;
+    const mods = dayModels(d) ? `${dayModels(d)}${runAt ? `<br>${esc(fmtTime(runAt).toLowerCase())}${d.frozen_at ? " final" : ""}` : ""}` : "";
+    return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol};--dc:var(${QSTOP[dayLvl] || "--muted"})"${open ? " open" : ""}>
+      <summary class="hd"><span class="band">
+        <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${bm ? `<span class="dword" style="--dc:var(${QSTOP[dayLvl]})" title="best of Little Black, Blossom and Elsinore">${DAY_WORD[dayLvl]}</span>` : ""}</span>
+        ${mods ? `<span class="mods">${mods}</span>` : ""}
+        <span class="exp" aria-hidden="true"><i class="chev"></i></span></span>
+        <span class="notes">${dayBoxes(d)}${regimeHtml(d.regime)}${((d.regime && d.regime.also) || []).map((a) => regimeHtml({ type: a.type, agree: a.agree, weak: true })).join("")}</span>
+        <span class="sum">${daySummary(d, big, other)}${watchPill(d)}</span>
+      </summary>
+      ${d._flown && d._flown.length ? `<div class="flown"><b>Flown:</b> ${d._flown.map((f) => esc(f)).join(" · ")}</div>` : ""}
+      <div class="list">
+        <div class="sgrp">SD mountain</div>
+        ${listSites.mtn.map((s) => siteRow(d, s, i, "")).join("")}
+        <div class="sgrp">Coast</div>
+        ${listSites.coast.map((s) => siteRow(d, s, i, "")).join("")}
+        <div class="sgrp">Trips</div>
+        ${listSites.trips.map((s) => siteRow(d, s, i, "")).join("")}${watchSites.map((s) => siteRow(d, s, i, "")).join("")}
+      </div>
+      <div class="det" id="det-${i}" hidden></div>
+      ${mods ? `<span class="mods mods-b">${mods}</span>` : ""}
+    </details>`;
+  };
+  CARD = cardFor;
+  $("#days").innerHTML = data.days.map((d, i) => cardFor(d, i)).join("") || '<div class="empty">No forecast days in the data.</div>';
+
+  DATA = data;
+
+  $("#days").onclick = $("#arch").onclick = (e) => {
+    const jb = e.target.closest(".tnb[data-jump]");
+    if (jb) {
+      /* thermal panel ‹ ›: close this day, open the next/previous one with the same site, keep the panel in view */
+      e.stopPropagation();
+      const k = +jb.dataset.jump, sid = jb.dataset.sid, from = jb.closest("details.day"), to = $(`#day-${k}`);
+      if (!to) return;
+      const y0 = jb.closest(".therm").getBoundingClientRect().top;
+      if (from && from !== to) from.open = false;
+      to.open = true;
+      const row = to.querySelector(`.srow[data-site="${sid}"]`);
+      if (row && row.getAttribute("aria-expanded") !== "true") row.click();
+      const tp = to.querySelector(`#det-${k} .therm`);
+      if (tp) window.scrollBy({ top: tp.getBoundingClientRect().top - y0, behavior: "instant" });
+      return;
+    }
+    const b = e.target.closest("[data-site]"); if (!b) return;
+    const card = b.closest(".day"), i = b.dataset.day, det = $(`#det-${i}`);
+    const wasOpen = b.getAttribute("aria-expanded") === "true";
+    card.querySelectorAll("[data-site]").forEach((x) => x.setAttribute("aria-expanded", "false"));
+    if (wasOpen) { det.hidden = true; return; }
+    const mini = b.querySelector(".mcells"), from = mini ? mini.getBoundingClientRect() : null;
+    b.setAttribute("aria-expanded", "true");        // the mini strip hides while the site is open
+    det.innerHTML = detail(DAYKEY[i], BY[b.dataset.site], true);
+    labPlace(b, det);                               // lab: list = right under the site, grid = after its row
+    det.style.setProperty("--rc", b.style.getPropertyValue("--rc"));   // the site's colour stripe runs down the detail
+    det.hidden = false;
+    morphStrip(from, det);
+    const r = det.getBoundingClientRect();
+    if (r.bottom > window.innerHeight) det.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  };
+
+  /* sources */
+  $("#tSrc").innerHTML = `<thead><tr><th>Source</th><th>Type</th><th>Provider · id</th><th>Run / issued</th><th>Fetched</th><th>Status</th></tr></thead><tbody>${
+    src.map((s) => `<tr><td><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}</a></td><td>${esc(s.kind)}</td>
+      <td class="mono">${esc(s.provider)} · ${esc(s.id)}</td>
+      <td class="mono">${s.run ? `${fmtWhen(s.run)} <span class="muted">(${ago(s.run)})</span>` : '<span class="muted">not reported</span>'}</td>
+      <td class="mono">${fmtWhen(s.fetched)}</td><td class="${s.status === "failed" ? "bad" : "ok"}">${esc(s.status)}</td></tr>`).join("")}</tbody>`;
+  $("#foot").textContent = `Built ${new Date(data.generated).toISOString().slice(0, 16).replace("T", " ")} UTC · a guide, not a launch decision`;
+}
+
+/* opening a site: the card's mini hour strip grows into the big one (no duplicate strips) */
+function morphStrip(from, det) {
+  const big = det.querySelector(".hstrip"), cells = big ? big.querySelectorAll(".hc") : [];
+  if (!from || !cells.length || (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) return;
+  const a = cells[0].getBoundingClientRect(), z = cells[cells.length - 1].getBoundingClientRect(), b0 = big.getBoundingClientRect();
+  const sx = from.width / Math.max(1, z.right - a.left), sy = from.height / Math.max(1, a.height);
+  const dx = from.left - (b0.left + (a.left - b0.left) * sx), dy = from.top - (b0.top + (a.top - b0.top) * sy);
+  big.style.transformOrigin = "0 0";
+  try {
+    big.animate([{ transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` }, { transform: "none" }],
+                { duration: 360, easing: "cubic-bezier(.2,.7,.2,1)" });
+    big.querySelectorAll(".hl, .wbr").forEach((el) => el.animate([{ opacity: 0 }, { opacity: 0, offset: .5 }, { opacity: 1 }], { duration: 420 }));
+  } catch (e) {}
+}
+const chipHtml = (c, prefix) => `<span class="chip"><i style="background:${qv(c.rating)}"></i>${prefix ? `<span class="muted">${esc(prefix)}</span> ` : ""}${r1(c.rating)}${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span>`;
+const styleLab = (c) => c.xc ? "Cross-country" : (c.label === "XC" ? "" : String(c.label || "").replace(/ day$/, ""));
+/* "Ridge soaring" (Torrey) reads green; every other label keeps the score colour */
+const labCol = (c) => (c.label === "Ridge soaring" && !c.xc ? "#1f9d55" : qv(c.rating));
+const labelHtml = (c) => `<span class="label">${styleLab(c) ? `<span class="lab" style="color:${labCol(c)}">${esc(styleLab(c))}</span>` : ""}</span>`;
+const bar = (r, thin) => `<span class="bar${thin ? " thin" : ""}"><i style="width:${Math.max(4, Math.min(100, r * 20))}%;background:${qv(r)}"></i></span>`;
+
+/* in the rows, altitudes wait for a tap: keep XC directions and reasons, drop "thermals to 3,000 ft" */
+const rowNote = (c) => (!c.note || /\d,?\d{3} ft|thermals/i.test(c.note) ? (c.launch_name && c.note && c.note.startsWith(c.launch_name) ? c.launch_name : "") : c.note);
+const siteName = (s) => (s.id === "lb" ? "Little Black" : s.short);
+/* what a closed day shows: the home sites and Torrey with their number, then any other XC site */
+const SD_SITES = new Set(["torrey", "lb", "blossom", "otay", "lagunahorse", "elsinore"]);   // San Diego sites + Elsinore (a home site): always listed
+const DAY_COLOUR = true;    // the day colour shows as a stripe on the left edge; the cards stay silver
+const DAY_SITES = new Set(["lb", "blossom", "elsinore"]);
+const DAY_WORD = { 1: "No-go", 2: "Marginal", 3: "Site fly", 4: "XC", 5: "XC" };
+const DAY_LT = new Set([2, 3]);   // light chip colours (orange, yellow) take dark text   // the sites that set a day's colour
+const TRIP_IDS = new Set(["soboba", "marshall", "santabarbara", "owens"]);
+/* the day chip is about San Diego; when a trip area is better than that, the chip says so ("No-go in SD") */
+const tripBetter = (d, lvl) => Object.entries(d.sites || {}).some(([k, c]) => TRIP_IDS.has(k) && c && c.rating != null && Math.round(c.rating) > lvl);
+function daySummary(d, big, other) {
+  /* two groups, each under a small grey label: the best four San Diego mountain sites (always with the better
+     of Little Black and Blossom), then Torrey (always) and the best trip area when it is good (2.5+). */
+  const all = big.concat(other).filter((s) => d.sites[s.id]);
+  if (!all.length) return `<span class="sx">no data</span>`;
+  const r = (s) => d.sites[s.id].rating;
+  const byR = (a, b) => r(b) - r(a);
+  const mtn = all.filter((s) => s.id !== "torrey" && !TRIP_IDS.has(s.id)).sort(byR);
+  const top = mtn.slice(0, 4);
+  const home = mtn.find((s) => s.id === "lb" || s.id === "blossom");
+  if (home && !top.includes(home)) { top.pop(); top.push(home); top.sort(byR); }
+  const trip = all.filter((s) => TRIP_IDS.has(s.id)).sort(byR)[0];
+  const coast = all.filter((s) => s.id === "torrey").concat(trip && r(trip) >= 2.5 ? [trip] : []);
+  const pill = (s) => {
+    const c = d.sites[s.id];
+    return `<span class="sc" style="--rc:${qv(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b>${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
+  };
+  const grp = (label, list) => (list.length ? `<span class="sgrp">${label}</span>${list.map(pill).join("")}` : "");
+  return grp("SD mountain", top) + grp("Coastal &amp; trips", coast);
+}
+let openDays = new Set();
+try { openDays = new Set(JSON.parse(sessionStorage.getItem("radar-open") || "[]")); } catch (e) {}
+/* phones: only one day open at a time (opening a day closes the others) */
+const ONE_DAY = () => window.matchMedia("(max-width: 700px)").matches;
+if (ONE_DAY() && openDays.size > 1) openDays = new Set([[...openDays][openDays.size - 1]]);
+document.addEventListener("toggle", (e) => {
+  const el = e.target; if (!el.matches || !el.matches("details.day") || !el.dataset.date) return;
+  if (el.open && ONE_DAY()) {
+    let above = false;
+    document.querySelectorAll("details.day[open]").forEach((d) => {
+      if (d === el || d.id === "story" || !d.dataset.date) return;
+      if (d.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) above = true;
+      d.open = false; openDays.delete(d.dataset.date);
+    });
+    if (above) requestAnimationFrame(() => el.scrollIntoView({ block: "start", behavior: "smooth" }));
+  }
+  if (el.open) openDays.add(el.dataset.date); else openDays.delete(el.dataset.date);
+  try { sessionStorage.setItem("radar-open", JSON.stringify([...openDays])); } catch (err) {}
+}, true);
+/* second level: what made the site's number, in one line, plus the weather pills that hold for this site */
+const WHY_TXT = { offshore: "offshore flow aloft", otb: "over the back", cross: "cross wind", windy: "blown out", strong: "strong on launch", gusty: "gusty",
+  lid: "low lid", weak: "weak thermals", aloft: "strong wind aloft", light: "too light", aloftdir: "wrong flow aloft" };
+const COMPASS = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+/* "SSW 4g12" -> an arrow pointing where the wind blows (like a wind map) and the speed */
+function windHtml(v, unit) {
+  const m = /^([NESW]{1,3})\s+(.*)$/.exec(v || "");
+  if (!m || COMPASS.indexOf(m[1]) < 0) return esc(v || "");
+  const deg = COMPASS.indexOf(m[1]) * 22.5;
+  return `<span class="wa" title="from ${m[1]}"><svg viewBox="0 0 12 12" aria-hidden="true" style="transform:rotate(${deg + 180}deg)"><path d="M6 1 L9.5 7 H7 V11 H5 V7 H2.5 Z" fill="currentColor"/></svg>${esc(m[2].replace(/ (kt|mph)$/, ""))}${unit ? `<small>${unit}</small>` : ""}</span>`;
+}
+/* lift: three thin arrows pointing up */
+const LIFT = '<svg class="lift" viewBox="0 0 14 12" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 11 V2.5 M1 4 L2.5 2.5 L4 4"/><path d="M7 11 V1 M5.5 2.5 L7 1 L8.5 2.5"/><path d="M11.5 11 V2.5 M10 4 L11.5 2.5 L13 4"/></g></svg>';
+function siteFacts(c) {
+  const f = (k) => (c.factors || []).find((x) => x.k === k);
+  const h = f("Height") || f("Thermal height"), w = f("Wind 1 pm"), a = f("Wind aloft");
+  return [h && h.v !== "–" ? `<span class="wa">${LIFT}${esc(h.v)}</span>` : "", w && w.v !== "–" ? `launch ${windHtml(w.v, "mph")}` : "",
+          a && a.v !== "–" ? `aloft ${windHtml(a.v, "mph")}` : ""].filter(Boolean).join('<span class="sep">·</span>');
+}
+function sitePills(c) {
+  const adj = c.adj || [];
+  const take = (re) => adj.filter(([t]) => re.test(t)).reduce((x, [, v]) => x + v, 0);
+  const dv = () => "";   // the points each item takes off are shown when the site is opened (What made the score)
+  const out = [];
+  const rr = take(/rain/);
+  if (c.rain_p >= 0.3 || rr < 0) out.push(`<span class="rx${c.rain_p >= 0.6 ? " strong" : ""}">${ico("rain")}${Math.round((c.rain_p || 0) * 100)}% rain${dv(rr)}</span>`);
+  const cc = take(/sun/);
+  if ((c.cloud && c.cloud.okta >= 5) || cc < 0) out.push(`<span class="rx${cc < 0 ? " strong" : ""}">${ico("cloud")}${c.cloud ? c.cloud.okta + "/8 " : ""}cloud${dv(cc)}</span>`);
+  /* warnings; Torrey shows all of them across its flying day, with when they show up (am, midday, pm) */
+  const when = c.when || {};
+  const SAME = { offshore: /^offshore/, gusty: /gust/, aloft: /top of lift/, windy: /too windy|blown/, cross: /off launch/ };   // no pill twice
+  (c.why || []).filter((k) => WHY_TXT[k] && !/rain|showers|cape/.test(k) && !(SAME[k] && adj.some(([t]) => SAME[k].test(t)))).slice(0, Object.keys(when).length ? 4 : 2)
+    .forEach((k) => out.push(`<span class="rx">${ico(k === "lid" || k === "weak" ? "lid" : k === "windy" || k === "gusty" ? "windy" : "warn")}${esc(WHY_TXT[k])}${when[k] ? ` <span class="dv">${esc(when[k])}</span>` : ""}</span>`));
+  /* deductions as short chips (the full wording and the points stay in the detail view); the ones that only
+     cap a 5 at 4 don't get a chip */
+  const SHORT = [[/20–45° off launch/, "cross wind"], [/more than 45° off launch/, "wrong direction"],
+    [/gusts over 18/, "too windy"], [/gusts over 12/, "gusty"], [/top of lift over \d+ mph: (no-go|too windy)/, "too windy aloft"],
+    [/top of lift over/, "strong wind aloft"], [/blown out/, "blown out"], [/not calm/, "not calm"],
+    [/over the back aloft/, "over the back aloft"], [/off season/, "off season"], [/NW to N aloft/, "NW–N"], [/^offshore .*no-go/, "offshore flow aloft"], [/^offshore .*2 at most/, "offshore"], [/^offshore /, "light offshore"]];
+  const seen = new Set(out.map((x) => x.replace(/<i[^>]*>.*?<\/i>/g, "").replace(/<[^>]+>/g, "").trim().toLowerCase()));
+  adj.filter(([t]) => !/rain|sun|4 at most$/.test(t) || /off launch|blown|calm|season/.test(t)).forEach(([t]) => {
+    const s = (SHORT.find(([re]) => re.test(t)) || [null, t])[1];
+    if (seen.has(s.toLowerCase())) return;
+    seen.add(s.toLowerCase());
+    out.push(`<span class="rx">${ico(/gusty|windy|blown/.test(s) ? "windy" : "warn")}${esc(s)}</span>`);
+  });
+  /* good news and Elsinore's switch: glass-off when a decent one is expected, the switch time (or no switch) */
+  if ((c.tags || []).includes("windy") && ![...seen].some((x) => /too windy|blown out|strong wind aloft/.test(x)))
+    out.push(`<span class="rx">${ico("windy")}windy</span>`);
+  (c.tags || []).filter((t) => /^glass-off$|switch|no launch window/.test(t))
+    .forEach((t) => out.push(`<span class="rx">${t === "glass-off" ? SIG.glass : ico("Switch day")}${esc(t)}</span>`));
+  /* good news first, then warnings, then what takes points off, the worst last */
+  const rank = (x) => {
+    const t = x.replace(/<[^>]+>/g, " ").toLowerCase();
+    if (/no launch window/.test(t)) return 4;
+    if (/glass-off|switch/.test(t) && !/no switch/.test(t)) return 0;
+    if (/ strong|rx strong/.test(x.slice(0, 30)) || /too windy|blown out|wrong direction|no switch|offshore/.test(t)) return 3;
+    if (/cross wind|nw|gusty|aloft|not calm|off season|over the back/.test(t)) return 2;
+    return 1;
+  };
+  out.sort((a, b) => rank(a) - rank(b));
+  /* chips glow like the day signals: good news (glass-off, the switch) green, every warning red */
+  const glow = (x) => x.replace('<span class="rx', `<span class="rx ${rank(x) === 0 ? "ok" : "warn"}`);
+  /* every chip explains itself: hover on a computer, tap on a phone */
+  return out.map(glow).map((x) => {
+    const txt = x.replace(/<i[^>]*>.*?<\/i>/g, "").replace(/<[^>]+>/g, "").trim();
+    const tip = chipTip(txt);
+    return tip ? x.replace('<span class="rx', `<span title="${esc(tip)}" class="rx`) : x;
+  }).join("");
+}
+const CHIP_TIPS = [
+  [/% rain/, "Share of model runs with rain at the site"],
+  [/offshore flow aloft/, "East (offshore) wind of 6 mph or more below about 4,000 ft through most of the window: no-go"],
+  [/^offshore$/, "Offshore: east wind 4+ mph in the flying layer, or LAX–DAG −4 mb or lower, most of the window: 2 at most"],
+  [/^light offshore$/, "Light offshore: east wind 3+ mph in the flying layer, or LAX–DAG −3 mb or lower, most of the window: −1"],
+  [/cloud/, "Mid/high cloud cover: it takes sun and thermals away"],
+  [/over the back aloft/, "Wind at the top of lift from behind the launch, 10 mph+, through most of the window: 2 at most"],
+  [/over the back/, "Wind from behind the launch in part of the window"],
+  [/^cross wind/, "Launch wind 20-45° off the launch direction"],
+  [/wrong direction/, "Launch wind more than 45° off: 2 at most"],
+  [/^gusty/, "Gusts over 12 mph on launch"],
+  [/too windy aloft/, "Wind at the top of lift too strong for this site"],
+  [/too windy|blown out/, "Too much wind on launch"],
+  [/^windy$/, "Sustained wind through the window: 10 mph+ on launch or 13 mph+ at the top of lift"],
+  [/strong wind aloft/, "Wind at the top of lift over 15 mph: −0.5, over 20 mph: −1"],
+  [/wrong flow aloft/, "Wind aloft from a direction that kills this site"],
+  [/weak thermals/, "Weak climbs (thermal strength under 1 m/s)"],
+  [/low lid/, "Lift tops out only a little above launch"],
+  [/too light/, "Too little wind to soar"],
+  [/strong on launch/, "Launch wind above the site's range"],
+  [/^NW–N$/, "NW to N wind of 5 mph or more at the top of lift through most of the window: −0.3"],
+  [/not calm/, "Owens needs almost no wind"],
+  [/off season/, "Outside the site's season: 2 at most"],
+  [/glass-off/, "A decent glass-off is likely in the last 3 hours before sunset"],
+  [/no switch/, "Elsinore: no west switch in the forecast"],
+  [/late switch/, "Elsinore: the west switch comes late (after 4 pm)"],
+  [/no launch window/, "Elsinore: no launchable wind before the switch"],
+  [/switch ~/, "Elsinore: when the west wind switch is expected"],
+];
+const chipTip = (t) => (CHIP_TIPS.find(([re]) => re.test(t)) || [null, ""])[1];
+/* the site card's mini hour strip (9 am-6 pm, window outlined): only for a site that works, i.e. a score of
+   2.5+ or at least two hours in a row at 2.5+ */
+function windTable(c) {
+  const hm = c.hwind_m && Object.keys(c.hwind_m).length ? c.hwind_m : null;
+  if (!hm) return "";
+  const hrs = c.hours || {};
+/* ridge site (Torrey) with model winds: the score strip on top, then one row of launch wind per model (Windy style) */
+  const HH = Array.from({ length: 10 }, (_, k) => 9 + k);
+  const hlab = (h) => (h === 9 ? "9a" : h === 18 ? "6p" : h === 12 ? "12" : h > 12 ? `${h - 12}p` : `${h}a`);
+  const wcell = (w) => {
+    /* every cell has the same three parts (arrow, speed, gust) so all boxes keep one size; missing parts stay blank */
+    if (!w || w[1] == null) return `<span class="wc"><i></i><b>&nbsp;<small>&nbsp;</small></b></span>`;
+    const g = w[2] != null && w[2] > w[1] ? w[2] : null;
+    const cls = w[1] >= 20 || (g || 0) >= 20 ? " hi" : w[1] < 4 ? " lo" : "";
+    return `<span class="wc${cls}" title="${w[1]}${g ? "g" + g : ""} mph">${w[0] != null ? `<i style="transform:rotate(${(w[0] + 180) % 360}deg)"><svg viewBox="0 0 10 12" aria-hidden="true"><path d="M5 0.5 L9.2 11 L5 8.4 L0.8 11 Z"/></svg></i>` : "<i></i>"}<b>${w[1]}<small>${g ? `g${g}` : "&nbsp;"}</small></b></span>`;
+  };
+  return `<div class="hwt"><span></span>${HH.map((h) => `<span class="hh">${hlab(h)}</span>`).join("")}<span class="ml">score</span>${HH.map((h) => {
+      const v = hrs[String(h)];
+      return `<span class="hc" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
+    }).join("")}<span class="ml" title="average of ${Object.keys(hm).map((m) => (m === "ECMWF" ? "EC" : m)).join(", ")}"></span>${HH.map((h) => {
+      /* one row: wind averaged across the models (mean speed and gust, vector-mean direction); each model in the tooltip */
+      const ws = Object.entries(hm).map(([m, w]) => [m, w[String(h)]]).filter(([, w]) => w && w[1] != null);
+      if (!ws.length) return wcell(null).replace('class="wc', `class="wc${hrs[String(h)] == null ? " late" : ""}`);
+      const n = ws.length, sp = ws.reduce((a, [, w]) => a + w[1], 0) / n;
+      const gs = ws.filter(([, w]) => w[2] != null).map(([, w]) => w[2]);
+      const dirs = ws.filter(([, w]) => w[0] != null);
+      let dir = null;
+      if (dirs.length) {
+        const u = dirs.reduce((a, [, w]) => a + Math.sin(w[0] * Math.PI / 180), 0), v = dirs.reduce((a, [, w]) => a + Math.cos(w[0] * Math.PI / 180), 0);
+        dir = Math.round((Math.atan2(u, v) * 180 / Math.PI + 360) % 360);
+      }
+      const cell = wcell([dir, Math.round(sp), gs.length ? Math.round(gs.reduce((a, b) => a + b, 0) / gs.length) : null]);
+      const tip = ws.map(([m, w]) => `${m === "ECMWF" ? "EC" : m} ${w[1]}${w[2] != null && w[2] > w[1] ? "g" + w[2] : ""}`).join(" · ");
+      return cell.replace(/ title="[^"]*"/, ` title="${tip} mph"`).replace('class="wc', `class="wc${hrs[String(h)] == null ? " late" : ""}`);
+    }).join("")}</div>`;
+}
+/* wind averaged across the models for one hour: mean speed and gust, vector-mean direction */
+function avgWind(hm, h) {
+  const ws = Object.values(hm).map((w) => w[String(h)]).filter((w) => w && w[1] != null);
+  if (!ws.length) return null;
+  const sp = ws.reduce((a, w) => a + w[1], 0) / ws.length;
+  const gs = ws.filter((w) => w[2] != null).map((w) => w[2]);
+  const dirs = ws.filter((w) => w[0] != null);
+  let dir = null;
+  if (dirs.length) {
+    const u = dirs.reduce((a, w) => a + Math.sin(w[0] * Math.PI / 180), 0), v = dirs.reduce((a, w) => a + Math.cos(w[0] * Math.PI / 180), 0);
+    dir = Math.round((Math.atan2(u, v) * 180 / Math.PI + 360) % 360);
+  }
+  return [dir, Math.round(sp), gs.length ? Math.round(gs.reduce((a, b) => a + b, 0) / gs.length) : null];
+}
+/* Torrey's third level: the models' average, then launch wind per model, one row each (the card's average row hides) */
+function modelWindTable(c) {
+  const hm = c.hwind_m && Object.keys(c.hwind_m).length ? c.hwind_m : null;
+  if (!hm) return "";
+  const hrs = c.hours || {};
+  const HH = Array.from({ length: 10 }, (_, k) => 9 + k);
+  const hlab = (h) => (h === 9 ? "9a" : h === 18 ? "6p" : h === 12 ? "12" : h > 12 ? `${h - 12}p` : `${h}a`);
+  const wcell = (w) => {
+    if (!w || w[1] == null) return `<span class="wc"><i></i><b>&nbsp;<small>&nbsp;</small></b></span>`;
+    const g = w[2] != null && w[2] > w[1] ? w[2] : null;
+    const cls = w[1] >= 20 || (g || 0) >= 20 ? " hi" : w[1] < 4 ? " lo" : "";
+    return `<span class="wc${cls}" title="${w[1]}${g ? "g" + g : ""} mph">${w[0] != null ? `<i style="transform:rotate(${(w[0] + 180) % 360}deg)"><svg viewBox="0 0 10 12" aria-hidden="true"><path d="M5 0.5 L9.2 11 L5 8.4 L0.8 11 Z"/></svg></i>` : "<i></i>"}<b>${w[1]}<small>${g ? `g${g}` : "&nbsp;"}</small></b></span>`;
+  };
+  return `<div class="hwt"><span></span>${HH.map((h) => `<span class="hh">${hlab(h)}</span>`).join("")}<span class="ml">score</span>${HH.map((h) => {
+      const v = hrs[String(h)];
+      return `<span class="hc" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
+    }).join("")}<span class="ml" title="average of the models">avg</span>${HH.map((h) => wcell(avgWind(hm, h)).replace('class="wc', `class="wc avg${hrs[String(h)] == null ? " late" : ""}`)).join("")}${Object.entries(hm).map(([m, ws]) => `<span class="ml">${m === "ECMWF" ? "EC" : m}</span>${HH.map((h) => wcell(ws[String(h)]).replace('class="wc', `class="wc${hrs[String(h)] == null ? " late" : ""}`)).join("")}`).join("")}</div>`;
+}
+function miniStrip(c) {
+  const hrs = c.hours || {}, win = c.win || [];
+  const v = (h) => hrs[String(h)];
+  let run = 0, two = false;
+  for (let h = 9; h <= 18; h++) { run = (v(h) ?? 0) >= 2.5 ? run + 1 : 0; if (run >= 2) two = true; }
+  if (!(two || (c.rating ?? 0) >= 2.5)) return "";
+  const cells = Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => {
+    const inw = win.length === 2 && h >= win[0] && h <= win[1];
+    return v(h) != null ? `<i class="${inw ? "w" : ""}" style="background:${qgrad(v(h))}"></i>` : `<i class="none"></i>`;   // after sunset: an empty cell
+  }).join("");
+  return `<span class="mstrip" aria-label="hour by hour, 9 am to 6 pm"><b>9a</b><span class="mcells">${cells}<em style="left:30%">noon</em><em style="left:60%">3pm</em></span><b>6p</b></span>`;
+}
+function siteRow(d, s, i, kind) {
+  const c = d.sites[s.id];
+  const name = siteName(s);
+  if (!c) return `<div class="srow ${kind}"><span class="nm">${esc(name)}</span><span class="muted">no data</span></div>`;
+  const pills = sitePills(c);
+  return `<button type="button" class="srow ${kind}" style="--rc:${qv(c.rating)}" data-site="${s.id}" data-day="${i}" aria-expanded="false">
+    <span class="nmrow"><span class="nmw"><span class="nm">${esc(name)}</span>${styleLab(c) ? `<span class="lab" style="color:${labCol(c)}">${esc(styleLab(c))}</span>` : ""}</span><span class="dscore sm" style="--rc:${qv(c.rating)}"><span class="dsl">Score:</span><b>${(Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2))).toFixed(1).replace(".0", "")}</b><small>/5</small></span></span>
+    ${pills ? `<span class="spills">${pills}</span>` : ""}<span class="tx"><span class="facts">${siteFacts(c)}</span></span>${c.hwind_m && Object.keys(c.hwind_m).length ? `<span class="wtab">${windTable(c)}</span>` : miniStrip(c)}
+    <span class="exp sm" aria-hidden="true"><span class="chev"></span></span>
+  </button>`;
+}
+
+/* region thermals (time x height panel, pure model) inside each site's third level; ?therm=0 hides it */
+const THERM = !/[?&]therm=0/.test(location.search);
+const SITE_REGION = { torrey: "coast", lb: "north", blossom: "east", otay: "south", whalesv: "south", lagunahorse: "mountains", elsinore: "inland_empire", soboba: "inland_empire", marshall: "marshall", santabarbara: "santabarbara", owens: "owens" };
+let REGIONS_D = null;
+if (THERM) fetch(`data/region/regions.json?t=${Date.now()}`, { cache: "no-store" }).then((r) => r.json()).then((j) => { REGIONS_D = j; }).catch(() => {});
+function thermPanel(d, s, c) {
+  if (!THERM || !REGIONS_D || typeof panelSVG !== "function") return "";
+  const r = (REGIONS_D.regions || []).find((x) => x.id === SITE_REGION[s.id]);
+  const di = r ? r.days.findIndex((x) => x.date === d.date) : -1;
+  if (di < 0) return "";
+  try {
+    /* ‹ › jump to the same site on the day before / after (closes this card, opens that one) */
+    const i = +(Object.keys(DAYKEY).find((k) => DAYKEY[k] && DAYKEY[k].date === d.date) ?? -1);
+    const has = (k) => DAYKEY[k] && DAYKEY[k].sites && DAYKEY[k].sites[s.id];
+    const lab = (k) => (has(k) ? dayLabel(DAYKEY[k].date).short : "");
+    const nav = `<div class="tnav"><button type="button" class="tnb" data-jump="${i - 1}" data-sid="${s.id}"${has(i - 1) ? "" : " disabled"}>‹ ${esc(lab(i - 1))}</button><span class="tnd">${esc(dayLabel(d.date).short)} · ${esc(r.name)}</span><button type="button" class="tnb" data-jump="${i + 1}" data-sid="${s.id}"${has(i + 1) ? "" : " disabled"}>${esc(lab(i + 1))} ›</button></div>`;
+    return `<div class="therm">${panelSVG({ generated: REGIONS_D.generated, region: r.name, days: r.days, marks: r.marks, floor_ft: r.floor_ft, compact: true, win: c.style === "ridge" ? null : c.win, gwin: c.gwin }, di)}${nav}</div>`;
+  } catch (e) { return ""; }
+}
+
+function detail(d, s, inline) {
+  const c = d.sites[s.id];
+  /* bars use the same continuous colour scale as the ratings (0 = red ... 1 = blue) */
+  const barCol = (x) => qgrad(1 + 4 * Math.max(0, Math.min(1, x)));
+  const isFlag = (f) => f.k === "Rain & storms" || f.k === "Model agreement";
+  const fac = (c.factors || []);
+  /* hour by hour, 9 am to 6 pm, coloured by how good each hour is; the site's window outlined */
+  const hrs = c.hours || {}, win = c.win || [];
+  const hm = c.hwind_m && Object.keys(c.hwind_m).length ? c.hwind_m : null;
+  const hourStrip = hm ? "" : Object.keys(hrs).length ? `<div class="hstrip">${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => {
+      const v = hrs[String(h)];
+      return `<span class="hc" title="${h > 12 ? h - 12 : h} ${h >= 12 ? "pm" : "am"}${v != null ? ` · ${v}` : ""}" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
+    }).join("")}${(c.hwind || c.hwind_avg) ? Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => {
+      /* launch wind each hour (ridge: lead model; other sites: average of the models used), arrow + speed (gust) */
+      const w = (c.hwind || c.hwind_avg)[String(h)];
+      if (!w || w[1] == null) return `<span class="hw"></span>`;
+      const g = w[2] != null && w[2] > w[1] ? w[2] : null;
+      const cls = w[1] >= 20 || (g || 0) >= 20 ? " hi" : w[1] < 4 ? " lo" : "";
+      return `<span class="hw${cls}" title="${w[1]}${g ? "g" + g : ""} mph${w[3] ? ` · average of ${w[3]} model${w[3] > 1 ? "s" : ""}` : ""}">${w[0] != null ? `<i style="transform:rotate(${(w[0] + 180) % 360}deg)"><svg viewBox="0 0 10 12" aria-hidden="true"><path d="M5 0.5 L9.2 11 L5 8.4 L0.8 11 Z"/></svg></i>` : "<i></i>"}<b>${w[1]}<small>${g ? `g${g}` : ""}</small></b></span>`;
+    }).join("") : ""}${[[win, "wbr", "flying window: the 3 hours with the best height of lift, then thermal strength"], [c.gwin || [], "wbr glass", "glass-off: still working in the last 3 hours before sunset"]].map(([w, cl, tt]) => w.length === 2 && w[1] - w[0] < 7 ? `<span class="${cl}" title="${tt}" style="grid-column:${Math.max(1, w[0] - 8)} / ${Math.min(11, w[1] - 7)}"><svg viewBox="0 0 100 10" preserveAspectRatio="none"><path vector-effect="non-scaling-stroke" d="M1 1 Q1 5 8 5 L44 5 Q50 5 50 9.5 Q50 5 56 5 L92 5 Q99 5 99 1"/></svg></span>` : "").join("")}${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => `<span class="hl">${h === 9 ? "9 am" : h === 18 ? "6 pm" : h > 12 ? h - 12 : h}</span>`).join("")}</div>` : "";
+  const barRow = (k, x, v, sub0, xs, sub = String(sub0 || "").replace(/\s*·?\s*best 4 readings over \d+ points/, "").replace(/^\s*·\s*/, "")) => `<div class="factor">
+      <span class="fk">${esc(k)}</span>
+      <span class="fbar">${(xs || [x]).map((q) => `<i style="width:${Math.max(3, Math.round(q * 100))}%;background:${barCol(q)}${xs && xs.length > 1 ? ";opacity:.55" : ""}"></i>`).join("")}</span>
+      <span class="fv">${esc(v)}</span>
+      ${sub ? `<span class="fs">${esc(sub)}</span>` : ""}
+    </div>`;
+  /* one bar: the average climb a paraglider can expect in the window, W* (the mid-boundary-layer updraft) minus its sink */
+  const sink = c.sink || 1.1, core = c.core || 1.4, climb = c.wstar != null ? Math.max(0, core * c.wstar - sink) : null;
+  const strength = climb != null && c.style !== "ridge"
+    ? barRow("Climb rate", Math.max(0, Math.min(1, climb / 2.5)), `${climb.toFixed(1)} m/s`, "") : "";
+  const rows = fac.filter((f) => !isFlag(f) && !((c.hwind || (c.hwind_avg && Object.keys(c.hwind_avg).length)) && f.k === "Wind 1 pm")).map((f) => barRow(f.k === "Wind 1 pm" ? "Launch wind" : f.k, f.q, f.v, f.sub, f.qs)).join("").replace(/(<\/div>)/, `$1${strength}`)
+    + (c.rain_p != null ? barRow("Dry", 1 - c.rain_p, `${Math.round(c.rain_p * 100)}% rain`, "") : "")
+    + (c.cloud ? barRow("Sun", 1 - (c.cloud.sun_loss || 0), `−${Math.round((c.cloud.sun_loss || 0) * 100)}%`, `mid/high cloud ${c.cloud.okta}/8`) : "");
+  const agreeF = fac.find((f) => f.k === "Model agreement");
+  const extraBars = [
+    agreeF ? barRow("Models agree", agreeF.q, agreeF.v, agreeF.sub) : "",
+    c.p_fly != null ? barRow("Flyable", c.p_fly, pct(c.p_fly), "") : "",
+    c.p_xc != null ? barRow("XC", c.p_xc, pct(c.p_xc), "") : "",
+  ].join("");
+  /* what pulled the number down (or capped it): only shown when something did */
+  const steps = (c.adj || []).map(([t, v]) => `<span class="st neg">${esc(t)} ${v > 0 ? "+" : "−"}${Math.abs(v).toFixed(1)}</span>`).join("");
+  /* also good to know: at most five, most useful first */
+  const rain = fac.find((f) => f.k === "Rain & storms"), agree = fac.find((f) => f.k === "Model agreement");
+  const info = "";   // no chips here: glass-off and Elsinore's switch show as pills on the site card
+  const half = Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2));
+  const tp = thermPanel(d, s, c);
+  const head = inline ? "" : `<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline">
+      <h3 style="font-size:1.1rem;font-family:var(--font-body);font-weight:600">${esc(s.name)} <span class="muted" style="font-size:.9rem;font-weight:500">${r1(c.rating)}/5</span></h3>${labelHtml(c)}</div>
+    ${c.note && !/thermals/i.test(c.note) ? `<p class="note">${esc(c.note)}</p>` : ""}`;
+  return `${head}
+    ${hm ? `<div class="dsec"><span class="dh">Launch wind by model</span>${modelWindTable(c)}</div>` : ""}
+    ${tp ? `<div class="dsec">${tp}</div>` : hourStrip ? `<div class="dsec"><span class="dh">Hour by hour</span>${hourStrip}</div>` : ""}
+    <div class="dsec"><span class="dh">What made the score</span>
+      <div class="factors">${rows}</div>
+      ${steps ? `<div class="steps">${steps}</div>` : ""}</div>
+    <div class="dsec"><span class="dh">Good to know · not in the score</span><div class="factors">${extraBars}</div>${info ? `<div class="gks">${info}</div>` : ""}</div>`;
+}
+
+/* ---------- archive: every past day as it was forecast that day (frozen after noon) ---------- */
+const DAYKEY = {};
+let CARD = null, ARCH_LOADED = false;
+const fmtTime = (iso) => new Date(iso).toLocaleTimeString("en-US", { timeZone: TZ, hour: "numeric", minute: "2-digit" });
+function parseCSV(t) {
+  const rows = []; let row = [], f = "", q = false;
+  for (let k = 0; k < t.length; k++) {
+    const ch = t[k];
+    if (q) { if (ch === '"' && t[k + 1] === '"') { f += '"'; k++; } else if (ch === '"') q = false; else f += ch; }
+    else if (ch === '"') q = true; else if (ch === ",") { row.push(f); f = ""; }
+    else if (ch === "\n") { row.push(f); rows.push(row); row = []; f = ""; } else if (ch !== "\r") f += ch;
+  }
+  if (f || row.length) { row.push(f); rows.push(row); }
+  const [h, ...rest] = rows; return rest.filter((r) => r.length > 1).map((r) => Object.fromEntries(h.map((k, j) => [k.trim(), (r[j] || "").trim()])));
+}
+async function loadArchive() {
+  if (ARCH_LOADED) return; ARCH_LOADED = true;
+  $("#arch").innerHTML = '<div class="empty">Loading archive…</div>';
+  try {
+    const ix = await (await fetch(`data/archive/index.json?t=${Date.now()}`, { cache: "no-store" })).json();
+    let flights = [];
+    try { flights = parseCSV(await (await fetch(`data/flights.csv?t=${Date.now()}`, { cache: "no-store" })).text()); } catch (e) {}
+    const dates = (ix.dates || []).slice().reverse();
+    const recs = await Promise.all(dates.map((d) => fetch(`data/archive/${d}.json`).then((r) => r.json()).catch(() => null)));
+    const html = recs.filter(Boolean).map((r, k) => {
+      const d = r.day;
+      d._flown = flights.filter((f) => f.date === r.date).map((f) => {
+        const s = BY[f.site] || Object.values(BY).find((x) => x.short === f.site || x.name === f.site);
+        const bits = [f.max_alt_ft && `${Number(f.max_alt_ft).toLocaleString()} ft`, f.dist_mi && `${f.dist_mi} mi`, f.dist_km && `${f.dist_km} km`,
+                      f.duration_min && `${Math.round(f.duration_min / 6) / 10} h`].filter(Boolean).join(", ");
+        return `${s ? siteName(s) : f.site}${f.pilot ? ` (${f.pilot})` : ""}${bits ? ": " + bits : ""}`;
+      });
+      return CARD(d, "a" + k);
+    }).join("");
+    $("#arch").innerHTML = `<button type="button" class="arch-back" onclick="document.getElementById('archBtn').click()">← Back to forecast</button><p class="arch-h">Each past day as the radar forecast it that day (its final midday forecast), newest first, with any flights logged for it.</p>${html || '<div class="empty">No archived days yet.</div>'}`;
+  } catch (e) { $("#arch").innerHTML = '<div class="empty">The archive could not be loaded.</div>'; ARCH_LOADED = false; }
+}
+let ARCH = false;
+const showArchive = (on) => {
+  ARCH = on;
+  $("#arch").hidden = !on;
+  $("#story").hidden = on;                       // the weather overview is about the days ahead
+  $("#days").hidden = on;
+  $("#archBtn").textContent = on ? "Back to forecast" : "Archive";
+  window.scrollTo({ top: 0 });
+  if (on) loadArchive();
+};
+$("#archBtn").addEventListener("click", () => showArchive(!ARCH));
+
+let DATA = null;
+function openDaySheet(d) {
+  const L = dayLabel(d.date);
+  sheetFrom = document.activeElement;
+  const rows = DATA.sites.map((s) => {
+    const c = d.sites[s.id]; if (!c) return "";
+    return `<button type="button" class="ds" data-site="${s.id}" style="--rc:${qv(c.rating)}"><b class="ds-n">${r1(c.rating)}</b>
+      <span class="ds-t"><span class="ds-nm">${esc(siteName(s))}</span>${labelHtml(c)}${rowNote(c) ? `<span class="note">${esc(rowNote(c))}</span>` : ""}</span></button>`;
+  }).join("");
+  $("#sheet").innerHTML = `<span class="grab" aria-hidden="true"></span>
+    <button type="button" class="close" id="sheetClose" aria-label="Close">✕</button>
+    <span class="when">${esc(L.long)}${L.rel ? ` (${esc(L.rel)})` : ""} · ${esc(L.date)} ${regimeHtml(d.regime)}${d.why ? ` <span class="why">${esc(d.why)}</span>` : ""}</span>
+    <div class="dsl">${rows}</div>`;
+  $("#sheet").onclick = (e) => {
+    if (e.target.closest("#sheetClose")) { closeSheet(); return; }
+    const b = e.target.closest(".ds"); if (b) openSheet(d, BY[b.dataset.site], true);
+  };
+  $("#scrim").hidden = false; $("#sheet").hidden = false; $("#sheet").scrollTop = 0;
+}
+const VIEW = "cards";
+
+/* bottom sheet (phones) */
+let sheetFrom = null;
+function openSheet(d, s, fromDay) {
+  const L = dayLabel(d.date);
+  if (!fromDay) sheetFrom = document.activeElement;
+  $("#sheet").onclick = (e) => { if (e.target.closest("#sheetClose")) closeSheet(); };
+  $("#sheet").innerHTML = `<span class="grab" aria-hidden="true"></span>
+    <button type="button" class="close" id="sheetClose" aria-label="Close">✕</button>
+    <span class="when">${esc(L.long)}${L.rel ? ` (${esc(L.rel)})` : ""} · ${esc(L.date)}</span>${detail(d, s)}`;
+  $("#scrim").hidden = false; $("#sheet").hidden = false; $("#sheet").scrollTop = 0;
+  $("#sheetClose").focus({ preventScroll: true });
+}
+function closeSheet() {
+  $("#scrim").hidden = true; $("#sheet").hidden = true;
+  if (sheetFrom) sheetFrom.focus({ preventScroll: true });
+}
+$("#scrim").addEventListener("click", closeSheet);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("#sheet").hidden) closeSheet(); });
+/* swipe the sheet down to close */
+let y0 = null;
+$("#sheet").addEventListener("touchstart", (e) => { y0 = $("#sheet").scrollTop <= 0 ? e.touches[0].clientY : null; }, { passive: true });
+$("#sheet").addEventListener("touchend", (e) => { if (y0 != null && e.changedTouches[0].clientY - y0 > 70) closeSheet(); y0 = null; }, { passive: true });
+
+/* "Start new forecast run" opens the workflow page of this repo; only for the owner: open the page once with
+   ?admin (or ?admin=0 to switch it off again), everyone else never sees it */
+let ADMIN = false;
+try {
+  const q = new URLSearchParams(location.search).get("admin");
+  if (q != null) localStorage.setItem("radarAdmin", q === "0" ? "0" : "1");
+  ADMIN = localStorage.getItem("radarAdmin") === "1";
+} catch (e) { /* no storage: no button */ }
+if (ADMIN) $("#archBtn").hidden = false;   // the archive is for the owner only
+if (ADMIN && location.hostname.endsWith(".github.io")) {
+  const user = location.hostname.split(".")[0], repo = location.pathname.split("/").filter(Boolean)[0];
+  if (user && repo) { const a = $("#runNow"); a.href = `https://github.com/${user}/${repo}/actions/workflows/forecast.yml`; a.hidden = false; }
+}
+let lastGen = null;
+function load() {
+  const btn = $("#reload");
+  btn.disabled = true; btn.textContent = "Reloading…";
+  return fetch(`data/forecast.json?t=${Date.now()}`, { cache: "no-store" })
+    .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then((d) => { const same = lastGen === d.generated; lastGen = d.generated; render(d);
+      btn.textContent = same ? "No newer data" : "Reload"; })
+    .catch((e) => { btn.textContent = "Reload";
+      $("#days").innerHTML = `<div class="empty">Couldn't load data/forecast.json (${esc(e.message)}). Has the GitHub Action run yet?</div>`; })
+    .finally(() => { btn.disabled = false; setTimeout(() => { btn.textContent = "Reload"; }, 4000); });
+}
+const seed = $("#seed").textContent.trim();
+if (seed) { render(JSON.parse(seed)); $("#reload").hidden = true; }
+else load();
+$("#reload").addEventListener("click", load);
+
+})();
+
+/* touch screens have no hover: tap (or, inside a button or a day header, press and hold) shows an element's tooltip */
+(() => {
+  if (!window.matchMedia || !matchMedia("(hover: none)").matches) return;
+  const tip = document.createElement("div"); tip.className = "tip"; tip.hidden = true; document.body.appendChild(tip);
+  let hideT = null, holdT = null, held = false;
+  const show = (el) => {
+    const t = el.getAttribute("title") || el.dataset.tip; if (!t) return;
+    if (el.getAttribute("title")) { el.dataset.tip = t; el.removeAttribute("title"); }
+    tip.textContent = t; tip.hidden = false;
+    const r = el.getBoundingClientRect(), w = Math.min(280, window.innerWidth - 16);
+    tip.style.maxWidth = w + "px";
+    const x = Math.max(8, Math.min(window.innerWidth - tip.offsetWidth - 8, r.left + r.width / 2 - tip.offsetWidth / 2));
+    const y = r.top - tip.offsetHeight - 8 > 4 ? r.top - tip.offsetHeight - 8 : r.bottom + 8;
+    tip.style.left = x + "px"; tip.style.top = y + "px";
+    clearTimeout(hideT); hideT = setTimeout(() => (tip.hidden = true), 3500);
+  };
+  const target = (e) => e.target.closest && e.target.closest("[title], [data-tip]");
+  const inControl = (el) => el.closest("summary, button, a");
+  document.addEventListener("touchstart", (e) => {
+    held = false; const el = target(e); if (!el || !inControl(el)) return;
+    holdT = setTimeout(() => { held = true; show(el); }, 450);
+  }, { passive: true });
+  ["touchend", "touchmove", "touchcancel"].forEach((ev) => document.addEventListener(ev, () => clearTimeout(holdT), { passive: true }));
+  document.addEventListener("click", (e) => {
+    if (held) { e.preventDefault(); e.stopPropagation(); held = false; return; }   // a long press shows the tip, not a click
+    const el = target(e);
+    if (el && (!inControl(el) || el.matches(".srow .rx, .sig .g"))) {     // a chip on a site card: explain it, don't toggle the card
+      if (inControl(el)) { e.preventDefault(); e.stopPropagation(); }
+      show(el); return;
+    }
+    tip.hidden = true;
+  }, true);
+  window.addEventListener("scroll", () => (tip.hidden = true), { passive: true });
+})();
+</script>
+<script>
+/* LAB: layout switcher for the opened day (list = today's page, grid = 2-3 columns, tiles = compact like the first layer) */
+(function () {
+  const LAYS = [["list", "List"], ["grid", "Grid"], ["tiles", "Tiles"]];
+  const q = (location.search.match(/[?&]lay=(\w+)/) || [])[1];
+  let lay = q || (() => { try { return localStorage.getItem("labLay"); } catch (e) { return null; } })() || "grid";
+  if (!LAYS.some(([k]) => k === lay)) lay = "grid";
+  const apply = () => {
+    document.documentElement.dataset.lay = lay;
+    document.querySelectorAll("#labbar button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lay === lay)));
+  };
+  const bar = document.createElement("div");
+  bar.id = "labbar";
+  bar.innerHTML = "<b>LAB</b>" + LAYS.map(([k, n]) => `<button type="button" data-lay="${k}">${n}</button>`).join("");
+  document.body.appendChild(bar);
+  bar.onclick = (e) => {
+    const b = e.target.closest("button"); if (!b) return;
+    lay = b.dataset.lay;
+    try { localStorage.setItem("labLay", lay); } catch (err) {}
+    /* close any open site so the detail re-places itself in the new layout */
+    document.querySelectorAll('.srow[aria-expanded="true"]').forEach((x) => x.setAttribute("aria-expanded", "false"));
+    document.querySelectorAll(".det").forEach((d) => { d.hidden = true; });
+    apply();
+  };
+  apply();
+  /* where the third level goes: under the site (list) or after the last tile of its row, full width (grid, tiles) */
+  window.labPlace = (b, det) => {
+    const y0 = b.getBoundingClientRect().top;
+    const wasShown = !det.hidden;
+    det.hidden = true;                       // measure the rows without the old detail in the way
+    if (lay === "list") { b.after(det); }
+    else {
+      let last = b, n = b.nextElementSibling;
+      while (n && n.classList.contains("srow") && Math.abs(n.offsetTop - b.offsetTop) < 4) { last = n; n = n.nextElementSibling; }
+      last.after(det);
+      const L = b.parentElement.getBoundingClientRect(), r = b.getBoundingClientRect();
+      det.style.setProperty("--ax", `${Math.round(r.left - L.left + Math.min(r.width / 2, 48))}px`);
+    }
+    det.classList.remove("lab-in"); void det.offsetWidth; det.classList.add("lab-in");
+    /* keep the tapped tile where the finger is when another detail above it closes */
+    requestAnimationFrame(() => {
+      const dy = b.getBoundingClientRect().top - y0;
+      if (wasShown && Math.abs(dy) > 2) window.scrollBy({ top: dy, behavior: "instant" });
+    });
+  };
+})();
+
+</script>
+</body>
+</html>
