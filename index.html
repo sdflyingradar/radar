@@ -895,9 +895,9 @@ html body details.day:not(#story) .band .when .dword.long { font-size: .68rem !i
 .ov .grad.weak { color: #b07a12; } .ov .grad.sa { color: #b42f2f; font-weight: 600; }
 /* little asset tiles above the days: quiet, white, a tiny icon and a live number */
 #assets { display: flex; gap: 8px; margin: -2px 0 12px; flex-wrap: wrap; justify-content: flex-end; }
-.asset { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px 6px 9px; border-radius: 10px; background: rgba(255,255,255,.75);
+.asset { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px 4px 5px; border-radius: 10px; background: rgba(255,255,255,.75);
   border: 1px solid #d5dbe2; color: #26303a; text-decoration: none; line-height: 1.1; }
-.asset svg { width: 18px; height: 18px; color: #c26a24; flex: none; }
+.asset svg { width: 26px; height: 26px; flex: none; filter: drop-shadow(0 1px 1px rgba(0,0,0,.12)); }
 .asset b { display: block; font-size: .8rem; font-weight: 700; }
 .asset small { display: block; font-size: .7rem; color: #6b7280; margin-top: 1px; font-variant-numeric: tabular-nums; }
 .asset small.weak { color: #b07a12; } .asset small.sa { color: #b42f2f; font-weight: 600; }
@@ -1160,8 +1160,19 @@ function render(data) {
     if (!row) { row = document.createElement("div"); row.id = "assets"; $("#story").after(row); }
     const g = data.gradient && data.gradient.now != null ? data.gradient.now : null;
     const gcls = g == null ? "" : g <= -4 ? " sa" : g <= -2 ? " weak" : "";
-    const BAL = '<svg viewBox="0 0 16 16" aria-hidden="true"><ellipse cx="8" cy="6" rx="4.2" ry="5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 11 Q7.2 13 8 15.5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>';
-    const PRS = '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="12" r="2" fill="currentColor"/><circle cx="12.5" cy="4" r="2" fill="currentColor"/><path d="M11 5.4 L5.4 10.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M5 8 L4.8 11 L7.8 10.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    /* little round badges: a white balloon with its orange payload on sky, and a barometer dial whose needle leans with the gradient */
+    const BAL = `<svg viewBox="0 0 28 28" aria-hidden="true"><defs><linearGradient id="asky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bcd9f3"/><stop offset="1" stop-color="#e9f2fb"/></linearGradient></defs>
+      <circle cx="14" cy="14" r="13.5" fill="url(#asky)"/><path d="M3 21 Q9 17.6 14 19.6 T25.6 19 A13.5 13.5 0 0 1 2.4 19.8 Z" fill="#c9d6bd"/>
+      <path d="M14 16.4 Q12.8 18.8 14 21" fill="none" stroke="#64748b" stroke-width=".8"/>
+      <ellipse cx="14" cy="9.4" rx="6" ry="7" fill="#fff" stroke="#9fb1c4" stroke-width=".8"/><ellipse cx="11.8" cy="7" rx="1.7" ry="2.4" fill="#eef3f8"/>
+      <rect x="12.9" y="21" width="2.2" height="1.8" rx=".4" fill="#c26a24"/></svg>`;
+    const ang = g == null ? -20 : Math.max(-60, Math.min(60, g * 12)); /* 0 mb straight up, offshore leans left */
+    const ndl = g == null ? "#64748b" : g <= -4 ? "#b42f2f" : g <= -2 ? "#c78a14" : "#26303a";
+    const PRS = `<svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13.5" fill="#f3e5d8"/><circle cx="14" cy="14" r="10.6" fill="#fff" stroke="#c8a27c" stroke-width="1"/>
+      <path d="M6.2 18.6 A8.6 8.6 0 0 1 9.1 7.2" fill="none" stroke="#e8b4b4" stroke-width="2.2"/><path d="M9.1 7.2 A8.6 8.6 0 0 1 14 5.4" fill="none" stroke="#f1d39a" stroke-width="2.2"/>
+      <g stroke="#9b7356" stroke-width=".8">${[-60, -30, 0, 30, 60].map((t) => `<path d="M14 4.6 V6.4" transform="rotate(${t} 14 14)"/>`).join("")}</g>
+      <path d="M14 14 L14 6.6" stroke="${ndl}" stroke-width="1.7" stroke-linecap="round" transform="rotate(${ang} 14 14)"/><circle cx="14" cy="14" r="1.8" fill="${ndl}"/>
+      <text x="14" y="21.6" text-anchor="middle" font-size="4" font-weight="700" fill="#9b7356" font-family="system-ui,sans-serif">mb</text></svg>`;
     row.innerHTML = `<a class="asset" href="sounding.html" title="Latest weather balloon from Miramar: thermal tops, cloudbase, inversions">${BAL}<span><b>Sounding</b><small id="as-snd">morning balloon</small></span></a>`
       + `<a class="asset" href="lax-dag.html" title="LAX minus Barstow-Daggett pressure: the Santa Ana measure, observed and by model">${PRS}<span><b>LAX–DAG</b><small class="${gcls.trim()}">${g != null ? `${g > 0 ? "+" : ""}${g.toFixed(1)} mb${g <= -4 ? " · Santa Ana" : g <= -2 ? " · offshore" : ""}` : "pressure gradient"}</small></span></a>`;
     fetch(`data/sounding/nkx_latest.json?t=${Date.now()}`, { cache: "no-store" }).then((r) => r.json()).then((j) => {

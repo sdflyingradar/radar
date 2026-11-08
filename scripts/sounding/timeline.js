@@ -34,19 +34,34 @@ function timelineSVG({ now = new Date(), shown = null, fetched = null } = {}) {
     }
     return false;
   })();
-  const marine = (x, flip) => `<g transform="translate(${x} 0) scale(${flip ? -1 : 1} 1)">
-      <path d="M-5 128 l-2 14 M5 128 l2 14" stroke="#3f4a2c" stroke-width="4" stroke-linecap="round"/>
-      <path d="M-7 141.5h-3M7 141.5h3" stroke="#1f2937" stroke-width="3" stroke-linecap="round"/>
-      <rect x="-8" y="104" width="16" height="26" rx="6" fill="#6b7a4b"/>
-      <path d="M-4 110l3 4M2 118l3 3M-5 122l2 2" stroke="#55623a" stroke-width="2" stroke-linecap="round"/>
-      <path d="M6 108 Q16 96 14 84" fill="none" stroke="#6b7a4b" stroke-width="4" stroke-linecap="round"/>
-      <path d="M-6 108 Q-14 100 -16 92" fill="none" stroke="#6b7a4b" stroke-width="4" stroke-linecap="round"/>
-      <circle cx="14" cy="83" r="2.6" fill="#e8b98f"/><circle cx="-16" cy="91" r="2.6" fill="#e8b98f"/>
-      <circle cx="0" cy="96" r="7.5" fill="#e8b98f"/>
-      <path d="M-8 92 Q0 82 8 92 Z" fill="#55623a"/><path d="M6 91.5h5" stroke="#55623a" stroke-width="2.2" stroke-linecap="round"/>
-      <circle cx="-2.6" cy="96" r="0.95" fill="#1f2937"/><circle cx="2.6" cy="96" r="0.95" fill="#1f2937"/>
-      <path d="M-3.2 99 Q0 102.6 3.2 99" fill="none" stroke="#1f2937" stroke-width="1.1" stroke-linecap="round"/>
-      <circle cx="-4.6" cy="98.6" r="1.2" fill="#f4a3a3" opacity="0.7"/><circle cx="4.6" cy="98.6" r="1.2" fill="#f4a3a3" opacity="0.7"/>
+  // an original cartoon pilot (olive flight suit, white helmet with the visor up), arm raised with the balloon string
+  const pilot = (x, y) => `<g transform="translate(${x} ${y})">
+      <ellipse cx="0" cy="22.5" rx="9" ry="1.6" fill="#000" opacity=".12"/>
+      <path d="M-3.4 12 L-4.4 21.5 M3.4 12 L4.4 21.5" stroke="#4d5a3a" stroke-width="3.6" stroke-linecap="round"/>
+      <path d="M-6.4 21.6 h4.4 M2 21.6 h4.4" stroke="#1f2937" stroke-width="2.6" stroke-linecap="round"/>
+      <path d="M-6.5 -2 Q-7.5 6 -5.5 13 H5.5 Q7.5 6 6.5 -2 Q0 -5 -6.5 -2 Z" fill="#5f6f48"/>
+      <path d="M-5.6 4.2 h11.2" stroke="#4d5a3a" stroke-width="1.1"/>
+      <rect x="1.4" y="-0.6" width="3.2" height="2.4" rx=".5" fill="#c26a24"/>
+      <path d="M-6 -0.5 Q-9.5 4 -8.5 9" fill="none" stroke="#5f6f48" stroke-width="3.4" stroke-linecap="round"/>
+      <circle cx="-8.4" cy="9.6" r="1.7" fill="#e3b48c"/>
+      <path d="M6 -0.5 Q10.5 -6 11 -13.5" fill="none" stroke="#5f6f48" stroke-width="3.4" stroke-linecap="round"/>
+      <circle cx="11" cy="-14.6" r="1.8" fill="#e3b48c"/>
+      <rect x="-2.2" y="-6.6" width="4.4" height="3" fill="#d8a77f"/>
+      <ellipse cx="0" cy="-11" rx="5.6" ry="6" fill="#e3b48c"/>
+      <path d="M-6.6 -11.6 Q-6.6 -19.8 0 -19.8 Q6.6 -19.8 6.6 -11.6 L5.4 -11.6 Q5 -16.4 0 -16.6 Q-5 -16.4 -5.4 -11.6 Z" fill="#f4f6f8" stroke="#cfd6de" stroke-width=".6"/>
+      <path d="M-5.2 -16 Q0 -18.6 5.2 -16 L4.8 -14.6 Q0 -16.8 -4.8 -14.6 Z" fill="#334155"/>
+      <circle cx="-2.1" cy="-10.6" r=".85" fill="#1f2937"/><circle cx="2.1" cy="-10.6" r=".85" fill="#1f2937"/>
+      <path d="M-2.4 -7.9 Q0 -5.9 2.4 -7.9" fill="none" stroke="#1f2937" stroke-width=".9" stroke-linecap="round"/>
+      <circle cx="-3.8" cy="-8.6" r="1" fill="#f1a39a" opacity=".6"/><circle cx="3.8" cy="-8.6" r="1" fill="#f1a39a" opacity=".6"/>
+    </g>`;
+  // an original squadron patch: a round badge with the radar's three chevrons
+  const badge = (x, y, r) => `<g transform="translate(${x} ${y})">
+      <circle r="${r}" fill="#1e293b" stroke="#e2e8f0" stroke-width="1"/>
+      <g transform="scale(${r / 10})">
+        <path d="M-7 -3.5 h2.6 l3 3.5 -3 3.5 h-2.6 l3 -3.5 z" fill="#c26a24"/>
+        <path d="M-1.6 -3.5 h2.6 l3 3.5 -3 3.5 h-2.6 l3 -3.5 z" fill="#a07a5e"/>
+        <path d="M3.8 -3.5 h2.6 l3 3.5 -3 3.5 h-2.6 l3 -3.5 z" fill="#d9c3ae"/>
+      </g>
     </g>`;
   o.push(`<style>
     @keyframes tlbob { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-4px) } }
@@ -55,41 +70,55 @@ function timelineSVG({ now = new Date(), shown = null, fetched = null } = {}) {
     .tl-rise { animation: tlrise 6s linear infinite; }
     @media (prefers-reduced-motion: reduce) { .tl-bob, .tl-rise { animation: none } }
   </style>`);
-  // generic F-35-style side profile, nose left, ~62 units long
-  const jet = (x, y, sc, col) => `<g transform="translate(${x} ${y}) scale(${sc})">
-      <path d="M48 3 L53 -7 L57.5 -7 L57 3 Z" fill="${col}"/>
-      <path d="M0 7 Q7 3.4 17 3 L23 1.8 Q28 -0.4 33 1.8 L44 3 L57 3.2 L62 4.6 L62 7.6 L57 8.6 L9 9.4 Q3 9 0 7 Z" fill="${col}"/>
-      <path d="M15.5 3.3 Q21 -0.6 27.5 1.9 L23.5 3.4 Z" fill="#475569"/>
-      <path d="M27 7.2 L45 11.6 L51 11.6 L47 7.4 Z" fill="${col}" opacity="0.85"/>
-      <path d="M52 6.2 L61 9.8 L63.5 9.2 L58.5 5.6 Z" fill="${col}" opacity="0.85"/>
-      <rect x="61.5" y="4.6" width="3" height="3" rx="0.6" fill="#64748b"/>
+  // F-35 side profile, nose left, ~64 units long: grey body, darker canopy, twin canted fins, landing gear
+  const jet = (x, y, sc, gear) => `<g transform="translate(${x} ${y}) scale(${sc})">
+      <path d="M46 2.6 L51.5 -9 L57 -9 L57.5 2.8 Z" fill="#7d8896"/>
+      <path d="M49.5 2.6 L53.6 -6.4 L56.2 -6.4 L56.4 2.6 Z" fill="#6b7684"/>
+      <path d="M0 7.4 Q6 3.6 16 3 L22 1.4 Q28 -1.2 34 1.6 L44 2.8 L57 3 L63 4.4 L64 7.4 L63 8.6 L57 9.4 L8 10.2 Q2.5 9.8 0 7.4 Z" fill="#8f9aa8"/>
+      <path d="M8 9.6 L57 8.8 L63 8.2 L64 7.4 L63 8.6 L57 9.4 L8 10.2 Z" fill="#6f7a88"/>
+      <path d="M14.6 3.2 Q21 -1.4 28.6 1.7 L23.6 3.5 Z" fill="#3b4656"/>
+      <path d="M17.5 2.2 Q21 0.2 25 1" fill="none" stroke="#9fb3c8" stroke-width=".7" opacity=".8"/>
+      <path d="M26 7 L46 12.6 L52.5 12.6 L48 7.2 Z" fill="#7d8896"/>
+      <path d="M52 6.4 L61.5 10.6 L64.5 10 L58.6 5.8 Z" fill="#7d8896"/>
+      <path d="M30 4.6 L36 4.4 L35.4 6.6 L30.4 6.8 Z" fill="#6f7a88"/>
+      <rect x="63" y="4.6" width="3.2" height="3.4" rx=".8" fill="#5b6573"/>
+      <path d="M6 7.2 h4" stroke="#c26a24" stroke-width=".8"/>
+      ${gear ? `<path d="M12 10 v4.4 M40 10 v4.6 M47 10 v4.6" stroke="#475569" stroke-width="1.1"/>
+      <circle cx="12" cy="15" r="1.7" fill="#1f2937"/><circle cx="40" cy="15.2" r="2" fill="#1f2937"/><circle cx="47" cy="15.2" r="2" fill="#1f2937"/>` : ''}
     </g>`;
   o.push(`<g transform="translate(10 4)">
-    <clipPath id="scn"><rect x="0" y="4" width="136" height="148" rx="10"/></clipPath>
+    <defs>
+      <clipPath id="scn"><rect x="0" y="4" width="136" height="148" rx="10"/></clipPath>
+      <linearGradient id="tlsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe3f7"/><stop offset="1" stop-color="#f3f7fb"/></linearGradient>
+      <linearGradient id="tlhang" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c8d0da"/><stop offset="1" stop-color="#a9b4c1"/></linearGradient>
+    </defs>
     <g clip-path="url(#scn)">
-      <rect x="0" y="4" width="136" height="148" fill="#eef4fb"/>
-      <circle cx="122" cy="24" r="6.5" fill="#fde68a"/>
-      <g opacity="0.9">${jet(84, 36, 0.42, '#94a3b8')}</g>
-      <path d="M112 41 h22" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3 3"/>
-      <path d="M0 116 Q34 110 68 114 T136 112 V152 H0 Z" fill="#d9e7c9"/>
-      <path d="M2 118 Q22 92 44 118 Z" fill="#b9c3cf"/><rect x="2" y="117" width="42" height="9" fill="#b9c3cf"/>
-      <rect x="14" y="117" width="18" height="9" fill="#8a96a5"/>
-      <path d="M8 118 Q22 98 38 118" fill="none" stroke="#a5b0bd" stroke-width="1"/>
-      <rect x="117" y="86" width="5" height="40" fill="#b9c3cf"/><rect x="112" y="79" width="15" height="8" rx="2" fill="#8a96a5"/>
-      <rect x="114" y="81" width="11" height="3.5" fill="#bfdbfe"/>
-      <path d="M126 78 v-7" stroke="#8a96a5"/><path d="M126 71 l6 1.8 -6 1.8 z" fill="#ef4444"/>
-      <rect x="0" y="134" width="136" height="12" fill="#9aa3ad"/>
-      <path d="M6 140h10M26 140h10M46 140h10M66 140h10M86 140h10M106 140h10M126 140h10" stroke="#fff" stroke-width="1.4"/>
-      <g transform="translate(22 0)"><g class="${flying ? 'tl-rise' : 'tl-bob'}">
-        <path d="M45 68 Q43.5 80 46 92" fill="none" stroke="#64748b" stroke-width="0.8"/>
-        <ellipse cx="45" cy="55" rx="10.5" ry="13" fill="#fff" stroke="#cbd5e1"/>
-        <ellipse cx="41" cy="50" rx="3" ry="4" fill="#f1f5f9"/>
-        <rect x="42.5" y="92" width="6" height="4" rx="1" fill="${ACC}"/>
+      <rect x="0" y="4" width="136" height="148" fill="url(#tlsky)"/>
+      <circle cx="120" cy="24" r="7" fill="#fde68a"/><circle cx="120" cy="24" r="11" fill="#fde68a" opacity=".25"/>
+      <path d="M86 30 q4 -5 9 -2 q3 -4 8 -1 q5 0 4 4 h-21 z" fill="#fff" opacity=".9"/>
+      <path d="M0 108 Q20 96 40 104 Q62 94 84 104 Q108 96 136 104 V120 H0 Z" fill="#c9d4bd"/>
+      <path d="M0 112 Q30 104 60 110 T136 108 V122 H0 Z" fill="#b5c2a6"/>
+      <path d="M2 122 V96 Q30 72 58 96 V122 Z" fill="url(#tlhang)"/>
+      <path d="M2 96 Q30 72 58 96" fill="none" stroke="#8d99a8" stroke-width="1.2"/>
+      <path d="M10 92 Q30 78 50 92" fill="none" stroke="#b8c2ce" stroke-width=".8"/>
+      <rect x="12" y="104" width="36" height="18" fill="#5b6675"/>
+      <path d="M21 104 v18 M30 104 v18 M39 104 v18" stroke="#4b5563" stroke-width=".8"/>
+      ${badge(30, 92, 6.5)}
+      <rect x="118" y="80" width="5" height="42" fill="#b4bec9"/><rect x="112" y="72" width="17" height="9" rx="2" fill="#8a96a5"/>
+      <rect x="114" y="74.5" width="13" height="4" rx="1" fill="#bfdbfe"/>
+      <path d="M127 72 v-7" stroke="#8a96a5"/><path d="M127 65 l6 1.8 -6 1.8 z" fill="#ef4444"/>
+      <rect x="0" y="122" width="136" height="30" fill="#a3acb7"/>
+      <rect x="0" y="122" width="136" height="2" fill="#8f99a5"/>
+      <path d="M4 142h12M26 142h12M48 142h12M70 142h12M92 142h12M114 142h12" stroke="#f8fafc" stroke-width="1.6"/>
+      <ellipse cx="96" cy="129" rx="26" ry="1.8" fill="#000" opacity=".12"/>
+      ${jet(64, 111.5, 0.9, true)}
+      <g transform="translate(20 -4)"><g class="${flying ? 'tl-rise' : 'tl-bob'}">
+        <path d="M52.5 70 Q51 87 53 108" fill="none" stroke="#64748b" stroke-width="0.8"/>
+        <ellipse cx="52.5" cy="56" rx="10.5" ry="13" fill="#fff" stroke="#cbd5e1"/>
+        <ellipse cx="48.5" cy="51" rx="3" ry="4" fill="#f1f5f9"/>
+        <rect x="50" y="68.5" width="5" height="3.4" rx="1" fill="${ACC}"/>
       </g></g>
-      <g transform="translate(67 132) scale(0.6) translate(-69 -142)">
-        ${marine(52, false)}
-        ${marine(86, true)}
-      </g>
+      ${pilot(62, 120)}
     </g>
     <text x="68" y="18" text-anchor="middle" font-size="9.5" font-weight="700" fill="${INK}">MCAS Miramar</text>
   </g>`);
