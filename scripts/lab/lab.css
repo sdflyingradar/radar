@@ -67,3 +67,30 @@ html[data-lay] body details.day:not(#story) .list .srow .dscore { flex: none; }
 html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .sum, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .sum { display: none !important; }
 /* the little hour strip on the tiles is gone: the thermal panel in the third level shows the day hour by hour */
 html[data-lay] body details.day:not(#story) .list .srow .mstrip { display: none !important; }
+/* an opened day's header folds into one compact band: "Mon Nov 9 · Site fly", then the signals and the day-type pill.
+   The models and run time stay only at the bottom of the card. */
+html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd {
+  grid-template-columns: auto minmax(0, 1fr) !important; grid-template-rows: auto !important; align-items: center !important; row-gap: 8px !important; column-gap: 18px !important;
+  padding: 10px 46px 10px 14px !important; min-height: 0 !important; }
+html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .band, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .band {
+  grid-row: 1 !important; grid-column: 1 !important; border: 0 !important; padding: 0 !important; margin: 0 !important; min-height: 0 !important; height: auto !important; background: none !important; box-shadow: none !important; }
+html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .band::after, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .band::after { display: none !important; }
+html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .when, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .when {
+  flex-direction: row !important; align-items: baseline !important; gap: 8px !important; flex-wrap: nowrap !important; }
+html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .when .dn, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .when .dn { font-size: 1.35rem !important; }
+html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .when .dword, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .when .dword { margin: 0 0 0 2px !important; font-size: 1rem !important; }
+html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .band .mods, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .band .mods { display: none !important; }
+html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .notes, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .notes {
+  grid-row: 1 !important; grid-column: 2 !important; margin: 0 !important; padding: 0 !important; border: 0 !important; flex-wrap: wrap; align-items: center; gap: 6px 10px !important; }
+html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .notes .sig, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .notes .sig { width: auto !important; flex: 0 0 auto; }
+@media (max-width: 700px) {
+  html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd { grid-template-columns: minmax(0, 1fr) !important; }
+  html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .notes, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .notes { grid-row: 2 !important; grid-column: 1 !important; }
+}
+html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .notes, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .notes { flex-direction: row !important; display: flex !important; }
+html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .notes > *, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .notes > * { flex: 0 0 auto !important; width: auto !important; margin: 0 !important; }
+@media (max-width: 700px) {
+  html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .notes, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .notes { gap: 6px !important; flex-wrap: wrap !important; }
+  html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .notes .sig, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .notes .sig { gap: 3px !important; }
+  html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .notes .rx, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .notes .rx { flex: 0 0 auto !important; }
+}
