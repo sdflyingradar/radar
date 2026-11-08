@@ -869,6 +869,13 @@ html body .det .factor .fs { font-size: .54rem; margin-top: -1px; }
 html body .det .factor .fbar { height: 4px; }
 html body .det .steps { gap: 3px 4px; }
 html body .det .steps .st { height: 15px; padding: 0 5px; font-size: .48rem !important; }
+
+/* thermal panel: day back / forward */
+.tnav { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 17px 2px; }
+.tnav .tnd { font-size: .74rem; font-weight: 600; color: var(--muted); }
+.tnb { font: inherit; font-size: .8rem; font-weight: 700; padding: 5px 12px; border-radius: 999px; border: 1px solid #d5dbe2; background: #fff; color: #26303a; cursor: pointer; min-width: 72px; }
+.tnb:disabled { opacity: .35; cursor: default; }
+.tnb:not(:disabled):hover { border-color: #26303a; }
 </style>
 </head>
 <body>
@@ -1180,6 +1187,21 @@ function render(data) {
   DATA = data;
 
   $("#days").onclick = $("#arch").onclick = (e) => {
+    const jb = e.target.closest(".tnb[data-jump]");
+    if (jb) {
+      /* thermal panel ‹ ›: close this day, open the next/previous one with the same site, keep the panel in view */
+      e.stopPropagation();
+      const k = +jb.dataset.jump, sid = jb.dataset.sid, from = jb.closest("details.day"), to = $(`#day-${k}`);
+      if (!to) return;
+      const y0 = jb.closest(".therm").getBoundingClientRect().top;
+      if (from && from !== to) from.open = false;
+      to.open = true;
+      const row = to.querySelector(`.srow[data-site="${sid}"]`);
+      if (row && row.getAttribute("aria-expanded") !== "true") row.click();
+      const tp = to.querySelector(`#det-${k} .therm`);
+      if (tp) window.scrollBy({ top: tp.getBoundingClientRect().top - y0, behavior: "instant" });
+      return;
+    }
     const b = e.target.closest("[data-site]"); if (!b) return;
     const card = b.closest(".day"), i = b.dataset.day, det = $(`#det-${i}`);
     const wasOpen = b.getAttribute("aria-expanded") === "true";
@@ -1476,7 +1498,12 @@ function thermPanel(d, s, c) {
   const di = r ? r.days.findIndex((x) => x.date === d.date) : -1;
   if (di < 0) return "";
   try {
-    return `<div class="therm">${panelSVG({ generated: REGIONS_D.generated, region: r.name, days: r.days, marks: r.marks, floor_ft: r.floor_ft, compact: true, win: c.style === "ridge" ? null : c.win, gwin: c.gwin }, di)}</div>`;
+    /* ‹ › jump to the same site on the day before / after (closes this card, opens that one) */
+    const i = +(Object.keys(DAYKEY).find((k) => DAYKEY[k] && DAYKEY[k].date === d.date) ?? -1);
+    const has = (k) => DAYKEY[k] && DAYKEY[k].sites && DAYKEY[k].sites[s.id];
+    const lab = (k) => (has(k) ? dayLabel(DAYKEY[k].date).short : "");
+    const nav = `<div class="tnav"><button type="button" class="tnb" data-jump="${i - 1}" data-sid="${s.id}"${has(i - 1) ? "" : " disabled"}>‹ ${esc(lab(i - 1))}</button><span class="tnd">${esc(dayLabel(d.date).short)} · ${esc(r.name)}</span><button type="button" class="tnb" data-jump="${i + 1}" data-sid="${s.id}"${has(i + 1) ? "" : " disabled"}>${esc(lab(i + 1))} ›</button></div>`;
+    return `<div class="therm">${panelSVG({ generated: REGIONS_D.generated, region: r.name, days: r.days, marks: r.marks, floor_ft: r.floor_ft, compact: true, win: c.style === "ridge" ? null : c.win, gwin: c.gwin }, di)}${nav}</div>`;
   } catch (e) { return ""; }
 }
 
