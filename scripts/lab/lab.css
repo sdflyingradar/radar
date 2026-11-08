@@ -123,3 +123,25 @@ html[data-lay="grid"] body details.day:not(#story) .list .srow.srow[aria-expande
 /* a soft rim along the bottom in the same colour, so the tab reads as part of the card's edge */
 html[data-lay="grid"] body details.day:not(#story) .list .srow.srow::before, html[data-lay="tiles"] body details.day:not(#story) .list .srow.srow::before {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--rc); opacity: .55; }
+/* score ledger */
+.lg-list { display: grid; gap: 2px; }
+.lg-row { display: grid; grid-template-columns: 16px 84px minmax(0, 1fr) 46px; column-gap: 8px; align-items: baseline; padding: 4px 0; font-size: .8rem; }
+.lg-row + .lg-row { border-top: 1px solid rgba(38,48,58,.08); }
+.lg-ic { font-weight: 800; text-align: center; }
+.lg-k { font-weight: 600; color: #26303a; }
+.lg-v { color: #26303a; font-variant-numeric: tabular-nums; min-width: 0; }
+.lg-v small { display: block; color: #6b7280; font-size: .72rem; margin-top: 1px; }
+.lg-p { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+.lg-p em { font-style: normal; font-weight: 500; font-size: .68rem; color: #9aa1aa; }
+.lg-good .lg-ic { color: #2f8f4a; } .lg-good .lg-k, .lg-good .lg-v { color: #3d4650; }
+.lg-soft .lg-ic { color: #c78a14; }
+.lg-bad .lg-ic, .lg-bad .lg-p { color: #b42f2f; }
+.lg-bad .lg-v small { color: #8f3a3a; }
+.lg-mods { color: #6b7280; font-size: .74rem; }
+.lg-base .lg-p b, .lg-total .lg-p b { font-size: 1rem; color: #1f2328; }
+.lg-total { border-top: 1.5px solid rgba(38,48,58,.35) !important; margin-top: 2px; padding-top: 6px; }
+.lg-total .lg-ic, .lg-total .lg-k { font-size: .9rem; }
+.lg-tr { grid-column: 2 / -1; position: relative; height: 6px; margin-top: 5px; border-radius: 3px; background: rgba(38,48,58,.08); overflow: hidden; }
+.lg-tr i { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 3px; }
+.lg-tr .lg-lost { background: repeating-linear-gradient(135deg, #e7a0a0 0 3px, #f5d3d3 3px 6px); border-radius: 0 3px 3px 0; }
+.lg-bad .lg-tr .lg-keep { opacity: .55; }

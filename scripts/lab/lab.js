@@ -86,3 +86,55 @@
   if (days) new MutationObserver(fix).observe(days, { childList: true });
   fix();
 })();
+/* LAB: "How the score was made" — a ledger: the models' number, what's good (✓), what's bad (✗, with the points it
+   took), then the score. A thin 1–5 track on the number rows shows the score falling step by step. */
+(function () {
+  const CAT = [[/rain/i, "rain"], [/sun|cloud/i, "sun"], [/gust/i, "launch"], [/launch|calm/i, "launch"],
+    [/top of lift|aloft|offshore|over the back|NW|drift|LAX-DAG/i, "aloft"], [/below .* ft/i, "height"], [/blown out/i, "launch"],
+    [/season/i, "season"], [/clean day/i, "clean"]];
+  const catOf = (t) => (CAT.find(([re]) => re.test(t)) || [, "other"])[1];
+  const NAME = { height: "Height", climb: "Climb", launch: "Launch wind", aloft: "Wind aloft", rain: "Rain", sun: "Sun", season: "Season", clean: "Clean day", other: "Other" };
+  const tidy = (t) => String(t).replace("little sun (mid/high cloud)", "less sun").replace(/^chance of rain.*/, "showers likely").replace(/^offshore /, "offshore ").replace(/: no-go$/, " → no-go").replace(/: (\d) at most$/, " → $1 at most");
+  const track = (from, to, col) => {
+    const x = (v) => ((Math.max(1, Math.min(5, v)) - 1) / 4 * 100).toFixed(1);
+    const lo = Math.min(from, to), hi = Math.max(from, to);
+    return `<span class="lg-tr"><i class="lg-keep" style="width:${x(lo)}%;background:${col}"></i>${hi > lo ? `<i class="lg-lost" style="left:${x(lo)}%;width:${(x(hi) - x(lo)).toFixed(1)}%"></i>` : ""}</span>`;
+  };
+  const r1 = (v) => (Math.round(v * 10) / 10).toFixed(1);
+  window.scoreLedger = (c, qv) => {
+    const f = (k) => (c.factors || []).find((x) => x.k === k);
+    const adj = c.adj || [];
+    const hit = new Set(adj.map(([t]) => catOf(t)));
+    const params = [];
+    const h = f("Height") || f("Thermal height");
+    if (h && h.v !== "–") params.push({ cat: "height", v: h.v, q: h.q, why: h.q < 0.5 ? "low, part of the models' number" : "" });
+    const sink = c.sink || 1.1, core = c.core || 1.4;
+    if (c.wstar != null && c.style !== "ridge") {
+      const cl = Math.max(0, core * c.wstar - sink);
+      params.push({ cat: "climb", v: `${cl.toFixed(1)} m/s`, q: Math.min(1, cl / 2), why: cl < 1 ? "weak, part of the models' number" : "" });
+    }
+    const w = f("Wind 1 pm");
+    if (w && w.v !== "–") params.push({ cat: "launch", v: w.v + " mph", q: w.q, why: w.q < 0.4 && c.style !== "ridge" ? "part of the models' number" : (c.style === "ridge" && w.q < 0.4 ? "light or cross for soaring, part of the models' number" : "") });
+    const a = f("Wind aloft");
+    if (a && a.v !== "–") params.push({ cat: "aloft", v: a.v, q: a.q, why: "" });
+    if (c.rain_p != null) params.push({ cat: "rain", v: c.rain_p < 0.05 ? "dry" : `${Math.round(c.rain_p * 100)}% chance`, q: 1 - c.rain_p, why: "" });
+    if (c.cloud) params.push({ cat: "sun", v: c.cloud.okta ? `mid/high cloud ${c.cloud.okta}/8` : "clear", q: 1 - (c.cloud.sun_loss || 0), why: "" });
+    const good = params.filter((p) => !hit.has(p.cat) && !p.why && p.q >= 0.4);
+    const softBad = params.filter((p) => !hit.has(p.cat) && (p.why || p.q < 0.4));
+    const base = c.base != null ? c.base : c.rating;
+    const mods = Object.entries(c.models || {}).map(([m, v]) => `${m} ${r1(v).replace(".0", "")}`).join(" · ");
+    const row = (cls, ic, name, val, why, pts, tr) => `<div class="lg-row ${cls}"><span class="lg-ic">${ic}</span><span class="lg-k">${name}</span><span class="lg-v">${val}${why ? `<small>${why}</small>` : ""}</span><span class="lg-p">${pts}</span>${tr || ""}</div>`;
+    let run = base;
+    const out = [];
+    out.push(row("lg-base", "", "Models", mods ? `<span class="lg-mods">${mods}</span>` : "", c.style === "ridge" ? "ridge lift from the wind" : "lift height and climb on the day", `<b>${r1(base)}</b>`, track(base, base, qv(base))));
+    for (const p of good) out.push(row("lg-good", "✓", NAME[p.cat], p.v, "", ""));
+    for (const p of softBad) out.push(row("lg-soft", "✗", NAME[p.cat], p.v, p.why || "", "<em>in base</em>"));
+    for (const [t, v] of adj) {
+      const cat = catOf(t), p = params.find((x) => x.cat === cat);
+      const before = run; run = Math.max(1, run + v);
+      out.push(row("lg-bad", "✗", NAME[cat], p ? p.v : "", tidy(t), `${v > 0 ? "+" : "−"}${Math.abs(v).toFixed(1)}`, track(run, before, "#c9ced6")));
+    }
+    out.push(row("lg-total", "=", "Score", "", "", `<b>${r1(c.rating)}</b>`, track(c.rating, c.rating, qv(c.rating))));
+    return `<div class="dsec lg"><span class="dh">How the score was made</span><div class="lg-list">${out.join("")}</div></div>`;
+  };
+})();
