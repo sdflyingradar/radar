@@ -125,3 +125,23 @@ html body details.day[data-date]:not(#story) > summary.hd .notes .rx { order: 1 
   html[data-lay] body details.day[data-date]:not(#story) > .list > .sgrp.coast::after, html[data-lay] body details.day[data-date]:not(#story) > .list > .sgrp.coast::before { display: none !important; }
   html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] { grid-row: 3 !important; grid-column: 3 / span 2 !important; margin-left: 26px !important; width: auto !important; min-width: 0 !important; }
 }
+/* computer: Torrey's name, verdict and warnings on one top line, so the wind timeline gets the room */
+@media (min-width: 900px) {
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] { display: grid !important; grid-template-columns: auto minmax(0, 1fr) auto !important; column-gap: 10px !important; row-gap: 8px !important; align-items: center !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .nmrow { display: contents !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .nmw { grid-column: 1 !important; grid-row: 1 !important; flex-direction: row !important; align-items: baseline !important; gap: 8px !important; white-space: nowrap; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] > .spills { grid-column: 2 !important; grid-row: 1 !important; align-self: center !important; justify-content: flex-start !important; margin: 2px 0 0 !important; flex-wrap: nowrap !important; overflow: visible !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] > .spills .rx { height: 16px !important; font-size: .5rem !important; padding: 0 4px !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .dscore { grid-column: 3 !important; grid-row: 1 !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .wtab { grid-column: 1 / -1 !important; grid-row: 2 !important; margin: 0 !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .wtab .hwt .hh { font-size: .58rem !important; visibility: visible !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .wtab .hwt .hc { height: 7px !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .wtab .hwt .wc { padding: 3px 0 !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .wtab .hwt .wc b { font-size: .7rem !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .wtab .hwt .wc b small { display: inline !important; font-size: .52rem !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .wtab .hwt .wc i { width: 10px !important; height: 12px !important; }
+}
+@media (min-width: 900px) {
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .wtab, html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .wtab .hwt { width: 100% !important; max-width: none !important; }
+}
+@media (min-width: 900px) { html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] { padding-right: 12px !important; } }
