@@ -1020,6 +1020,9 @@ html[data-lay] body details.day[data-date]:not(#story) > summary.hd .notes .rx .
   html body details.day:not(#story):not([open]) > summary.hd { grid-template-columns: 68px 110px minmax(0, 1fr) !important; padding-right: 26px !important; }
   html body details.day:not(#story):not([open]) > summary.hd .sum .sc .xcmark { display: none !important; }
 }
+/* LAB: the signals always on top (fixed place), the day's patterns under them, however many there are */
+html body details.day[data-date]:not(#story) > summary.hd .notes .sig { order: 0 !important; }
+html body details.day[data-date]:not(#story) > summary.hd .notes .rx { order: 1 !important; }
 
 </style>
 </head>
