@@ -1069,6 +1069,7 @@ html[data-lay="grid"] body details.day:not(#story) .list .srow.srow::before, htm
 .lg-tr i { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 3px; }
 .lg-tr .lg-lost { background: repeating-linear-gradient(135deg, #e7a0a0 0 3px, #f5d3d3 3px 6px); border-radius: 0 3px 3px 0; }
 .lg-bad .lg-tr .lg-keep { opacity: .55; }
+.lg-plus .lg-ic, .lg-plus .lg-p { color: #2f8f4a; }
 
 </style>
 </head>
@@ -2072,16 +2073,47 @@ $("#reload").addEventListener("click", load);
     if (a && a.v !== "–") params.push({ cat: "aloft", v: a.v, q: a.q, why: "" });
     if (c.rain_p != null) params.push({ cat: "rain", v: c.rain_p < 0.05 ? "dry" : `${Math.round(c.rain_p * 100)}% chance`, q: 1 - c.rain_p, why: "" });
     if (c.cloud) params.push({ cat: "sun", v: c.cloud.okta ? `mid/high cloud ${c.cloud.okta}/8` : "clear", q: 1 - (c.cloud.sun_loss || 0), why: "" });
-    const good = params.filter((p) => !hit.has(p.cat) && !p.why && p.q >= 0.4);
-    const softBad = params.filter((p) => !hit.has(p.cat) && (p.why || p.q < 0.4));
     const base = c.base != null ? c.base : c.rating;
     const mods = Object.entries(c.models || {}).map(([m, v]) => `${m} ${r1(v).replace(".0", "")}`).join(" · ");
     const row = (cls, ic, name, val, why, pts, tr) => `<div class="lg-row ${cls}"><span class="lg-ic">${ic}</span><span class="lg-k">${name}</span><span class="lg-v">${val}${why ? `<small>${why}</small>` : ""}</span><span class="lg-p">${pts}</span>${tr || ""}</div>`;
     let run = base;
     const out = [];
-    out.push(row("lg-base", "", "Models", mods ? `<span class="lg-mods">${mods}</span>` : "", c.style === "ridge" ? "ridge lift from the wind" : "lift height and climb on the day", `<b>${r1(base)}</b>`, track(base, base, qv(base))));
-    for (const p of good) out.push(row("lg-good", "✓", NAME[p.cat], p.v, "", ""));
-    for (const p of softBad) out.push(row("lg-soft", "✗", NAME[p.cat], p.v, p.why || "", "<em>in base</em>"));
+    const bp = c.base_parts;
+    const W = { otb: "over the back", windy: "blown out", strong: "too strong", light: "too light", cross: "cross", gusty: "gusty" };
+    const why = (c.why || []).filter((x) => W[x]).map((x) => W[x]).join(", ");
+    const BASE = {
+      launch: ["Launch wind", w ? w.v + " mph" : "", why ? `${why} in the flying window` : "in the flying window"],
+      climb: ["Climb", params.find((p) => p.cat === "climb")?.v || "", "weak climbs"],
+      lowlift: ["Lift over launch", "", "thin lift above launch"],
+      offshore: ["Wind aloft", a ? a.v : "", "offshore in the flying layer"],
+      aloft: ["Wind aloft", a ? a.v : "", "strong or wrong flow aloft"],
+      gust: ["Gusts", "", "over 18 mph"],
+      storm: ["Storms", "", "overdevelopment risk"],
+      xccap: ["Height", "", "above XC height, but no XC conditions: counts as a 3.4"],
+      other: ["Other", "", ""],
+      glass: ["Glass-off", "", "an evening glass-off holds it up"],
+      models: ["Models", mods, "the models' blend"],
+    };
+    const stepCat = { launch: "launch", climb: "climb", lowlift: "height", offshore: "aloft", aloft: "aloft", xccap: "height" };
+    const baseHit = new Set(bp ? bp.steps.filter(([, v]) => v < 0).map(([k]) => stepCat[k]).filter(Boolean) : []);
+    const isGood = (p) => !hit.has(p.cat) && !baseHit.has(p.cat) && (bp ? true : !p.why && p.q >= 0.4);
+    if (bp) {
+      /* start from the height: where the top of lift sits on the 1-5 scale, then each step the models' number took */
+      run = bp.lv;
+      const hp = params.find((p) => p.cat === "height");
+      out.push(row("lg-base", "", "Height", hp ? hp.v : "", "top of lift on the 1–5 scale", `<b>${r1(bp.lv)}</b>`, track(bp.lv, bp.lv, qv(bp.lv))));
+      for (const p of params.filter((p) => p.cat !== "height" && isGood(p))) out.push(row("lg-good", "✓", NAME[p.cat], p.v, "", ""));
+      for (const [k, v] of bp.steps) {
+        const [nm, val, rs] = BASE[k] || [k, "", ""];
+        const before = run; run = Math.max(1, Math.min(5, run + v));
+        out.push(row(v < 0 ? "lg-bad" : "lg-plus", v < 0 ? "✗" : "+", nm, val, rs, `${v > 0 ? "+" : "−"}${Math.abs(v).toFixed(1)}`, track(Math.min(run, before), Math.max(run, before), "#c9ced6")));
+      }
+      run = base;
+    } else {
+      out.push(row("lg-base", "", "Models", mods ? `<span class="lg-mods">${mods}</span>` : "", c.style === "ridge" ? "ridge lift from the wind" : "lift height and climb on the day", `<b>${r1(base)}</b>`, track(base, base, qv(base))));
+      for (const p of params.filter(isGood)) out.push(row("lg-good", "✓", NAME[p.cat], p.v, "", ""));
+      for (const p of params.filter((p) => !hit.has(p.cat) && !isGood(p))) out.push(row("lg-soft", "✗", NAME[p.cat], p.v, p.why || "", "<em>in base</em>"));
+    }
     for (const [t, v] of adj) {
       const cat = catOf(t), p = params.find((x) => x.cat === cat);
       const before = run; run = Math.max(1, run + v);

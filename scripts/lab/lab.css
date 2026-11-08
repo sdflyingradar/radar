@@ -145,3 +145,4 @@ html[data-lay="grid"] body details.day:not(#story) .list .srow.srow::before, htm
 .lg-tr i { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 3px; }
 .lg-tr .lg-lost { background: repeating-linear-gradient(135deg, #e7a0a0 0 3px, #f5d3d3 3px 6px); border-radius: 0 3px 3px 0; }
 .lg-bad .lg-tr .lg-keep { opacity: .55; }
+.lg-plus .lg-ic, .lg-plus .lg-p { color: #2f8f4a; }

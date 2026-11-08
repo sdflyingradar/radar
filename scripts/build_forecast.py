@@ -136,6 +136,29 @@ def model_weight(name, names):
     return MODEL_WEIGHT.get(name, 1)
 
 
+def base_breakdown(D, base_r):
+    """The models' number told as steps, blended across the models like the rating: the height level, then the
+    points each cause took (launch wind, climb, offshore, ...), a glass-off floor, and whatever the blend of the
+    models adds on top ("models"). None for sites rated another way (ridge, convergence, switch)."""
+    bp = {k: v.get("base_parts") for k, v in D.items() if v.get("base_parts")}
+    if not bp or len(bp) < len(D):
+        return None
+    w = {k: model_weight(k, D) for k in bp}
+    tw = sum(w.values()) or 1.0
+    mean = lambda f: sum(w[k] * f(v) for k, v in bp.items()) / tw
+    lv = mean(lambda v: v["lv"])
+    cats = sorted({c for v in bp.values() for c in v["loss"]})
+    loss = {c: mean(lambda v, c=c: v["loss"].get(c, 0.0)) for c in cats}
+    glass = mean(lambda v: v.get("glass", 0.0))
+    rest = base_r - (lv - sum(loss.values()) + glass)
+    steps = [[c, -round(x, 2)] for c, x in sorted(loss.items(), key=lambda t: -t[1]) if x >= 0.05]
+    if glass >= 0.05:
+        steps.append(["glass", round(glass, 2)])
+    if abs(rest) >= 0.05:
+        steps.append(["models", round(rest, 2)])
+    return {"lv": round(lv, 2), "steps": steps}
+
+
 def blend(ratings):
     """{model: value} -> the day's value: weighted mean on HRRR/RRFS days, weighted median otherwise."""
     ratings = {k: v for k, v in ratings.items() if v is not None}
@@ -834,6 +857,10 @@ def score_hour(site, hr, i, levels, elev_m):
                if onog else None)
 
     codes, q = [], 1.0
+    qp = {}                                      # what took q down, by cause (multipliers), for the score breakdown
+    def qx(cat, m):
+        nonlocal q
+        q *= m; qp[cat] = qp.get(cat, 1.0) * m
     launch = None
     # rain is only noted here; it sets the score per day in build(): a likely (>= RAIN_P) wet day is a no-go,
     # anything less is just a "rain x%" tag
@@ -842,7 +869,7 @@ def score_hour(site, hr, i, levels, elev_m):
     elif pr >= 0.1:
         codes.append("showers")
     if cape >= 2000:
-        q *= 0.75; codes.append("cape")
+        qx("storm", 0.75); codes.append("cape")
     # launch wind
     lo, hi = site["wind_mph"]
     on = good_launch = None
@@ -863,23 +890,23 @@ def score_hour(site, hr, i, levels, elev_m):
             # a cross wind costs more the stronger it is: nothing up to ~3 mph, half the hour from 6 mph;
             # at the thermal sites the day rule on degrees off the launch takes care of it instead
             if site.get("style") not in ("thermal", "window"):
-                q *= 1 - 0.5 * clamp((lw_mph - CROSS_FREE_MPH) / (CROSS_FULL_MPH - CROSS_FREE_MPH))
+                qx("launch", 1 - 0.5 * clamp((lw_mph - CROSS_FREE_MPH) / (CROSS_FULL_MPH - CROSS_FREE_MPH)))
             codes.append("cross"); launch = cross[2]
         elif not on and not light and (site["kind"] != "ridge" or lw_mph > site.get("otb_mph", 5)):
-            q = 0.0; codes.append("otb"); launch = "over the back"
+            qx("launch", 0.0); codes.append("otb"); launch = "over the back"
         elif site["kind"] == "ridge" and (lw_mph > hi or (lg_mph is not None and lg_mph > site.get("gust_mph", 25))):
             # Torrey: over 20 mph, or gusts over 25, is simply too windy
-            q = 0.0; codes.append("windy"); launch = "too windy"
+            qx("launch", 0.0); codes.append("windy"); launch = "too windy"
         elif lw_mph > hi + 5:
-            q = 0.0; codes.append("windy"); launch = "blown out"
+            qx("launch", 0.0); codes.append("windy"); launch = "blown out"
         elif lw_mph > hi:
-            q *= 0.5; codes.append("strong"); launch = "strong"
+            qx("launch", 0.5); codes.append("strong"); launch = "strong"
         elif lw_mph < site.get("min_mph", lo) and site["kind"] == "ridge":
             # Torrey: under min_mph (4) it's usually not soarable
-            q *= 0.1; codes.append("light"); launch = "too light"
+            qx("launch", 0.1); codes.append("light"); launch = "too light"
         elif lw_mph < lo and site["kind"] == "ridge":
             # min_mph to the low end of the range (4-6 mph): marginal (the real wind is often a bit more than forecast)
-            q *= 0.6; launch = "light"
+            qx("launch", 0.6); launch = "light"
         elif lw_mph < lo:
             launch = "light"
     # gusts at the thermal sites: over 12 mph is gusty (the launch-wind bar drops and the day loses half a
@@ -888,7 +915,7 @@ def score_hour(site, hr, i, levels, elev_m):
     if site["kind"] != "ridge" and lg_mph is not None:
         gcat = 2 if lg_mph > GUST_NOGO_MPH else 1 if lg_mph > GUST_WARN_MPH else 0
         if gcat == 2:
-            q = 0.0; codes.append("windy"); launch = "too windy"
+            qx("gust", 0.0); codes.append("windy"); launch = "too windy"
         elif gcat == 1:
             codes.append("gusty")
             if launch in (None, "good", "light"):
@@ -899,11 +926,11 @@ def score_hour(site, hr, i, levels, elev_m):
             good_launch = False
     # offshore through the flying layer: this hour is a no-go however the valley wind looks
     if off_mph is not None and off_mph >= onog.get("mph", 6):
-        q = 0.0; codes.append("offshore"); launch = "offshore aloft"
+        qx("offshore", 0.0); codes.append("offshore"); launch = "offshore aloft"
     # wind aloft: strength and direction
     if a_max is not None and a_max > site["aloft_max_kt"]:
         if site["kind"] in ("ridge", "convergence"):
-            q *= clamp(1 - (a_max - site["aloft_max_kt"]) / 10)
+            qx("aloft", clamp(1 - (a_max - site["aloft_max_kt"]) / 10))
         codes.append("aloft")
     # convergence sites are killed by even light synoptic flow from the wrong side
     bad_min = site.get("aloft_bad_min_kt") or (3 if site["kind"] == "convergence" else 6)
@@ -919,13 +946,13 @@ def score_hour(site, hr, i, levels, elev_m):
     # card but stays out of the rating. Only a convergence site needs it, since the wrong synoptic
     # flow stops the convergence from setting up at all.
     if bad_dir and site["kind"] == "convergence":
-        q *= clamp(1 - (a_spd - bad_min + 2) / 8) * 0.5
+        qx("aloft", clamp(1 - (a_spd - bad_min + 2) / 8) * 0.5)
         codes.append("aloftdir")
     elif bad_dir:
         codes.append("drift")
         bad_dir = False
     if site["kind"] == "convergence" and a_spd is not None and a_spd > 10:
-        q *= clamp(1 - (a_spd - 10) / 10)
+        qx("aloft", clamp(1 - (a_spd - 10) / 10))
         codes.append("aloft")
     t700 = _at(hr, "temperature_700hPa", i)
     t850 = _at(hr, "temperature_850hPa", i)
@@ -936,7 +963,10 @@ def score_hour(site, hr, i, levels, elev_m):
         lift = clamp((agl - 100) / (ok_agl - 100))
         # thermal strength from the climb rate, linear: 0 m/s none, 1 m/s half, 2 m/s and more full
         strength = clamp((CORE * wstar - SINK) / 2.0)
-        q *= 0.15 + 0.85 * lift * (0.4 + 0.6 * strength)
+        both = 0.15 + 0.85 * lift * (0.4 + 0.6 * strength)
+        lift_only = 0.15 + 0.85 * lift              # split: the lift share (height above launch), then the climb share
+        qx("lowlift", lift_only)
+        qx("climb", both / lift_only if lift_only > 0 else 1.0)
         if agl < 200:
             codes.append("lid")
         elif wstar < 1.0:
@@ -972,13 +1002,37 @@ def score_hour(site, hr, i, levels, elev_m):
             "launch_pts": launch_pts if launch_pts is not None else (1.0 if good_launch else 0.0),
             "dbg": [top_parcel, blh, base, z0],              # height ingredients, for calibration only
             "usable": usable, "usable_show": usable_show, "peak_top": peak_top, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, CORE * wstar - SINK),
-            "gcat": gcat,
+            "gcat": gcat, "qp": qp,
             "into": bool(on and lw_mph is not None and lw_mph >= max(3.0, lo)),   # blowing into the launch, not just light
             "off": (angdiff(ld, site_face(site)) if site_face(site) is not None and ld is not None
                     and lw_mph is not None and not light and (site["kind"] != "ridge" or lw_mph > 4) else None),
             "lw": lw_mph, "ld": ld, "lg": lg_mph, "a_max": a_max, "tw": (tw_dir, tw_spd) if tw_spd is not None else None, "a_spd": a_spd, "a_dir": a_dir,
             "pr": pr, "cape": cape, "codes": codes + (["venturi"] if venturi else []), "pts": pts_h,
             "offshore": off_mph}
+
+
+def score_parts(lv_raw, lv, q, qp):
+    """One hour's rating 1 + (lv - 1) * clamp(q / 0.6), told as steps: the height level (lv_raw), a cap when the
+    lift is above the XC height but there are no XC conditions (xccap), then what each cause in q took. The points
+    a cause takes are its share of the shortfall on a log scale (q = product of the causes), so they add up."""
+    loss = {}
+    if lv_raw - lv > 1e-6:
+        loss["xccap"] = lv_raw - lv
+    short = (lv - 1.0) * (1 - clamp(q / 0.6))
+    if short > 1e-6:
+        cuts = {c: m for c, m in qp.items() if m < 0.999}
+        zeros = [c for c, m in cuts.items() if m <= 1e-6]
+        if zeros:
+            for c in zeros:
+                loss[c] = loss.get(c, 0.0) + short / len(zeros)
+        elif cuts:
+            logs = {c: -math.log(m) for c, m in cuts.items()}
+            tot = sum(logs.values())
+            for c, l in logs.items():
+                loss[c] = loss.get(c, 0.0) + short * l / tot
+        else:
+            loss["other"] = short
+    return {"lv": lv_raw, "loss": loss}
 
 
 def ceil_level(site, ft):
@@ -1093,6 +1147,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     windy_share = 0.0
     switch_h, switch_tag = None, None
     ridge_great = False
+    base_parts = None                     # thermal sites: the base as height level minus what each cause took
     if style == "ridge":
         # Torrey: a good ridge-soaring day is a 4, a light or cross one about 3; a straight WSW-W-WNW wind
         # that holds through the afternoon is a sure 4; a thermal day is a 5.
@@ -1190,6 +1245,14 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
             if h4 is not None:
                 ranked = [(h, hour_r(dict(sc, peak_top=h4), True), sc) for h, _r, sc in ranked]
             rating = sum(x[1] for x in ranked) / len(ranked)
+            parts = []
+            for _h, _r, _sc in ranked:
+                top_ft_ = (h4 if h4 is not None else _sc["peak_top"]) * FT
+                lv_raw = ceil_level(site, top_ft_)
+                lv = lv_raw if (_sc["xc_s"] > 0 or top_ft_ < (site.get("xc_top_ft") or 1e9)) else min(lv_raw, 3.4)
+                parts.append(score_parts(lv_raw, lv, _sc["q"], _sc.get("qp") or {}))
+            base_parts = {"lv": sum(x["lv"] for x in parts) / len(parts),
+                          "loss": {c_: sum(x["loss"].get(c_, 0.0) for x in parts) / len(parts) for c_ in {c for x in parts for c in x["loss"]}}}
             best_h, _r, sc = ranked[0]
             peak = h4 if h4 is not None else sum(x[2]["peak_top"] for x in ranked) / len(ranked)
             xc_now = sc["xc_s"] > 0 and rating >= 3.5
@@ -1198,6 +1261,8 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         if style not in ("convergence", "switch") or site.get("glass_off"):
             glass_r = 3.0 if good_glass else (2.4 if glass_ok else (1.8 if glass_hours else 1.0))
             if glass_r > rating:
+                if base_parts is not None:
+                    base_parts["glass"] = glass_r - rating
                 rating = glass_r
     glass_led = style not in ("ridge", "convergence", "switch") and glass_ok and rating <= 3.05 and rating >= 2.0 and (
         not win or max(1.0 + (min(ceil_level(site, sc["peak_top"] * FT), 3.5) - 1.0) * clamp(sc["q"] / 0.6) for _, sc in win) < 2.8)
@@ -1290,7 +1355,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "nw_share": (sum(1 for _, sc in win if sc.get("tw") and wrap_in(sc["tw"][0], 293, 15) and sc["tw"][1] * 1.15078 >= 5)
                      / len(win)) if win else 0.0, "xc_day": xc_day, "label": label, "codes": codes, "when": when,
         "postfrontal": postfrontal, "glass": glass_ok, "good_glass": good_glass, "glass_hours": glass_hours,
-        "gwin": [gwin[0][0], gwin[-1][0]] if gwin else None, "sunset": sunset_h,
+        "gwin": [gwin[0][0], gwin[-1][0]] if gwin else None, "sunset": sunset_h, "base_parts": base_parts,
         "start": hours[k][0], "top": peak_show if peak_show is not None else med("usable_show", xblk), "base": med("base"), "wstar": med("wstar", xblk),
         "climb": med("climb", xblk), "lw": med("lw"), "ld": med("ld"),
         # the launch-wind bar: share of the whole window with a good launch (gusts, direction and speed in range)
@@ -2242,7 +2307,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             drow["sites"][s["id"]] = {
                 "rating": round(rating, 2), "label": label, "tags": tags, "xc": xc, "rain_p": round(shower_p, 2),
                 "good_glass": bool(lead and lead.get("good_glass")),
-                "base": round(base_r, 2), "adj": adj,
+                "base": round(base_r, 2), "adj": adj, "base_parts": base_breakdown(D, base_r),
                 "hours": {str(h): round(blend({m: a["hr"][h] for m, a in D.items() if h in (a.get("hr") or {})}), 1)
                           for h in range(9, 19) if any(h in (a.get("hr") or {}) for a in D.values())},
                 "win": (lead.get("win") if lead else None) or s.get("window"),
