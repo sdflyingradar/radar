@@ -42,7 +42,7 @@ html[data-lay="tiles"] body details.day:not(#story) .list .srow .warn-dot { disp
 /* the open tile: lifted, with a ring in its own colour */
 html[data-lay="grid"] body details.day:not(#story) .list .srow.srow[aria-expanded="true"], html[data-lay="tiles"] body details.day:not(#story) .list .srow.srow[aria-expanded="true"] {
   border-radius: 10px !important; box-shadow: inset 5px 0 0 var(--rc), 0 0 0 2px var(--rc), 0 6px 16px -8px rgba(0,0,0,.35) !important; transform: translateY(-1px); }
-html[data-lay] body details.day:not(#story) .list:has(.srow[aria-expanded="true"]) .srow.srow:not([aria-expanded="true"]) { opacity: .62; }
+html[data-lay] body details.day:not(#story) .list:has(.srow[aria-expanded="true"]) .srow.srow:not([aria-expanded="true"]) { opacity: .45; filter: saturate(.7); transition: opacity .2s ease, filter .2s ease; }
 /* the third level: full width under the row, with a little notch pointing at the open tile */
 html[data-lay="grid"] body details.day:not(#story) .list .det.det, html[data-lay="tiles"] body details.day:not(#story) .list .det.det {
   grid-column: 1 / -1; margin: 4px 0 4px !important; border-radius: 12px !important; position: relative;
