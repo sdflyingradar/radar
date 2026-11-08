@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-08T19:16+00:00",
+ "generated": "2026-11-08T20:00+00:00",
  "sample": false,
  "calib": {
   "2026-11-08": {
@@ -33239,10 +33239,10 @@
    }
   }
  },
- "overview": "Weak offshore now \u00b7 ridge through Tue \u00b7 Santa Ana now \u00b7 switch day now",
+ "overview": "Weak offshore now \u00b7 Santa Ana now \u00b7 switch day now \u00b7 santa ana Tue",
  "gradient": {
-  "now": -3.8,
-  "at": "2026-11-08T18:00Z",
+  "now": -3.5,
+  "at": "2026-11-08T19:00Z",
   "n": 72
  },
  "models": {
@@ -33267,25 +33267,25 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus), surface heat flux (6500 values)",
-  "HRRR trips: using the last good run, fetched 0.1 h ago",
+  "HRRR trips: using the last good run, fetched 0.9 h ago",
   "RRFS: ok (ncep_rrfs_conus), surface heat flux (8372 values)",
-  "RRFS trips: using the last good run, fetched 3.3 h ago",
-  "GFS: using the last good run, fetched 0.1 h ago",
-  "ECMWF: using the last good run, fetched 0.1 h ago",
-  "ICON: using the last good run, fetched 0.1 h ago",
-  "ens GFS ens: using the last good run, fetched 5.9 h ago",
-  "ens ECMWF ens: using the last good run, fetched 2.3 h ago",
-  "ens ICON ens: using the last good run, fetched 3.3 h ago",
+  "RRFS trips: using the last good run, fetched 4.0 h ago",
+  "GFS: using the last good run, fetched 0.8 h ago",
+  "ECMWF: using the last good run, fetched 0.8 h ago",
+  "ICON: using the last good run, fetched 0.8 h ago",
+  "ens GFS ens: using the last good run, fetched 6.7 h ago",
+  "ens ECMWF ens: using the last good run, fetched 3.0 h ago",
+  "ens ICON ens: using the last good run, fetched 4.0 h ago",
   "NWS AFD: ok",
-  "gradient HRRR: bias +1.1 mb over 72 h",
+  "gradient HRRR: bias +1.2 mb over 72 h",
   "gradient RRFS: bias +0.9 mb over 72 h",
   "gradient GFS: bias +1.2 mb over 72 h",
   "gradient ECMWF: bias +0.6 mb over 72 h",
   "gradient ICON: bias -0.1 mb over 72 h",
   "clouds HRRR: ok (ncep_hrrr_conus)",
   "clouds RRFS: ok (ncep_rrfs_conus)",
-  "clouds ECMWF: using the last good run, fetched 0.1 h ago",
-  "clouds ICON: using the last good run, fetched 0.1 h ago",
+  "clouds ECMWF: using the last good run, fetched 0.8 h ago",
+  "clouds ICON: using the last good run, fetched 0.8 h ago",
   "wind: GFS and ICON use ECMWF's winds where RRFS and ECMWF overlap"
  ],
  "sources": [
@@ -33296,7 +33296,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-11-08T17:00+00:00",
-   "fetched": "2026-11-08T19:14+00:00",
+   "fetched": "2026-11-08T19:58+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -33306,7 +33306,7 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": "2026-11-08T12:00+00:00",
-   "fetched": "2026-11-08T19:14+00:00",
+   "fetched": "2026-11-08T19:58+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -33318,7 +33318,7 @@
    "run": null,
    "fetched": "2026-11-08T19:08+00:00",
    "url": "https://open-meteo.com/en/docs",
-   "note": "cached, fetched 0 h ago"
+   "note": "cached, fetched 1 h ago"
   },
   {
    "name": "ECMWF",
@@ -33329,7 +33329,7 @@
    "run": null,
    "fetched": "2026-11-08T19:10+00:00",
    "url": "https://open-meteo.com/en/docs",
-   "note": "cached, fetched 0 h ago"
+   "note": "cached, fetched 1 h ago"
   },
   {
    "name": "ICON",
@@ -33340,7 +33340,7 @@
    "run": null,
    "fetched": "2026-11-08T19:11+00:00",
    "url": "https://open-meteo.com/en/docs",
-   "note": "cached, fetched 0 h ago"
+   "note": "cached, fetched 1 h ago"
   },
   {
    "name": "GFS ens",
@@ -33351,7 +33351,7 @@
    "run": null,
    "fetched": "2026-11-08T13:19+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api",
-   "note": "cached, fetched 6 h ago"
+   "note": "cached, fetched 7 h ago"
   },
   {
    "name": "ECMWF ens",
@@ -33362,7 +33362,7 @@
    "run": null,
    "fetched": "2026-11-08T16:57+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api",
-   "note": "cached, fetched 2 h ago"
+   "note": "cached, fetched 3 h ago"
   },
   {
    "name": "ICON ens",
@@ -33373,7 +33373,7 @@
    "run": null,
    "fetched": "2026-11-08T15:57+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api",
-   "note": "cached, fetched 3 h ago"
+   "note": "cached, fetched 4 h ago"
   },
   {
    "name": "NWS San Diego forecast discussion",
@@ -33381,8 +33381,8 @@
    "provider": "NWS",
    "id": "AFD SGX",
    "status": "ok",
-   "run": "2026-11-08T18:20:00+00:00",
-   "fetched": "2026-11-08T19:16+00:00",
+   "run": "2026-11-08T19:31:00+00:00",
+   "fetched": "2026-11-08T20:00+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -33391,8 +33391,8 @@
    "provider": "NOAA / Open-Meteo",
    "id": "LAX-DAG",
    "status": "ok",
-   "run": "2026-11-08T18:00Z",
-   "fetched": "2026-11-08T19:16+00:00",
+   "run": "2026-11-08T19:00Z",
+   "fetched": "2026-11-08T20:00+00:00",
    "url": "https://www.weather.gov/lox/LAXGRDNEW"
   },
   {
@@ -33402,36 +33402,35 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-08T19:16+00:00",
+   "fetched": "2026-11-08T20:00+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
  "nws": {
-  "issued": "2026-11-08T18:20:00+00:00",
-  "synopsis": "Weak to moderate Santa Ana winds will continue today. High temperatures 5-15 degrees above normal for the coastal areas and valleys today. Winds weaken into next week as high pressure moves into the area, keeping temperatures above normal. Gradual cooling with a 15-25% chance of precipitation late in the week.",
+  "issued": "2026-11-08T19:31:00+00:00",
+  "synopsis": "Warm conditions and weak Santa Ana winds can be expected today. Winds weaken into Monday, but above average temperatures are expected to continue through the middle of the week. Gradual cooling is expected for the second half of the week with precipitation chances next weekend.",
   "systems": [
-   "Skies are mostly clear this morning under weak offshore flow.",
-   "Northeast to east winds are gusting 20-30 mph, mainly in the Cajon Pass and along the coastal slopes of the San Diego County mountains and Santa Ana Mountains.",
-   "Offshore flow continues to weaken on Monday, then remains weak through at least Thursday.",
-   "Weak upper level ridging remains in place through Tuesday, then the ridge amplifies across the Southwest on Wednesday ahead of a trough developing off the coast, both of which shift east on Thursday."
+   "The combination of weak offshore flow and a building ridge of high pressure will keep high temperatures today 10 to locally up to 20 degrees above average, with the greatest departure from average along the coast.",
+   "An upper level ridge will continue to build over Southern California for the first half of the week.",
+   "The weak offshore flow is expected to continue through the middle of the week as well although wind gusts are expected to be 35 mph or less.",
+   "The building ridge and offshore flow will keep marine layer low clouds and fog mostly absent from the coast through at least the middle of the week."
   ],
   "bullets": [
-   "Weak to moderate Santa Ana winds will continue today",
-   "High temperatures 5-15 degrees above normal for the coastal areas and valleys today",
-   "Winds weaken into next week as high pressure moves into the area, keeping temperatures above normal",
-   "Gradual cooling with a 15-25% chance of precipitation late in the week",
-   "Skies are clear this morning under weak offshore flow"
+   "Warm conditions and weak Santa Ana winds can be expected today",
+   "Winds weaken into Monday, but above average temperatures to continue through middle of the week",
+   "Gradual cooling is expected for the second half of the week with precipitation chances next weekend",
+   "Combination of weak offshore flow and a building ridge of high pressure will keep high temperatures today 10\u2026",
+   "An upper level ridge will continue to build over Southern California for the first half of the week"
   ],
   "summary": {
    "pattern": [
-    "Skies are clear this morning under weak offshore flow",
-    "Significant differences remain in the evolution of the upper level pattern as the jet tries to split",
-    "Winds weaken into next week as high pressure moves into the area"
+    "Combination of weak offshore flow and a building ridge of high pressure will keep high temperatures today 10 to locally up to 20 degrees above average",
+    "An upper level ridge will continue to build over Southern California for the first half of the week"
    ],
    "flying": [
-    "Weak to moderate Santa Ana winds will continue today",
-    "High temperatures 5-15 degrees above normal for the coastal areas and valleys today",
-    "Gradual cooling with a 15-25% chance of precipitation late in the week"
+    "Warm conditions and weak Santa Ana winds can be expected today",
+    "Winds weaken into Monday, but above average temperatures to continue through middle of the week",
+    "Gradual cooling is expected for the second half of the week with precipitation chances next weekend"
    ],
    "by": "rules"
   },
@@ -34271,7 +34270,7 @@
        -1.0
       ],
       [
-       "offshore LAX-DAG -4.5 mb: 2 at most",
+       "offshore LAX-DAG -4.6 mb: 2 at most",
        -1.9
       ]
      ],
@@ -35923,7 +35922,7 @@
      "base": 3.52,
      "adj": [
       [
-       "offshore LAX-DAG -4.5 mb: 2 at most",
+       "offshore LAX-DAG -4.6 mb: 2 at most",
        -1.5
       ]
      ],
@@ -36749,7 +36748,7 @@
       "w850": "E 6",
       "w700": "ENE 9",
       "rh": 19,
-      "grad": -2.8
+      "grad": -2.9
      },
      "RRFS": {
       "rain_mm": 0.0,
@@ -39993,7 +39992,7 @@
       "w850": "ESE 3",
       "w700": "E 4",
       "rh": 27,
-      "grad": -3.9
+      "grad": -4.0
      }
     }
    },
@@ -41518,7 +41517,7 @@
       {
        "k": "Wind 1 pm",
        "v": "W 5g17",
-       "sub": "later NW 5g18 \u00b7 gusty",
+       "sub": "later NW 5g18",
        "q": 0.27
       },
       {
@@ -42996,7 +42995,7 @@
       "w850": "NNE 6",
       "w700": "NE 7",
       "rh": 30,
-      "grad": -3.7
+      "grad": -3.8
      }
     }
    },
@@ -43741,7 +43740,7 @@
       {
        "k": "Wind 1 pm",
        "v": "E 7g14",
-       "sub": "later WNW 5g10 \u00b7 cross-N",
+       "sub": "later WNW 5g10 \u00b7 over the back",
        "q": 0.0
       },
       {
@@ -47307,7 +47306,7 @@
       {
        "k": "Wind 1 pm",
        "v": "WSW 8g16",
-       "sub": "later W 5g17 \u00b7 gusty",
+       "sub": "later W 5g17",
        "q": 0.47
       },
       {
@@ -48636,7 +48635,7 @@
       "w850": "SE 9",
       "w700": "SE 11",
       "rh": 29,
-      "grad": -3.2
+      "grad": -3.3
      }
     }
    },
@@ -52766,7 +52765,7 @@
       {
        "k": "Wind 1 pm",
        "v": "SSW 16g24",
-       "sub": "later S 17g29",
+       "sub": "later S 17g29 \u00b7 over the back",
        "q": 0.0
       },
       {
@@ -54108,5 +54107,5 @@
    }
   }
  ],
- "trend_ref": "2026-11-07T22:54+00:00"
+ "trend_ref": "2026-11-07T23:51+00:00"
 }
