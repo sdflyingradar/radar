@@ -12,8 +12,7 @@ header{display:flex;align-items:center;justify-content:space-between;margin:2px 
 h1{font-size:19px;font-weight:700;margin:0;letter-spacing:-.01em}
 .back{font-size:13px;color:var(--ink);text-decoration:none;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px}
 .box{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px}
-.row{display:grid;grid-template-columns:minmax(100px,min(26%,210px)) minmax(0,1fr);gap:12px;align-items:start}
-.row svg{width:100%;height:auto;display:block;border-radius:10px}
+#fmap svg,#fchart svg{width:100%;height:auto;display:block;border-radius:12px}
 .ph{font-size:13px;font-weight:700;margin:0 2px 6px}
 .fleg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11px;color:#475467;margin:6px 4px 0}
 .fleg i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:5px;vertical-align:3px}
@@ -21,15 +20,16 @@ h1{font-size:19px;font-weight:700;margin:0;letter-spacing:-.01em}
 </style></head><body><div class="wrap">
 <header><h1>LAX–DAG gradient</h1><a class="back" href="./">← Radar</a></header>
 <div class="box">
-  <div class="row"><div id="fmap"></div><div><div class="ph">Next days · by model</div><div id="fchart">Loading…</div></div></div>
+  <div id="fmap"></div>
+  <div class="ph" style="margin-top:14px">Next days · by model</div><div id="fchart">Loading…</div>
   <p class="note">Sea-level pressure at LAX minus Barstow-Daggett, the standard SoCal offshore measure. Below zero the desert pressure is higher and the air pushes offshore: about −2 mb weak, −4 mb a real Santa Ana, −6 mb strong. Black = observed at the two airports; the coloured lines are the models, each corrected by how far it was off the airports' readings over the last three days.</p>
 </div>
-<script src="scripts/sounding/foehn.js?v=202611080730"></script>
+<script src="scripts/sounding/foehn.js?v=202611080810"></script>
 <script>
 (async () => {
   try {
     const G = await (await fetch('data/gradient.json?' + Date.now())).json();
-    document.getElementById('fmap').innerHTML = foehnMapSVG(G, true);
+    document.getElementById('fmap').innerHTML = foehnMapSVG(G);
     document.getElementById('fchart').innerHTML = foehnChartSVG(G);
   } catch (e) { document.getElementById('fchart').textContent = 'Could not load the gradient: ' + e.message; }
 })();
