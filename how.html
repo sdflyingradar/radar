@@ -59,6 +59,20 @@ svg { width:100%; height:auto; display:block; }
 .rules th { text-align:left; font-weight:600; padding:6px 12px 6px 0; vertical-align:top; white-space:nowrap; }
 .rules td { padding:6px 0; } .rules tr + tr { border-top:1px solid var(--line); }
 @media (max-width:560px) { .rules th { white-space:normal; } }
+/* more views: the balloon and the regions, each a card with a clear button; the regions card is a live sketch */
+.views { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap:14px; max-width:76ch; }
+.view { display:flex; flex-direction:column; gap:10px; background:#fffdf9; border:1px solid var(--line); border-radius:14px; padding:16px 18px; line-height:1.5; }
+.view h3 { margin:0; font-size:1.02rem; }
+.view p { margin:0; font-size:.92rem; }
+.view ul { margin:0; padding-left:18px; font-size:.9rem; display:grid; gap:3px; }
+.vbtn { align-self:flex-start; margin-top:auto; display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:999px;
+  background:var(--ink); color:#fffdf9 !important; font-weight:600; font-size:.88rem; text-decoration:none; }
+.vbtn:hover { background:var(--orange); }
+.sketch { display:block; border-radius:10px; overflow:hidden; border:1px solid var(--line); background:#f5f4f0; position:relative; text-decoration:none; }
+.sketch svg { width:100%; height:220px; display:block; }
+.views .view:first-child .vbtn { margin-top:6px; }
+.sketch .tap { position:absolute; right:8px; bottom:8px; background:rgba(255,253,249,.92); color:var(--ink); font-size:.75rem; font-weight:600; padding:3px 9px; border-radius:999px; border:1px solid var(--line); }
+.sketch:hover .tap { color:var(--orange); border-color:var(--orange); }
 </style>
 </head><body>
 <main>
@@ -116,6 +130,25 @@ svg { width:100%; height:auto; display:block; }
 <p>The first 2–3 days use HRRR and RRFS, then RRFS with ECMWF, GFS and ICON. Days 5–7 run on global models only, so expect them to change. The main page lists every source and its run time.</p>
 </section>
 
+<h2>Two more views</h2>
+<section class="views">
+  <div class="view">
+    <h3>The morning balloon (sounding)</h3>
+    <p>Every morning around 4 am a weather balloon goes up from Miramar (Edwards on days they fly). It measures the real air, not a model.</p>
+    <ul>
+      <li><b>Thermal tops:</b> how high a thermal goes for a given ground temperature, and for today's forecast high.</li>
+      <li><b>Cloudbase</b> and <b>inversions</b> (the blue bands that cap the lift).</li>
+      <li><b>The balloon's path</b> on a little map, with the last few launches in grey.</li>
+    </ul>
+    <a class="vbtn" href="sounding.html">Open the sounding →</a>
+  </div>
+  <div class="view">
+    <h3>Regions</h3>
+    <p>San Diego and the trip areas split into regions, each with its thermals hour by hour: how strong and how high, from the same models. You also find each region's thermals in a site's detail.</p>
+    <a class="sketch" href="regions.html" aria-label="Open the regions map"><span id="rsketch"></span><span class="tap">Open the map →</span></a>
+  </div>
+</section>
+
 <h2>What it doesn't know</h2>
 <section class="how">
 <p>Live observations, local effects, turbulence and rotor, overdevelopment, closures, permits and airspace.</p>
@@ -136,4 +169,15 @@ svg { width:100%; height:auto; display:block; }
 <p class="expnote">Work in progress: several launches per area, measured along the terrain between them. The rating takes the best launch of the day.</p>
 <div class="grid big exp"><figure class="site big"><figcaption><b>Santa Barbara / Ojai</b><span>6 height points · wind from the launch</span></figcaption><svg viewBox="0 0 520 520" role="img" aria-label="Measuring points for Santa Barbara / Ojai"><circle cx="260.0" cy="260.0" r="62.7" class="ring"/><text x="307.4" y="212.6" class="km">10 km</text><circle cx="260.0" cy="260.0" r="125.5" class="ring"/><text x="351.7" y="168.3" class="km">20 km</text><circle cx="260.0" cy="260.0" r="188.2" class="ring"/><text x="396.1" y="123.9" class="km">30 km</text><line x1="260.0" y1="17.0" x2="260.0" y2="503.0" class="axis"/><line x1="17.0" y1="260.0" x2="503.0" y2="260.0" class="axis"/><text x="260.0" y="13.0" class="north">N</text><path d="M164.7 268.1 L186.6 294.2 A34.0 34.0 0 0 1 157.4 301.3 Z" class="sec acc"/><path d="M164.7 268.1 L157.4 301.3 A34.0 34.0 0 0 1 137.7 288.8 Z" class="sec pref"/><path d="M164.7 268.1 L137.7 288.8 A34.0 34.0 0 0 1 131.9 259.3 Z" class="sec acc"/><path d="M154.4 258.8 L176.2 284.9 A34.0 34.0 0 0 1 154.4 292.8 Z" class="sec acc"/><path d="M154.4 258.8 L154.4 292.8 A34.0 34.0 0 0 1 132.5 284.9 Z" class="sec pref"/><path d="M154.4 258.8 L132.5 284.9 A34.0 34.0 0 0 1 120.9 264.7 Z" class="sec acc"/><path d="M460.9 253.0 L484.9 277.1 A34.0 34.0 0 0 1 472.5 285.0 Z" class="sec acc"/><path d="M460.9 253.0 L472.5 285.0 A34.0 34.0 0 0 1 449.3 285.0 Z" class="sec pref"/><path d="M460.9 253.0 L449.3 285.0 A34.0 34.0 0 0 1 436.9 277.1 Z" class="sec acc"/><circle cx="164.7" cy="268.1" r="9" class="pt"/><circle cx="154.4" cy="258.8" r="9" class="pt"/><circle cx="460.9" cy="253.0" r="9" class="pt"/><circle cx="148.9" cy="258.5" r="9" class="pt"/><text x="156.9" y="246.5" text-anchor="start" class="pl">La Cumbre Peak</text><circle cx="227.4" cy="267.7" r="9" class="pt"/><text x="235.4" y="255.7" text-anchor="start" class="pl">Montecito crest</text><circle cx="310.0" cy="268.8" r="9" class="pt"/><text x="318.0" y="292.8" text-anchor="start" class="pl">Peak 4864</text><text x="150.7" y="273.1" text-anchor="end" class="ll">Skyport</text><text x="140.4" y="263.8" text-anchor="end" class="ll">EJ Bowl</text><text x="446.9" y="258.0" text-anchor="end" class="ll">Ojai (Chief&#x27;s Peak)</text></svg></figure><figure class="site big"><figcaption><b>Owens Valley</b><span>6 height points · wind from the launch</span></figcaption><svg viewBox="0 0 520 520" role="img" aria-label="Measuring points for Owens Valley"><circle cx="260.0" cy="260.0" r="73.7" class="ring"/><text x="315.1" y="204.9" class="km">25 km</text><circle cx="260.0" cy="260.0" r="147.4" class="ring"/><text x="367.2" y="152.8" class="km">50 km</text><circle cx="260.0" cy="260.0" r="221.0" class="ring"/><text x="419.3" y="100.7" class="km">75 km</text><line x1="260.0" y1="17.0" x2="260.0" y2="503.0" class="axis"/><line x1="17.0" y1="260.0" x2="503.0" y2="260.0" class="axis"/><text x="260.0" y="13.0" class="north">N</text><path d="M291.3 474.2 L302.9 442.3 A34.0 34.0 0 0 1 323.3 462.6 Z" class="sec acc"/><path d="M291.3 474.2 L323.3 462.6 A34.0 34.0 0 0 1 323.3 485.8 Z" class="sec pref"/><path d="M291.3 474.2 L323.3 485.8 A34.0 34.0 0 0 1 302.9 506.2 Z" class="sec acc"/><path d="M244.3 131.1 L232.7 163.1 A34.0 34.0 0 0 1 212.4 142.8 Z" class="sec acc"/><path d="M244.3 131.1 L212.4 142.8 A34.0 34.0 0 0 1 212.4 119.5 Z" class="sec pref"/><path d="M244.3 131.1 L212.4 119.5 A34.0 34.0 0 0 1 232.7 99.2 Z" class="sec acc"/><path d="M244.3 174.7 L232.7 206.6 A34.0 34.0 0 0 1 212.4 186.3 Z" class="sec acc"/><path d="M244.3 174.7 L212.4 186.3 A34.0 34.0 0 0 1 212.4 163.0 Z" class="sec pref"/><path d="M244.3 174.7 L212.4 163.0 A34.0 34.0 0 0 1 232.7 142.7 Z" class="sec acc"/><circle cx="291.3" cy="474.2" r="9" class="pt"/><circle cx="244.3" cy="131.1" r="9" class="pt"/><circle cx="244.3" cy="174.7" r="9" class="pt"/><circle cx="310.1" cy="361.2" r="9" class="pt"/><text x="318.1" y="349.2" text-anchor="start" class="pl">Black Eagle (Inyos)</text><circle cx="289.3" cy="309.3" r="9" class="pt"/><text x="297.3" y="297.3" text-anchor="start" class="pl">Mazourka (Inyos)</text><circle cx="245.0" cy="439.6" r="9" class="pt"/><text x="253.0" y="427.6" text-anchor="start" class="pl">Mt Whitney</text><text x="277.3" y="479.2" text-anchor="end" class="ll">Walt&#x27;s Point</text><text x="230.3" y="136.1" text-anchor="end" class="ll">Paiute</text><text x="230.3" y="179.7" text-anchor="end" class="ll">Flynn&#x27;s</text></svg></figure></div>
 </main>
+<script src="scripts/region/regionmap.js?v=202611071700"></script>
+<script>
+/* the regions card: a live sketch of the map in today's colours (taps open the full map) */
+(async () => {
+  try {
+    const D = await (await fetch('data/region/regions.json?' + Date.now())).json();
+    let R = null; try { R = await (await fetch('data/forecast.json?' + Date.now())).json(); } catch (e) {}
+    document.getElementById('rsketch').innerHTML = miniMapSVG(D, 0, R);
+  } catch (e) { document.getElementById('rsketch').innerHTML = '<div style="padding:40px 16px;text-align:center;color:var(--muted)">Regions map</div>'; }
+})();
+</script>
 </body></html>
