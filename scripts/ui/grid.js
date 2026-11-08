@@ -144,10 +144,11 @@
     const tnd = (therm.querySelector(".tnd") || {}).textContent || "";
     const region = tnd.split("·").slice(1).join("·").trim();
     const nb = [...therm.querySelectorAll(".tnb")];
-    const btn = (b, k) => b ? `<button type="button" class="thf-nav" data-k="${k}"${b.disabled ? " disabled" : ""}>${b.textContent.trim()}</button>` : "<span></span>";
+    /* big side buttons: a tall strip left and right of the chart with an arrow and the day it goes to */
+    const btn = (b, k) => b ? `<button type="button" class="thf-nav thf-${k ? "next" : "prev"}" data-k="${k}"${b.disabled ? " disabled" : ""} aria-label="${k ? "Next" : "Previous"} day"><i>${k ? "›" : "‹"}</i><span>${b.textContent.replace(/[‹›]/g, "").trim()}</span></button>` : "<span></span>";
     ov = document.createElement("div");
     ov.id = "thfull";
-    ov.innerHTML = `<div class="thf-in"><div class="thf-hd">${btn(nb[0], 0)}<div class="thf-t"><b>${dn} <span>${dt}</span></b><small>${region}</small></div>${btn(nb[1], 1)}<button type="button" class="thf-x" aria-label="Close">×</button></div><div class="thf-svg"></div></div>`;
+    ov.innerHTML = `<div class="thf-in"><div class="thf-hd"><div class="thf-t"><b>${dn} <span>${dt}</span></b><small>${region}</small></div><button type="button" class="thf-x" aria-label="Close">×</button></div><div class="thf-body">${btn(nb[0], 0)}<div class="thf-svg"></div>${btn(nb[1], 1)}</div></div>`;
     const c = svg.cloneNode(true);
     c.removeAttribute("width"); c.removeAttribute("height");
     c.setAttribute("preserveAspectRatio", "xMidYMid meet");

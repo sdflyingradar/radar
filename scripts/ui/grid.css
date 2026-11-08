@@ -154,7 +154,9 @@ html[data-lay="grid"] body details.day:not(#story) .list .srow.srow::before, htm
   @supports (height: 100dvh) { #thfull .thf-in { width: 100dvh; } }
 }
 #thfull .thf-in { flex-direction: column; align-items: stretch; gap: 8px; }
-#thfull .thf-hd { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 12px; flex: none; }
+#thfull .thf-hd { display: grid; grid-template-columns: 40px minmax(0, 1fr) 40px; align-items: center; gap: 12px; flex: none; }
+#thfull .thf-hd .thf-t { grid-column: 2; }
+#thfull .thf-hd .thf-x { grid-column: 3; }
 #thfull .thf-t { text-align: center; line-height: 1.15; }
 #thfull .thf-t b { display: block; font-size: 1.45rem; font-weight: 700; color: #111827; }
 #thfull .thf-t b span { font-weight: 500; color: #6b7280; font-size: 1.05rem; margin-left: 4px; }
@@ -180,3 +182,12 @@ html[data-lay="grid"] body details.day:not(#story) .list .srow.srow::before, htm
 .lg-soft .lg-ic { color: #c78a14; font-weight: 800; }
 .lg > .lg-tr { display: block; margin: 6px 0 0 22px; height: 5px; position: relative; border-radius: 3px; background: rgba(38,48,58,.08); overflow: hidden; }
 .lg > .lg-tr i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; }
+
+/* full screen: big day buttons left and right of the chart */
+#thfull .thf-body { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: 56px minmax(0, 1fr) 56px; gap: 8px; align-items: stretch; }
+#thfull .thf-body .thf-nav { border: 0; border-radius: 14px; padding: 0; background: #f1f3f6; color: #1f2937; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 6px; cursor: pointer; font: 600 .9rem/1 system-ui, sans-serif; }
+#thfull .thf-body .thf-nav i { font-style: normal; font-size: 2.6rem; line-height: .8; font-weight: 400; }
+#thfull .thf-body .thf-nav:active { background: #e3e7ec; }
+#thfull .thf-body .thf-nav[disabled] { opacity: .25; }
+#thfull .thf-body .thf-svg { min-width: 0; }
