@@ -1065,26 +1065,17 @@ const cloudPill = (d) => {
   const tip = `mid/high cloud ${c.okta}/8 over Torrey, Little Black, Blossom and Elsinore, 10 am to sunset; sun at the ground ${Math.round(c.sun_loss * 100)}% below clear sky`;
   return `<span class="rx rx-cloud${c.weak ? " rx-weak" : ""}${c.level === "shade" && !c.weak ? " strong" : ""}" title="${esc(tip)}">${ico("cloud")}${c.okta}/8 <span class="lg">high </span>cloud</span>`;
 };
-/* the day's types: the models' call (and a second one), and the NWS naming a Santa Ana the models don't see */
-const dayTypes = (d) => {
-  const rg = d.regime || {}, also = rg.also || [];
-  const saModels = rg.type === "Santa Ana" || also.some((a) => a.type === "Santa Ana");
-  return regimeHtml(rg.type ? { ...rg, nws: d.nws_sa && rg.type === "Santa Ana" } : null)
-    + also.map((a) => regimeHtml({ type: a.type, agree: a.agree, weak: true, nws: d.nws_sa && a.type === "Santa Ana" })).join("")
-    + (d.nws_sa && !saModels ? regimeHtml({ type: "Santa Ana", nwsOnly: true, agree: 0.5 }) : "");
-};
 const regimeHtml = (rg, small) => {
   if (!rg || !rg.type || !RX[rg.type]) return "";
-  /* share of models that agree; a Santa Ana the NWS names too says so ("NWS"), or "NWS" alone when only the NWS calls it */
-  const pctTxt = rg.nwsOnly ? "NWS" : [rg.agree != null && rg.agree < 0.995 ? `${Math.round(rg.agree * 100)}%` : "", rg.nws ? "NWS" : ""].filter(Boolean).join(" · ");
+  const pctTxt = rg.agree != null && rg.agree < 0.995 ? `${Math.round(rg.agree * 100)}%` : "";   // share of models that agree
   const label = rg.weak && rg.type === "Front" ? "Weak front" : rg.type;       // a pointer worth checking, not a big rainy front
   const name = small ? esc(rg.weak && rg.type === "Front" ? "Weak front" : RX[rg.type][1]) : `<span class="rx-l">${esc(label)}</span><span class="rx-s">${esc(label)}</span>`;
   const strong = !rg.weak && (rg.agree == null || rg.agree >= 0.75);
   /* good for flying, bad, or neutral (a weak front, pre-frontal) */
   const tone = rg.type === "Front" ? (rg.weak ? "" : "bad") : rg.type === "Santa Ana" ? "bad"
     : ["Post-frontal", "Pre/post-frontal", "Switch day"].includes(rg.type) ? "good" : "";
-  const toneCls = tone ? ` ${tone}${(rg.agree ?? 1) < 0.75 && !rg.nws && !rg.nwsOnly ? " soft" : ""}` : "";   // the NWS naming it makes it solid
-  return `<span class="rx rx-${RX[rg.type][0]}${small ? " sm" : ""}${rg.weak ? " rx-weak" : ""}${strong && !tone ? " strong" : ""}${toneCls}" title="${esc(rg.nwsOnly ? "the NWS discussion calls for Santa Ana winds this day (the models don't make it one)" : Object.entries(rg.models || {}).map(([m, t]) => `${m}: ${t || "–"}`).join(" · ") + (rg.nws ? " · the NWS discussion calls for it too" : ""))}">${small ? "" : ico(rg.type === "Santa Ana" ? "warn" : rg.type)}${name}${pctTxt && !small ? ` <span class="rq">(${pctTxt})</span>` : ""}</span>`;
+  const toneCls = tone ? ` ${tone}${(rg.agree ?? 1) < 0.75 ? " soft" : ""}` : "";
+  return `<span class="rx rx-${RX[rg.type][0]}${small ? " sm" : ""}${rg.weak ? " rx-weak" : ""}${strong && !tone ? " strong" : ""}${toneCls}" title="${esc(Object.entries(rg.models || {}).map(([m, t]) => `${m}: ${t || "–"}`).join(" · "))}">${small ? "" : ico(rg.type === "Santa Ana" ? "warn" : rg.type)}${name}${pctTxt && !small ? ` <span class="rq">(${pctTxt})</span>` : ""}</span>`;
 };
 
 
@@ -1189,7 +1180,7 @@ function render(data) {
         <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${bm ? `<span class="dword" style="--dc:var(${QSTOP[dayLvl]})" title="best of Little Black, Blossom and Elsinore">${DAY_WORD[dayLvl]}</span>` : ""}</span>
         ${mods ? `<span class="mods">${mods}</span>` : ""}
         <span class="exp" aria-hidden="true"><i class="chev"></i></span></span>
-        <span class="notes">${dayBoxes(d)}${dayTypes(d)}</span>
+        <span class="notes">${dayBoxes(d)}${regimeHtml(d.regime)}${((d.regime && d.regime.also) || []).map((a) => regimeHtml({ type: a.type, agree: a.agree, weak: true })).join("")}</span>
         <span class="sum">${daySummary(d, big, other)}${watchPill(d)}</span>
       </summary>
       ${d._flown && d._flown.length ? `<div class="flown"><b>Flown:</b> ${d._flown.map((f) => esc(f)).join(" · ")}</div>` : ""}
