@@ -783,7 +783,7 @@ html body details.day:not(#story) .list .srow.srow[aria-expanded="true"]{border-
 
 /* the day's colour bar runs the full height of the card, down past the last site when the day is open */
 html body details.day:not(#story){position:relative}
-html body details.day:not(#story)::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--dc);z-index:2;pointer-events:none}
+html body details.day:not(#story)::before{content:"";position:absolute;left:0;top:0;bottom:0;width:14px;box-sizing:border-box;background:none;border-left:5px solid var(--dc);border-radius:12px 0 0 12px;z-index:2;pointer-events:none}
 
 /* page background a clear step greyer than the white cards */
 html, html body { background: #dde2e8 !important; background-image: none !important; }
