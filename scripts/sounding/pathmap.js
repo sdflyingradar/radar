@@ -56,7 +56,10 @@ function balloonPathSVG(track, stn, opts = {}) {
   const top = opts.top_ft || 30000;
   const tr = track.filter(p => p.z_ft <= top + 1);
   if (tr.length < 2) return '';
-  const lats = tr.map(p => p.lat).concat(stn.lat), lons = tr.map(p => p.lon).concat(stn.lon);
+  // earlier flights (opts.past: [{track, label}]) drawn as quiet grey lines under today's path
+  const past = (opts.past || []).map(p => ({ label: p.label, tr: (p.track || []).filter(q => q.z_ft <= top + 1) })).filter(p => p.tr.length > 1);
+  const lats = tr.map(p => p.lat).concat(stn.lat, ...past.flatMap(p => p.tr.map(q => q.lat))),
+    lons = tr.map(p => p.lon).concat(stn.lon, ...past.flatMap(p => p.tr.map(q => q.lon)));
   const cl = Math.cos(stn.lat * Math.PI / 180);
   let la0 = Math.min(...lats), la1 = Math.max(...lats), lo0 = Math.min(...lons), lo1 = Math.max(...lons);
   // at least ~70 x 50 km, padded, in the 3:2 frame
@@ -83,6 +86,12 @@ function balloonPathSVG(track, stn, opts = {}) {
     if (x < 8 || x > W - 70 || y < 14 || y > H - 8 || seen.has(n) || busy.some(([bx, by]) => Math.abs(bx - x) < 70 && Math.abs(by - y) < 18)) continue;
     seen.add(n);
     o.push(`<circle cx="${f(x)}" cy="${f(y)}" r="2.2" fill="#6b7280"/><text x="${f(x + 5)}" y="${f(y + 4)}" font-size="11.5" fill="#4b5563" paint-order="stroke" stroke="#f5f4f0" stroke-width="3">${n}</text>`);
+  }
+  // earlier flights: thin grey lines, each with a tiny date/time at its far end
+  for (const p of past) {
+    o.push(`<polyline points="${p.tr.map(q => P([q.lat, q.lon])).join(' ')}" fill="none" stroke="#9ca3af" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity=".75"/>`);
+    const e = p.tr[p.tr.length - 1], ex = X(e.lon), ey = Y(e.lat), left = ex > W - 60;
+    o.push(`<circle cx="${f(ex)}" cy="${f(ey)}" r="2" fill="#9ca3af"/><text x="${f(left ? ex - 4 : ex + 4)}" y="${f(ey + 3)}" text-anchor="${left ? 'end' : 'start'}" font-size="9" fill="#6b7280" paint-order="stroke" stroke="#f5f4f0" stroke-width="2.5">${p.label}</text>`);
   }
   // path, coloured low (warm) to high (blue), with height ticks
   const col = z => z < 5000 ? '#e07b24' : z < 10000 ? '#d4a017' : z < 20000 ? '#3aa457' : '#2f7fcf';

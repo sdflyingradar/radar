@@ -27,6 +27,8 @@ jobs:
       - name: Fetch nearby balloons (Edwards, Vandenberg, Yuma, Las Vegas) for the regions
         continue-on-error: true
         run: python -u scripts/sounding/fetch_stations.py
+      - name: Archive every balloon (and index it for the path map)
+        run: python -u scripts/sounding/archive_index.py
       - name: Render plot
         run: node scripts/sounding/render_sounding.js
       - name: Commit data

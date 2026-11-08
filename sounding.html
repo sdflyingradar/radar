@@ -43,7 +43,7 @@ a{color:#2563eb}
 <script src="scripts/sounding/core.js?v=202611070758"></script>
 <script src="scripts/sounding/timeline.js?v=202611070758"></script>
 <script src="scripts/region/regionmap.js?v=202611071100"></script>
-<script src="scripts/sounding/pathmap.js?v=202611071100"></script>
+<script src="scripts/sounding/pathmap.js?v=202611071730"></script>
 <script>
 (async () => {
   try {
@@ -80,13 +80,27 @@ a{color:#2563eb}
       let tr = null, how = '';
       try { const r2 = await fetch(INFO.track + '?' + Date.now()); if (r2.ok) { tr = trackFromCSV(await r2.text()); how = 'published track'; } } catch (e) {}
       if (!tr) { tr = trackFromWinds(snd.levels, INFO.lat, INFO.lon); how = 'reconstructed from the winds, assuming the usual ~1,000 ft/min climb'; }
-      const svg = tr ? balloonPathSVG(tr, { lat: INFO.lat, lon: INFO.lon, name: INFO.name }, { top_ft: 30000 }) : '';
+      // the last 5 earlier flights from the archive, as grey lines with a tiny local date/time
+      const past = [];
+      try {
+        const ix = await (await fetch('data/sounding/archive/index.json?' + Date.now())).json();
+        const shownT = shown ? shown.toISOString().slice(0, 13) + 'Z' : '';
+        for (const e of (ix[STN.toUpperCase()] || []).filter(e => e.t !== shownT).slice(0, 5)) {
+          let pt = null;
+          try { if (e.track) { const rr = await fetch('data/sounding/' + e.track); if (rr.ok) pt = trackFromCSV(await rr.text()); } } catch (er) {}
+          if (!pt) { try { const rr = await fetch('data/sounding/' + e.txt); if (rr.ok) pt = trackFromWinds(parseSounding(await rr.text()).levels, INFO.lat, INFO.lon); } catch (er) {} }
+          const d = new Date(e.t.slice(0, 13) + ':00:00Z');
+          const label = d.toLocaleString('en-US', { timeZone: 'America/Los_Angeles', month: 'numeric', day: 'numeric', hour: 'numeric' }).replace(', ', ' ').replace(' AM', 'a').replace(' PM', 'p');
+          if (pt) past.push({ track: pt, label });
+        }
+      } catch (e) {}
+      const svg = tr ? balloonPathSVG(tr, { lat: INFO.lat, lon: INFO.lon, name: INFO.name }, { top_ft: 30000, past }) : '';
       if (svg) {
         document.getElementById('path').innerHTML = svg;
         const end = tr.filter(p => p.z_ft <= 30000).pop();
         const km = Math.hypot((end.lon - INFO.lon) * 111.2 * Math.cos(INFO.lat * Math.PI / 180), (end.lat - INFO.lat) * 111.2);
         document.getElementById('ph').textContent = `Balloon path to 30,000 ft · drifted ~${Math.round(km / 1.609)} mi`;
-        document.getElementById('pnote').textContent = `Path ${how}. Dots mark 5k, 10k, 20k and 30k ft; the balloon keeps rising to ~100k ft before it bursts.`;
+        document.getElementById('pnote').textContent = `Path ${how}. Dots mark 5k, 10k, 20k and 30k ft; grey lines are the last few launches. The balloon keeps rising to ~100k ft before it bursts.`;
         document.getElementById('pathbox').hidden = false;
       }
     } catch (e) {}
