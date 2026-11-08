@@ -1070,6 +1070,18 @@ html[data-lay="grid"] body details.day:not(#story) .list .srow.srow::before, htm
 .lg-tr .lg-lost { background: repeating-linear-gradient(135deg, #e7a0a0 0 3px, #f5d3d3 3px 6px); border-radius: 0 3px 3px 0; }
 .lg-bad .lg-tr .lg-keep { opacity: .55; }
 .lg-plus .lg-ic, .lg-plus .lg-p { color: #2f8f4a; }
+/* full-screen thermal panel */
+.det .therm svg { cursor: zoom-in; }
+#thfull { position: fixed; inset: 0; z-index: 100; background: #fff; display: flex; align-items: center; justify-content: center; }
+#thfull .thf-in { width: 100vw; height: 100vh; padding: 14px 16px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; }
+#thfull .thf-in svg { width: 100%; height: 100%; }
+#thfull .thf-x { position: fixed; top: max(10px, env(safe-area-inset-top)); right: max(10px, env(safe-area-inset-right)); z-index: 2; width: 40px; height: 40px; border-radius: 50%;
+  border: 0; background: #1f2937; color: #fff; font: 600 26px/1 system-ui, sans-serif; cursor: pointer; box-shadow: 0 4px 12px -4px rgba(0,0,0,.4); }
+/* phone held upright: turn the panel sideways so it fills the screen like landscape */
+@media (orientation: portrait) {
+  #thfull .thf-in { position: absolute; left: 50%; top: 50%; width: 100vh; height: 100vw; transform: translate(-50%, -50%) rotate(90deg); padding: 10px 56px 10px 10px; }
+  @supports (height: 100dvh) { #thfull .thf-in { width: 100dvh; } }
+}
 
 </style>
 </head>
@@ -2122,6 +2134,31 @@ $("#reload").addEventListener("click", load);
     out.push(row("lg-total", "=", "Score", "", "", `<b>${r1(c.rating)}</b>`, track(c.rating, c.rating, qv(c.rating))));
     return `<div class="dsec lg"><span class="dh">How the score was made</span><div class="lg-list">${out.join("")}</div></div>`;
   };
+})();
+/* LAB: tap the thermal panel to see it full screen, turned to landscape on a phone held upright; × closes */
+(function () {
+  let ov = null;
+  const close = () => { if (ov) { ov.remove(); ov = null; document.documentElement.style.overflow = ""; } };
+  const open = (svg) => {
+    close();
+    ov = document.createElement("div");
+    ov.id = "thfull";
+    ov.innerHTML = `<div class="thf-in"></div><button type="button" class="thf-x" aria-label="Close">×</button>`;
+    const c = svg.cloneNode(true);
+    c.removeAttribute("width"); c.removeAttribute("height");
+    c.setAttribute("preserveAspectRatio", "xMidYMid meet");
+    ov.querySelector(".thf-in").appendChild(c);
+    document.body.appendChild(ov);
+    document.documentElement.style.overflow = "hidden";
+    ov.addEventListener("click", (e) => { if (e.target.closest(".thf-x") || e.target === ov) close(); });
+  };
+  document.addEventListener("click", (e) => {
+    const svg = e.target.closest(".det .therm svg");
+    if (!svg || e.target.closest(".tnb")) return;
+    e.stopPropagation();
+    open(svg);
+  }, true);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
 })();
 
 </script>

@@ -169,3 +169,28 @@
     return `<div class="dsec lg"><span class="dh">How the score was made</span><div class="lg-list">${out.join("")}</div></div>`;
   };
 })();
+/* LAB: tap the thermal panel to see it full screen, turned to landscape on a phone held upright; × closes */
+(function () {
+  let ov = null;
+  const close = () => { if (ov) { ov.remove(); ov = null; document.documentElement.style.overflow = ""; } };
+  const open = (svg) => {
+    close();
+    ov = document.createElement("div");
+    ov.id = "thfull";
+    ov.innerHTML = `<div class="thf-in"></div><button type="button" class="thf-x" aria-label="Close">×</button>`;
+    const c = svg.cloneNode(true);
+    c.removeAttribute("width"); c.removeAttribute("height");
+    c.setAttribute("preserveAspectRatio", "xMidYMid meet");
+    ov.querySelector(".thf-in").appendChild(c);
+    document.body.appendChild(ov);
+    document.documentElement.style.overflow = "hidden";
+    ov.addEventListener("click", (e) => { if (e.target.closest(".thf-x") || e.target === ov) close(); });
+  };
+  document.addEventListener("click", (e) => {
+    const svg = e.target.closest(".det .therm svg");
+    if (!svg || e.target.closest(".tnb")) return;
+    e.stopPropagation();
+    open(svg);
+  }, true);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+})();
