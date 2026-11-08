@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-08T07:06+00:00",
+ "generated": "2026-11-08T07:27+00:00",
  "sample": false,
  "calib": {
   "2026-11-07": {
@@ -31941,18 +31941,15 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus), surface heat flux (7124 values)",
-  "HRRR: ok (ncep_hrrr_conus), surface heat flux (2466 values)",
+  "HRRR trips: using the last good run, fetched 0.4 h ago",
   "RRFS: ok (ncep_rrfs_conus), surface heat flux (8736 values)",
-  "RRFS trips: using the last good run, fetched 2.8 h ago",
-  "GFS: ok (gfs_global), surface heat flux (13728 values)",
-  "GFS: ok (gfs_global), surface heat flux (4752 values)",
-  "ECMWF: ok (ecmwf_ifs025), surface heat flux (0 values)",
-  "ECMWF: ok (ecmwf_ifs025), surface heat flux (0 values)",
-  "ICON: ok (icon_global), surface heat flux (13728 values)",
-  "ICON: ok (icon_global), surface heat flux (4752 values)",
-  "ens GFS ens: using the last good run, fetched 5.5 h ago",
-  "ens ECMWF ens: using the last good run, fetched 2.1 h ago",
-  "ens ICON ens: using the last good run, fetched 2.8 h ago",
+  "RRFS trips: using the last good run, fetched 3.2 h ago",
+  "GFS: using the last good run, fetched 0.4 h ago",
+  "ECMWF: using the last good run, fetched 0.4 h ago",
+  "ICON: using the last good run, fetched 0.4 h ago",
+  "ens GFS ens: using the last good run, fetched 5.9 h ago",
+  "ens ECMWF ens: using the last good run, fetched 2.4 h ago",
+  "ens ICON ens: using the last good run, fetched 3.2 h ago",
   "NWS AFD: ok",
   "gradient HRRR: bias +1.1 mb over 72 h",
   "gradient RRFS: bias +0.8 mb over 72 h",
@@ -31961,8 +31958,8 @@
   "gradient ICON: bias -0.1 mb over 72 h",
   "clouds HRRR: ok (ncep_hrrr_conus)",
   "clouds RRFS: ok (ncep_rrfs_conus)",
-  "clouds ECMWF: ok (ecmwf_ifs025)",
-  "clouds ICON: ok (icon_global)",
+  "clouds ECMWF: using the last good run, fetched 0.4 h ago",
+  "clouds ICON: using the last good run, fetched 0.4 h ago",
   "wind: GFS and ICON use ECMWF's winds where RRFS and ECMWF overlap"
  ],
  "sources": [
@@ -31973,7 +31970,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-11-08T05:00+00:00",
-   "fetched": "2026-11-08T06:59+00:00",
+   "fetched": "2026-11-08T07:25+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -31983,7 +31980,7 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": "2026-11-08T00:00+00:00",
-   "fetched": "2026-11-08T06:59+00:00",
+   "fetched": "2026-11-08T07:25+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -31994,7 +31991,8 @@
    "status": "ok",
    "run": null,
    "fetched": "2026-11-08T07:01+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "ECMWF",
@@ -32004,7 +32002,8 @@
    "status": "ok",
    "run": null,
    "fetched": "2026-11-08T07:02+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "ICON",
@@ -32014,7 +32013,8 @@
    "status": "ok",
    "run": null,
    "fetched": "2026-11-08T07:02+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "GFS ens",
@@ -32056,7 +32056,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-11-08T06:32:00+00:00",
-   "fetched": "2026-11-08T07:06+00:00",
+   "fetched": "2026-11-08T07:27+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -32066,7 +32066,7 @@
    "id": "LAX-DAG",
    "status": "ok",
    "run": "2026-11-08T06:00Z",
-   "fetched": "2026-11-08T07:06+00:00",
+   "fetched": "2026-11-08T07:27+00:00",
    "url": "https://www.weather.gov/lox/LAXGRDNEW"
   },
   {
@@ -32076,7 +32076,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-08T07:06+00:00",
+   "fetched": "2026-11-08T07:27+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
@@ -33313,7 +33313,7 @@
       {
        "k": "Wind 1 pm",
        "v": "N 5g7",
-       "sub": "gusty",
+       "sub": "over the back",
        "q": 0.0
       },
       {
@@ -42464,7 +42464,7 @@
       {
        "k": "Wind 1 pm",
        "v": "ENE 4g11",
-       "sub": "later WNW 3g11 \u00b7 cross-N",
+       "sub": "later WNW 3g11",
        "q": 0.0
       },
       {
