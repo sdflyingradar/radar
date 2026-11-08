@@ -1357,7 +1357,7 @@ function sitePills(c) {
   const SHORT = [[/20–45° off launch/, "cross wind"], [/more than 45° off launch/, "wrong direction"],
     [/gusts over 18/, "too windy"], [/gusts over 12/, "gusty"], [/top of lift over \d+ mph: (no-go|too windy)/, "too windy aloft"],
     [/top of lift over/, "strong wind aloft"], [/blown out/, "blown out"], [/not calm/, "not calm"],
-    [/over the back aloft/, "over the back aloft"], [/off season/, "off season"], [/NW to N aloft/, "NW–N"], [/^offshore .*no-go/, "offshore flow aloft"]];
+    [/over the back aloft/, "over the back aloft"], [/off season/, "off season"], [/NW to N aloft/, "NW–N"], [/^offshore .*no-go/, "offshore flow aloft"], [/^offshore .*2 at most/, "offshore"], [/^offshore /, "light offshore"]];
   const seen = new Set(out.map((x) => x.replace(/<i[^>]*>.*?<\/i>/g, "").replace(/<[^>]+>/g, "").trim().toLowerCase()));
   adj.filter(([t]) => !/rain|sun|4 at most$/.test(t) || /off launch|blown|calm|season/.test(t)).forEach(([t]) => {
     const s = (SHORT.find(([re]) => re.test(t)) || [null, t])[1];
@@ -1392,6 +1392,8 @@ function sitePills(c) {
 const CHIP_TIPS = [
   [/% rain/, "Share of model runs with rain at the site"],
   [/offshore flow aloft/, "East (offshore) wind of 6 mph or more below about 4,000 ft through most of the window: no-go"],
+  [/^offshore$/, "Offshore: east wind 4+ mph in the flying layer, or LAX–DAG −4 mb or lower, most of the window: 2 at most"],
+  [/^light offshore$/, "Light offshore: east wind 3+ mph in the flying layer, or LAX–DAG −3 mb or lower, most of the window: −1"],
   [/cloud/, "Mid/high cloud cover: it takes sun and thermals away"],
   [/over the back aloft/, "Wind at the top of lift from behind the launch, 10 mph+, through most of the window: 2 at most"],
   [/over the back/, "Wind from behind the launch in part of the window"],
