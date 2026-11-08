@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LAX–DAG Gradient – SoCal Flying Radar</title>
+<link rel="icon" href="favicon.svg">
+<style>
+:root{--ink:#111827;--muted:#6b7280;--line:#e5e7eb;--bg:#f3f4f6}
+*{box-sizing:border-box}
+body{font-family:Inter,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;margin:0;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.wrap{max-width:920px;margin:0 auto;padding:16px 12px 32px}
+header{display:flex;align-items:center;justify-content:space-between;margin:2px 2px 12px}
+h1{font-size:19px;font-weight:700;margin:0;letter-spacing:-.01em}
+.back{font-size:13px;color:var(--ink);text-decoration:none;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px}
+.box{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px}
+.row{display:grid;grid-template-columns:minmax(100px,min(26%,210px)) minmax(0,1fr);gap:12px;align-items:start}
+.row svg{width:100%;height:auto;display:block;border-radius:10px}
+.ph{font-size:13px;font-weight:700;margin:0 2px 6px}
+.fleg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11px;color:#475467;margin:6px 4px 0}
+.fleg i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:5px;vertical-align:3px}
+.note{font-size:11px;color:var(--muted);line-height:1.45;margin:8px 2px 0}
+</style></head><body><div class="wrap">
+<header><h1>LAX–DAG gradient</h1><a class="back" href="./">← Radar</a></header>
+<div class="box">
+  <div class="row"><div id="fmap"></div><div><div class="ph">Next days · by model</div><div id="fchart">Loading…</div></div></div>
+  <p class="note">Sea-level pressure at LAX minus Barstow-Daggett, the standard SoCal offshore measure. Below zero the desert pressure is higher and the air pushes offshore: about −2 mb weak, −4 mb a real Santa Ana, −6 mb strong. Black = observed at the two airports; the coloured lines are the models, each corrected by how far it was off the airports' readings over the last three days.</p>
+</div>
+<script src="scripts/sounding/foehn.js?v=202611080730"></script>
+<script>
+(async () => {
+  try {
+    const G = await (await fetch('data/gradient.json?' + Date.now())).json();
+    document.getElementById('fmap').innerHTML = foehnMapSVG(G, true);
+    document.getElementById('fchart').innerHTML = foehnChartSVG(G);
+  } catch (e) { document.getElementById('fchart').textContent = 'Could not load the gradient: ' + e.message; }
+})();
+</script></div></body></html>
