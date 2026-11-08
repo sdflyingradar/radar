@@ -959,7 +959,7 @@ html[data-lay] body details.day:not(#story) .list .det.lab-in { animation: labIn
 @keyframes labIn { from { opacity: 0; transform: translateY(-6px) scaleY(.96); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { html[data-lay] body details.day:not(#story) .list .det.lab-in { animation: none; } }
 html[data-lay="grid"] body details.day:not(#story) .list .srow .nmw, html[data-lay="tiles"] body details.day:not(#story) .list .srow .nmw { flex: 1 1 0; min-width: 0; }
-html[data-lay="grid"] body details.day:not(#story) .list .srow .nmw .nm, html[data-lay="tiles"] body details.day:not(#story) .list .srow .nmw .nm { overflow-wrap: anywhere; flex: 0 1 auto; max-width: 100%; }
+html[data-lay="grid"] body details.day:not(#story) .list .srow .nmw .nm, html[data-lay="tiles"] body details.day:not(#story) .list .srow .nmw .nm { overflow-wrap: break-word; flex: 0 1 auto; max-width: 100%; }
 html[data-lay] body details.day:not(#story) .list .srow .dscore { flex: none; }
 /* on a computer the full-width third level splits: the thermal panel left, the score and notes right */
 @media (min-width: 900px) {
@@ -1932,6 +1932,15 @@ $("#reload").addEventListener("click", load);
       day.querySelectorAll(".list .sgrp").forEach((g) => g.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, delay: 150, fill: "backwards" }));
     });
   }, true);
+})();
+/* LAB: long names break after a slash, not mid-word (Laguna/Horse/Fuzz) */
+(function () {
+  const fix = () => document.querySelectorAll(".list .srow .nm").forEach((n) => {
+    if (n.textContent.includes("/") && !n.textContent.includes("/​")) n.textContent = n.textContent.replace(/\//g, "/​");
+  });
+  const days = document.getElementById("days");
+  if (days) new MutationObserver(fix).observe(days, { childList: true });
+  fix();
 })();
 
 </script>

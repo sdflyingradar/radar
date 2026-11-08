@@ -77,3 +77,12 @@
     });
   }, true);
 })();
+/* LAB: long names break after a slash, not mid-word (Laguna/Horse/Fuzz) */
+(function () {
+  const fix = () => document.querySelectorAll(".list .srow .nm").forEach((n) => {
+    if (n.textContent.includes("/") && !n.textContent.includes("/​")) n.textContent = n.textContent.replace(/\//g, "/​");
+  });
+  const days = document.getElementById("days");
+  if (days) new MutationObserver(fix).observe(days, { childList: true });
+  fix();
+})();
