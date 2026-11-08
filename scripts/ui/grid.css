@@ -186,3 +186,22 @@ html[data-lay="grid"] body details.day:not(#story) .list .srow.srow::before, htm
 #thfull .thf-body .thf-nav:active { background: #e3e7ec; }
 #thfull .thf-body .thf-nav[disabled] { opacity: .25; }
 #thfull .thf-body .thf-svg { min-width: 0; }
+
+/* the weather overview: a small tile next to Sounding and LAX-DAG, opening a bubble */
+#story.story { display: none !important; }
+#assets .asset.wx { font: inherit; cursor: pointer; text-align: left; }
+#assets .asset.wx svg { width: 26px; height: 26px; }
+#wxpop { position: fixed; inset: 0; z-index: 90; background: rgba(15,23,42,.35); display: flex; align-items: flex-start; justify-content: center; padding: max(56px, 8vh) 12px 12px; overflow-y: auto; animation: wxIn .18s ease-out; }
+@keyframes wxIn { from { opacity: 0; } }
+#wxpop .wxp-card { position: relative; width: 100%; max-width: 560px; background: #fff; margin-bottom: 24px; border-radius: 16px; padding: 14px 16px 16px;
+  box-shadow: 0 20px 50px -12px rgba(0,0,0,.35); }
+#wxpop .wxp-card::before { content: ""; position: absolute; top: -8px; left: calc(var(--nx, 34px) - 8px); width: 16px; height: 16px; background: #fff; transform: rotate(45deg); border-radius: 3px 0 0 0; }
+#wxpop .wxp-hd { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+#wxpop .wxp-hd svg { width: 30px; height: 30px; }
+#wxpop .wxp-hd b { flex: 1; font-size: 1.05rem; }
+#wxpop .wxp-x { width: 34px; height: 34px; border-radius: 50%; border: 0; background: #1f2937; color: #fff; font: 600 22px/1 system-ui, sans-serif; cursor: pointer; }
+#wxpop .wxp-line { font-size: .82rem; color: #475467; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eef0f3; }
+#wxpop .wsec { font-size: .66rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #9aa1aa; margin: 10px 0 4px; }
+#wxpop .wrow { font-size: .88rem; line-height: 1.4; padding: 3px 0; color: #26303a; }
+#wxpop .wlink { margin-top: 10px; font-size: .8rem; }
+#wxpop.nonotch .wxp-card::before { display: none; }
