@@ -89,7 +89,11 @@ function panelSVG(data, di = 0) {
   const WROWS = data.windRows || [['5k', 'w5k', '5,000 ft'], ['G', 'sfc', 'ground (10 m)']];
   WROWS.forEach(([lab, key, name], r) => {
     const y = yW + r * ch;
-    o.push(`<text x="${L - 22}" y="${y + 17}" text-anchor="middle" font-size="14">${lab}</text>`);
+    /* the row's symbol: wind aloft (wind + two tiny birds) or launch wind (wind onto a little mountain), as on the site cards */
+    const icon = key === 'sfc'
+      ? '<path d="M8.5 13.2 L13.6 4.6 L15.6 7.6 L16.8 6.2 L19.6 13.2 Z" fill="#475467" opacity=".55"/><g fill="none" stroke="#475467" stroke-width="1.3" stroke-linecap="round"><path d="M1 6.6 H8.6 a1.7 1.7 0 1 0 -1.7 -1.7"/><path d="M2.2 9.8 H10"/></g>'
+      : '<g fill="none" stroke="#475467" stroke-width="1.3" stroke-linecap="round"><path d="M1 6.5 H9.5 a1.8 1.8 0 1 0 -1.8 -1.8"/><path d="M2.5 9.8 H11.5 a1.6 1.6 0 1 1 -1.6 1.6"/><path d="M12.6 4 q1 -1.3 2 0 q1 -1.3 2 0" stroke-width="1"/><path d="M15.4 7.6 q.8 -1 1.6 0 q.8 -1 1.6 0" stroke-width="1"/></g>';
+    o.push(`<g transform="translate(${L - 38} ${y + 3}) scale(1.35)"><title>${name}</title>${icon}</g>`);
     cols.forEach((c, k) => {
       const w = c.d[key];
       if (!w || w[1] == null) return;
