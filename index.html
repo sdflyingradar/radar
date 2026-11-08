@@ -600,7 +600,8 @@ header.top { position: relative; }
 @media (max-width: 480px) { .howbtn { font-size: .72rem; padding: 4px 10px; } .howbtn .hl2 { display: none; } }
 /* quiet sounding pill in the weather overview's empty corner (first layer) */
 #story > summary.hd { position: relative; }
-.sndq { position: absolute; right: 12px; top: 52px; display: inline-block; margin: 0; padding: 2px 9px; border-radius: 999px; border: 1px solid color-mix(in srgb, currentColor 22%, transparent); color: var(--muted, #6b6b6b) !important; font-size: .78rem; text-decoration: none !important; white-space: nowrap; }
+#sndrow { display: flex; justify-content: flex-end; margin: -4px 4px 10px; }
+.sndq { position: static; display: inline-block; margin: 0; padding: 2px 9px; border-radius: 999px; border: 1px solid color-mix(in srgb, currentColor 22%, transparent); color: var(--muted, #6b6b6b) !important; font-size: .78rem; text-decoration: none !important; white-space: nowrap; }
 .sndq:hover { color: #c26a24 !important; border-color: #c26a24; }
 /* bottom: the disclaimer */
 .disclaimer { font-size: .76rem; line-height: 1.55; color: #4a3b30; border-top: 1px solid var(--line); padding: 14px 2px 4px; display: grid; gap: 7px; max-width: 90ch; }
@@ -1111,10 +1112,13 @@ function render(data) {
   const SNDQ = `<a class="sndq" href="sounding.html" title="Latest weather balloon (Miramar / Edwards)" onclick="event.stopPropagation()">Sounding →</a>`;
   $("#story").innerHTML = n ? `
     <summary class="hd"><span class="when">Weather Overview</span>
-      <span class="flags">${(n.flags || []).map((f) => `<span class="tag">${esc(f)}</span>`).join("")}</span><span class="exp" aria-hidden="true"><i class="chev"></i></span>${ov}${SNDQ}</summary>
+      <span class="flags">${(n.flags || []).map((f) => `<span class="tag">${esc(f)}</span>`).join("")}</span><span class="exp" aria-hidden="true"><i class="chev"></i></span>${ov}</summary>
     <div class="wlist">${sm ? lines("Pattern", sm.pattern) + lines("For flying", sm.flying) : lines("Outlook", bl)}</div>`
       + `<div class="wrow wlink"><span><a href="${esc(n.url)}" target="_blank" rel="noopener">Full NWS discussion</a> <span class="muted">· ${fmtWhen(n.issued)}</span></span></div>`
-    : `<summary class="hd"><span class="when">Weather Overview</span>${ov}${SNDQ}</summary>`;
+    : `<summary class="hd"><span class="when">Weather Overview</span>${ov}</summary>`;
+  let sndRow = document.getElementById("sndrow");
+  if (!sndRow) { sndRow = document.createElement("div"); sndRow.id = "sndrow"; $("#story").after(sndRow); }
+  sndRow.innerHTML = SNDQ;
 
   /* models that rated this day (HRRR+RRFS, then RRFS with NAM/ECMWF help, then global only) */
   const MODEL_ORDER = ["HRRR", "RRFS", "NAM", "ECMWF", "GFS", "ICON"];
@@ -1159,9 +1163,10 @@ function render(data) {
       </summary>
       ${d._flown && d._flown.length ? `<div class="flown"><b>Flown:</b> ${d._flown.map((f) => esc(f)).join(" · ")}</div>` : ""}
       <div class="list">
-        ${listSites.coast.map((s) => siteRow(d, s, i, "")).join("")}
         <div class="sgrp">SD mountain</div>
         ${listSites.mtn.map((s) => siteRow(d, s, i, "")).join("")}
+        <div class="sgrp">Coast</div>
+        ${listSites.coast.map((s) => siteRow(d, s, i, "")).join("")}
         <div class="sgrp">Trips</div>
         ${listSites.trips.map((s) => siteRow(d, s, i, "")).join("")}${watchSites.map((s) => siteRow(d, s, i, "")).join("")}
       </div>
