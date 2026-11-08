@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-08T04:59+00:00",
+ "generated": "2026-11-08T05:01+00:00",
  "sample": false,
  "calib": {
   "2026-11-07": {
@@ -31434,19 +31434,18 @@
   "HRRR: ok (ncep_hrrr_conus), surface heat flux (7124 values)",
   "HRRR trips: using the last good run, fetched 3.5 h ago",
   "RRFS: ok (ncep_rrfs_conus), surface heat flux (8736 values)",
-  "RRFS trips: using the last good run, fetched 0.7 h ago",
+  "RRFS trips: using the last good run, fetched 0.8 h ago",
   "GFS: using the last good run, fetched 3.5 h ago",
   "ECMWF: using the last good run, fetched 3.5 h ago",
-  "ICON: using the last good run, fetched 3.4 h ago",
-  "ens GFS ens: using the last good run, fetched 3.4 h ago",
-  "ECMWF ens: ecmwf_ifs025 failed (<urlopen error _ssl.c:994: The handshake operation timed out>)",
-  "ens ECMWF ens: using the last good run, fetched 12.0 h ago",
-  "ens ICON ens: using the last good run, fetched 0.7 h ago",
+  "ICON: using the last good run, fetched 3.5 h ago",
+  "ens GFS ens: using the last good run, fetched 3.5 h ago",
+  "ECMWF ens: ok (ecmwf_ifs025)",
+  "ens ICON ens: using the last good run, fetched 0.8 h ago",
   "NWS AFD: ok",
   "clouds HRRR: ok (ncep_hrrr_conus)",
   "clouds RRFS: ok (ncep_rrfs_conus)",
-  "clouds ECMWF: using the last good run, fetched 3.4 h ago",
-  "clouds ICON: using the last good run, fetched 3.4 h ago",
+  "clouds ECMWF: using the last good run, fetched 3.5 h ago",
+  "clouds ICON: using the last good run, fetched 3.5 h ago",
   "wind: GFS and ICON use ECMWF's winds where RRFS and ECMWF overlap"
  ],
  "sources": [
@@ -31457,7 +31456,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-11-08T02:00+00:00",
-   "fetched": "2026-11-08T04:57+00:00",
+   "fetched": "2026-11-08T05:00+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -31467,7 +31466,7 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": "2026-11-08T00:00+00:00",
-   "fetched": "2026-11-08T04:57+00:00",
+   "fetched": "2026-11-08T05:00+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -31479,7 +31478,7 @@
    "run": null,
    "fetched": "2026-11-08T01:29+00:00",
    "url": "https://open-meteo.com/en/docs",
-   "note": "cached, fetched 3 h ago"
+   "note": "cached, fetched 4 h ago"
   },
   {
    "name": "ECMWF",
@@ -31490,7 +31489,7 @@
    "run": "2026-11-07T18:00+00:00",
    "fetched": "2026-11-08T01:29+00:00",
    "url": "https://open-meteo.com/en/docs",
-   "note": "cached, fetched 3 h ago"
+   "note": "cached, fetched 4 h ago"
   },
   {
    "name": "ICON",
@@ -31521,9 +31520,8 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-07T16:59+00:00",
-   "url": "https://open-meteo.com/en/docs/ensemble-api",
-   "note": "cached, fetched 12 h ago"
+   "fetched": "2026-11-08T05:01+00:00",
+   "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
    "name": "ICON ens",
@@ -31543,7 +31541,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-11-07T23:50:00+00:00",
-   "fetched": "2026-11-08T04:58+00:00",
+   "fetched": "2026-11-08T05:01+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -31553,7 +31551,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-08T04:59+00:00",
+   "fetched": "2026-11-08T05:01+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
@@ -31957,7 +31955,7 @@
      "gwin": null,
      "note": "NW 11 mph",
      "p_fly": 1.0,
-     "p_xc": 0.98,
+     "p_xc": 0.97,
      "agree": "agree",
      "models": {
       "HRRR": 4.0,
@@ -32761,8 +32759,8 @@
      },
      "gwin": null,
      "note": "over the back",
-     "p_fly": 0.11,
-     "p_xc": 0.05,
+     "p_fly": 0.2,
+     "p_xc": 0.15,
      "agree": "split",
      "models": {
       "HRRR": 3.2,
@@ -32790,7 +32788,7 @@
       {
        "k": "Wind 1 pm",
        "v": "N 5g7",
-       "sub": "",
+       "sub": "over the back",
        "q": 0.0
       },
       {
@@ -33037,7 +33035,7 @@
      },
      "gwin": null,
      "note": "over the back",
-     "p_fly": 0.0,
+     "p_fly": 0.01,
      "p_xc": 0.0,
      "agree": "split",
      "models": {
@@ -33319,7 +33317,7 @@
       16
      ],
      "note": "over the back",
-     "p_fly": 0.19,
+     "p_fly": 0.2,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -34906,7 +34904,6 @@
     }
    },
    "nws_rain": false,
-   "nws_sa": true,
    "best": "torrey",
    "best_main": "elsinore",
    "headline": "XC at Santa Barbara",
@@ -35159,8 +35156,8 @@
      "hwind_avg": null,
      "gwin": null,
      "note": "WSW 7 mph",
-     "p_fly": 0.94,
-     "p_xc": 0.8,
+     "p_fly": 0.96,
+     "p_xc": 0.87,
      "agree": "agree",
      "models": {
       "HRRR": 4.0,
@@ -35411,8 +35408,8 @@
       16
      ],
      "note": "low lid, 4,400 ft",
-     "p_fly": 0.06,
-     "p_xc": 0.03,
+     "p_fly": 0.04,
+     "p_xc": 0.0,
      "agree": "agree",
      "models": {
       "HRRR": 3.0,
@@ -36200,8 +36197,8 @@
      },
      "gwin": null,
      "note": "offshore (Santa Ana) aloft",
-     "p_fly": 0.19,
-     "p_xc": 0.14,
+     "p_fly": 0.33,
+     "p_xc": 0.29,
      "agree": "mixed",
      "models": {
       "HRRR": 1.8,
@@ -36741,8 +36738,8 @@
      },
      "gwin": null,
      "note": "over the back",
-     "p_fly": 0.36,
-     "p_xc": 0.24,
+     "p_fly": 0.38,
+     "p_xc": 0.34,
      "agree": "split",
      "models": {
       "HRRR": 1.0,
@@ -38038,7 +38035,6 @@
     }
    },
    "nws_rain": false,
-   "nws_sa": true,
    "best": "santabarbara",
    "best_main": "blossom",
    "headline": "XC at Blossom \u00b7 also Santa Barbara",
@@ -38524,7 +38520,7 @@
      ],
      "note": "",
      "p_fly": 1.0,
-     "p_xc": 1.0,
+     "p_xc": 0.99,
      "agree": "agree",
      "models": {
       "HRRR": 5.0,
@@ -39851,8 +39847,8 @@
      },
      "gwin": null,
      "note": "offshore (Santa Ana) aloft",
-     "p_fly": 0.21,
-     "p_xc": 0.21,
+     "p_fly": 0.13,
+     "p_xc": 0.13,
      "agree": "mixed",
      "models": {
       "HRRR": 1.0,
@@ -41110,7 +41106,6 @@
     }
    },
    "nws_rain": false,
-   "nws_sa": false,
    "best": "lb",
    "best_main": "lb",
    "headline": "XC at Little Black \u00b7 also Santa Barbara, Marshall, Blossom",
@@ -41552,8 +41547,8 @@
       16
      ],
      "note": "offshore (Santa Ana) aloft",
-     "p_fly": 0.3,
-     "p_xc": 0.3,
+     "p_fly": 0.34,
+     "p_xc": 0.33,
      "agree": "split",
      "models": {
       "RRFS": 3.0,
@@ -41804,8 +41799,8 @@
      },
      "gwin": null,
      "note": "thermals to 5,200 ft",
-     "p_fly": 0.51,
-     "p_xc": 0.17,
+     "p_fly": 0.57,
+     "p_xc": 0.23,
      "agree": "split",
      "models": {
       "RRFS": 5.0,
@@ -41834,7 +41829,7 @@
       {
        "k": "Wind 1 pm",
        "v": "ENE 4g11",
-       "sub": "later WNW 3g11",
+       "sub": "later WNW 3g11 \u00b7 over the back",
        "q": 0.0
       },
       {
@@ -42299,7 +42294,7 @@
      "gwin": null,
      "note": "over the back",
      "p_fly": 0.41,
-     "p_xc": 0.39,
+     "p_xc": 0.4,
      "agree": "split",
      "models": {
       "RRFS": 1.0,
@@ -42549,8 +42544,8 @@
       16
      ],
      "note": "thermals to 5,000 ft",
-     "p_fly": 0.62,
-     "p_xc": 0.07,
+     "p_fly": 0.61,
+     "p_xc": 0.02,
      "agree": "split",
      "models": {
       "RRFS": 3.0,
@@ -42797,8 +42792,8 @@
      },
      "gwin": null,
      "note": "over the back",
-     "p_fly": 0.4,
-     "p_xc": 0.38,
+     "p_fly": 0.43,
+     "p_xc": 0.4,
      "agree": "split",
      "models": {
       "RRFS": 3.0,
@@ -44011,7 +44006,6 @@
     }
    },
    "nws_rain": false,
-   "nws_sa": false,
    "best": "santabarbara",
    "best_main": "elsinore",
    "headline": "XC at Santa Barbara",
@@ -44161,7 +44155,7 @@
      "gwin": null,
      "note": "W 7 mph",
      "p_fly": 0.8,
-     "p_xc": 0.78,
+     "p_xc": 0.77,
      "agree": "agree",
      "models": {
       "GFS": 4.0,
@@ -44374,8 +44368,8 @@
       16
      ],
      "note": "thermals to 4,000 ft",
-     "p_fly": 0.89,
-     "p_xc": 0.27,
+     "p_fly": 0.92,
+     "p_xc": 0.38,
      "agree": "split",
      "models": {
       "GFS": 4.4,
@@ -44598,8 +44592,8 @@
       16
      ],
      "note": "gusty",
-     "p_fly": 0.13,
-     "p_xc": 0.1,
+     "p_fly": 0.2,
+     "p_xc": 0.16,
      "agree": "split",
      "models": {
       "GFS": 2.4,
@@ -45041,7 +45035,7 @@
      "gwin": null,
      "note": "thermals to 5,300 ft",
      "p_fly": 1.0,
-     "p_xc": 0.31,
+     "p_xc": 0.41,
      "agree": "split",
      "models": {
       "GFS": 1.0,
@@ -45253,8 +45247,8 @@
      },
      "gwin": null,
      "note": "thermals to 3,700 ft",
-     "p_fly": 0.89,
-     "p_xc": 0.43,
+     "p_fly": 0.92,
+     "p_xc": 0.4,
      "agree": "split",
      "models": {
       "GFS": 4.0,
@@ -45479,8 +45473,8 @@
      },
      "gwin": null,
      "note": "blown out",
-     "p_fly": 0.28,
-     "p_xc": 0.25,
+     "p_fly": 0.32,
+     "p_xc": 0.28,
      "agree": "split",
      "models": {
       "GFS": 2.8,
@@ -45919,7 +45913,7 @@
      },
      "gwin": null,
      "note": "over the back",
-     "p_fly": 0.0,
+     "p_fly": 0.02,
      "p_xc": 0.0,
      "agree": "split",
      "models": {
@@ -46540,7 +46534,6 @@
     }
    },
    "nws_rain": false,
-   "nws_sa": false,
    "best": "santabarbara",
    "best_main": "lb",
    "headline": "XC at Santa Barbara",
@@ -46562,7 +46555,7 @@
      "label": "Ridge soaring",
      "tags": [],
      "xc": false,
-     "rain_p": 0.01,
+     "rain_p": 0.0,
      "good_glass": false,
      "base": 4.0,
      "adj": [],
@@ -46689,8 +46682,8 @@
      "hwind_avg": null,
      "gwin": null,
      "note": "W 7 mph",
-     "p_fly": 0.82,
-     "p_xc": 0.76,
+     "p_fly": 0.84,
+     "p_xc": 0.77,
      "agree": "agree",
      "models": {
       "GFS": 4.0,
@@ -46716,7 +46709,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.99
+       "q": 1.0
       },
       {
        "k": "Model agreement",
@@ -46823,7 +46816,7 @@
       "glass-off"
      ],
      "xc": false,
-     "rain_p": 0.01,
+     "rain_p": 0.0,
      "good_glass": false,
      "base": 3.88,
      "adj": [
@@ -46903,8 +46896,8 @@
       16
      ],
      "note": "thermals to 4,200 ft",
-     "p_fly": 0.8,
-     "p_xc": 0.3,
+     "p_fly": 0.83,
+     "p_xc": 0.35,
      "agree": "split",
      "models": {
       "GFS": 3.9,
@@ -46942,7 +46935,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.99
+       "q": 1.0
       },
       {
        "k": "Model agreement",
@@ -47043,7 +47036,7 @@
      "label": "No go",
      "tags": [],
      "xc": false,
-     "rain_p": 0.01,
+     "rain_p": 0.0,
      "good_glass": false,
      "base": 3.0,
      "adj": [
@@ -47127,8 +47120,8 @@
       16
      ],
      "note": "gusty",
-     "p_fly": 0.26,
-     "p_xc": 0.19,
+     "p_fly": 0.29,
+     "p_xc": 0.16,
      "agree": "agree",
      "models": {
       "GFS": 3.0,
@@ -47166,7 +47159,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.99
+       "q": 1.0
       },
       {
        "k": "Model agreement",
@@ -47346,7 +47339,7 @@
      "gwin": null,
      "note": "thermals to 6,800 ft",
      "p_fly": 1.0,
-     "p_xc": 0.41,
+     "p_xc": 0.42,
      "agree": "agree",
      "models": {
       "GFS": 3.2,
@@ -47564,7 +47557,7 @@
      },
      "gwin": null,
      "note": "thermals to 6,400 ft",
-     "p_fly": 0.57,
+     "p_fly": 0.58,
      "p_xc": 0.47,
      "agree": "split",
      "models": {
@@ -47708,7 +47701,7 @@
      "label": "No go",
      "tags": [],
      "xc": false,
-     "rain_p": 0.01,
+     "rain_p": 0.0,
      "good_glass": false,
      "base": 2.4,
      "adj": [
@@ -47831,7 +47824,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.99
+       "q": 1.0
       },
       {
        "k": "Model agreement",
@@ -47941,7 +47934,7 @@
      "label": "No go",
      "tags": [],
      "xc": false,
-     "rain_p": 0.01,
+     "rain_p": 0.0,
      "good_glass": false,
      "base": 2.4,
      "adj": [
@@ -48022,8 +48015,8 @@
      },
      "gwin": null,
      "note": "gusty",
-     "p_fly": 0.15,
-     "p_xc": 0.03,
+     "p_fly": 0.07,
+     "p_xc": 0.0,
      "agree": "split",
      "models": {
       "GFS": 2.4,
@@ -48061,7 +48054,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.99
+       "q": 1.0
       },
       {
        "k": "Model agreement",
@@ -48170,7 +48163,7 @@
      "label": "No go",
      "tags": [],
      "xc": false,
-     "rain_p": 0.0,
+     "rain_p": 0.01,
      "good_glass": false,
      "base": 1.0,
      "adj": [],
@@ -48242,7 +48235,7 @@
      },
      "gwin": null,
      "note": "Horse: over the back",
-     "p_fly": 0.13,
+     "p_fly": 0.11,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -48281,7 +48274,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 1.0
+       "q": 0.99
       },
       {
        "k": "Model agreement",
@@ -48392,7 +48385,7 @@
      "label": "Thermal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.01,
+     "rain_p": 0.0,
      "good_glass": false,
      "base": 5.0,
      "adj": [
@@ -48473,8 +48466,8 @@
      },
      "gwin": null,
      "note": "thermals to 6,700 ft",
-     "p_fly": 0.73,
-     "p_xc": 0.29,
+     "p_fly": 0.75,
+     "p_xc": 0.28,
      "agree": "split",
      "models": {
       "GFS": 5.0,
@@ -48512,7 +48505,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.99
+       "q": 1.0
       },
       {
        "k": "Model agreement",
@@ -49103,12 +49096,11 @@
     }
    },
    "nws_rain": false,
-   "nws_sa": false,
    "best": "torrey",
    "best_main": "elsinore",
    "headline": "Little Black thermal \u00b7 Elsinore thermal",
    "why": null,
-   "rain_p": 0.01,
+   "rain_p": 0.0,
    "cloud": {
     "okta": 0,
     "sun_loss": 0.0,
@@ -49125,7 +49117,7 @@
      "label": "Ridge soaring",
      "tags": [],
      "xc": false,
-     "rain_p": 0.25,
+     "rain_p": 0.28,
      "good_glass": false,
      "base": 4.0,
      "adj": [],
@@ -49252,8 +49244,8 @@
      "hwind_avg": null,
      "gwin": null,
      "note": "WSW 7 mph",
-     "p_fly": 0.73,
-     "p_xc": 0.65,
+     "p_fly": 0.77,
+     "p_xc": 0.68,
      "agree": "split",
      "models": {
       "GFS": 4.0,
@@ -49277,9 +49269,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "25% of runs",
+       "v": "28% of runs",
        "sub": "",
-       "q": 0.66
+       "q": 0.61
       },
       {
        "k": "Model agreement",
@@ -49383,7 +49375,7 @@
      "label": "No go",
      "tags": [],
      "xc": false,
-     "rain_p": 0.23,
+     "rain_p": 0.27,
      "good_glass": false,
      "base": 3.0,
      "adj": [
@@ -49464,8 +49456,8 @@
      },
      "gwin": null,
      "note": "over the back",
-     "p_fly": 0.2,
-     "p_xc": 0.05,
+     "p_fly": 0.17,
+     "p_xc": 0.02,
      "agree": "split",
      "models": {
       "GFS": 3.0,
@@ -49501,9 +49493,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "23% of runs",
+       "v": "27% of runs",
        "sub": "",
-       "q": 0.68
+       "q": 0.62
       },
       {
        "k": "Model agreement",
@@ -49608,7 +49600,7 @@
      "label": "No go",
      "tags": [],
      "xc": false,
-     "rain_p": 0.21,
+     "rain_p": 0.26,
      "good_glass": false,
      "base": 2.4,
      "adj": [
@@ -49685,7 +49677,7 @@
      },
      "gwin": null,
      "note": "over the back",
-     "p_fly": 0.13,
+     "p_fly": 0.11,
      "p_xc": 0.02,
      "agree": "mixed",
      "models": {
@@ -49722,9 +49714,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "21% of runs",
+       "v": "26% of runs",
        "sub": "",
-       "q": 0.7
+       "q": 0.63
       },
       {
        "k": "Model agreement",
@@ -49833,7 +49825,7 @@
       "no switch"
      ],
      "xc": false,
-     "rain_p": 0.14,
+     "rain_p": 0.16,
      "good_glass": false,
      "base": 3.2,
      "adj": [
@@ -49914,8 +49906,8 @@
      },
      "gwin": null,
      "note": "strong wind aloft",
-     "p_fly": 0.21,
-     "p_xc": 0.03,
+     "p_fly": 0.22,
+     "p_xc": 0.01,
      "agree": "split",
      "models": {
       "GFS": 3.2,
@@ -49951,9 +49943,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "14% of runs",
+       "v": "16% of runs",
        "sub": "",
-       "q": 0.8
+       "q": 0.78
       },
       {
        "k": "Model agreement",
@@ -50059,7 +50051,7 @@
       "windy"
      ],
      "xc": false,
-     "rain_p": 0.11,
+     "rain_p": 0.15,
      "good_glass": false,
      "base": 1.0,
      "adj": [],
@@ -50131,8 +50123,8 @@
      },
      "gwin": null,
      "note": "over the back",
-     "p_fly": 0.13,
-     "p_xc": 0.07,
+     "p_fly": 0.15,
+     "p_xc": 0.05,
      "agree": "split",
      "models": {
       "GFS": 1.0,
@@ -50168,9 +50160,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "11% of runs",
+       "v": "15% of runs",
        "sub": "",
-       "q": 0.85
+       "q": 0.79
       },
       {
        "k": "Model agreement",
@@ -50280,17 +50272,21 @@
       "windy"
      ],
      "xc": false,
-     "rain_p": 0.24,
+     "rain_p": 0.3,
      "good_glass": false,
      "base": 3.0,
      "adj": [
+      [
+       "chance of rain",
+       -0.5
+      ],
       [
        "little sun (mid/high cloud)",
        -1.2
       ],
       [
        "offshore 6+ mph below 4,000 ft: no-go",
-       -0.8
+       -0.2
       ]
      ],
      "hours": {
@@ -50361,7 +50357,7 @@
      },
      "gwin": null,
      "note": "over the back",
-     "p_fly": 0.02,
+     "p_fly": 0.0,
      "p_xc": 0.0,
      "agree": "split",
      "models": {
@@ -50398,9 +50394,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "24% of runs",
+       "v": "30% of runs",
        "sub": "",
-       "q": 0.67
+       "q": 0.58
       },
       {
        "k": "Model agreement",
@@ -50509,7 +50505,7 @@
       "windy"
      ],
      "xc": false,
-     "rain_p": 0.21,
+     "rain_p": 0.25,
      "good_glass": false,
      "base": 3.0,
      "adj": [
@@ -50631,9 +50627,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "21% of runs",
+       "v": "25% of runs",
        "sub": "",
-       "q": 0.7
+       "q": 0.64
       },
       {
        "k": "Model agreement",
@@ -50741,7 +50737,7 @@
       "windy"
      ],
      "xc": false,
-     "rain_p": 0.2,
+     "rain_p": 0.25,
      "good_glass": false,
      "base": 1.0,
      "adj": [],
@@ -50813,7 +50809,7 @@
      },
      "gwin": null,
      "note": "Horse: over the back",
-     "p_fly": 0.11,
+     "p_fly": 0.1,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -50850,9 +50846,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "20% of runs",
+       "v": "25% of runs",
        "sub": "",
-       "q": 0.71
+       "q": 0.64
       },
       {
        "k": "Model agreement",
@@ -50963,7 +50959,7 @@
       "glass-off"
      ],
      "xc": false,
-     "rain_p": 0.12,
+     "rain_p": 0.17,
      "good_glass": false,
      "base": 5.0,
      "adj": [
@@ -51048,7 +51044,7 @@
      ],
      "note": "thermals to 7,500 ft",
      "p_fly": 1.0,
-     "p_xc": 0.5,
+     "p_xc": 0.48,
      "agree": "split",
      "models": {
       "GFS": 5.0,
@@ -51084,9 +51080,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "12% of runs",
+       "v": "17% of runs",
        "sub": "",
-       "q": 0.83
+       "q": 0.76
       },
       {
        "k": "Model agreement",
@@ -51690,12 +51686,11 @@
     }
    },
    "nws_rain": false,
-   "nws_sa": false,
    "best": "torrey",
    "best_main": "lb",
    "headline": "Poor at home sites: over the back",
    "why": "Too windy",
-   "rain_p": 0.21,
+   "rain_p": 0.24,
    "cloud": {
     "okta": 7,
     "sun_loss": 0.27,
