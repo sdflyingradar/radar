@@ -1,7 +1,7 @@
 {
   "title": "nkx_0000Z_08_Nov_2026",
   "source": "https://weather.uwyo.edu/wsgi/sounding?datetime=2026-11-08%2000:00:00&id=72293&type=TEXT:LIST&src=UNKNOWN",
-  "fetched": "2026-11-08T02:31Z",
+  "fetched": "2026-11-08T03:32Z",
   "surface_ft": 440,
   "surface_temp_f": 80,
   "surface_dewpoint_f": 53,
@@ -10,9 +10,9 @@
   "forecast_high": {
     "day": "2026-11-08",
     "label": "tomorrow",
-    "median_f": 87.5,
+    "median_f": 87.8,
     "p10_f": 82.7,
-    "p90_f": 88.8,
+    "p90_f": 89.1,
     "hrrr_f": 86.8,
     "members": 122,
     "models": [
@@ -24,11 +24,11 @@
     "lon": -117.12,
     "window": "10:00-17:00 local",
     "source": "https://open-meteo.com/en/docs/ensemble-api",
-    "fetched": "2026-11-08T02:31Z",
+    "fetched": "2026-11-08T03:32Z",
     "thermal_tops": {
-      "median_ft": 5600,
+      "median_ft": 5700,
       "low_ft": 1700,
-      "high_ft": 6500
+      "high_ft": 6800
     }
   },
   "thermal_tops_ft": [
