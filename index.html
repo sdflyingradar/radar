@@ -879,6 +879,12 @@ html body .det .steps .st { height: 15px; padding: 0 5px; font-size: .48rem !imp
 /* sounding button in the radar orange, black text */
 .sndq, .sndq:visited { background: #c26a24 !important; color: #111 !important; border: 0 !important; font-weight: 700; padding: 5px 14px !important; box-shadow: 0 1px 3px rgba(43,29,20,.25); }
 .sndq:hover { background: #d97b31 !important; color: #111 !important; }
+/* site-card chips glow like the first-layer signals */
+html body details.day:not(#story) .list .srow.srow .spills .rx.warn, html body details.day:not(#story) .list .srow.srow .spills .rx.warn.strong {
+  background: #fff !important; color: #b42f2f !important; box-shadow: 0 0 0 1.5px #d64545, 0 0 8px rgba(214,69,69,.45) !important; }
+html body details.day:not(#story) .list .srow.srow .spills .rx.ok {
+  background: #fff !important; color: #23753c !important; box-shadow: 0 0 0 1.5px #3aa457, 0 0 8px rgba(58,164,87,.45) !important; }
+html body details.day .list .srow.srow .spills .rx.warn .ic-svg, html body details.day .list .srow.srow .spills .rx.warn .ic { color: #c23434; }
 </style>
 </head>
 <body>
@@ -1363,8 +1369,10 @@ function sitePills(c) {
     return 1;
   };
   out.sort((a, b) => rank(a) - rank(b));
+  /* chips glow like the day signals: good news (glass-off, the switch) green, every warning red */
+  const glow = (x) => x.replace('<span class="rx', `<span class="rx ${rank(x) === 0 ? "ok" : "warn"}`);
   /* every chip explains itself: hover on a computer, tap on a phone */
-  return out.map((x) => {
+  return out.map(glow).map((x) => {
     const txt = x.replace(/<i[^>]*>.*?<\/i>/g, "").replace(/<[^>]+>/g, "").trim();
     const tip = chipTip(txt);
     return tip ? x.replace('<span class="rx', `<span title="${esc(tip)}" class="rx`) : x;
