@@ -1035,6 +1035,18 @@ html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"]
 /* grid tiles: facts as tidy lines (height, launch, aloft), no dots */
 html[data-lay="grid"] body details.day:not(#story) .list .srow .facts { display: flex; flex-direction: column; gap: 1px; }
 html[data-lay="grid"] body details.day:not(#story) .list .srow .facts .sep { display: none; }
+/* "more" tab: a small tab in the tile's own colour on the bottom rim, chevron down; up while the site is open */
+html[data-lay="grid"] body details.day:not(#story) .list .srow.srow, html[data-lay="tiles"] body details.day:not(#story) .list .srow.srow { position: relative; padding-bottom: 18px !important; overflow: hidden; }
+html[data-lay="grid"] body details.day:not(#story) .list .srow.srow::after, html[data-lay="tiles"] body details.day:not(#story) .list .srow.srow::after {
+  content: ""; position: absolute; left: 50%; bottom: 0; width: 40px; height: 13px; transform: translateX(-50%); border-radius: 8px 8px 0 0;
+  background: var(--rc) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1.5 1.8 6 6 10.5 1.8' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center 3px / 11px 7px no-repeat;
+  transition: height .15s ease, width .15s ease; }
+html[data-lay="grid"] body details.day:not(#story) .list .srow.srow:hover::after, html[data-lay="tiles"] body details.day:not(#story) .list .srow.srow:hover::after { height: 15px; width: 46px; }
+html[data-lay="grid"] body details.day:not(#story) .list .srow.srow[aria-expanded="true"]::after, html[data-lay="tiles"] body details.day:not(#story) .list .srow.srow[aria-expanded="true"]::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1.5 6.2 6 2 10.5 6.2' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+/* a soft rim along the bottom in the same colour, so the tab reads as part of the card's edge */
+html[data-lay="grid"] body details.day:not(#story) .list .srow.srow::before, html[data-lay="tiles"] body details.day:not(#story) .list .srow.srow::before {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--rc); opacity: .55; }
 
 </style>
 </head>
