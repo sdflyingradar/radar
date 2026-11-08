@@ -86,97 +86,80 @@
   if (days) new MutationObserver(fix).observe(days, { childList: true });
   fix();
 })();
-/* LAB: "How the score was made" — a ledger: the models' number, what's good (✓), what's bad (✗, with the points it
-   took), then the score. A thin 1–5 track on the number rows shows the score falling step by step. */
+/* LAB: "How the score was made" — tight steps: the start (height, or the models' number), one line of what's fine,
+   then each step that moved the number with its points, then the score. */
 (function () {
-  const CAT = [[/rain/i, "rain"], [/sun|cloud/i, "sun"], [/gust/i, "launch"], [/launch|calm/i, "launch"],
-    [/top of lift|aloft|offshore|over the back|NW|drift|LAX-DAG/i, "aloft"], [/below .* ft/i, "height"], [/blown out/i, "launch"],
-    [/season/i, "season"], [/clean day/i, "clean"]];
-  const catOf = (t) => (CAT.find(([re]) => re.test(t)) || [, "other"])[1];
-  const NAME = { height: "Height", climb: "Climb", launch: "Launch wind", aloft: "Wind aloft", rain: "Rain", sun: "Sun", season: "Season", clean: "Clean day", other: "Other" };
-  const tidy = (t) => String(t).replace("little sun (mid/high cloud)", "less sun").replace(/^chance of rain.*/, "showers likely").replace(/^offshore /, "offshore ").replace(/: no-go$/, " → no-go").replace(/: (\d) at most$/, " → $1 at most");
-  const track = (from, to, col) => {
-    const x = (v) => ((Math.max(1, Math.min(5, v)) - 1) / 4 * 100).toFixed(1);
-    const lo = Math.min(from, to), hi = Math.max(from, to);
-    return `<span class="lg-tr"><i class="lg-keep" style="width:${x(lo)}%;background:${col}"></i>${hi > lo ? `<i class="lg-lost" style="left:${x(lo)}%;width:${(x(hi) - x(lo)).toFixed(1)}%"></i>` : ""}</span>`;
-  };
+  const CAT = [[/rain/i, "Rain"], [/sun|cloud/i, "Cloud"], [/gust/i, "Gusts"], [/launch|calm/i, "Launch wind"],
+    [/offshore|LAX-DAG/i, "Offshore"], [/top of lift|aloft|over the back|NW|drift/i, "Wind aloft"], [/below .* ft/i, "Height"],
+    [/blown out/i, "Wind"], [/season/i, "Season"], [/clean day/i, "Clean day"]];
+  const nameOf = (t) => (CAT.find(([re]) => re.test(t)) || [, "Other"])[1];
+  /* the rule's label, cut to its point: "offshore 4+ mph aloft: 2 at most" -> "4+ mph · max 2" */
+  const short = (t) => String(t)
+    .replace(/^offshore LAX-DAG (-?[\d.]+) mb.*/, (m, g) => `LAX–DAG ${g.replace("-", "−")} mb`)
+    .replace(/^offshore (\d\+) mph below ([\d,]+) ft/, "$1 mph below $2 ft").replace(/^offshore (\d\+) mph aloft/, "$1 mph")
+    .replace(/^wind 20–45° off launch/, "20–45° off").replace(/^wind more than 45° off launch/, "45°+ off")
+    .replace(/^gusts over (\d+) mph/, "over $1 mph").replace(/^wind at top of lift over (\d+) mph/, "top of lift $1+ mph")
+    .replace(/^little sun \(mid\/high cloud\)/, "less sun").replace(/^chance of rain.*/, "showers").replace(/^rain much of the window/, "much of the window")
+    .replace(/^off season/, "off season").replace(/^a 5 needs a clean day/, "a 5 needs a clean day").replace(/^NW to N aloft/, "NW–N")
+    .replace(/: no-go$/, " · no-go").replace(/: (\d) at most$/, " · max $1").replace(/: too windy$/, " · too windy");
+  const track = (v, col) => `<span class="lg-tr"><i style="width:${((Math.max(1, Math.min(5, v)) - 1) / 4 * 100).toFixed(1)}%;background:${col}"></i></span>`;
   const r1 = (v) => (Math.round(v * 10) / 10).toFixed(1);
+  const pts = (v) => `${v > 0 ? "+" : "−"}${Math.abs(v).toFixed(1)}`;
   window.scoreLedger = (c, qv) => {
     const f = (k) => (c.factors || []).find((x) => x.k === k);
-    const adj = c.adj || [];
-    const hit = new Set(adj.map(([t]) => catOf(t)));
-    const params = [];
-    const h = f("Height") || f("Thermal height");
-    if (h && h.v !== "–") params.push({ cat: "height", v: h.v, q: h.q, why: h.q < 0.5 ? "low, part of the models' number" : "" });
-    const sink = c.sink || 1.1, core = c.core || 1.4;
-    if (c.wstar != null && c.style !== "ridge") {
-      const cl = Math.max(0, core * c.wstar - sink);
-      params.push({ cat: "climb", v: `${cl.toFixed(1)} m/s`, q: Math.min(1, cl / 2), why: cl < 1 ? "weak, part of the models' number" : "" });
-    }
-    const w = f("Wind 1 pm");
-    if (w && w.v !== "–") params.push({ cat: "launch", v: w.v + " mph", q: w.q, why: w.q < 0.4 && c.style !== "ridge" ? "part of the models' number" : (c.style === "ridge" && w.q < 0.4 ? "light or cross for soaring, part of the models' number" : "") });
-    const a = f("Wind aloft");
-    if (a && a.v !== "–") params.push({ cat: "aloft", v: a.v, q: a.q, why: "" });
-    if (c.rain_p != null) params.push({ cat: "rain", v: c.rain_p < 0.05 ? "dry" : `${Math.round(c.rain_p * 100)}% chance`, q: 1 - c.rain_p, why: "" });
-    if (c.cloud) params.push({ cat: "sun", v: c.cloud.okta ? `mid/high cloud ${c.cloud.okta}/8` : "clear", q: 1 - (c.cloud.sun_loss || 0), why: "" });
+    const h = f("Height") || f("Thermal height"), w = f("Wind 1 pm"), a = f("Wind aloft");
+    const cl = c.wstar != null && c.style !== "ridge" ? Math.max(0, (c.core || 1.4) * c.wstar - (c.sink || 1.1)) : null;
+    const bp = c.base_parts, adj = c.adj || [];
     const base = c.base != null ? c.base : c.rating;
-    const mods = Object.entries(c.models || {}).map(([m, v]) => `${m} ${r1(v).replace(".0", "")}`).join(" · ");
-    const row = (cls, ic, name, val, why, pts, tr) => `<div class="lg-row ${cls}"><span class="lg-ic">${ic}</span><span class="lg-k">${name}</span><span class="lg-v">${val}${why ? `<small>${why}</small>` : ""}</span><span class="lg-p">${pts}</span>${tr || ""}</div>`;
-    let run = base;
-    const out = [];
-    const bp = c.base_parts;
-    const W = { otb: "over the back", windy: "blown out", strong: "too strong", light: "too light", cross: "cross", gusty: "gusty" };
-    const why = (c.why || []).filter((x) => W[x]).map((x) => W[x]).join(", ");
-    const BASE = {
-      launch: ["Launch wind", w ? w.v + " mph" : "", why ? `${why} in the flying window` : "in the flying window"],
-      climb: ["Climb", params.find((p) => p.cat === "climb")?.v || "", "weak climbs"],
-      lowlift: ["Lift over launch", "", "thin lift above launch"],
-      offshore: ["Wind aloft", a ? a.v : "", "offshore in the flying layer"],
-      aloft: ["Wind aloft", a ? a.v : "", "strong or wrong flow aloft"],
-      gust: ["Gusts", "", "over 18 mph"],
-      storm: ["Storms", "", "overdevelopment risk"],
-      xccap: ["XC", "not on", "height is XC-worthy, but wind or climb rule out XC: the height counts as a 3.4"],
-      other: ["Other", "", ""],
-      glass: ["Glass-off", "", "an evening glass-off holds it up"],
-      models: ["Models", mods, "the models' blend"],
+    const row = (cls, ic, name, val, why, p) => `<div class="lg-row ${cls}"><span class="lg-ic">${ic}</span><span class="lg-t"><b>${name}</b>${val ? ` <span class="lg-v">${val}</span>` : ""}${why ? ` <span class="lg-w">${why}</span>` : ""}</span><span class="lg-p">${p}</span></div>`;
+    const W = { otb: "over the back", windy: "blown out", strong: "strong", light: "light", cross: "cross", gusty: "gusty" };
+    const lwhy = (c.why || []).filter((x) => W[x]).map((x) => W[x]).join(", ");
+    const STEP = {
+      launch: ["Launch wind", w && w.v !== "–" ? w.v : "", lwhy],
+      climb: ["Climb", cl != null ? `${cl.toFixed(1)} m/s` : "", "weak"],
+      lowlift: ["Lift over launch", "", "thin"],
+      offshore: ["Offshore", a && a.v !== "–" ? a.v : "", "in the flying layer"],
+      aloft: ["Wind aloft", a && a.v !== "–" ? a.v : "", "strong"],
+      gust: ["Gusts", "", "18+ mph"], storm: ["Storms", "", "overdevelopment"],
+      xccap: ["No XC", "", "height counts as 3.4"], glass: ["Glass-off", "", "holds it up"],
+      models: ["Model blend", "", ""], other: ["Other", "", ""],
     };
-    const stepCat = { launch: "launch", climb: "climb", lowlift: "height", offshore: "aloft", aloft: "aloft" };
-    const baseHit = new Set(bp ? bp.steps.filter(([, v]) => v < 0).map(([k]) => stepCat[k]).filter(Boolean) : []);
-    const isGood = (p) => !hit.has(p.cat) && !baseHit.has(p.cat) && (bp ? true : !p.why && p.q >= 0.4);
-    if (bp) {
-      /* start from the height: where the top of lift sits on the 1-5 scale, then each step the models' number took */
-      run = bp.lv;
-      const hp = params.find((p) => p.cat === "height");
-      out.push(row("lg-base", "", "Height", hp ? hp.v : "", "top of lift on the 1–5 scale", `<b>${r1(bp.lv)}</b>`, track(bp.lv, bp.lv, qv(bp.lv))));
-      for (const p of params.filter((p) => p.cat !== "height" && isGood(p))) out.push(row("lg-good", "✓", NAME[p.cat], p.v, "", ""));
-      for (const [k, v] of bp.steps) {
-        const [nm, val, rs] = BASE[k] || [k, "", ""];
-        const before = run; run = Math.max(1, Math.min(5, run + v));
-        out.push(row(v < 0 ? "lg-bad" : "lg-plus", v < 0 ? "✗" : "+", nm, val, rs, `${v > 0 ? "+" : "−"}${Math.abs(v).toFixed(1)}`, track(Math.min(run, before), Math.max(run, before), "#c9ced6")));
-      }
-      run = base;
-    } else {
-      out.push(row("lg-base", "", "Models", mods ? `<span class="lg-mods">${mods}</span>` : "", c.style === "ridge" ? "ridge lift from the wind" : "lift height and climb on the day", `<b>${r1(base)}</b>`, track(base, base, qv(base))));
-      for (const p of params.filter(isGood)) out.push(row("lg-good", "✓", NAME[p.cat], p.v, "", ""));
-      for (const p of params.filter((p) => !hit.has(p.cat) && !isGood(p))) out.push(row("lg-soft", "✗", NAME[p.cat], p.v, p.why || "", "<em>in base</em>"));
+    /* what's fine: the inputs no step or rule touched, in one line */
+    const touched = new Set([...(bp ? bp.steps.map(([k]) => STEP[k] && STEP[k][0]) : []), ...adj.map(([t]) => nameOf(t))]);
+    const fine = [];
+    if (cl != null && !touched.has("Climb")) fine.push(`climb ${cl.toFixed(1)} m/s`);
+    if (w && w.v !== "–" && !touched.has("Launch wind") && !touched.has("Gusts") && (bp || w.q >= 0.4)) fine.push(`launch ${w.v}`);
+    if (a && a.v !== "–" && !touched.has("Wind aloft") && !touched.has("Offshore") && a.q >= 0.4) fine.push(`aloft ${a.v}`);
+    if (c.rain_p != null && c.rain_p < 0.3 && !touched.has("Rain")) fine.push(c.rain_p < 0.05 ? "dry" : `${Math.round(c.rain_p * 100)}% rain`);
+    if (c.cloud && !touched.has("Cloud")) fine.push(c.cloud.okta ? `cloud ${c.cloud.okta}/8` : "sunny");
+    const out = [];
+    if (bp) out.push(row("lg-base", "", "Height", h ? h.v : "", "", `<b>${r1(bp.lv)}</b>`));
+    else {
+      const mods = Object.entries(c.models || {}).map(([m, v]) => `${m} ${r1(v).replace(".0", "")}`).join(" · ");
+      out.push(row("lg-base", "", c.style === "ridge" ? "Ridge lift" : "Models", c.style === "ridge" && w ? w.v : "", c.style === "ridge" ? "" : mods, `<b>${r1(base)}</b>`));
     }
-    for (const [t, v] of adj) {
-      const cat = catOf(t), p = params.find((x) => x.cat === cat);
-      const before = run; run = Math.max(1, run + v);
-      out.push(row("lg-bad", "✗", NAME[cat], p ? p.v : "", tidy(t), `${v > 0 ? "+" : "−"}${Math.abs(v).toFixed(1)}`, track(run, before, "#c9ced6")));
-    }
-    out.push(row("lg-total", "=", "Score", "", "", `<b>${r1(c.rating)}</b>`, track(c.rating, c.rating, qv(c.rating))));
-    return `<div class="dsec lg"><span class="dh">How the score was made</span><div class="lg-list">${out.join("")}</div></div>`;
+    if (fine.length) out.push(row("lg-good", "✓", "", fine.join(" · "), "", ""));
+    if (bp) for (const [k, v] of bp.steps) { const [n, val, why] = STEP[k] || [k, "", ""]; out.push(row(v < 0 ? "lg-bad" : "lg-plus", v < 0 ? "−" : "+", n, val, why, pts(v))); }
+    else if (!bp && w && w.q < 0.4) out.push(row("lg-soft", "−", c.style === "ridge" ? "Wind" : "Launch wind", "", "light or cross (already in the start)", ""));
+    for (const [t, v] of adj) out.push(row("lg-bad", "−", nameOf(t), "", short(t), pts(v)));
+    out.push(row("lg-total", "=", "Score", "", "", `<b>${r1(c.rating)}</b>`));
+    return `<div class="dsec lg"><span class="dh">How the score was made</span><div class="lg-list">${out.join("")}</div>${track(c.rating, qv(c.rating))}</div>`;
   };
 })();
 /* LAB: tap the thermal panel to see it full screen, turned to landscape on a phone held upright; × closes.
    A big headline (day, date, region) and ‹ › buttons step to the day before / after, staying full screen. */
 (function () {
   let ov = null;
-  const close = () => { if (ov) { ov.remove(); ov = null; document.documentElement.style.overflow = ""; } };
-  const open = (therm) => {
+  const close = (fromBack) => {
+    if (!ov) return;
+    ov.remove(); ov = null; document.documentElement.style.overflow = "";
+    if (!fromBack && history.state && history.state.thf) history.back();   // drop the entry the popup added
+  };
+  window.addEventListener("popstate", () => { if (ov) close(true); });
+  const open = (therm, swap) => {
     const svg = therm.querySelector("svg"); if (!svg) return;
-    close();
+    if (ov) { ov.remove(); ov = null; }
+    if (!swap) history.pushState({ thf: 1 }, "");   // the phone's back button closes the popup
     const day = therm.closest("details.day");
     const dn = day ? (day.querySelector("summary .when .dn") || {}).textContent || "" : "";
     const dt = day ? (day.querySelector("summary .when small:not(.rel)") || {}).textContent || "" : "";
@@ -200,7 +183,7 @@
         const src = nb[+n.dataset.k], sid = src.dataset.sid, k = src.dataset.jump;
         src.click();                                  // the page moves to that day with the same site open
         const again = document.querySelector(`#det-${k} .therm`);
-        if (again) open(again); else close();
+        if (again) open(again, true); else close();
       }
     });
   };

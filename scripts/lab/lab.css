@@ -171,3 +171,17 @@ html[data-lay="grid"] body details.day:not(#story) .list .srow.srow::before, htm
 @media (orientation: portrait) { #thfull .thf-in { padding: 10px 14px 10px 14px; } #thfull .thf-hd { padding-right: 0; padding-left: 0; } }
 
 #thfull .thf-hd .thf-x { position: static; flex: none; }
+/* tighter ledger */
+.lg-list { gap: 0; }
+.lg-row { grid-template-columns: 14px minmax(0, 1fr) 40px !important; column-gap: 8px !important; padding: 5px 0 !important; align-items: baseline !important; font-size: .82rem; }
+.lg-t { min-width: 0; line-height: 1.35; }
+.lg-t b { font-weight: 600; color: #1f2328; }
+.lg-v { color: #3d4650; font-variant-numeric: tabular-nums; }
+.lg-w { color: #8a6a5a; font-size: .74rem; }
+.lg-bad .lg-w { color: #a14646; }
+.lg-good .lg-v { color: #3d6b4a; }
+.lg-bad .lg-ic, .lg-bad .lg-p { color: #b42f2f; font-weight: 800; }
+.lg-plus .lg-ic, .lg-plus .lg-p { color: #2f8f4a; font-weight: 800; }
+.lg-soft .lg-ic { color: #c78a14; font-weight: 800; }
+.lg > .lg-tr { display: block; margin: 6px 0 0 22px; height: 5px; position: relative; border-radius: 3px; background: rgba(38,48,58,.08); overflow: hidden; }
+.lg > .lg-tr i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; }
