@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-08T17:55+00:00",
+ "generated": "2026-11-08T17:58+00:00",
  "sample": false,
  "calib": {
   "2026-11-08": {
@@ -29677,9 +29677,9 @@
  },
  "overview": "Weak offshore now \u00b7 ridge through Tue \u00b7 Santa Ana now \u00b7 switch day now",
  "gradient": {
-  "now": -4.0,
-  "at": "2026-11-08T16:00Z",
-  "n": 71
+  "now": -3.9,
+  "at": "2026-11-08T17:00Z",
+  "n": 72
  },
  "models": {
   "HRRR": "ncep_hrrr_conus",
@@ -29706,22 +29706,22 @@
   "HRRR trips: using the last good run, fetched 4.7 h ago",
   "RRFS: ok (ncep_rrfs_conus), surface heat flux (8372 values)",
   "RRFS trips: using the last good run, fetched 2.0 h ago",
-  "GFS: using the last good run, fetched 4.6 h ago",
-  "ECMWF: using the last good run, fetched 4.6 h ago",
-  "ICON: using the last good run, fetched 4.6 h ago",
+  "GFS: using the last good run, fetched 4.7 h ago",
+  "ECMWF: using the last good run, fetched 4.7 h ago",
+  "ICON: using the last good run, fetched 4.7 h ago",
   "ens GFS ens: using the last good run, fetched 4.6 h ago",
-  "ens ECMWF ens: using the last good run, fetched 0.9 h ago",
-  "ens ICON ens: using the last good run, fetched 1.9 h ago",
+  "ens ECMWF ens: using the last good run, fetched 1.0 h ago",
+  "ens ICON ens: using the last good run, fetched 2.0 h ago",
   "NWS AFD: ok",
-  "gradient HRRR: bias +1.1 mb over 71 h",
-  "gradient RRFS: bias +0.9 mb over 71 h",
-  "gradient GFS: bias +1.2 mb over 71 h",
-  "gradient ECMWF: bias +0.6 mb over 71 h",
-  "gradient ICON: bias -0.2 mb over 71 h",
+  "gradient HRRR: bias +1.1 mb over 72 h",
+  "gradient RRFS: bias +0.9 mb over 72 h",
+  "gradient GFS: bias +1.2 mb over 72 h",
+  "gradient ECMWF: bias +0.6 mb over 72 h",
+  "gradient ICON: bias -0.1 mb over 72 h",
   "clouds HRRR: ok (ncep_hrrr_conus)",
   "clouds RRFS: ok (ncep_rrfs_conus)",
-  "clouds ECMWF: using the last good run, fetched 4.6 h ago",
-  "clouds ICON: using the last good run, fetched 4.6 h ago",
+  "clouds ECMWF: using the last good run, fetched 4.7 h ago",
+  "clouds ICON: using the last good run, fetched 4.7 h ago",
   "wind: GFS and ICON use ECMWF's winds where RRFS and ECMWF overlap"
  ],
  "sources": [
@@ -29732,7 +29732,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-11-08T16:00+00:00",
-   "fetched": "2026-11-08T17:53+00:00",
+   "fetched": "2026-11-08T17:56+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -29742,7 +29742,7 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": "2026-11-08T12:00+00:00",
-   "fetched": "2026-11-08T17:53+00:00",
+   "fetched": "2026-11-08T17:56+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -29818,7 +29818,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-11-08T10:34:00+00:00",
-   "fetched": "2026-11-08T17:55+00:00",
+   "fetched": "2026-11-08T17:56+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -29827,8 +29827,8 @@
    "provider": "NOAA / Open-Meteo",
    "id": "LAX-DAG",
    "status": "ok",
-   "run": "2026-11-08T16:00Z",
-   "fetched": "2026-11-08T17:55+00:00",
+   "run": "2026-11-08T17:00Z",
+   "fetched": "2026-11-08T17:56+00:00",
    "url": "https://www.weather.gov/lox/LAXGRDNEW"
   },
   {
@@ -29838,7 +29838,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-08T17:55+00:00",
+   "fetched": "2026-11-08T17:58+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
@@ -31086,7 +31086,7 @@
       {
        "k": "Wind 1 pm",
        "v": "N 4g6",
-       "sub": "over the back",
+       "sub": "",
        "q": 0.17
       },
       {
@@ -31260,10 +31260,6 @@
      "base_parts": {
       "lv": 4.17,
       "steps": [
-       [
-        "xccap",
-        -0.54
-       ],
        [
         "launch",
         -0.55
@@ -33245,7 +33241,7 @@
       "w850": "E 8",
       "w700": "ENE 11",
       "rh": 24,
-      "grad": -4.6
+      "grad": -4.7
      }
     }
    },
@@ -36123,8 +36119,8 @@
        ]
       }
      },
-     "was": 4.9,
-     "trend": 0.0
+     "was": 4.8,
+     "trend": 0.1
     },
     "owens": {
      "rating": 2.0,
@@ -39406,8 +39402,8 @@
        ]
       }
      },
-     "was": 1.0,
-     "trend": 1.0
+     "was": 2.0,
+     "trend": 0.0
     }
    },
    "regime": {
@@ -40592,7 +40588,7 @@
      "base": 4.45,
      "adj": [
       [
-       "offshore LAX-DAG -3.9 mb",
+       "offshore LAX-DAG -4.0 mb",
        -1.0
       ],
       [
@@ -42407,7 +42403,7 @@
       "w850": "ENE 5",
       "w700": "E 8",
       "rh": 25,
-      "grad": -4.1
+      "grad": -4.2
      }
     }
    },
@@ -47890,7 +47886,7 @@
       "w850": "SE 14",
       "w700": "SSE 22",
       "rh": 37,
-      "grad": -3.2
+      "grad": -3.3
      }
     }
    },
@@ -49281,7 +49277,7 @@
       {
        "k": "Wind 1 pm",
        "v": "SE 24g55",
-       "sub": "later SSW 8g17",
+       "sub": "later SSW 8g17 \u00b7 gusty",
        "q": 0.0
       },
       {
@@ -50619,7 +50615,7 @@
       "w850": "ESE 17",
       "w700": "SSE 10",
       "rh": 54,
-      "grad": -4.1
+      "grad": -4.2
      }
     }
    },
@@ -50638,5 +50634,5 @@
    }
   }
  ],
- "trend_ref": "2026-11-07T20:56+00:00"
+ "trend_ref": "2026-11-07T21:56+00:00"
 }
