@@ -1954,6 +1954,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 rating = median(ens_r)
             base_r = rating
             adj = []                                   # what changed the models' number, for the site card
+            caps = []                                  # "N at most" limits: collected here, applied after every deduction
             def note_adj(label, before):
                 if abs(rating - before) >= 0.05:
                     adj.append([label, round(rating - before, 1)])
@@ -1995,31 +1996,30 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             if s.get("kind") == "ridge" and D:
                 ws = blend({k: a.get("windy_share", 0.0) for k, a in D.items()})
                 cap = 1.5 if ws >= 0.5 else 3.0 if ws >= 0.25 else None
-                if cap is not None and rating > cap:
-                    r0 = rating; rating = cap
-                    note_adj(f"blown out {round(ws * 100)}% of the day: {cap:g} at most", r0)
+                if cap is not None:
+                    caps.append((cap, f"blown out {round(ws * 100)}% of the day: {cap:g} at most"))
             off_season = bool(s.get("season_months")) and int(dstr[5:7]) not in s["season_months"]
             if off_season:
-                r0 = rating; rating = min(rating, 2.0); note_adj("off season: 2 at most", r0)
+                caps.append((2.0, "off season: 2 at most"))
             # a 5 needs the site's "great" height (xc_top_ft + xc_span_ft, e.g. Little Black 3,500 ft) in at
             # least the best model; short of it the day shows 4 at most (Torrey's ridge scale is its own)
             great_ft = (s.get("xc_top_ft") or 0) + (s.get("xc_span_ft") or 1000)
             tops = [v["top"] * FT for v in D.values() if v.get("top")] if D else []
             if s.get("style") != "ridge" and s.get("xc_top_ft") and tops and max(tops) < great_ft:
-                r0 = rating; rating = min(rating, 4.24); note_adj(f"below {great_ft:,.0f} ft: 4 at most", r0)
+                caps.append((4.24, f"below {great_ft:,.0f} ft: 4 at most"))
             # a 5 also needs the wind blowing nicely into the launch for most of the window: light air from any
             # side, or a cross wind, is launchable but makes it a 4 at most (thermal sites; Torrey has its own rules)
             if s.get("style") in ("thermal", "window") and D and rating >= 4.5:
                 into = sum(model_weight(k, D) * a.get("into", 0) for k, a in D.items()) / (sum(model_weight(k, D) for k in D) or 1)
                 if into < 0.5:
-                    r0 = rating; rating = 4.24; note_adj("wind not into launch: 4 at most", r0)
+                    caps.append((4.24, "wind not into launch: 4 at most"))
             # gusts through the window: over 12 mph for most of it costs half a point, over 18 mph is too windy
             if s.get("kind") != "ridge" and D:
                 tw = sum(model_weight(k, D) for k in D) or 1
                 g18 = sum(model_weight(k, D) * a.get("gust18", 0) for k, a in D.items()) / tw
                 g12 = sum(model_weight(k, D) * a.get("gust12", 0) for k, a in D.items()) / tw
                 if g18 >= 0.5:
-                    r0 = rating; rating = min(rating, 1.4); note_adj("gusts over 18 mph: too windy", r0)
+                    caps.append((1.4, "gusts over 18 mph: too windy"))
                 elif g12 >= 0.5:
                     r0 = rating; rating = max(1.0, rating - 1.0); note_adj("gusts over 12 mph", r0)
             # wind at the top of lift: over 15 mph costs half a point, over 20 mph a full point, over 25 mph
@@ -2028,7 +2028,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             tw_mph = wmedian(tws) if tws else None
             if s.get("kind") not in ("ridge", "convergence") and D:
                 if tw_mph is not None and tw_mph > 25:
-                    r0 = rating; rating = min(rating, 1.4); note_adj("wind at top of lift over 25 mph: too windy", r0)
+                    caps.append((1.4, "wind at top of lift over 25 mph: too windy"))
                 elif tw_mph is not None and tw_mph > 20:
                     r0 = rating; rating = max(1.0, rating - 1.0); note_adj("wind at top of lift over 20 mph", r0)
                 elif tw_mph is not None and tw_mph > 15:
@@ -2036,14 +2036,13 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             # wind at the top of lift from behind the launch, 10 mph+, through most of the window (Santa Ana over
             # the ridge: rotor and a blown-out or cross launch, even when the surface wind looks light): 2 at most
             if s.get("style") in ("thermal", "window") and D:
-                if blend({k: a.get("otb_aloft_share", 0.0) for k, a in D.items()}) >= 0.5 and rating > 2.0:
-                    r0 = rating; rating = 2.0; note_adj("over the back aloft: 2 at most", r0)
+                if blend({k: a.get("otb_aloft_share", 0.0) for k, a in D.items()}) >= 0.5:
+                    caps.append((2.0, "over the back aloft: 2 at most"))
             # offshore (Santa Ana) through the flying layer for most of the window: a no-go, even when the top of
             # lift is lower and the valley wind looks fine (LB, Blossom, Otay, Whale's V; N-E at Soboba and Marshall: "offshore_nogo")
             onog = s.get("offshore_nogo")
             if onog and D and blend({k: a.get("offshore_share", 0.0) for k, a in D.items()}) >= 0.5:
-                r0 = rating; rating = 1.0
-                note_adj(f"offshore {onog.get('mph', 6)}+ mph below {onog.get('top_ft', 4000):,} ft: no-go", r0)
+                caps.append((1.0, f"offshore {onog.get('mph', 6)}+ mph below {onog.get('top_ft', 4000):,} ft: no-go"))
             elif onog and D:
                 # lighter offshore: the east wind in the flying layer, or the LAX-DAG gradient, whichever is worse
                 o4 = blend({k: a.get("off4_share", 0.0) for k, a in D.items()}) >= 0.5
@@ -2051,9 +2050,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 grs = [((GRAD.get("models", {}).get(k) or {}).get("daily") or {}).get(dstr) for k in D]
                 grs = [x for x in grs if x is not None]
                 gday = median(grs) if grs else None
-                if (o4 or (gday is not None and gday <= GRAD_STEP[1])) and rating > 2.0:
-                    r0 = rating; rating = 2.0
-                    note_adj("offshore " + (f"{OFF_STEP[1]:.0f}+ mph aloft" if o4 else f"LAX-DAG {gday:.1f} mb") + ": 2 at most", r0)
+                if o4 or (gday is not None and gday <= GRAD_STEP[1]):
+                    caps.append((2.0, "offshore " + (f"{OFF_STEP[1]:.0f}+ mph aloft" if o4 else f"LAX-DAG {gday:.1f} mb") + ": 2 at most"))
                 elif o3 or (gday is not None and gday <= GRAD_STEP[0]):
                     r0 = rating; rating = max(1.0, rating - 1.0)
                     note_adj("offshore " + (f"{OFF_STEP[0]:.0f}+ mph aloft" if o3 else f"LAX-DAG {gday:.1f} mb"), r0)
@@ -2070,20 +2068,17 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 lw_b = wmedian(lws) if lws else None
                 t1, t2 = calm.get("top_mph", [10, 15])
                 if tw_mph is not None and tw_mph > t2:
-                    r0 = rating; rating = 1.0; note_adj(f"wind at top of lift over {t2} mph: no-go", r0)
+                    caps.append((1.0, f"wind at top of lift over {t2} mph: no-go"))
                 elif (tw_mph is not None and tw_mph > t1) or (lw_b is not None and lw_b > calm.get("launch_mph", 8)):
-                    r0 = rating; rating = min(rating, 2.0); note_adj("not calm enough: 2 at most", r0)
+                    caps.append((2.0, "not calm enough: 2 at most"))
             # how well the wind lines up with the launch through the window (thermal sites, light air ignored):
             # within 20 degrees is perfect, 20-45 degrees off costs half a point, more than 45 degrees off sinks the day
             if s.get("style") in ("thermal", "window") and D and site_face(s) is not None:
                 oc = sum(model_weight(k, D) * a.get("offcat", 0.0) for k, a in D.items()) / (sum(model_weight(k, D) for k in D) or 1)
                 if oc >= 1.5:
-                    r0 = rating; rating = min(rating, 2.0); note_adj("wind more than 45° off launch: 2 at most", r0)
+                    caps.append((2.0, "wind more than 45° off launch: 2 at most"))
                 elif oc >= 0.5:
                     r0 = rating; rating = max(1.0, rating - 1.0); note_adj("wind 20–45° off launch", r0)
-            # a 5 is a clean day: any deduction above (rain, cloud, gusts, wind, direction) makes it a 4 at most
-            if rating >= 4.5 and any(v < 0 for _, v in adj):
-                r0 = rating; rating = 4.24; note_adj("a 5 needs a clean day: 4 at most", r0)
             # awkward drift at the top of lift (most of the rating weight agrees): a tag, and at some
             # sites a small nick (Blossom: NW or clearly WNW pushes XC toward the Rock Pile)
             xb = s.get("xc_bad_aloft") or {}
@@ -2091,6 +2086,13 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             drift = bool(D) and sum(model_weight(k, D) for k, a in D.items() if a.get("xc_block")) / tot_w >= 0.5
             if drift and not wet and xb.get("nick"):
                 r0 = rating; rating = max(1.0, rating - xb["nick"]); note_adj("awkward drift", r0)
+            # the caps come last, after every deduction, so "2 at most" really means 2 (lowest cap first)
+            for cap_v, cap_l in sorted(caps, key=lambda c: c[0]):
+                if rating > cap_v:
+                    r0 = rating; rating = cap_v; note_adj(cap_l, r0)
+            # a 5 is a clean day: any deduction above (rain, cloud, gusts, wind, direction) makes it a 4 at most
+            if rating >= 4.5 and any(v < 0 for _, v in adj):
+                r0 = rating; rating = 4.24; note_adj("a 5 needs a clean day: 4 at most", r0)
             if ens_r:
                 shift = rating - median(ens_r)
                 p_fly = sum(r + shift >= 2.5 for r in ens_r) / len(ens_r)
