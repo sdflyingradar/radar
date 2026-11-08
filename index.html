@@ -919,6 +919,8 @@ html body details.day:not(#story) .list .srow.srow[data-site="torrey"] .wtab .hw
 html body details.day:not(#story) .list .srow.srow .spills .rx { height: 17px !important; padding: 0 5px !important; gap: 3px !important; font-size: .54rem !important; letter-spacing: .03em !important; border-width: 1px !important; border-radius: 4px !important; }
 html body details.day:not(#story) .list .srow.srow .spills .rx .ic-svg, html body details.day:not(#story) .list .srow.srow .spills .rx .ic { width: 10px !important; height: 10px !important; }
 html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important; }
+/* each fact stays whole ("launch 9g11 mph" never splits from its value) */
+.srow .facts .fi, .srow .facts .wa { white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -1387,8 +1389,8 @@ const LIFT = '<svg class="lift" viewBox="0 0 14 12" aria-hidden="true"><g fill="
 function siteFacts(c) {
   const f = (k) => (c.factors || []).find((x) => x.k === k);
   const h = f("Height") || f("Thermal height"), w = f("Wind 1 pm"), a = f("Wind aloft");
-  return [h && h.v !== "–" ? `<span class="wa">${LIFT}${esc(h.v)}</span>` : "", w && w.v !== "–" ? `launch ${windHtml(w.v, "mph")}` : "",
-          a && a.v !== "–" ? `aloft ${windHtml(a.v, "mph")}` : ""].filter(Boolean).join('<span class="sep">·</span>');
+  return [h && h.v !== "–" ? `<span class="wa">${LIFT}${esc(h.v)}</span>` : "", w && w.v !== "–" ? `<span class="fi">launch ${windHtml(w.v, "mph")}</span>` : "",
+          a && a.v !== "–" ? `<span class="fi">aloft ${windHtml(a.v, "mph")}</span>` : ""].filter(Boolean).join('<span class="sep">·</span>');
 }
 function sitePills(c) {
   const adj = c.adj || [];
