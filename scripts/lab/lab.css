@@ -73,3 +73,12 @@ html[data-lay] body details.day[data-date]:not(#story) > summary.hd .notes .rx .
   html[data-lay] body details.day[data-date]:not(#story) > summary.hd .notes .sig .sig-gap { display: block !important; flex: 0 0 100% !important; height: 0 !important; width: 100% !important; margin: 0 !important; }
   html[data-lay] body details.day[data-date]:not(#story) > summary.hd .notes .rx { white-space: nowrap !important; }
 }
+/* LAB, phone: site pills small enough for "Santa Barbara XC" or "Laguna/Horse/Fuzz" */
+@media (max-width: 640px) {
+  html body details.day:not(#story):not([open]) > summary.hd .sum .sc, html body details.day:not(#story):not([open]) > summary.hd .sum .sc b { font-size: .66rem !important; letter-spacing: -.01em; }
+  html body details.day:not(#story):not([open]) > summary.hd .sum .sc { padding: 5px 4px 5px 7px !important; }
+  html body details.day:not(#story):not([open]) > summary.hd .sum .sc .sc-t { gap: 4px !important; flex-wrap: nowrap !important; }
+  html body details.day:not(#story):not([open]) > summary.hd .sum .sc b { white-space: nowrap; overflow: visible !important; text-overflow: clip !important; }
+  html body details.day:not(#story):not([open]) > summary.hd .sum .sc .xcmark { font-size: .46rem !important; padding: 1px 2px !important; flex: none; }
+}
+@media (max-width: 375px) { html body details.day:not(#story):not([open]) > summary.hd .sum .sc, html body details.day:not(#story):not([open]) > summary.hd .sum .sc b { font-size: .6rem !important; } html body details.day:not(#story):not([open]) > summary.hd { column-gap: 6px !important; } }
