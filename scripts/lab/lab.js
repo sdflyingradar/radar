@@ -49,3 +49,16 @@
   window.addEventListener("resize", trim);
   trim();
 })();
+
+/* LAB, computer: every day stays open (no second step); a click on the day's header does not close it */
+(function () {
+  const wide = () => window.matchMedia("(min-width: 900px)").matches;
+  const openAll = () => { if (wide()) document.querySelectorAll("details.day[data-date]:not([open])").forEach((d) => { d.open = true; }); };
+  document.addEventListener("click", (e) => {
+    if (wide() && e.target.closest("details.day[data-date] > summary")) e.preventDefault();
+  }, true);
+  const days = document.getElementById("days");
+  if (days) new MutationObserver(openAll).observe(days, { childList: true });
+  window.addEventListener("resize", openAll);
+  openAll();
+})();
