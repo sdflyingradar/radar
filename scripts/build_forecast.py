@@ -1013,11 +1013,11 @@ def score_hour(site, hr, i, levels, elev_m):
 
 def score_parts(lv_raw, lv, q, qp):
     """One hour's rating 1 + (lv - 1) * clamp(q / 0.6), told as steps: the height level (lv_raw), a cap when the
-    lift is above the XC height but there are no XC conditions (xccap), then what each cause in q took. The points
+    lift is above the XC height but the climb is under 1 m/s (weakclimb), then what each cause in q took. The points
     a cause takes are its share of the shortfall on a log scale (q = product of the causes), so they add up."""
     loss = {}
     if lv_raw - lv > 1e-6:
-        loss["xccap"] = lv_raw - lv
+        loss["weakclimb"] = lv_raw - lv
     short = (lv - 1.0) * (1 - clamp(q / 0.6))
     if short > 1e-6:
         cuts = {c: m for c, m in qp.items() if m < 0.999}
@@ -1177,9 +1177,10 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     else:
         def hour_r(sc, allow_xc):
             lv = ceil_level(site, sc["peak_top"] * FT)
-            # lift above the XC height but no XC conditions (wind, weak, ...) shows 3 at most; below the XC
-            # height the level already climbs smoothly from 3 to 4, so no cap there
-            if not (allow_xc and sc["xc_s"] > 0) and sc["peak_top"] * FT >= (site.get("xc_top_ft") or 1e9):
+            # weak climb: lift above the XC height only counts when it climbs at least XC_MIN_CLIMB (1 m/s);
+            # otherwise the height counts as 3.4 at most. (Wind, launch and offshore are already in q, and the
+            # drift aloft stays out of the score, so XC itself is a verdict read off the finished score.)
+            if sc["climb"] < XC_MIN_CLIMB and sc["peak_top"] * FT >= (site.get("xc_top_ft") or 1e9):
                 lv = min(lv, 3.4)
             return 1.0 + (lv - 1.0) * clamp(sc["q"] / 0.6)
         if style == "convergence":
@@ -1249,13 +1250,13 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
             for _h, _r, _sc in ranked:
                 top_ft_ = (h4 if h4 is not None else _sc["peak_top"]) * FT
                 lv_raw = ceil_level(site, top_ft_)
-                lv = lv_raw if (_sc["xc_s"] > 0 or top_ft_ < (site.get("xc_top_ft") or 1e9)) else min(lv_raw, 3.4)
+                lv = lv_raw if (_sc["climb"] >= XC_MIN_CLIMB or top_ft_ < (site.get("xc_top_ft") or 1e9)) else min(lv_raw, 3.4)
                 parts.append(score_parts(lv_raw, lv, _sc["q"], _sc.get("qp") or {}))
             base_parts = {"lv": sum(x["lv"] for x in parts) / len(parts),
                           "loss": {c_: sum(x["loss"].get(c_, 0.0) for x in parts) / len(parts) for c_ in {c for x in parts for c in x["loss"]}}}
             best_h, _r, sc = ranked[0]
             peak = h4 if h4 is not None else sum(x[2]["peak_top"] for x in ranked) / len(ranked)
-            xc_now = sc["xc_s"] > 0 and rating >= 3.5
+            xc_now = bool(site.get("xc_top_ft")) and rating >= 3.5
         # convergence and switch sites have no glass-off, except a launch marked glass_off (Horse: a light W-SW
         # evening breeze on its west face)
         if style not in ("convergence", "switch") or site.get("glass_off"):
@@ -2167,7 +2168,9 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 p_xc = sum(a["xc_day"] > 0 for a in D.values()) / len(D)
             det_xc = (sum(model_weight(k, D) for k, a in D.items() if a["xc_day"] > 0)
                       / max(1, sum(model_weight(k, D) for k in D)))
-            xc = bool(s.get("xc_top_ft")) and rating >= 3.5 and det_xc >= 0.4
+            # XC is the verdict on the finished score at the thermal sites (3.5+); Torrey still needs its models'
+            # thermal-day call
+            xc = bool(s.get("xc_top_ft")) and rating >= 3.5 and (s.get("kind") != "ridge" or det_xc >= 0.4)
             order = [m for m in ("HRRR", "RRFS", "NAM", "ECMWF", "GFS", "ICON") if m in D]
             close = [m for m in order if abs(det_r[m] - rating) <= 1.0]
             lead_name = close[0] if close else (min(order, key=lambda m: abs(det_r[m] - rating)) if order else None)

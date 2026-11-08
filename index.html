@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-skin="glossy" data-theme="light">
+<html lang="en" data-skin="glossy" data-theme="light" data-lay="grid">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -922,6 +922,7 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
 /* each fact stays whole ("launch 9g11 mph" never splits from its value) */
 .srow .facts .fi, .srow .facts .wa { white-space: nowrap; }
 </style>
+<link rel="stylesheet" href="scripts/ui/grid.css?v=202611081000">
 </head>
 <body>
 <div class="wrap">
@@ -1284,7 +1285,7 @@ function render(data) {
     const mini = b.querySelector(".mcells"), from = mini ? mini.getBoundingClientRect() : null;
     b.setAttribute("aria-expanded", "true");        // the mini strip hides while the site is open
     det.innerHTML = detail(DAYKEY[i], BY[b.dataset.site], true);
-    b.after(det);                                   // open right under the site
+    labPlace(b, det);                               // grid: after the last tile of its row, full width
     det.style.setProperty("--rc", b.style.getPropertyValue("--rc"));   // the site's colour stripe runs down the detail
     det.hidden = false;
     morphStrip(from, det);
@@ -1637,10 +1638,8 @@ function detail(d, s, inline) {
   return `${head}
     ${hm ? `<div class="dsec"><span class="dh">Launch wind by model</span>${modelWindTable(c)}</div>` : ""}
     ${tp ? `<div class="dsec">${tp}</div>` : hourStrip ? `<div class="dsec"><span class="dh">Hour by hour</span>${hourStrip}</div>` : ""}
-    <div class="dsec"><span class="dh">What made the score</span>
-      <div class="factors">${rows}</div>
-      ${steps ? `<div class="steps">${steps}</div>` : ""}</div>
-    <div class="dsec"><span class="dh">Good to know · not in the score</span><div class="factors">${extraBars}</div>${info ? `<div class="gks">${info}</div>` : ""}</div>`;
+    ${window.scoreLedger ? window.scoreLedger(c, qv) : ""}
+    ${agreeF ? `<div class="dsec lg-agree"><div class="factors">${barRow("Models agree", agreeF.q, agreeF.v, agreeF.sub)}</div></div>` : ""}`;
 }
 
 /* ---------- archive: every past day as it was forecast that day (frozen after noon) ---------- */
@@ -1803,5 +1802,6 @@ $("#reload").addEventListener("click", load);
   window.addEventListener("scroll", () => (tip.hidden = true), { passive: true });
 })();
 </script>
+<script src="scripts/ui/grid.js?v=202611081000"></script>
 </body>
 </html>

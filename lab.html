@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-skin="glossy" data-theme="light">
+<html lang="en" data-skin="glossy" data-theme="light" data-lay="grid">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -922,193 +922,15 @@ html body details.day:not(#story) .list .srow.srow .spills .rx .ic-svg, html bod
 html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important; }
 /* each fact stays whole ("launch 9g11 mph" never splits from its value) */
 .srow .facts .fi, .srow .facts .wa { white-space: nowrap; }
+</style>
+<link rel="stylesheet" href="scripts/ui/grid.css?v=202611081000">
+<style>
 /* ===== LAB: opened-day layouts (html[data-lay] = list | grid | tiles) ===== */
 #labbar { position: fixed; left: 50%; bottom: max(10px, env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 50; display: flex; align-items: center; gap: 4px;
   padding: 4px; border-radius: 999px; background: #1f2937; box-shadow: 0 6px 20px -6px rgba(0,0,0,.45); font: 600 .74rem/1 system-ui, sans-serif; }
 #labbar b { color: #fbbf24; padding: 0 8px 0 10px; letter-spacing: .08em; font-size: .66rem; }
 #labbar button { border: 0; border-radius: 999px; padding: 8px 13px; background: transparent; color: #cbd5e1; font: inherit; cursor: pointer; }
 #labbar button[aria-pressed="true"] { background: #fff; color: #111827; }
-html[data-lay="grid"] body details.day:not(#story) .list, html[data-lay="tiles"] body details.day:not(#story) .list {
-  display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px !important; align-items: stretch; }
-html[data-lay="tiles"] body details.day:not(#story) .list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px !important; }
-@media (min-width: 700px) {
-  html[data-lay="grid"] body details.day:not(#story) .list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px !important; }
-  html[data-lay="tiles"] body details.day:not(#story) .list { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px !important; }
-}
-html[data-lay] body details.day:not(#story) .list .sgrp { grid-column: 1 / -1; margin: 6px 0 -2px !important; }
-html[data-lay] body details.day:not(#story) .list .sgrp:first-child { margin-top: 0 !important; }
-/* the tile */
-html[data-lay="grid"] body details.day:not(#story) .list .srow.srow, html[data-lay="tiles"] body details.day:not(#story) .list .srow.srow {
-  margin: 0 !important; padding: 9px 10px 10px 13px !important; display: flex !important; flex-direction: column; align-items: stretch; gap: 5px;
-  border-radius: 10px !important; min-width: 0; text-align: left; transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease; }
-html[data-lay] body details.day:not(#story) .list .srow.srow .exp { display: none !important; }
-html[data-lay="grid"] body details.day:not(#story) .list .srow .nmrow, html[data-lay="tiles"] body details.day:not(#story) .list .srow .nmrow { align-items: flex-start; gap: 6px; }
-html[data-lay="grid"] body details.day:not(#story) .list .srow .nmw, html[data-lay="tiles"] body details.day:not(#story) .list .srow .nmw { flex-direction: column; align-items: flex-start; gap: 1px; }
-html[data-lay="grid"] body details.day:not(#story) .list .srow .nm, html[data-lay="tiles"] body details.day:not(#story) .list .srow .nm { font-size: .9rem; line-height: 1.15; white-space: normal; }
-html[data-lay="grid"] body details.day:not(#story) .list .srow .lab, html[data-lay="tiles"] body details.day:not(#story) .list .srow .lab { font-size: .7rem !important; }
-html[data-lay] body details.day:not(#story) .list .srow .dscore .dsl { display: none; }
-html[data-lay="grid"] body details.day:not(#story) .list .srow .tx { display: block; font-size: .7rem; line-height: 1.35; }
-html[data-lay="grid"] body details.day:not(#story) .list .srow .tx .facts { font-size: .7rem; }
-html[data-lay="grid"] body details.day:not(#story) .list .srow .mstrip { max-width: none; margin-top: auto; padding-top: 10px; }
-html[data-lay="grid"] body details.day:not(#story) .list .srow .spills .rx:nth-child(n+3) { display: none; }
-html[data-lay="grid"] body details.day:not(#story) .list .srow .wtab { display: none; }
-/* Torrey takes the whole row in the grid and keeps its wind table */
-html[data-lay="grid"] body details.day:not(#story) .list .srow[data-site="torrey"] { grid-column: 1 / -1; }
-html[data-lay="grid"] body details.day:not(#story) .list .srow[data-site="torrey"] .wtab { display: block; }
-html[data-lay="grid"] body details.day:not(#story) .list .srow[data-site="torrey"][aria-expanded="true"] .wtab { display: none; }
-/* tiles: name, verdict and score only, like the first layer */
-html[data-lay="tiles"] body details.day:not(#story) .list .srow .tx, html[data-lay="tiles"] body details.day:not(#story) .list .srow .spills,
-html[data-lay="tiles"] body details.day:not(#story) .list .srow .mstrip, html[data-lay="tiles"] body details.day:not(#story) .list .srow .wtab { display: none !important; }
-html[data-lay="tiles"] body details.day:not(#story) .list .srow.srow { padding: 8px 8px 8px 11px !important; min-height: 58px; justify-content: center; }
-html[data-lay="tiles"] body details.day:not(#story) .list .srow .nm { font-size: .82rem; }
-html[data-lay="tiles"] body details.day:not(#story) .list .srow .nmrow { flex-direction: column-reverse; align-items: flex-start; }
-html[data-lay="tiles"] body details.day:not(#story) .list .srow .warn-dot { display: inline-block; }
-/* the open tile: lifted, with a ring in its own colour */
-html[data-lay="grid"] body details.day:not(#story) .list .srow.srow[aria-expanded="true"], html[data-lay="tiles"] body details.day:not(#story) .list .srow.srow[aria-expanded="true"] {
-  border-radius: 10px !important; box-shadow: inset 5px 0 0 var(--rc), 0 0 0 2px var(--rc), 0 6px 16px -8px rgba(0,0,0,.35) !important; transform: translateY(-1px); }
-html[data-lay] body details.day:not(#story) .list:has(.srow[aria-expanded="true"]) .srow.srow:not([aria-expanded="true"]) { opacity: .45; filter: saturate(.7); transition: opacity .2s ease, filter .2s ease; }
-/* the third level: full width under the row, with a little notch pointing at the open tile */
-html[data-lay="grid"] body details.day:not(#story) .list .det.det, html[data-lay="tiles"] body details.day:not(#story) .list .det.det {
-  grid-column: 1 / -1; margin: 4px 0 4px !important; border-radius: 12px !important; position: relative;
-  box-shadow: inset 5px 0 0 var(--rc), 0 0 0 1px #dfe3e8, 0 10px 24px -14px rgba(0,0,0,.35) !important; }
-html[data-lay="grid"] body details.day:not(#story) .list .det.det::before, html[data-lay="tiles"] body details.day:not(#story) .list .det.det::before {
-  content: ""; position: absolute; top: -7px; left: calc(var(--ax, 40px) - 7px); width: 14px; height: 14px; transform: rotate(45deg);
-  background: inherit; box-shadow: -1px -1px 0 #dfe3e8; border-radius: 2px 0 0 0; }
-html[data-lay] body details.day:not(#story) .list .det.lab-in { animation: labIn .28s cubic-bezier(.2,.8,.2,1); transform-origin: var(--ax, 50%) 0; }
-@keyframes labIn { from { opacity: 0; transform: translateY(-6px) scaleY(.96); } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: reduce) { html[data-lay] body details.day:not(#story) .list .det.lab-in { animation: none; } }
-html[data-lay="grid"] body details.day:not(#story) .list .srow .nmw, html[data-lay="tiles"] body details.day:not(#story) .list .srow .nmw { flex: 1 1 0; min-width: 0; }
-html[data-lay="grid"] body details.day:not(#story) .list .srow .nmw .nm, html[data-lay="tiles"] body details.day:not(#story) .list .srow .nmw .nm { overflow-wrap: break-word; flex: 0 1 auto; max-width: 100%; }
-html[data-lay] body details.day:not(#story) .list .srow .dscore { flex: none; }
-/* on a computer the full-width third level splits: the thermal panel left, the score and notes right */
-@media (min-width: 900px) {
-  html[data-lay="grid"] body details.day:not(#story) .list .det.det, html[data-lay="tiles"] body details.day:not(#story) .list .det.det {
-    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); column-gap: 22px; align-items: start; }
-  html[data-lay="grid"] body details.day:not(#story) .list .det.det > .dsec:first-child, html[data-lay="tiles"] body details.day:not(#story) .list .det.det > .dsec:first-child { grid-row: 1 / span 3; }
-  html[data-lay="grid"] body details.day:not(#story) .list .det.det > .dsec:not(:first-child), html[data-lay="tiles"] body details.day:not(#story) .list .det.det > .dsec:not(:first-child) { grid-column: 2; margin-top: 0; }
-}
-/* grid and tiles: an opened day drops the first-layer site pills (the tiles below replace them) */
-html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .sum, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .sum { display: none !important; }
-/* the little hour strip on the tiles is gone: the thermal panel in the third level shows the day hour by hour */
-html[data-lay] body details.day:not(#story) .list .srow .mstrip { display: none !important; }
-/* an opened day's header folds into one compact band: "Mon Nov 9 · Site fly", then the signals and the day-type pill.
-   The models and run time stay only at the bottom of the card. */
-html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd {
-  grid-template-columns: auto minmax(0, 1fr) !important; grid-template-rows: auto !important; align-items: center !important; row-gap: 8px !important; column-gap: 18px !important;
-  padding: 10px 46px 10px 14px !important; min-height: 0 !important; }
-html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .band, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .band {
-  grid-row: 1 !important; grid-column: 1 !important; border: 0 !important; padding: 0 !important; margin: 0 !important; min-height: 0 !important; height: auto !important; background: none !important; box-shadow: none !important; }
-html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .band::after, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .band::after { display: none !important; }
-html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .when, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .when {
-  flex-direction: row !important; align-items: baseline !important; gap: 8px !important; flex-wrap: nowrap !important; }
-html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .when .dn, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .when .dn { font-size: 1.35rem !important; }
-html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .when .dword, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .when .dword { margin: 0 0 0 2px !important; font-size: 1rem !important; }
-html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .band .mods, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .band .mods { display: none !important; }
-html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .notes, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .notes {
-  grid-row: 1 !important; grid-column: 2 !important; margin: 0 !important; padding: 0 !important; border: 0 !important; flex-wrap: wrap; align-items: center; gap: 6px 10px !important; }
-html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .notes .sig, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .notes .sig { width: auto !important; flex: 0 0 auto; }
-@media (max-width: 700px) {
-  html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd { grid-template-columns: minmax(0, 1fr) !important; }
-  html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .notes, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .notes { grid-row: 2 !important; grid-column: 1 !important; }
-}
-html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .notes, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .notes { flex-direction: row !important; display: flex !important; }
-html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .notes > *, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .notes > * { flex: 0 0 auto !important; width: auto !important; margin: 0 !important; }
-@media (max-width: 700px) {
-  html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .notes, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .notes { gap: 6px !important; flex-wrap: wrap !important; }
-  html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .notes .sig, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .notes .sig { gap: 3px !important; }
-  html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .notes .rx, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .notes .rx { flex: 0 0 auto !important; }
-}
-
-/* Torrey in the lab layouts: same as the main page (pills up top, no launch-wind line) */
-html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] { display: grid !important; grid-template-columns: auto minmax(0, 1fr) auto !important; column-gap: 14px !important; row-gap: 6px !important; align-items: start !important; }
-html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .nmrow { display: contents !important; }
-html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .nmw { grid-column: 1 !important; grid-row: 1 !important; }
-html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] > .spills { grid-column: 2 !important; grid-row: 1 !important; align-self: center !important; margin: 0 !important; display: flex !important; }
-html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .dscore { grid-column: 3 !important; grid-row: 1 !important; }
-html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .tx { display: none !important; }
-html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .wtab { grid-column: 1 / -1 !important; grid-row: 2 !important; }
-html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .spills .rx:nth-child(n) { display: inline-flex !important; }
-
-html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .nmw { flex-direction: column !important; align-items: flex-start !important; gap: 1px !important; }
-html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] > .spills { flex-wrap: wrap !important; min-width: 0 !important; }
-html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .wtab .hwt { grid-template-columns: 34px repeat(10, minmax(0, 1fr)) !important; max-width: 640px !important; }
-/* grid tiles: facts as tidy lines (height, launch, aloft), no dots */
-html[data-lay="grid"] body details.day:not(#story) .list .srow .facts { display: flex; flex-direction: column; gap: 1px; }
-html[data-lay="grid"] body details.day:not(#story) .list .srow .facts .sep { display: none; }
-/* "more" tab: a small tab in the tile's own colour on the bottom rim, chevron down; up while the site is open */
-html[data-lay="grid"] body details.day:not(#story) .list .srow.srow, html[data-lay="tiles"] body details.day:not(#story) .list .srow.srow { position: relative; padding-bottom: 18px !important; overflow: hidden; }
-html[data-lay="grid"] body details.day:not(#story) .list .srow.srow::after, html[data-lay="tiles"] body details.day:not(#story) .list .srow.srow::after {
-  content: ""; position: absolute; left: 50%; bottom: 0; width: 40px; height: 13px; transform: translateX(-50%); border-radius: 8px 8px 0 0;
-  background: var(--rc) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1.5 1.8 6 6 10.5 1.8' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center 3px / 11px 7px no-repeat;
-  transition: height .15s ease, width .15s ease; }
-html[data-lay="grid"] body details.day:not(#story) .list .srow.srow:hover::after, html[data-lay="tiles"] body details.day:not(#story) .list .srow.srow:hover::after { height: 15px; width: 46px; }
-html[data-lay="grid"] body details.day:not(#story) .list .srow.srow[aria-expanded="true"]::after, html[data-lay="tiles"] body details.day:not(#story) .list .srow.srow[aria-expanded="true"]::after {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1.5 6.2 6 2 10.5 6.2' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
-/* a soft rim along the bottom in the same colour, so the tab reads as part of the card's edge */
-html[data-lay="grid"] body details.day:not(#story) .list .srow.srow::before, html[data-lay="tiles"] body details.day:not(#story) .list .srow.srow::before {
-  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--rc); opacity: .55; }
-/* score ledger */
-.lg-list { display: grid; gap: 2px; }
-.lg-row { display: grid; grid-template-columns: 16px 84px minmax(0, 1fr) 46px; column-gap: 8px; align-items: baseline; padding: 4px 0; font-size: .8rem; }
-.lg-row + .lg-row { border-top: 1px solid rgba(38,48,58,.08); }
-.lg-ic { font-weight: 800; text-align: center; }
-.lg-k { font-weight: 600; color: #26303a; }
-.lg-v { color: #26303a; font-variant-numeric: tabular-nums; min-width: 0; }
-.lg-v small { display: block; color: #6b7280; font-size: .72rem; margin-top: 1px; }
-.lg-p { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
-.lg-p em { font-style: normal; font-weight: 500; font-size: .68rem; color: #9aa1aa; }
-.lg-good .lg-ic { color: #2f8f4a; } .lg-good .lg-k, .lg-good .lg-v { color: #3d4650; }
-.lg-soft .lg-ic { color: #c78a14; }
-.lg-bad .lg-ic, .lg-bad .lg-p { color: #b42f2f; }
-.lg-bad .lg-v small { color: #8f3a3a; }
-.lg-mods { color: #6b7280; font-size: .74rem; }
-.lg-base .lg-p b, .lg-total .lg-p b { font-size: 1rem; color: #1f2328; }
-.lg-total { border-top: 1.5px solid rgba(38,48,58,.35) !important; margin-top: 2px; padding-top: 6px; }
-.lg-total .lg-ic, .lg-total .lg-k { font-size: .9rem; }
-.lg-tr { grid-column: 2 / -1; position: relative; height: 6px; margin-top: 5px; border-radius: 3px; background: rgba(38,48,58,.08); overflow: hidden; }
-.lg-tr i { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 3px; }
-.lg-tr .lg-lost { background: repeating-linear-gradient(135deg, #e7a0a0 0 3px, #f5d3d3 3px 6px); border-radius: 0 3px 3px 0; }
-.lg-bad .lg-tr .lg-keep { opacity: .55; }
-.lg-plus .lg-ic, .lg-plus .lg-p { color: #2f8f4a; }
-/* full-screen thermal panel */
-.det .therm svg { cursor: zoom-in; }
-#thfull { position: fixed; inset: 0; z-index: 100; background: #fff; display: flex; align-items: center; justify-content: center; }
-#thfull .thf-in { width: 100vw; height: 100vh; padding: 14px 16px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; }
-#thfull .thf-in svg { width: 100%; height: 100%; }
-#thfull .thf-x { position: fixed; top: max(10px, env(safe-area-inset-top)); right: max(10px, env(safe-area-inset-right)); z-index: 2; width: 40px; height: 40px; border-radius: 50%;
-  border: 0; background: #1f2937; color: #fff; font: 600 26px/1 system-ui, sans-serif; cursor: pointer; box-shadow: 0 4px 12px -4px rgba(0,0,0,.4); }
-/* phone held upright: turn the panel sideways so it fills the screen like landscape */
-@media (orientation: portrait) {
-  #thfull .thf-in { position: absolute; left: 50%; top: 50%; width: 100vh; height: 100vw; transform: translate(-50%, -50%) rotate(90deg); padding: 10px 56px 10px 10px; }
-  @supports (height: 100dvh) { #thfull .thf-in { width: 100dvh; } }
-}
-#thfull .thf-in { flex-direction: column; align-items: stretch; gap: 8px; }
-#thfull .thf-hd { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 12px; flex: none; }
-#thfull .thf-t { text-align: center; line-height: 1.15; }
-#thfull .thf-t b { display: block; font-size: 1.45rem; font-weight: 700; color: #111827; }
-#thfull .thf-t b span { font-weight: 500; color: #6b7280; font-size: 1.05rem; margin-left: 4px; }
-#thfull .thf-t small { display: block; font-size: 1rem; font-weight: 600; color: #9a5418; margin-top: 2px; }
-#thfull .thf-nav { border: 1px solid #d5dbe2; background: #fff; border-radius: 999px; padding: 9px 16px; font: 600 1rem/1 system-ui, sans-serif; color: #1f2937; cursor: pointer; white-space: nowrap; }
-#thfull .thf-nav[disabled] { opacity: .3; cursor: default; }
-#thfull .thf-svg { flex: 1 1 auto; min-height: 0; display: flex; }
-#thfull .thf-svg svg { width: 100%; height: 100%; }
-@media (orientation: portrait) { #thfull .thf-in { padding: 10px 14px 10px 14px; } #thfull .thf-hd { padding-right: 0; padding-left: 0; } }
-
-#thfull .thf-hd .thf-x { position: static; flex: none; }
-/* tighter ledger */
-.lg-list { gap: 0; }
-.lg-row { grid-template-columns: 14px minmax(0, 1fr) 40px !important; column-gap: 8px !important; padding: 5px 0 !important; align-items: baseline !important; font-size: .82rem; }
-.lg-t { min-width: 0; line-height: 1.35; }
-.lg-t b { font-weight: 600; color: #1f2328; }
-.lg-v { color: #3d4650; font-variant-numeric: tabular-nums; }
-.lg-w { color: #8a6a5a; font-size: .74rem; }
-.lg-bad .lg-w { color: #a14646; }
-.lg-good .lg-v { color: #3d6b4a; }
-.lg-bad .lg-ic, .lg-bad .lg-p { color: #b42f2f; font-weight: 800; }
-.lg-plus .lg-ic, .lg-plus .lg-p { color: #2f8f4a; font-weight: 800; }
-.lg-soft .lg-ic { color: #c78a14; font-weight: 800; }
-.lg > .lg-tr { display: block; margin: 6px 0 0 22px; height: 5px; position: relative; border-radius: 3px; background: rgba(38,48,58,.08); overflow: hidden; }
-.lg > .lg-tr i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; }
 
 </style>
 </head>
@@ -1473,7 +1295,7 @@ function render(data) {
     const mini = b.querySelector(".mcells"), from = mini ? mini.getBoundingClientRect() : null;
     b.setAttribute("aria-expanded", "true");        // the mini strip hides while the site is open
     det.innerHTML = detail(DAYKEY[i], BY[b.dataset.site], true);
-    labPlace(b, det);                               // lab: list = right under the site, grid = after its row
+    labPlace(b, det);                               // grid: after the last tile of its row, full width
     det.style.setProperty("--rc", b.style.getPropertyValue("--rc"));   // the site's colour stripe runs down the detail
     det.hidden = false;
     morphStrip(from, det);
@@ -1990,6 +1812,7 @@ $("#reload").addEventListener("click", load);
   window.addEventListener("scroll", () => (tip.hidden = true), { passive: true });
 })();
 </script>
+<script src="scripts/ui/grid.js?v=202611081000"></script>
 <script>
 /* LAB: layout switcher for the opened day (list = today's page, grid = 2-3 columns, tiles = compact like the first layer) */
 (function () {
@@ -2015,184 +1838,7 @@ $("#reload").addEventListener("click", load);
     apply();
   };
   apply();
-  /* where the third level goes: under the site (list) or after the last tile of its row, full width (grid, tiles) */
-  window.labPlace = (b, det) => {
-    const y0 = b.getBoundingClientRect().top;
-    const wasShown = !det.hidden;
-    det.hidden = true;                       // measure the rows without the old detail in the way
-    if (lay === "list") { b.after(det); }
-    else {
-      let last = b, n = b.nextElementSibling;
-      while (n && n.classList.contains("srow") && Math.abs(n.offsetTop - b.offsetTop) < 4) { last = n; n = n.nextElementSibling; }
-      last.after(det);
-      const L = b.parentElement.getBoundingClientRect(), r = b.getBoundingClientRect();
-      det.style.setProperty("--ax", `${Math.round(r.left - L.left + Math.min(r.width / 2, 48))}px`);
-    }
-    det.classList.remove("lab-in"); void det.offsetWidth; det.classList.add("lab-in");
-    /* keep the tapped tile where the finger is when another detail above it closes */
-    requestAnimationFrame(() => {
-      const dy = b.getBoundingClientRect().top - y0;
-      if (wasShown && Math.abs(dy) > 2) window.scrollBy({ top: dy, behavior: "instant" });
-    });
-  };
 })();
-/* LAB: opening a day in grid/tiles: each first-layer pill flies into its tile, the other tiles fade in after */
-(function () {
-  const lay = () => document.documentElement.dataset.lay;
-  const calm = () => window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  document.addEventListener("click", (e) => {
-    const sm = e.target.closest("details.day[data-date] > summary.hd"); if (!sm) return;
-    const day = sm.parentElement;
-    if (day.open || lay() === "list") { day._from = null; return; }
-    day._from = [...sm.querySelectorAll(".sum .sc")].map((p) => ({ name: (p.querySelector("b") || p).textContent.trim(), r: p.getBoundingClientRect() }));
-  }, true);
-  document.addEventListener("toggle", (e) => {
-    const day = e.target; if (!day.matches || !day.matches("details.day[data-date]") || !day.open || lay() === "list" || calm()) return;
-    const from = day._from || []; day._from = null;
-    requestAnimationFrame(() => {
-      const tiles = [...day.querySelectorAll(".list .srow")];
-      let k = 0;
-      for (const t of tiles) {
-        const nm = (t.querySelector(".nm") || {}).textContent;
-        const f = from.find((x) => x.name === (nm || "").replace(/\u200b/g, "").trim());
-        const r = t.getBoundingClientRect();
-        if (r.bottom < -50 || r.top > innerHeight + 50) continue;      // off screen: no show
-        if (f) {
-          const dx = f.r.left - r.left, dy = f.r.top - r.top, sx = f.r.width / r.width, sy = f.r.height / r.height;
-          t.animate([{ transformOrigin: "0 0", transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`, opacity: .9 },
-                     { transformOrigin: "0 0", transform: "none", opacity: 1 }], { duration: 420, easing: "cubic-bezier(.2,.8,.2,1)" });
-          t.querySelectorAll(".nmrow ~ *, .lab, .dscore").forEach((x) => x.animate([{ opacity: 0 }, { opacity: 0, offset: .55 }, { opacity: 1 }], { duration: 420 }));
-        } else {
-          t.animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], { duration: 300, delay: 180 + 35 * k++, easing: "ease-out", fill: "backwards" });
-        }
-      }
-      day.querySelectorAll(".list .sgrp").forEach((g) => g.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, delay: 150, fill: "backwards" }));
-    });
-  }, true);
-})();
-/* LAB: long names break after a slash, not mid-word (Laguna/Horse/Fuzz) */
-(function () {
-  const fix = () => document.querySelectorAll(".list .srow .nm").forEach((n) => {
-    if (n.textContent.includes("/") && !n.textContent.includes("/​")) n.textContent = n.textContent.replace(/\//g, "/​");
-  });
-  const days = document.getElementById("days");
-  if (days) new MutationObserver(fix).observe(days, { childList: true });
-  fix();
-})();
-/* LAB: "How the score was made" — tight steps: the start (height, or the models' number), one line of what's fine,
-   then each step that moved the number with its points, then the score. */
-(function () {
-  const CAT = [[/rain/i, "Rain"], [/sun|cloud/i, "Cloud"], [/gust/i, "Gusts"], [/launch|calm/i, "Launch wind"],
-    [/offshore|LAX-DAG/i, "Offshore"], [/top of lift|aloft|over the back|NW|drift/i, "Wind aloft"], [/below .* ft/i, "Height"],
-    [/blown out/i, "Wind"], [/season/i, "Season"], [/clean day/i, "Clean day"]];
-  const nameOf = (t) => (CAT.find(([re]) => re.test(t)) || [, "Other"])[1];
-  /* the rule's label, cut to its point: "offshore 4+ mph aloft: 2 at most" -> "4+ mph · max 2" */
-  const short = (t) => String(t)
-    .replace(/^offshore LAX-DAG (-?[\d.]+) mb.*/, (m, g) => `LAX–DAG ${g.replace("-", "−")} mb`)
-    .replace(/^offshore (\d\+) mph below ([\d,]+) ft/, "$1 mph below $2 ft").replace(/^offshore (\d\+) mph aloft/, "$1 mph")
-    .replace(/^wind 20–45° off launch/, "20–45° off").replace(/^wind more than 45° off launch/, "45°+ off")
-    .replace(/^gusts over (\d+) mph/, "over $1 mph").replace(/^wind at top of lift over (\d+) mph/, "top of lift $1+ mph")
-    .replace(/^little sun \(mid\/high cloud\)/, "less sun").replace(/^chance of rain.*/, "showers").replace(/^rain much of the window/, "much of the window")
-    .replace(/^off season/, "off season").replace(/^a 5 needs a clean day/, "a 5 needs a clean day").replace(/^NW to N aloft/, "NW–N")
-    .replace(/: no-go$/, " · no-go").replace(/: (\d) at most$/, " · max $1").replace(/: too windy$/, " · too windy");
-  const track = (v, col) => `<span class="lg-tr"><i style="width:${((Math.max(1, Math.min(5, v)) - 1) / 4 * 100).toFixed(1)}%;background:${col}"></i></span>`;
-  const r1 = (v) => (Math.round(v * 10) / 10).toFixed(1);
-  const pts = (v) => `${v > 0 ? "+" : "−"}${Math.abs(v).toFixed(1)}`;
-  window.scoreLedger = (c, qv) => {
-    const f = (k) => (c.factors || []).find((x) => x.k === k);
-    const h = f("Height") || f("Thermal height"), w = f("Wind 1 pm"), a = f("Wind aloft");
-    const cl = c.wstar != null && c.style !== "ridge" ? Math.max(0, (c.core || 1.4) * c.wstar - (c.sink || 1.1)) : null;
-    const bp = c.base_parts, adj = c.adj || [];
-    const base = c.base != null ? c.base : c.rating;
-    const row = (cls, ic, name, val, why, p) => `<div class="lg-row ${cls}"><span class="lg-ic">${ic}</span><span class="lg-t"><b>${name}</b>${val ? ` <span class="lg-v">${val}</span>` : ""}${why ? ` <span class="lg-w">${why}</span>` : ""}</span><span class="lg-p">${p}</span></div>`;
-    const W = { otb: "over the back", windy: "blown out", strong: "strong", light: "light", cross: "cross", gusty: "gusty" };
-    const lwhy = (c.why || []).filter((x) => W[x]).map((x) => W[x]).join(", ");
-    const STEP = {
-      launch: ["Launch wind", w && w.v !== "–" ? w.v : "", lwhy],
-      climb: ["Climb", cl != null ? `${cl.toFixed(1)} m/s` : "", "weak"],
-      lowlift: ["Lift over launch", "", "thin"],
-      offshore: ["Offshore", a && a.v !== "–" ? a.v : "", "in the flying layer"],
-      aloft: ["Wind aloft", a && a.v !== "–" ? a.v : "", "strong"],
-      gust: ["Gusts", "", "18+ mph"], storm: ["Storms", "", "overdevelopment"],
-      xccap: ["No XC", "", "height counts as 3.4"], glass: ["Glass-off", "", "holds it up"],
-      models: ["Model blend", "", ""], other: ["Other", "", ""],
-    };
-    /* what's fine: the inputs no step or rule touched, in one line */
-    const touched = new Set([...(bp ? bp.steps.map(([k]) => STEP[k] && STEP[k][0]) : []), ...adj.map(([t]) => nameOf(t))]);
-    const fine = [];
-    if (cl != null && !touched.has("Climb")) fine.push(`climb ${cl.toFixed(1)} m/s`);
-    if (w && w.v !== "–" && !touched.has("Launch wind") && !touched.has("Gusts") && (bp || w.q >= 0.4)) fine.push(`launch ${w.v}`);
-    if (a && a.v !== "–" && !touched.has("Wind aloft") && !touched.has("Offshore") && a.q >= 0.4) fine.push(`aloft ${a.v}`);
-    if (c.rain_p != null && c.rain_p < 0.3 && !touched.has("Rain")) fine.push(c.rain_p < 0.05 ? "dry" : `${Math.round(c.rain_p * 100)}% rain`);
-    if (c.cloud && !touched.has("Cloud")) fine.push(c.cloud.okta ? `cloud ${c.cloud.okta}/8` : "sunny");
-    const out = [];
-    if (bp) out.push(row("lg-base", "", "Height", h ? h.v : "", "", `<b>${r1(bp.lv)}</b>`));
-    else {
-      const mods = Object.entries(c.models || {}).map(([m, v]) => `${m} ${r1(v).replace(".0", "")}`).join(" · ");
-      out.push(row("lg-base", "", c.style === "ridge" ? "Ridge lift" : "Models", c.style === "ridge" && w ? w.v : "", c.style === "ridge" ? "" : mods, `<b>${r1(base)}</b>`));
-    }
-    if (fine.length) out.push(row("lg-good", "✓", "", fine.join(" · "), "", ""));
-    if (bp) for (const [k, v] of bp.steps) { const [n, val, why] = STEP[k] || [k, "", ""]; out.push(row(v < 0 ? "lg-bad" : "lg-plus", v < 0 ? "−" : "+", n, val, why, pts(v))); }
-    else if (!bp && w && w.q < 0.4) out.push(row("lg-soft", "−", c.style === "ridge" ? "Wind" : "Launch wind", "", "light or cross (already in the start)", ""));
-    for (const [t, v] of adj) out.push(row("lg-bad", "−", nameOf(t), "", short(t), pts(v)));
-    out.push(row("lg-total", "=", "Score", "", "", `<b>${r1(c.rating)}</b>`));
-    return `<div class="dsec lg"><span class="dh">How the score was made</span><div class="lg-list">${out.join("")}</div>${track(c.rating, qv(c.rating))}</div>`;
-  };
-})();
-/* LAB: tap the thermal panel to see it full screen, turned to landscape on a phone held upright; × closes.
-   A big headline (day, date, region) and ‹ › buttons step to the day before / after, staying full screen. */
-(function () {
-  let ov = null;
-  const close = (fromBack) => {
-    if (!ov) return;
-    ov.remove(); ov = null; document.documentElement.style.overflow = "";
-    if (!fromBack && history.state && history.state.thf) history.back();   // drop the entry the popup added
-  };
-  window.addEventListener("popstate", () => { if (ov) close(true); });
-  const open = (therm, swap) => {
-    const svg = therm.querySelector("svg"); if (!svg) return;
-    if (ov) { ov.remove(); ov = null; }
-    if (!swap) history.pushState({ thf: 1 }, "");   // the phone's back button closes the popup
-    const day = therm.closest("details.day");
-    const dn = day ? (day.querySelector("summary .when .dn") || {}).textContent || "" : "";
-    const dt = day ? (day.querySelector("summary .when small:not(.rel)") || {}).textContent || "" : "";
-    const tnd = (therm.querySelector(".tnd") || {}).textContent || "";
-    const region = tnd.split("·").slice(1).join("·").trim();
-    const nb = [...therm.querySelectorAll(".tnb")];
-    const btn = (b, k) => b ? `<button type="button" class="thf-nav" data-k="${k}"${b.disabled ? " disabled" : ""}>${b.textContent.trim()}</button>` : "<span></span>";
-    ov = document.createElement("div");
-    ov.id = "thfull";
-    ov.innerHTML = `<div class="thf-in"><div class="thf-hd">${btn(nb[0], 0)}<div class="thf-t"><b>${dn} <span>${dt}</span></b><small>${region}</small></div>${btn(nb[1], 1)}<button type="button" class="thf-x" aria-label="Close">×</button></div><div class="thf-svg"></div></div>`;
-    const c = svg.cloneNode(true);
-    c.removeAttribute("width"); c.removeAttribute("height");
-    c.setAttribute("preserveAspectRatio", "xMidYMid meet");
-    ov.querySelector(".thf-svg").appendChild(c);
-    document.body.appendChild(ov);
-    document.documentElement.style.overflow = "hidden";
-    ov.addEventListener("click", (e) => {
-      if (e.target.closest(".thf-x") || e.target === ov) { close(); return; }
-      const n = e.target.closest(".thf-nav");
-      if (n && !n.disabled) {
-        const src = nb[+n.dataset.k], sid = src.dataset.sid, k = src.dataset.jump;
-        src.click();                                  // the page moves to that day with the same site open
-        const again = document.querySelector(`#det-${k} .therm`);
-        if (again) open(again, true); else close();
-      }
-    });
-  };
-  document.addEventListener("click", (e) => {
-    const therm = e.target.closest(".det .therm");
-    if (!therm || !e.target.closest("svg") || e.target.closest(".tnb")) return;
-    e.stopPropagation();
-    open(therm);
-  }, true);
-  document.addEventListener("keydown", (e) => {
-    if (!ov) return;
-    if (e.key === "Escape") close();
-    if (e.key === "ArrowLeft" || e.key === "ArrowRight") { const b = ov.querySelector(`.thf-nav[data-k="${e.key === "ArrowLeft" ? 0 : 1}"]`); if (b) b.click(); }
-  });
-})();
-
 </script>
 </body>
 </html>
