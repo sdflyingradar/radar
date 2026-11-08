@@ -1193,12 +1193,12 @@ function render(data) {
       <g stroke="#9b7356" stroke-width=".8">${[-60, -30, 0, 30, 60].map((t) => `<path d="M14 4.6 V6.4" transform="rotate(${t} 14 14)"/>`).join("")}</g>
       <path d="M14 14 L14 6.6" stroke="${ndl}" stroke-width="1.7" stroke-linecap="round" transform="rotate(${ang} 14 14)"/><circle cx="14" cy="14" r="1.8" fill="${ndl}"/>
       <text x="14" y="21.6" text-anchor="middle" font-size="4" font-weight="700" fill="#9b7356" font-family="system-ui,sans-serif">mb</text></svg>`;
-    row.innerHTML = `<a class="asset" href="sounding.html" title="Latest weather balloon from Miramar: thermal tops, cloudbase, inversions">${BAL}<span><b>Sounding</b><small id="as-snd">morning balloon</small></span></a>`
-      + `<a class="asset" href="lax-dag.html" title="LAX minus Barstow-Daggett pressure: the Santa Ana measure, observed and by model">${PRS}<span><b>LAX–DAG</b><small class="${gcls.trim()}">${g != null ? `${g > 0 ? "+" : ""}${g.toFixed(1)} mb${g <= -4 ? " · Santa Ana" : g <= -2 ? " · offshore" : ""}` : "pressure gradient"}</small></span></a>`;
+    row.innerHTML = `<a class="asset" href="sounding.html" title="Latest weather balloon from Miramar: thermal tops, cloudbase, inversions">${BAL}<span><b>Sounding</b><small id="as-snd">balloon</small></span></a>`
+      + `<a class="asset" href="lax-dag.html" title="LAX minus Barstow-Daggett pressure: the Santa Ana measure, observed and by model">${PRS}<span><b>LAX–DAG</b><small class="${gcls.trim()}">${g != null ? `${g > 0 ? "+" : ""}${g.toFixed(1).replace("-", "−")} mb` : "gradient"}</small></span></a>`;
     fetch(`data/sounding/nkx_latest.json?t=${Date.now()}`, { cache: "no-store" }).then((r) => r.json()).then((j) => {
       const fh = j.forecast_high && j.forecast_high.thermal_tops;
       const el = document.getElementById("as-snd");
-      if (el && fh && fh.median_ft) el.textContent = `tops ~${fh.median_ft.toLocaleString()} ft ${j.forecast_high.label || ""}`.trim();
+      if (el && fh && fh.median_ft) el.textContent = `~${fh.median_ft.toLocaleString()} ft`;
     }).catch(() => {});
   }
 
@@ -1802,6 +1802,6 @@ $("#reload").addEventListener("click", load);
   window.addEventListener("scroll", () => (tip.hidden = true), { passive: true });
 })();
 </script>
-<script src="scripts/ui/grid.js?v=202611081015"></script>
+<script src="scripts/ui/grid.js?v=202611081130"></script>
 </body>
 </html>

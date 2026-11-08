@@ -933,18 +933,8 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
 #labbar button[aria-pressed="true"] { background: #fff; color: #111827; }
 /* LAB: weather overview as a wide button + bubble */
 #story.story { display: none !important; }
-#wxbtn { display: flex; align-items: center; gap: 12px; width: 100%; margin: 0 0 10px; padding: 10px 14px 10px 10px; border-radius: 12px; text-align: left; cursor: pointer;
-  background: #fff; border: 1px solid #d5dbe2; box-shadow: 0 1px 2px rgba(16,24,40,.08), 0 4px 12px -4px rgba(16,24,40,.12); color: #26303a; font: inherit; }
-#wxbtn[hidden] { display: none; }
-#wxbtn:hover { border-color: #c26a24; }
-#wxbtn > svg { width: 34px; height: 34px; flex: none; }
-#wxbtn .wx-t { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-#wxbtn .wx-h { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-#wxbtn .wx-h b { font-size: .95rem; font-weight: 700; }
-#wxbtn .wx-h em { font-style: normal; font-size: .62rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; background: #eef1f4; color: #475467; }
-#wxbtn .wx-h em.bad { background: #fdecec; color: #b42f2f; }
-#wxbtn small { font-size: .78rem; color: #6b7280; line-height: 1.3; }
-#wxbtn .wx-go { font-style: normal; font-size: 1.6rem; color: #9aa1aa; flex: none; line-height: 1; }
+#assets .asset.wx { font: inherit; cursor: pointer; text-align: left; }
+#assets .asset.wx svg { width: 26px; height: 26px; }
 #wxpop { position: fixed; inset: 0; z-index: 90; background: rgba(15,23,42,.35); display: flex; align-items: flex-start; justify-content: center; padding: max(56px, 8vh) 12px 12px; overflow-y: auto; animation: wxIn .18s ease-out; }
 @keyframes wxIn { from { opacity: 0; } }
 #wxpop .wxp-card { position: relative; width: 100%; max-width: 560px; background: #fff; margin-bottom: 24px; border-radius: 16px; padding: 14px 16px 16px;
@@ -1231,12 +1221,12 @@ function render(data) {
       <g stroke="#9b7356" stroke-width=".8">${[-60, -30, 0, 30, 60].map((t) => `<path d="M14 4.6 V6.4" transform="rotate(${t} 14 14)"/>`).join("")}</g>
       <path d="M14 14 L14 6.6" stroke="${ndl}" stroke-width="1.7" stroke-linecap="round" transform="rotate(${ang} 14 14)"/><circle cx="14" cy="14" r="1.8" fill="${ndl}"/>
       <text x="14" y="21.6" text-anchor="middle" font-size="4" font-weight="700" fill="#9b7356" font-family="system-ui,sans-serif">mb</text></svg>`;
-    row.innerHTML = `<a class="asset" href="sounding.html" title="Latest weather balloon from Miramar: thermal tops, cloudbase, inversions">${BAL}<span><b>Sounding</b><small id="as-snd">morning balloon</small></span></a>`
-      + `<a class="asset" href="lax-dag.html" title="LAX minus Barstow-Daggett pressure: the Santa Ana measure, observed and by model">${PRS}<span><b>LAX–DAG</b><small class="${gcls.trim()}">${g != null ? `${g > 0 ? "+" : ""}${g.toFixed(1)} mb${g <= -4 ? " · Santa Ana" : g <= -2 ? " · offshore" : ""}` : "pressure gradient"}</small></span></a>`;
+    row.innerHTML = `<a class="asset" href="sounding.html" title="Latest weather balloon from Miramar: thermal tops, cloudbase, inversions">${BAL}<span><b>Sounding</b><small id="as-snd">balloon</small></span></a>`
+      + `<a class="asset" href="lax-dag.html" title="LAX minus Barstow-Daggett pressure: the Santa Ana measure, observed and by model">${PRS}<span><b>LAX–DAG</b><small class="${gcls.trim()}">${g != null ? `${g > 0 ? "+" : ""}${g.toFixed(1).replace("-", "−")} mb` : "gradient"}</small></span></a>`;
     fetch(`data/sounding/nkx_latest.json?t=${Date.now()}`, { cache: "no-store" }).then((r) => r.json()).then((j) => {
       const fh = j.forecast_high && j.forecast_high.thermal_tops;
       const el = document.getElementById("as-snd");
-      if (el && fh && fh.median_ft) el.textContent = `tops ~${fh.median_ft.toLocaleString()} ft ${j.forecast_high.label || ""}`.trim();
+      if (el && fh && fh.median_ft) el.textContent = `~${fh.median_ft.toLocaleString()} ft`;
     }).catch(() => {});
   }
 
@@ -1840,7 +1830,7 @@ $("#reload").addEventListener("click", load);
   window.addEventListener("scroll", () => (tip.hidden = true), { passive: true });
 })();
 </script>
-<script src="scripts/ui/grid.js?v=202611081015"></script>
+<script src="scripts/ui/grid.js?v=202611081130"></script>
 <script>
 /* LAB: layout switcher for the opened day (list = today's page, grid = 2-3 columns, tiles = compact like the first layer) */
 (function () {
@@ -1867,20 +1857,30 @@ $("#reload").addEventListener("click", load);
   };
   apply();
 })();
-/* LAB: the weather overview as one wide button (title, pattern pill, one-line summary); a tap opens a bubble with
-   the full overview. The phone's back button, × or a tap outside closes it. */
+/* LAB: the weather overview as a small tile next to Sounding and LAX-DAG: just the main thing now (Santa Ana,
+   ridge, front, ...); a tap opens a bubble with the full overview. Back, × or a tap outside closes it. */
 (function () {
   const story = document.getElementById("story");
   if (!story) return;
   const ICON = '<svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13.5" fill="#e7f0fa"/><circle cx="11" cy="11" r="4.6" fill="#f6c343"/><g stroke="#f6c343" stroke-width="1.4" stroke-linecap="round"><path d="M11 3.6v1.8M11 16.6v1.8M3.6 11h1.8M16.6 11h1.8M5.8 5.8l1.2 1.2M15 15l1.2 1.2M5.8 16.2 7 15M15 7l1.2-1.2"/></g><path d="M10.5 21.5h10.2a3.6 3.6 0 0 0 .3-7.2 4.8 4.8 0 0 0-9.2 1.5 2.9 2.9 0 0 0-1.3 5.7z" fill="#fff" stroke="#b6c4d3" stroke-width=".8"/></svg>';
-  let btn = null, ov = null;
+  let tile = null, ov = null;
+  /* the main thing now: the overview's pattern flag ("Offshore / Santa Ana" -> "Santa Ana"), else the first word of its line */
+  const mainNow = () => {
+    const f = (story.querySelector(".flags .tag") || {}).textContent || "";
+    if (f.trim()) return f.split("/").pop().trim();
+    const line = ((story.querySelector(".ov") || {}).textContent || "").split("·")[0].replace(/\b(now|today|through \w+)\b/gi, "").trim();
+    return line ? line[0].toUpperCase() + line.slice(1) : "overview";
+  };
   const build = () => {
-    const sum = story.querySelector("summary"); if (!sum) return;
-    const flags = [...story.querySelectorAll(".flags .tag")].map((t) => t.textContent.trim()).filter(Boolean);
-    const line = (story.querySelector(".ov") || {}).textContent || "";
-    if (!btn) { btn = document.createElement("button"); btn.type = "button"; btn.id = "wxbtn"; story.before(btn); btn.onclick = open; }
-    btn.innerHTML = `${ICON}<span class="wx-t"><span class="wx-h"><b>Weather</b>${flags.map((f) => `<em class="${/santa|offshore|rain|storm|wind/i.test(f) ? "bad" : ""}">${f}</em>`).join("")}</span><small>${line}</small></span><i class="wx-go">›</i>`;
-    btn.hidden = story.hidden;
+    const row = document.getElementById("assets");
+    if (!row || !story.querySelector("summary")) return;
+    if (!tile || !row.contains(tile)) {
+      tile = document.createElement("button"); tile.type = "button"; tile.className = "asset wx"; tile.onclick = open;
+      row.prepend(tile);
+    }
+    const m = mainNow();
+    const html = `${ICON}<span><b>Weather</b><small class="${/santa|offshore|front|rain|storm|wind/i.test(m) ? "sa" : ""}">${m}</small></span>`;
+    if (tile.dataset.k !== m) { tile.dataset.k = m; tile.innerHTML = html; }   // only when it changed (no observer loop)
   };
   const close = (fromBack) => {
     if (!ov) return;
@@ -1895,19 +1895,18 @@ $("#reload").addEventListener("click", load);
     ov.innerHTML = `<div class="wxp-card" role="dialog" aria-label="Weather overview"><div class="wxp-hd">${ICON}<b>Weather overview</b><button type="button" class="wxp-x" aria-label="Close">×</button></div>
       <div class="wxp-line">${(story.querySelector(".ov") || {}).textContent || ""}</div>${list ? list.outerHTML : ""}${link ? link.outerHTML : ""}</div>`;
     document.body.appendChild(ov);
-    /* the bubble hangs from the button when there is room below it, its notch pointing at the icon */
-    const r = btn.getBoundingClientRect();
-    if (r.bottom > 0 && r.bottom < innerHeight * 0.45) {
+    const r = tile.getBoundingClientRect();
+    if (r.bottom > 0 && r.bottom < innerHeight * 0.5) {
       ov.style.paddingTop = `${Math.round(r.bottom + 12)}px`;
       const card = ov.querySelector(".wxp-card"), cr = card.getBoundingClientRect();
-      card.style.setProperty("--nx", `${Math.max(16, Math.round(r.left + 27 - cr.left))}px`);
+      card.style.setProperty("--nx", `${Math.max(16, Math.round(r.left + 22 - cr.left))}px`);
     } else ov.classList.add("nonotch");
     document.documentElement.style.overflow = "hidden";
     history.pushState({ wx: 1 }, "");
     ov.addEventListener("click", (e) => { if (e.target === ov || e.target.closest(".wxp-x")) close(); });
   }
   document.addEventListener("keydown", (e) => { if (ov && e.key === "Escape") close(); });
-  new MutationObserver(build).observe(story, { childList: true, subtree: true, attributes: true, attributeFilter: ["hidden"] });
+  new MutationObserver(build).observe(document.querySelector(".wrap") || document.body, { childList: true, subtree: true });
   build();
 })();
 
