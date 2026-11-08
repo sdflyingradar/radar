@@ -158,3 +158,16 @@ html[data-lay="grid"] body details.day:not(#story) .list .srow.srow::before, htm
   #thfull .thf-in { position: absolute; left: 50%; top: 50%; width: 100vh; height: 100vw; transform: translate(-50%, -50%) rotate(90deg); padding: 10px 56px 10px 10px; }
   @supports (height: 100dvh) { #thfull .thf-in { width: 100dvh; } }
 }
+#thfull .thf-in { flex-direction: column; align-items: stretch; gap: 8px; }
+#thfull .thf-hd { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 12px; flex: none; }
+#thfull .thf-t { text-align: center; line-height: 1.15; }
+#thfull .thf-t b { display: block; font-size: 1.45rem; font-weight: 700; color: #111827; }
+#thfull .thf-t b span { font-weight: 500; color: #6b7280; font-size: 1.05rem; margin-left: 4px; }
+#thfull .thf-t small { display: block; font-size: 1rem; font-weight: 600; color: #9a5418; margin-top: 2px; }
+#thfull .thf-nav { border: 1px solid #d5dbe2; background: #fff; border-radius: 999px; padding: 9px 16px; font: 600 1rem/1 system-ui, sans-serif; color: #1f2937; cursor: pointer; white-space: nowrap; }
+#thfull .thf-nav[disabled] { opacity: .3; cursor: default; }
+#thfull .thf-svg { flex: 1 1 auto; min-height: 0; display: flex; }
+#thfull .thf-svg svg { width: 100%; height: 100%; }
+@media (orientation: portrait) { #thfull .thf-in { padding: 10px 14px 10px 14px; } #thfull .thf-hd { padding-right: 0; padding-left: 0; } }
+
+#thfull .thf-hd .thf-x { position: static; flex: none; }

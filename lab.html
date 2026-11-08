@@ -1082,6 +1082,19 @@ html[data-lay="grid"] body details.day:not(#story) .list .srow.srow::before, htm
   #thfull .thf-in { position: absolute; left: 50%; top: 50%; width: 100vh; height: 100vw; transform: translate(-50%, -50%) rotate(90deg); padding: 10px 56px 10px 10px; }
   @supports (height: 100dvh) { #thfull .thf-in { width: 100dvh; } }
 }
+#thfull .thf-in { flex-direction: column; align-items: stretch; gap: 8px; }
+#thfull .thf-hd { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 12px; flex: none; }
+#thfull .thf-t { text-align: center; line-height: 1.15; }
+#thfull .thf-t b { display: block; font-size: 1.45rem; font-weight: 700; color: #111827; }
+#thfull .thf-t b span { font-weight: 500; color: #6b7280; font-size: 1.05rem; margin-left: 4px; }
+#thfull .thf-t small { display: block; font-size: 1rem; font-weight: 600; color: #9a5418; margin-top: 2px; }
+#thfull .thf-nav { border: 1px solid #d5dbe2; background: #fff; border-radius: 999px; padding: 9px 16px; font: 600 1rem/1 system-ui, sans-serif; color: #1f2937; cursor: pointer; white-space: nowrap; }
+#thfull .thf-nav[disabled] { opacity: .3; cursor: default; }
+#thfull .thf-svg { flex: 1 1 auto; min-height: 0; display: flex; }
+#thfull .thf-svg svg { width: 100%; height: 100%; }
+@media (orientation: portrait) { #thfull .thf-in { padding: 10px 14px 10px 14px; } #thfull .thf-hd { padding-right: 0; padding-left: 0; } }
+
+#thfull .thf-hd .thf-x { position: static; flex: none; }
 
 </style>
 </head>
@@ -2135,30 +2148,52 @@ $("#reload").addEventListener("click", load);
     return `<div class="dsec lg"><span class="dh">How the score was made</span><div class="lg-list">${out.join("")}</div></div>`;
   };
 })();
-/* LAB: tap the thermal panel to see it full screen, turned to landscape on a phone held upright; × closes */
+/* LAB: tap the thermal panel to see it full screen, turned to landscape on a phone held upright; × closes.
+   A big headline (day, date, region) and ‹ › buttons step to the day before / after, staying full screen. */
 (function () {
   let ov = null;
   const close = () => { if (ov) { ov.remove(); ov = null; document.documentElement.style.overflow = ""; } };
-  const open = (svg) => {
+  const open = (therm) => {
+    const svg = therm.querySelector("svg"); if (!svg) return;
     close();
+    const day = therm.closest("details.day");
+    const dn = day ? (day.querySelector("summary .when .dn") || {}).textContent || "" : "";
+    const dt = day ? (day.querySelector("summary .when small:not(.rel)") || {}).textContent || "" : "";
+    const tnd = (therm.querySelector(".tnd") || {}).textContent || "";
+    const region = tnd.split("·").slice(1).join("·").trim();
+    const nb = [...therm.querySelectorAll(".tnb")];
+    const btn = (b, k) => b ? `<button type="button" class="thf-nav" data-k="${k}"${b.disabled ? " disabled" : ""}>${b.textContent.trim()}</button>` : "<span></span>";
     ov = document.createElement("div");
     ov.id = "thfull";
-    ov.innerHTML = `<div class="thf-in"></div><button type="button" class="thf-x" aria-label="Close">×</button>`;
+    ov.innerHTML = `<div class="thf-in"><div class="thf-hd">${btn(nb[0], 0)}<div class="thf-t"><b>${dn} <span>${dt}</span></b><small>${region}</small></div>${btn(nb[1], 1)}<button type="button" class="thf-x" aria-label="Close">×</button></div><div class="thf-svg"></div></div>`;
     const c = svg.cloneNode(true);
     c.removeAttribute("width"); c.removeAttribute("height");
     c.setAttribute("preserveAspectRatio", "xMidYMid meet");
-    ov.querySelector(".thf-in").appendChild(c);
+    ov.querySelector(".thf-svg").appendChild(c);
     document.body.appendChild(ov);
     document.documentElement.style.overflow = "hidden";
-    ov.addEventListener("click", (e) => { if (e.target.closest(".thf-x") || e.target === ov) close(); });
+    ov.addEventListener("click", (e) => {
+      if (e.target.closest(".thf-x") || e.target === ov) { close(); return; }
+      const n = e.target.closest(".thf-nav");
+      if (n && !n.disabled) {
+        const src = nb[+n.dataset.k], sid = src.dataset.sid, k = src.dataset.jump;
+        src.click();                                  // the page moves to that day with the same site open
+        const again = document.querySelector(`#det-${k} .therm`);
+        if (again) open(again); else close();
+      }
+    });
   };
   document.addEventListener("click", (e) => {
-    const svg = e.target.closest(".det .therm svg");
-    if (!svg || e.target.closest(".tnb")) return;
+    const therm = e.target.closest(".det .therm");
+    if (!therm || !e.target.closest("svg") || e.target.closest(".tnb")) return;
     e.stopPropagation();
-    open(svg);
+    open(therm);
   }, true);
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+  document.addEventListener("keydown", (e) => {
+    if (!ov) return;
+    if (e.key === "Escape") close();
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") { const b = ov.querySelector(`.thf-nav[data-k="${e.key === "ArrowLeft" ? 0 : 1}"]`); if (b) b.click(); }
+  });
 })();
 
 </script>

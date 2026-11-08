@@ -169,28 +169,50 @@
     return `<div class="dsec lg"><span class="dh">How the score was made</span><div class="lg-list">${out.join("")}</div></div>`;
   };
 })();
-/* LAB: tap the thermal panel to see it full screen, turned to landscape on a phone held upright; × closes */
+/* LAB: tap the thermal panel to see it full screen, turned to landscape on a phone held upright; × closes.
+   A big headline (day, date, region) and ‹ › buttons step to the day before / after, staying full screen. */
 (function () {
   let ov = null;
   const close = () => { if (ov) { ov.remove(); ov = null; document.documentElement.style.overflow = ""; } };
-  const open = (svg) => {
+  const open = (therm) => {
+    const svg = therm.querySelector("svg"); if (!svg) return;
     close();
+    const day = therm.closest("details.day");
+    const dn = day ? (day.querySelector("summary .when .dn") || {}).textContent || "" : "";
+    const dt = day ? (day.querySelector("summary .when small:not(.rel)") || {}).textContent || "" : "";
+    const tnd = (therm.querySelector(".tnd") || {}).textContent || "";
+    const region = tnd.split("·").slice(1).join("·").trim();
+    const nb = [...therm.querySelectorAll(".tnb")];
+    const btn = (b, k) => b ? `<button type="button" class="thf-nav" data-k="${k}"${b.disabled ? " disabled" : ""}>${b.textContent.trim()}</button>` : "<span></span>";
     ov = document.createElement("div");
     ov.id = "thfull";
-    ov.innerHTML = `<div class="thf-in"></div><button type="button" class="thf-x" aria-label="Close">×</button>`;
+    ov.innerHTML = `<div class="thf-in"><div class="thf-hd">${btn(nb[0], 0)}<div class="thf-t"><b>${dn} <span>${dt}</span></b><small>${region}</small></div>${btn(nb[1], 1)}<button type="button" class="thf-x" aria-label="Close">×</button></div><div class="thf-svg"></div></div>`;
     const c = svg.cloneNode(true);
     c.removeAttribute("width"); c.removeAttribute("height");
     c.setAttribute("preserveAspectRatio", "xMidYMid meet");
-    ov.querySelector(".thf-in").appendChild(c);
+    ov.querySelector(".thf-svg").appendChild(c);
     document.body.appendChild(ov);
     document.documentElement.style.overflow = "hidden";
-    ov.addEventListener("click", (e) => { if (e.target.closest(".thf-x") || e.target === ov) close(); });
+    ov.addEventListener("click", (e) => {
+      if (e.target.closest(".thf-x") || e.target === ov) { close(); return; }
+      const n = e.target.closest(".thf-nav");
+      if (n && !n.disabled) {
+        const src = nb[+n.dataset.k], sid = src.dataset.sid, k = src.dataset.jump;
+        src.click();                                  // the page moves to that day with the same site open
+        const again = document.querySelector(`#det-${k} .therm`);
+        if (again) open(again); else close();
+      }
+    });
   };
   document.addEventListener("click", (e) => {
-    const svg = e.target.closest(".det .therm svg");
-    if (!svg || e.target.closest(".tnb")) return;
+    const therm = e.target.closest(".det .therm");
+    if (!therm || !e.target.closest("svg") || e.target.closest(".tnb")) return;
     e.stopPropagation();
-    open(svg);
+    open(therm);
   }, true);
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+  document.addEventListener("keydown", (e) => {
+    if (!ov) return;
+    if (e.key === "Escape") close();
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") { const b = ov.querySelector(`.thf-nav[data-k="${e.key === "ArrowLeft" ? 0 : 1}"]`); if (b) b.click(); }
+  });
 })();
