@@ -1398,6 +1398,7 @@ def _vec_mean(pairs):
 # pressure inland, air pushed offshore. Roughly: -2 weak, -4 a real Santa Ana, -6 strong.
 GRAD_PTS = (("LAX", 33.9382, -118.3866), ("DAG", 34.8536, -116.7865))
 GRAD_SA, GRAD_WEAK = -4.0, -2.0          # alone a Santa Ana / with some offshore 850 hPa flow
+OBS_SLP = {}                              # the latest sea-level pressure at both airports (for the map)
 GRAD = {}                                 # filled in main(): {"obs": {...}, "models": {name: {"bias", "daily", "n"}}}
 
 
@@ -1423,7 +1424,10 @@ def obs_gradient(log):
                         slp[st][pr["timestamp"][:13]] = v / 100.0
             except Exception as e:  # noqa: BLE001
                 log.append(f"gradient obs {st} (api.weather.gov): {str(e)[:80]}")
-    return {k: round(slp["KLAX"][k] - slp["KDAG"][k], 1) for k in slp["KLAX"] if k in slp["KDAG"]}
+    both = sorted(k for k in slp["KLAX"] if k in slp["KDAG"])
+    if both:
+        OBS_SLP.update({"at": both[-1] + ":00Z", "LAX": slp["KLAX"][both[-1]], "DAG": slp["KDAG"][both[-1]]})
+    return {k: round(slp["KLAX"][k] - slp["KDAG"][k], 1) for k in both}
 
 
 def model_gradient(hours, obs):
@@ -1448,7 +1452,7 @@ def daily_gradient(corr):
 
 def fetch_gradient(log):
     obs = obs_gradient(log)
-    res = {"obs": {}, "models": {}}
+    res = {"obs": {}, "models": {}, "obs_hourly": obs}
     if obs:
         k = max(obs)
         res["obs"] = {"now": obs[k], "at": k + ":00Z", "n": len(obs)}
@@ -1464,7 +1468,7 @@ def fetch_gradient(log):
                 if len(hours) < 24:
                     continue
                 bias, n, corr = model_gradient(hours, obs)
-                res["models"][name] = {"bias": bias, "n": n, "daily": daily_gradient(corr)}
+                res["models"][name] = {"bias": bias, "n": n, "daily": daily_gradient(corr), "hourly": corr}
                 log.append(f"gradient {name}: bias {bias:+.1f} mb over {n} h")
                 break
             except Exception as e:  # noqa: BLE001
@@ -2885,6 +2889,12 @@ def main(argv=None):
         add_trend(result, ROOT / "data" / "trend.json")
         archive_midday(result, ROOT / "data" / "archive")      # today keeps updating; the archive gets the midday read
     Path(args.out).write_text(json.dumps(result, indent=1))
+    if not args.sample and GRAD.get("models"):
+        # the LAX-DAG chart on the sounding page: observed (past 3 days) and each model's corrected forecast, hourly UTC
+        Path(ROOT / "data" / "gradient.json").write_text(json.dumps({
+            "generated": now_iso(), "points": {k: [la, lo] for k, la, lo in GRAD_PTS}, "slp": OBS_SLP,
+            "obs": GRAD.get("obs_hourly", {}), "models": {m: {"bias": v["bias"], "hourly": v["hourly"]} for m, v in GRAD["models"].items()},
+            "thresholds": {"weak": GRAD_WEAK, "santa_ana": GRAD_SA, "strong": -6.0}}, separators=(",", ":")))
     if not args.sample:
         save_snapshot(result, ROOT / "data" / "history")
         try:

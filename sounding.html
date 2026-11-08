@@ -30,6 +30,8 @@ a{color:#2563eb}
 .pathbox{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0 0}
 .pathbox .ph{font-size:13px;font-weight:700;margin:0 2px 6px}
 .pathbox svg{width:100%;height:auto;display:block;border-radius:10px}
+.fleg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11px;color:#475467;margin:6px 4px 0}
+.fleg i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:5px;vertical-align:3px}
 </style></head><body><div class="wrap">
 <header><h1 id="h1">NKX sounding</h1><a class="back" href="./">← Radar</a></header>
 <div class="seg stn" id="stn"><a href="sounding.html" data-s="nkx">Miramar</a><a href="sounding.html?stn=edw" data-s="edw">Edwards</a></div>
@@ -38,12 +40,26 @@ a{color:#2563eb}
 <div id="tl" class="tl"></div>
 <p class="note" id="src"></p>
 <div id="pathbox" class="pathbox" hidden><div class="ph" id="ph">Balloon path</div><div id="path"></div><p class="note" id="pnote"></p></div>
+<div id="foehn" class="pathbox" hidden><div class="ph">Santa Ana watch · LAX–Daggett pressure</div><div id="fmap"></div>
+<div class="ph" style="margin-top:12px">Next days · gradient by model</div><div id="fchart"></div>
+<p class="note">Sea-level pressure at LAX minus Barstow-Daggett. Below zero the desert pressure is higher and the air pushes offshore: about −2 mb weak, −4 mb a real Santa Ana, −6 mb strong. Each model's line is corrected by how far it was off the two airports' actual readings over the last three days. Black = observed.</p></div>
 <p class="note">Cloudbase = surface dewpoint lifted at constant mixing ratio until it meets the temperature curve. Orange lines = dry adiabats (5.4 °F/1000 ft) from the surface every 5 °F, ending at the thermal top for that surface temperature. Zoomed to the flyable range. Blue bands = inversions. Bold line = forecast afternoon high at the launch site (median of the GFS, ECMWF and ICON ensembles); shaded band = 10th–90th percentile of those runs. Updated by a GitHub Action after each 00Z/12Z launch. Thanks Rob!</p>
 </div>
 <script src="scripts/sounding/core.js?v=202611070758"></script>
 <script src="scripts/sounding/timeline.js?v=202611070758"></script>
 <script src="scripts/region/regionmap.js?v=202611071100"></script>
 <script src="scripts/sounding/pathmap.js?v=202611071730"></script>
+<script src="scripts/sounding/foehn.js?v=202611080710"></script>
+<script>
+(async () => {
+  try {
+    const G = await (await fetch('data/gradient.json?' + Date.now())).json();
+    document.getElementById('fmap').innerHTML = foehnMapSVG(G);
+    document.getElementById('fchart').innerHTML = foehnChartSVG(G);
+    document.getElementById('foehn').hidden = false;
+  } catch (e) {}
+})();
+</script>
 <script>
 (async () => {
   try {
