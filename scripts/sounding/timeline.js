@@ -50,7 +50,10 @@ function timelineSVG({ now = new Date(), shown = null, fetched = null } = {}) {
       <ellipse cx="0" cy="-11" rx="5.6" ry="6" fill="#e3b48c"/>
       <path d="M-6.6 -11.6 Q-6.6 -19.8 0 -19.8 Q6.6 -19.8 6.6 -11.6 L5.4 -11.6 Q5 -16.4 0 -16.6 Q-5 -16.4 -5.4 -11.6 Z" fill="#f4f6f8" stroke="#cfd6de" stroke-width=".6"/>
       <path d="M-5.2 -16 Q0 -18.6 5.2 -16 L4.8 -14.6 Q0 -16.8 -4.8 -14.6 Z" fill="#334155"/>
-      <circle cx="-2.1" cy="-10.6" r=".85" fill="#1f2937"/><circle cx="2.1" cy="-10.6" r=".85" fill="#1f2937"/>
+      <path d="M-5.6 -12.2 H5.6" stroke="#c9a227" stroke-width=".5"/>
+      <path d="M-5.2 -12.2 H-0.7 Q-0.5 -9.4 -2.3 -8.9 Q-4.8 -8.7 -5.2 -10.6 Z" fill="#1f2937" stroke="#c9a227" stroke-width=".45"/>
+      <path d="M5.2 -12.2 H0.7 Q0.5 -9.4 2.3 -8.9 Q4.8 -8.7 5.2 -10.6 Z" fill="#1f2937" stroke="#c9a227" stroke-width=".45"/>
+      <path d="M-4.3 -11.6 L-3 -11.6 M3.2 -11.6 L4.4 -11.6" stroke="#9fb3c8" stroke-width=".5" stroke-linecap="round"/>
       <path d="M-2.4 -7.9 Q0 -5.9 2.4 -7.9" fill="none" stroke="#1f2937" stroke-width=".9" stroke-linecap="round"/>
       <circle cx="-3.8" cy="-8.6" r="1" fill="#f1a39a" opacity=".6"/><circle cx="3.8" cy="-8.6" r="1" fill="#f1a39a" opacity=".6"/>
     </g>`;
