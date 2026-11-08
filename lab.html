@@ -932,7 +932,8 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
 #labbar button { border: 0; border-radius: 999px; padding: 8px 13px; background: transparent; color: #cbd5e1; font: inherit; cursor: pointer; }
 #labbar button[aria-pressed="true"] { background: #fff; color: #111827; }
 
-/* LAB: closed day in three columns: day | signals + patterns | the sites */
+/* LAB, phone only: closed day in three columns: day | signals + patterns | the sites (the computer keeps its layout) */
+@media (max-width: 640px) {
 html body details.day:not(#story):not([open]) > summary.hd { grid-template-columns: 150px minmax(0, 1fr) minmax(240px, 400px) !important; grid-template-rows: auto !important;
   column-gap: 16px !important; align-items: start !important; padding-top: 12px !important; padding-bottom: 12px !important; }
 html body details.day:not(#story):not([open]) > summary.hd .band { grid-column: 1 !important; grid-row: 1 !important; }
@@ -945,8 +946,7 @@ html body details.day:not(#story):not([open]) > summary.hd .sum .sgrp { margin: 
 html body details.day:not(#story):not([open]) > summary.hd .sum .sgrp:first-child { margin-top: 0 !important; }
 html body details.day:not(#story):not([open]) > summary.hd .sum .sc { width: 100%; box-sizing: border-box; justify-content: flex-start !important; text-align: left !important; min-height: 0 !important; padding: 6px 12px !important; }
 html body details.day:not(#story):not([open]) > summary.hd .sum .sc .sc-t { justify-content: flex-start !important; width: 100%; }
-/* phone: narrow first column, signals three to a row, small pattern pills that may wrap, compact site pills */
-@media (max-width: 640px) {
+
   html body details.day:not(#story):not([open]) > summary.hd { grid-template-columns: 76px 74px minmax(0, 1fr) !important; column-gap: 8px !important; padding-left: 14px !important; padding-right: 30px !important; }
   html body details.day:not(#story):not([open]) > summary.hd .when .dn { font-size: 1.25rem !important; }
   html body details.day:not(#story):not([open]) > summary.hd .band .mods { font-size: .55rem !important; }
