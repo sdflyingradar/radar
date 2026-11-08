@@ -51,13 +51,8 @@ html[data-lay] body details.day:not(#story) .list .det.lab-in { animation: labIn
 html[data-lay="grid"] body details.day:not(#story) .list .srow .nmw, html[data-lay="tiles"] body details.day:not(#story) .list .srow .nmw { flex: 1 1 0; min-width: 0; }
 html[data-lay="grid"] body details.day:not(#story) .list .srow .nmw .nm, html[data-lay="tiles"] body details.day:not(#story) .list .srow .nmw .nm { overflow-wrap: break-word; flex: 0 1 auto; max-width: 100%; }
 html[data-lay] body details.day:not(#story) .list .srow .dscore { flex: none; }
-/* on a computer the full-width third level splits: the thermal panel left, the score and notes right */
-@media (min-width: 900px) {
-  html[data-lay="grid"] body details.day:not(#story) .list .det.det, html[data-lay="tiles"] body details.day:not(#story) .list .det.det {
-    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); column-gap: 22px; align-items: start; }
-  html[data-lay="grid"] body details.day:not(#story) .list .det.det > .dsec:first-child, html[data-lay="tiles"] body details.day:not(#story) .list .det.det > .dsec:first-child { grid-row: 1 / span 3; }
-  html[data-lay="grid"] body details.day:not(#story) .list .det.det > .dsec:not(:first-child), html[data-lay="tiles"] body details.day:not(#story) .list .det.det > .dsec:not(:first-child) { grid-column: 2; margin-top: 0; }
-}
+/* on a computer too: thermal panel full width, the score steps below it (kept to a readable width) */
+@media (min-width: 900px) { html[data-lay] body details.day:not(#story) .list .det .lg, html[data-lay] body details.day:not(#story) .list .det .lg-agree { max-width: 640px; } }
 /* grid and tiles: an opened day drops the first-layer site pills (the tiles below replace them) */
 html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .sum, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .sum { display: none !important; }
 /* the little hour strip on the tiles is gone: the thermal panel in the third level shows the day hour by hour */
