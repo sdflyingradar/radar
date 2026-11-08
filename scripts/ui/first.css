@@ -91,3 +91,27 @@ html[data-lay] body details.day[data-date]:not(#story) > summary.hd .notes .rx .
 html body details.day[data-date]:not(#story) > summary.hd .notes .sig { order: 0 !important; }
 html body details.day[data-date]:not(#story) > summary.hd .notes .rx { order: 1 !important; }
 
+
+/* computer: a slimmer left side and four site tiles to a row; Torrey a tile like the others with a mini wind timeline */
+@media (min-width: 900px) {
+  html[data-lay] body details.day[data-date]:not(#story) > summary.hd { width: 262px !important; grid-template-columns: 92px minmax(0, 1fr) !important; column-gap: 12px !important; padding: 14px 10px 14px 18px !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list { margin-left: 262px !important; padding-left: 12px !important; padding-right: 12px !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 8px !important; }
+  html[data-lay] body details.day:not(#story) .list .srow.srow { padding: 8px 9px 16px 12px !important; gap: 4px !important; }
+  html[data-lay] body details.day:not(#story) .list .srow .nm { font-size: .86rem !important; }
+  html[data-lay] body details.day:not(#story) .list .srow .facts { font-size: .68rem !important; }
+  /* Torrey: same tile, pills under the name, then the average wind hour by hour (arrow + speed) under its score colours */
+  html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] { grid-column: auto !important; display: flex !important; flex-direction: column !important; align-items: stretch !important; }
+  html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .nmrow { display: flex !important; }
+  html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] > .spills { margin: 0 !important; }
+  html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .wtab { display: block !important; margin-top: auto; }
+  html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .wtab .hwt { grid-template-columns: 0 repeat(10, minmax(0, 1fr)) !important; column-gap: 1px !important; row-gap: 1px !important; max-width: none !important; }
+  html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .wtab .hwt .ml { visibility: hidden; overflow: hidden; }
+  html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .wtab .hwt .hh { font-size: .5rem !important; }
+  html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .wtab .hwt .hh:nth-of-type(odd) { visibility: hidden; }
+  html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .wtab .hwt .hc { height: 5px !important; }
+  html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .wtab .hwt .wc { padding: 2px 0 !important; min-width: 0; }
+  html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .wtab .hwt .wc b { font-size: .58rem !important; }
+  html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .wtab .hwt .wc b small { display: none !important; }
+  html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .wtab .hwt .wc i { width: 8px !important; height: 9px !important; }
+}
