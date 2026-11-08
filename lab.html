@@ -916,6 +916,10 @@ html body details.day:not(#story) .list .srow.srow[data-site="torrey"] .spills .
 html body details.day:not(#story) .list .srow.srow[data-site="torrey"] .nmw { flex-direction: column !important; align-items: flex-start !important; gap: 1px !important; }
 html body details.day:not(#story) .list .srow.srow[data-site="torrey"] > .spills { flex-wrap: wrap !important; min-width: 0 !important; }
 html body details.day:not(#story) .list .srow.srow[data-site="torrey"] .wtab .hwt { grid-template-columns: 34px repeat(10, minmax(0, 1fr)) !important; max-width: 640px !important; }
+/* second layer: smaller warning pills on the site cards */
+html body details.day:not(#story) .list .srow.srow .spills .rx { height: 17px !important; padding: 0 5px !important; gap: 3px !important; font-size: .54rem !important; letter-spacing: .03em !important; border-width: 1px !important; border-radius: 4px !important; }
+html body details.day:not(#story) .list .srow.srow .spills .rx .ic-svg, html body details.day:not(#story) .list .srow.srow .spills .rx .ic { width: 10px !important; height: 10px !important; }
+html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important; }
 /* ===== LAB: opened-day layouts (html[data-lay] = list | grid | tiles) ===== */
 #labbar { position: fixed; left: 50%; bottom: max(10px, env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 50; display: flex; align-items: center; gap: 4px;
   padding: 4px; border-radius: 999px; background: #1f2937; box-shadow: 0 6px 20px -6px rgba(0,0,0,.45); font: 600 .74rem/1 system-ui, sans-serif; }
