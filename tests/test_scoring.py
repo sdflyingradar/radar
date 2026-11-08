@@ -312,6 +312,30 @@ class RainAndSun(unittest.TestCase):
         # ... a likely-wet day does (70% of runs: -1.5, no NWS or cloud on top)
         self.assertAlmostEqual(bf.weather_steps(3.3, 0.70, True, (1.0, 0.9), ridge=True)[0], 1.8)
 
+class LaxDagGradient(unittest.TestCase):
+    def test_bias_corrects_a_coarse_model(self):
+        # a model that reads Daggett 3 mb too low everywhere: after the correction it matches the stations
+        obs = {f"2026-11-0{d}T{h:02d}": -4.0 for d in (5, 6, 7) for h in range(24)}
+        model = {k: v + 3.0 for k, v in obs.items()}
+        model["2026-11-08T15"] = -1.0
+        bias, n, corr = bf.model_gradient(model, obs)
+        self.assertAlmostEqual(bias, 3.0)
+        self.assertEqual(corr["2026-11-08T15"], -4.0)
+
+    def test_gradient_alone_makes_a_santa_ana(self):
+        base = {"rain": 0, "t850": 15, "rh": 60, "s850": 3, "d850": 250, "s700": 5, "d700": 300, "sfc15": None}
+        F = {"2026-11-07": dict(base, grad=-1.0), "2026-11-08": dict(base, grad=-4.5), "2026-11-09": dict(base, grad=-0.5)}
+        self.assertEqual(bf.classify_days(F)["2026-11-08"] in ("Santa Ana", "Switch day"), True)
+        self.assertIsNone(bf.classify_days(F)["2026-11-07"])
+
+    def test_weak_gradient_needs_offshore_flow(self):
+        base = {"rain": 0, "t850": 15, "rh": 60, "s700": 5, "d700": 300, "sfc15": None}
+        F = {"2026-11-07": dict(base, s850=5, d850=40, grad=-2.5), "2026-11-08": dict(base, s850=5, d850=250, grad=-2.5)}
+        out = bf.classify_days(F)
+        self.assertIn(out["2026-11-07"], ("Santa Ana", "Switch day"))
+        self.assertNotIn(out["2026-11-08"], ("Santa Ana",))
+
+
 if __name__ == "__main__":
     unittest.main()
 

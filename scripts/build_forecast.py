@@ -1393,6 +1393,85 @@ def _vec_mean(pairs):
     return math.hypot(u, v), (math.degrees(math.atan2(u, v)) + 360) % 360
 
 
+# ---------------------------------------------------------------- LAX-DAG pressure gradient (offshore / Santa Ana)
+# The standard SoCal offshore measure: sea-level pressure at LAX minus Barstow-Daggett (mb). Negative = higher
+# pressure inland, air pushed offshore. Roughly: -2 weak, -4 a real Santa Ana, -6 strong.
+GRAD_PTS = (("LAX", 33.9382, -118.3866), ("DAG", 34.8536, -116.7865))
+GRAD_SA, GRAD_WEAK = -4.0, -2.0          # alone a Santa Ana / with some offshore 850 hPa flow
+GRAD = {}                                 # filled in main(): {"obs": {...}, "models": {name: {"bias", "daily", "n"}}}
+
+
+def obs_gradient(log):
+    """Observed LAX-DAG sea-level pressure difference, hourly over the last ~3 days: {utc 'YYYY-MM-DDTHH': mb}."""
+    slp = {"KLAX": {}, "KDAG": {}}
+    try:
+        rows = http_json("https://aviationweather.gov/api/data/metar?ids=KLAX,KDAG&hours=72&format=json")
+        for r in rows or []:
+            st, p, t = r.get("icaoId"), r.get("slp"), r.get("obsTime")
+            if st in slp and p is not None and t:
+                slp[st][datetime.fromtimestamp(int(t), timezone.utc).strftime("%Y-%m-%dT%H")] = float(p)
+    except Exception as e:  # noqa: BLE001
+        log.append(f"gradient obs (aviationweather): {str(e)[:80]}")
+    if not slp["KLAX"] or not slp["KDAG"]:
+        for st in slp:
+            try:
+                j = http_json(f"https://api.weather.gov/stations/{st}/observations?limit=100")
+                for f in j.get("features", []):
+                    pr = f["properties"]
+                    v = (pr.get("seaLevelPressure") or {}).get("value")
+                    if v is not None:
+                        slp[st][pr["timestamp"][:13]] = v / 100.0
+            except Exception as e:  # noqa: BLE001
+                log.append(f"gradient obs {st} (api.weather.gov): {str(e)[:80]}")
+    return {k: round(slp["KLAX"][k] - slp["KDAG"][k], 1) for k in slp["KLAX"] if k in slp["KDAG"]}
+
+
+def model_gradient(hours, obs):
+    """One model's LAX-DAG from its pressure_msl, corrected by its median miss against the observed gradient
+    over the past days (coarse grids put Daggett at the wrong height, which skews its sea-level pressure).
+    hours: {utc 'YYYY-MM-DDTHH': mb}; returns (bias, n matched, {utc hour: corrected mb})."""
+    diffs = [hours[k] - obs[k] for k in hours if k in obs]
+    bias = median(diffs) if len(diffs) >= 12 else 0.0
+    return round(bias, 2), len(diffs), {k: round(v - bias, 1) for k, v in hours.items()}
+
+
+def daily_gradient(corr):
+    """Strongest offshore (most negative) LAX-DAG per local day, 3 am to 3 pm (Santa Anas peak in the morning)."""
+    out = {}
+    for k, v in corr.items():
+        t = datetime.strptime(k, "%Y-%m-%dT%H").replace(tzinfo=timezone.utc).astimezone(_tz())
+        if 3 <= t.hour <= 15:
+            d = t.date().isoformat()
+            out[d] = min(out.get(d, v), v)
+    return out
+
+
+def fetch_gradient(log):
+    obs = obs_gradient(log)
+    res = {"obs": {}, "models": {}}
+    if obs:
+        k = max(obs)
+        res["obs"] = {"now": obs[k], "at": k + ":00Z", "n": len(obs)}
+    for name, ids in DET_MODELS.items():
+        for mid in ids:
+            try:
+                q = {"latitude": ",".join(str(p[1]) for p in GRAD_PTS), "longitude": ",".join(str(p[2]) for p in GRAD_PTS),
+                     "hourly": "pressure_msl", "models": mid, "timezone": "UTC", "past_days": 3, "forecast_days": DAYS + 1}
+                data = http_json("https://api.open-meteo.com/v1/forecast?" + urllib.parse.urlencode(q))
+                lax, dag = [d.get("hourly", {}) for d in data]
+                hours = {t[:13]: a - b for t, a, b in zip(lax.get("time", []), lax.get("pressure_msl", []), dag.get("pressure_msl", []))
+                         if a is not None and b is not None}
+                if len(hours) < 24:
+                    continue
+                bias, n, corr = model_gradient(hours, obs)
+                res["models"][name] = {"bias": bias, "n": n, "daily": daily_gradient(corr)}
+                log.append(f"gradient {name}: bias {bias:+.1f} mb over {n} h")
+                break
+            except Exception as e:  # noqa: BLE001
+                log.append(f"gradient {name} ({mid}): {str(e)[:80]}")
+    return res
+
+
 def regime_features(resps):
     """Daily regional features from one model: {date: {...}}; resps are hourly dicts for REGIME_SITES."""
     out = {}
@@ -1434,11 +1513,16 @@ def classify_days(F):
         return (date.fromisoformat(d) + timedelta(days=n)).isoformat()
     def santa_ana(d):
         dd, sp, rh = g(d, "d850"), g(d, "s850"), g(d, "rh")
-        if dd is None or sp is None:
+        if (dd is None or sp is None) and g(d, "grad") is None:
             return False
+        dd, sp = (dd if dd is not None else 999), (sp if sp is not None else 0)
         # offshore flow at 850 hPa (N to ESE): strong, or moderate and dry. Mild Santa Anas count too:
         # already 6-7 kt of dry NE flow makes the inland launches gusty and over the back
         offshore = wrap_in(dd, 0, 120)
+        # or the pressure gradient: LAX-DAG at -4 mb or more offshore on its own, -2 mb with some offshore flow
+        gr = g(d, "grad")
+        if gr is not None and (gr <= GRAD_SA or (gr <= GRAD_WEAK and offshore and sp >= 4)):
+            return True
         return offshore and (sp >= 12 or (sp >= 6 and rh is not None and rh <= 45))
     def front(d):
         """Regional rain with the cold air arriving: SoCal fronts are often light on rain."""
@@ -1506,6 +1590,9 @@ def day_regimes(det, sites):
             F = regime_features([data[idx[r]].get("hourly", {}) for r in REGIME_SITES])
         except Exception:
             continue
+        gd = (GRAD.get("models", {}).get(name) or {}).get("daily", {})
+        for dstr in F:
+            F[dstr]["grad"] = gd.get(dstr)
         for dstr, t in classify_days(F).items():
             votes.setdefault(dstr, []).append((name, t))
             f = F[dstr]
@@ -1513,7 +1600,8 @@ def day_regimes(det, sites):
                 "rain_mm": round(f["rain"], 1), "t850": round(f["t850"], 1),
                 "w850": f"{compass(f['d850'])} {round(f['s850'])}" if f["d850"] is not None else None,
                 "w700": f"{compass(f['d700'])} {round(f['s700'])}" if f["d700"] is not None else None,
-                "rh": round(f["rh"]) if f.get("rh") is not None else None}
+                "rh": round(f["rh"]) if f.get("rh") is not None else None,
+                "grad": f.get("grad")}
     out = {}
     for dstr, vs in votes.items():
         keep = set(rating_models(n for n, _ in vs))
@@ -2218,6 +2306,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
         "rrfs_bias_ft": {k: round(v * FT) for k, v in bias.items()},
         "calib_corridor": {k: CORRIDOR_DBG[k] for k in [x for x in sorted(CORRIDOR_DBG) if x >= out_days[0]["date"]][:3]} if out_days else {},
         "overview": week_overview(parents or sites, out_days, nws),
+        "gradient": GRAD.get("obs") or None,
         "models": {k: v[0] for k, v in det.items() if v[0]},
         "weights": MODEL_WEIGHT,
         "ensembles": {k: v[0] for k, v in ens.items() if v[0]},
@@ -2760,12 +2849,19 @@ def main(argv=None):
         det = {n: fetch_model("det", n, ids, sites, log) for n, ids in DET_MODELS.items()}
         ens = {n: fetch_model("ens", n, ids, sites, log) for n, ids in ENS_MODELS.items()}
         nws = fetch_nws(log)
+        try:
+            GRAD.update(fetch_gradient(log))
+        except Exception as e:  # noqa: BLE001 - the gradient must never cost a forecast
+            log.append(f"gradient: failed ({e})")
         sources = [v[2] for k, v in det.items() if not (k in OPTIONAL_MODELS and v[2]["status"] == "failed")]
         sources += [v[2] for v in ens.values()]
         sources.append({"name": "NWS San Diego forecast discussion", "kind": "text", "provider": "NWS",
                         "id": "AFD SGX", "status": "ok" if nws else "failed",
                         "run": nws.get("issued") if nws else None, "fetched": now_iso(),
                         "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"})
+        sources.append({"name": "LAX-DAG pressure gradient (KLAX, KDAG METARs; model pressure, bias-corrected)", "kind": "obs",
+                        "provider": "NOAA / Open-Meteo", "id": "LAX-DAG", "status": "ok" if GRAD.get("obs") else "failed",
+                        "run": (GRAD.get("obs") or {}).get("at"), "fetched": now_iso(), "url": "https://www.weather.gov/lox/LAXGRDNEW"})
         if not any(v[1] for v in det.values()):
             print("\n".join(log), file=sys.stderr)
             sys.exit("No model data retrieved; keeping the previous forecast.json")

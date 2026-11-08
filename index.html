@@ -891,6 +891,8 @@ html body details.day:not(#story) .band .when .dword.long { font-size: .68rem !i
 /* Torrey's wind table on a computer: the full card width, not the narrow first column */
 .srow .wtab { grid-column: 1 / -1; }
 @media (min-width: 700px) { .srow .wtab .hwt { max-width: 640px; } .srow .wtab .hwt .wc b { font-size: .78rem; } .srow .wtab .hwt .wc b small { font-size: .62rem; } .srow .wtab .hwt .hh, .srow .wtab .hwt .ml { font-size: .7rem; } .srow .wtab .hwt .wc i { width: 12px; height: 14px; } }
+.ov .grad { white-space: nowrap; color: var(--muted, #6b7280); font-variant-numeric: tabular-nums; }
+.ov .grad.weak { color: #b07a12; } .ov .grad.sa { color: #b42f2f; font-weight: 600; }
 </style>
 </head>
 <body>
@@ -1075,7 +1077,7 @@ const regimeHtml = (rg, small) => {
   const tone = rg.type === "Front" ? (rg.weak ? "" : "bad") : rg.type === "Santa Ana" ? "bad"
     : ["Post-frontal", "Pre/post-frontal", "Switch day"].includes(rg.type) ? "good" : "";
   const toneCls = tone ? ` ${tone}${(rg.agree ?? 1) < 0.75 ? " soft" : ""}` : "";
-  return `<span class="rx rx-${RX[rg.type][0]}${small ? " sm" : ""}${rg.weak ? " rx-weak" : ""}${strong && !tone ? " strong" : ""}${toneCls}" title="${esc(Object.entries(rg.models || {}).map(([m, t]) => `${m}: ${t || "–"}`).join(" · "))}">${small ? "" : ico(rg.type === "Santa Ana" ? "warn" : rg.type)}${name}${pctTxt && !small ? ` <span class="rq">(${pctTxt})</span>` : ""}</span>`;
+  return `<span class="rx rx-${RX[rg.type][0]}${small ? " sm" : ""}${rg.weak ? " rx-weak" : ""}${strong && !tone ? " strong" : ""}${toneCls}" title="${esc(Object.entries(rg.models || {}).map(([m, t]) => { const gg = ((rg.features || {})[m] || {}).grad; return `${m}: ${t || "–"}${rg.type === "Santa Ana" && gg != null ? ` (LAX–DAG ${gg.toFixed(1)} mb)` : ""}`; }).join(" · "))}">${small ? "" : ico(rg.type === "Santa Ana" ? "warn" : rg.type)}${name}${pctTxt && !small ? ` <span class="rq">(${pctTxt})</span>` : ""}</span>`;
 };
 
 
@@ -1130,7 +1132,10 @@ function render(data) {
   const bl = (n && (n.bullets && n.bullets.length ? n.bullets : [n.synopsis].filter(Boolean))) || [];
   const group = (title, items) => items && items.length ? `<div class="grp"><span class="eyebrow">${title}</span><ul>${items.map((b) => `<li>${esc(b)}</li>`).join("")}</ul></div>` : "";
   const lines = (title, items) => (items && items.length ? `<div class="wsec">${esc(title)}</div>` : "") + (items || []).map((b) => `<div class="wrow"><span>${esc(b)}</span></div>`).join("");
-  const ov = data.overview ? `<span class="ov">${esc(data.overview)}</span>` : "";
+  /* the observed LAX-DAG pressure gradient now (negative = offshore; -4 mb a real Santa Ana) */
+  const gr = data.gradient && data.gradient.now != null ? data.gradient.now : null;
+  const grTxt = gr != null ? `<span class="grad${gr <= -4 ? " sa" : gr <= -2 ? " weak" : ""}" title="LAX minus Barstow-Daggett sea-level pressure, observed (negative = offshore; about -2 weak, -4 Santa Ana, -6 strong)">LAX–DAG ${gr > 0 ? "+" : ""}${gr.toFixed(1)} mb</span>` : "";
+  const ov = data.overview || grTxt ? `<span class="ov">${esc(data.overview || "")}${grTxt ? ` ${data.overview ? "· " : ""}${grTxt}` : ""}</span>` : "";
   const SNDQ = `<a class="sndq" href="sounding.html" title="Latest weather balloon (Miramar / Edwards)" onclick="event.stopPropagation()">Sounding →</a>`;
   $("#story").innerHTML = n ? `
     <summary class="hd"><span class="when">Weather Overview</span>
