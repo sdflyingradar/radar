@@ -94,6 +94,7 @@ function foehnMapSVG(G) {
   return o.join('');
 }
 
+const clk = (t) => new Date(t).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', weekday: 'short', hour: 'numeric', minute: '2-digit' }).replace(/ AM| PM/, (m) => m.toLowerCase().trim()).replace(/(\d) (am|pm)/, '$1$2');
 function foehnChartSVG(G) {
   const W = 760, H = 320, L = 40, R = 14, T = 16, B = 34;
   const now = Date.now(), t0 = now - 2 * 864e5, t1 = now + 7 * 864e5;
@@ -122,12 +123,12 @@ function foehnChartSVG(G) {
     const mid = t + 432e5;
     if (mid > t0 && mid < t1) o.push(`<text x="${f(X(mid))}" y="${H - B + 16}" text-anchor="middle" font-size="11" font-weight="600" fill="#475467">${new Date(mid).toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles', weekday: 'short' })}</text>`);
   }
-  o.push(`<line x1="${f(X(now))}" x2="${f(X(now))}" y1="${T}" y2="${H - B}" stroke="#26303a" stroke-dasharray="2 3"/><text x="${f(X(now) + 3)}" y="${T + 9}" font-size="9.5" fill="#26303a">now</text>`);
+  o.push(`<line x1="${f(X(now))}" x2="${f(X(now))}" y1="${T}" y2="${H - B}" stroke="#26303a" stroke-dasharray="2 3"/><text x="${f(X(now) + 3)}" y="${T + 9}" font-size="9.5" fill="#26303a">now ${clk(now)}</text>`);
   const line = (pts, c, w, dash) => pts.length > 1 && o.push(`<polyline points="${pts.map(([t, v]) => `${f(X(t))},${f(Y(v))}`).join(' ')}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"${dash ? ` stroke-dasharray="${dash}"` : ''}/>`);
   for (const [m, s] of series) line(s, FOEHN_COL[m] || '#6b7280', 1.8);
   line(obs, '#111827', 2.6);
   o.push('</svg>');
-  const legend = `<div class="fleg"><span><i style="background:#111827"></i>observed</span>${series.map(([m]) => `<span><i style="background:${FOEHN_COL[m] || '#6b7280'}"></i>${m === 'ECMWF' ? 'EC' : m}</span>`).join('')}</div>`;
+  const legend = `<div class="fleg"><span><i style="background:#111827"></i>observed</span>${series.map(([m]) => `<span><i style="background:${FOEHN_COL[m] || '#6b7280'}"></i>${m === 'ECMWF' ? 'EC' : m}</span>`).join('')}${G.generated ? `<span class="fupd">updated ${clk(Date.parse(G.generated.replace(/([+-]\d\d:\d\d|Z)?$/, (z) => z || 'Z')))}</span>` : ''}</div>`;
   return o.join('') + legend;
 }
 
