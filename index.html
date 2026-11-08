@@ -923,7 +923,7 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
 .srow .facts .fi, .srow .facts .wa { white-space: nowrap; }
 </style>
 <link rel="stylesheet" href="scripts/ui/grid.css?v=202611081140">
-<link rel="stylesheet" href="scripts/ui/first.css?v=202611081220">
+<link rel="stylesheet" href="scripts/ui/first.css?v=202611081230">
 </head>
 <body>
 <div class="wrap">
@@ -1248,7 +1248,7 @@ function render(data) {
       <div class="list">
         <div class="sgrp">SD mountain</div>
         ${listSites.mtn.map((s) => siteRow(d, s, i, "")).join("")}
-        <div class="sgrp">Coast</div>
+        <div class="sgrp coast">Coast</div>
         ${listSites.coast.map((s) => siteRow(d, s, i, "")).join("")}
         <div class="sgrp">Trips</div>
         ${listSites.trips.map((s) => siteRow(d, s, i, "")).join("")}${watchSites.map((s) => siteRow(d, s, i, "")).join("")}
