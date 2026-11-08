@@ -1775,6 +1775,11 @@ def expand_sites(sites):
             out.append(dict(s, parent=s["id"]))
         for k, hp in enumerate(s.get("height_points") or []):
             c = {kk: vv for kk, vv in s.items() if kk not in ("launches", "height_points", "routes", "blocked")}
+            # a site flown from several launches keeps its launch settings (dir, ...) on the launches; a height point
+            # only needs them to score the hour, so it borrows the first launch's (without them every hour failed and
+            # the site fell back to its launch point, e.g. Laguna's from the desert floor)
+            if s.get("launches"):
+                c.update({kk: vv for kk, vv in s["launches"][0].items() if kk not in ("name", "lat", "lon", "glass_off")})
             c.update({"id": f"{s['id']}#h{k}", "parent": s["id"], "_hpoint": True, "lat": hp["lat"], "lon": hp["lon"],
                       "hp_name": f"{s.get('short', s['id'])}: {hp.get('name', f'point {k}')}"})
             out.append(c)
