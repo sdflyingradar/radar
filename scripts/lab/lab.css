@@ -28,6 +28,9 @@ html body details.day:not(#story):not([open]) > summary.hd .sum .sc .sc-t { just
   html body details.day:not(#story):not([open]) > summary.hd .notes .sig .g { width: 22px !important; height: 22px !important; }
   html body details.day:not(#story):not([open]) > summary.hd .notes .rx { font-size: .5rem !important; padding: 3px 5px !important; height: auto !important; min-height: 20px; white-space: normal !important; line-height: 1.2 !important; letter-spacing: .02em !important; flex-wrap: wrap !important; width: 100% !important; box-sizing: border-box; }
   html body details.day:not(#story):not([open]) > summary.hd .notes .rx .rq { margin-left: 0 !important; }
+  /* most general first: the day's pattern (switch day, Santa Ana), then the weather signals */
+  html body details.day:not(#story):not([open]) > summary.hd .notes .rx { order: 0; }
+  html body details.day:not(#story):not([open]) > summary.hd .notes .sig { order: 1; }
   html body details.day:not(#story):not([open]) > summary.hd .notes .rx > .ic, html body details.day:not(#story):not([open]) > summary.hd .notes .rx > svg { display: none !important; }
   html body details.day:not(#story):not([open]) > summary.hd .when .dword { white-space: nowrap !important; font-size: .95rem !important; }
   html body details.day:not(#story):not([open]) > summary.hd .sum .sc, html body details.day:not(#story):not([open]) > summary.hd .sum .sc b { font-size: .8rem !important; }
