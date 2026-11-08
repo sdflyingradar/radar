@@ -213,7 +213,7 @@ def surface_filled(data, skip_h=0):
     for d in data:
         t = (d.get("hourly") or {}).get("temperature_2m") or []
         # from the current hour on: today's earlier hours can be missing for a model without an archive
-        start = skip_h + datetime.now(timezone.utc).astimezone(_tz()).hour
+        start = skip_h + utcnow().astimezone(_tz()).hour
         ok += sum(x is not None for x in t[start:start + 24]) >= 18
     return ok >= max(1, len(data) // 2)
 
@@ -246,6 +246,13 @@ def model_run_time(kind, mid):
         return None
 
 
+_NOW = None        # a fixed clock for re-scoring an archived run (scripts/rescore.py); None = the real time
+
+
+def utcnow():
+    return _NOW or datetime.now(timezone.utc)
+
+
 def _tz():
     try:
         from zoneinfo import ZoneInfo
@@ -255,7 +262,7 @@ def _tz():
 
 
 def now_iso():
-    return datetime.now(timezone.utc).isoformat(timespec="minutes")
+    return utcnow().isoformat(timespec="minutes")
 
 
 CACHE_DIR = ROOT / "cache"          # last good run of each regular model (kept by the Actions cache, not committed)
@@ -278,7 +285,7 @@ def cache_load(name, log, max_h=None):
         import gzip
         with gzip.open(CACHE_DIR / f"{name}.json.gz", "rt") as fh:
             c = json.load(fh)
-        age_h = (datetime.now(timezone.utc) - datetime.fromisoformat(c["info"]["fetched"])).total_seconds() / 3600
+        age_h = (utcnow() - datetime.fromisoformat(c["info"]["fetched"])).total_seconds() / 3600
         if age_h > (max_h if max_h is not None else CACHE_MAX_H):
             return None
         log.append(f"{name}: using the last good run, fetched {age_h:.1f} h ago")
@@ -1997,8 +2004,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             cell["all"] = cell["det"]
             cell["det"] = {k: cell["det"][k] for k in rating_models(cell["det"])}
     regimes = day_regimes(det, sites)
-    nws_days = nws_rain_days(nws, [d for d in sorted(days) if d >= datetime.now(timezone.utc).astimezone(_tz()).date().isoformat()][:DAYS])
-    today = datetime.now(timezone.utc).astimezone(_tz()).date().isoformat()
+    nws_days = nws_rain_days(nws, [d for d in sorted(days) if d >= utcnow().astimezone(_tz()).date().isoformat()][:DAYS])
+    today = utcnow().astimezone(_tz()).date().isoformat()
     out_days = []
     for dstr in [d for d in sorted(days) if d >= today][:DAYS]:
         drow = {"date": dstr, "sites": {}, "regime": regimes.get(dstr),
@@ -2605,7 +2612,7 @@ def sample_response(sites, levels, members=0, horizon_h=DAYS * 24, seed=1):
 
 def sample_sources(det, ens):
     t = now_iso()
-    run = (datetime.now(timezone.utc) - timedelta(hours=3)).replace(minute=0).isoformat(timespec="minutes")
+    run = (utcnow() - timedelta(hours=3)).replace(minute=0).isoformat(timespec="minutes")
     out = [{"name": n, "kind": "model", "provider": "Open-Meteo (sample)", "id": n.lower(), "status": "sample",
             "run": run, "fetched": t, "url": "https://open-meteo.com/en/docs"} for n in det]
     out += [{"name": n, "kind": "ensemble", "provider": "Open-Meteo (sample)", "id": n.lower(), "status": "sample",
@@ -2617,7 +2624,7 @@ def sample_sources(det, ens):
 
 
 def sample_nws():
-    return {"issued": datetime.now(timezone.utc).isoformat(timespec="minutes"),
+    return {"issued": utcnow().isoformat(timespec="minutes"),
             "synopsis": "SAMPLE TEXT. Showers and a slight chance of thunderstorms through Friday morning, ending from the northwest. Dry and warmer for the weekend with weak offshore flow Saturday morning.",
             "summary": {"pattern": ["SAMPLE. Upper low moves into Nevada tonight", "Second low forms over SoCal late Friday, then drifts east", "High pressure builds Sunday into Monday"],
                         "flying": ["Showers end from the northwest Friday afternoon", "Weak offshore Saturday and Sunday mornings, N to NE in the usual spots", "Dry and warmer through Monday"], "by": "sample"},
@@ -2642,7 +2649,7 @@ def ratings_of(result):
 
 def add_trend(result, path, now=None):
     """Mark each site/day with the change in rating since about a day ago, and log this run."""
-    now = now or datetime.now(timezone.utc)
+    now = now or utcnow()
     try:
         log = json.loads(path.read_text())
     except Exception:
@@ -2796,7 +2803,7 @@ def freeze_today(result, prev_path, now=None):
     """From FREEZE_HOUR on, today's day is no longer re-forecast: keep the last one made between
     FREEZE_FROM and FREEZE_HOUR. If no run landed in that window (GitHub skips scheduled runs at
     times), the first run after it is the final one. A final from before noon is never kept."""
-    now = (now or datetime.now(timezone.utc)).astimezone(_tz())
+    now = (now or utcnow()).astimezone(_tz())
     days = result.get("days") or []
     today = now.date().isoformat()
     if not days or days[0]["date"] != today or now.hour < FREEZE_HOUR:
@@ -2820,7 +2827,7 @@ def archive_midday(result, folder, now=None):
     """Today keeps updating on the page; the archive keeps its midday read: every run from noon to 3 pm
     overwrites today's archive copy, and if none ran in that window the first run after it is kept.
     Before noon nothing is archived."""
-    now = (now or datetime.now(timezone.utc)).astimezone(_tz())
+    now = (now or utcnow()).astimezone(_tz())
     days = result.get("days") or []
     today = now.date().isoformat()
     if not days or days[0]["date"] != today or now.hour < FREEZE_FROM:
@@ -2852,6 +2859,39 @@ def archive_today(result, folder):
     return path
 
 
+RAW_KEEP_DAYS = 3          # the raw inputs keep the archived day and the 3 days before it (the day type needs them)
+
+
+def trim_hourly(obj, keep):
+    """Cut every Open-Meteo style {"time": [...], var: [...]} block down to the hours whose date is in keep."""
+    if isinstance(obj, list):
+        return [trim_hourly(x, keep) for x in obj]
+    if not isinstance(obj, dict):
+        return obj
+    t = obj.get("time")
+    if isinstance(t, list) and t and isinstance(t[0], str):
+        idx = [i for i, x in enumerate(t) if x[:10] in keep]
+        n = len(t)
+        return {k: ([v[i] for i in idx] if isinstance(v, list) and len(v) == n else trim_hourly(v, keep)) for k, v in obj.items()}
+    return {k: trim_hourly(v, keep) for k, v in obj.items()}
+
+
+def archive_raw(raw, date, folder):
+    """Keep the inputs of the archived (midday) run, so a day can be re-scored later with new rules
+    (scripts/rescore.py): every regular model's hourly data for the sites, the NWS discussion, the LAX-DAG gradient
+    and the clouds, cut to the day and the 3 days before it, gzipped. data/archive/raw/<date>.json.gz"""
+    import gzip
+    d0 = datetime.fromisoformat(date)
+    keep = {(d0 - timedelta(days=k)).date().isoformat() for k in range(RAW_KEEP_DAYS + 1)}
+    folder.mkdir(parents=True, exist_ok=True)
+    # the ensembles are left out (large, and they only feed the flyable/XC chances, not the score)
+    rec = dict(raw, det=trim_hourly(raw["det"], keep), ens={}, cdata=trim_hourly(raw.get("cdata"), keep))
+    path = folder / f"{date}.json.gz"
+    with gzip.open(path, "wt") as fh:
+        json.dump(rec, fh, separators=(",", ":"))
+    return path
+
+
 # ---------------------------------------------------------------- daily snapshots (for checking against real flights)
 SNAPSHOT_HOUR = 7          # keep the first run of each day from 7 am on: the morning forecast
 
@@ -2879,7 +2919,7 @@ def save_model_log(result, folder, now=None):
     """Once a day (with the morning snapshot): every model's own read of every site and day, one CSV row each,
     in data/modellog/<YYYY-MM>.csv. Months of these let us compare what the global models said days ahead
     with what HRRR/RRFS showed on the day, and tune the globals toward it."""
-    now = now or datetime.now(timezone.utc).astimezone(_tz())
+    now = now or utcnow().astimezone(_tz())
     if now.hour < SNAPSHOT_HOUR:
         return None
     folder.mkdir(parents=True, exist_ok=True)
@@ -2907,7 +2947,7 @@ def save_model_log(result, folder, now=None):
 
 def save_snapshot(result, folder, now=None):
     """Write data/history/<date>.json once per day (the first run from SNAPSHOT_HOUR on) and keep an index."""
-    now = now or datetime.now(timezone.utc).astimezone(_tz())
+    now = now or utcnow().astimezone(_tz())
     if now.hour < SNAPSHOT_HOUR:
         return None
     folder.mkdir(parents=True, exist_ok=True)
@@ -2965,6 +3005,14 @@ def main(argv=None):
             cdata = fetch_clouds(parents, log)
         except Exception as e:
             log.append(f"clouds: failed ({e})")
+    # the raw inputs of this run (before build touches them), kept with the archive when this is the midday read
+    raw = None
+    if not args.sample:
+        try:
+            raw = json.loads(json.dumps({"at": now_iso(), "sites": [s["id"] for s in sites], "det": det, "ens": ens, "nws": nws,
+                                         "grad": GRAD, "cdata": cdata}, default=str))
+        except Exception as e:  # noqa: BLE001
+            log.append(f"raw inputs: not kept ({e})")
     result = build(sites, det, ens, nws, log, sample=args.sample, sources=sources, parents=parents, cdata=cdata)
     if not args.sample and cdata is not None:
         try:
@@ -2977,7 +3025,12 @@ def main(argv=None):
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     if not args.sample:
         add_trend(result, ROOT / "data" / "trend.json")
-        archive_midday(result, ROOT / "data" / "archive")      # today keeps updating; the archive gets the midday read
+        ap_ = archive_midday(result, ROOT / "data" / "archive")      # today keeps updating; the archive gets the midday read
+        try:
+            if ap_ and raw and json.loads(Path(ap_).read_text()).get("frozen_at") == result.get("generated"):
+                archive_raw(raw, Path(ap_).stem, ROOT / "data" / "archive" / "raw")
+        except Exception as e:  # noqa: BLE001 - the raw copy must never cost a forecast
+            log.append(f"raw inputs: archive failed ({e})")
     Path(args.out).write_text(json.dumps(result, indent=1))
     if not args.sample and GRAD.get("models"):
         # the LAX-DAG chart on the sounding page: observed (past 3 days) and each model's corrected forecast, hourly UTC
