@@ -94,3 +94,17 @@ html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .notes > *
   html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .notes .sig, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .notes .sig { gap: 3px !important; }
   html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .notes .rx, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .notes .rx { flex: 0 0 auto !important; }
 }
+
+/* Torrey in the lab layouts: same as the main page (pills up top, no launch-wind line) */
+html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] { display: grid !important; grid-template-columns: auto minmax(0, 1fr) auto !important; column-gap: 14px !important; row-gap: 6px !important; align-items: start !important; }
+html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .nmrow { display: contents !important; }
+html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .nmw { grid-column: 1 !important; grid-row: 1 !important; }
+html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] > .spills { grid-column: 2 !important; grid-row: 1 !important; align-self: center !important; margin: 0 !important; display: flex !important; }
+html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .dscore { grid-column: 3 !important; grid-row: 1 !important; }
+html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .tx { display: none !important; }
+html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .wtab { grid-column: 1 / -1 !important; grid-row: 2 !important; }
+html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .spills .rx:nth-child(n) { display: inline-flex !important; }
+
+html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .nmw { flex-direction: column !important; align-items: flex-start !important; gap: 1px !important; }
+html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] > .spills { flex-wrap: wrap !important; min-width: 0 !important; }
+html[data-lay] body details.day:not(#story) .list .srow.srow[data-site="torrey"] .wtab .hwt { grid-template-columns: 34px repeat(10, minmax(0, 1fr)) !important; max-width: 640px !important; }

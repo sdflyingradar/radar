@@ -902,6 +902,19 @@ html body details.day:not(#story) .band .when .dword.long { font-size: .68rem !i
 .asset small { display: block; font-size: .7rem; color: #6b7280; margin-top: 1px; font-variant-numeric: tabular-nums; }
 .asset small.weak { color: #b07a12; } .asset small.sa { color: #b42f2f; font-weight: 600; }
 .asset:hover { background: #fff; border-color: #c26a24; }
+/* Torrey: its pills sit up top next to the name; the launch-wind line goes (the hourly wind table says it all) */
+html body details.day:not(#story) .list .srow.srow[data-site="torrey"] { display: grid !important; grid-template-columns: auto minmax(0, 1fr) auto !important; column-gap: 14px !important; row-gap: 6px !important; align-items: start !important; }
+html body details.day:not(#story) .list .srow.srow[data-site="torrey"] .nmrow { display: contents !important; }
+html body details.day:not(#story) .list .srow.srow[data-site="torrey"] .nmw { grid-column: 1 !important; grid-row: 1 !important; }
+html body details.day:not(#story) .list .srow.srow[data-site="torrey"] > .spills { grid-column: 2 !important; grid-row: 1 !important; align-self: center !important; margin: 0 !important; display: flex !important; }
+html body details.day:not(#story) .list .srow.srow[data-site="torrey"] .dscore { grid-column: 3 !important; grid-row: 1 !important; }
+html body details.day:not(#story) .list .srow.srow[data-site="torrey"] .tx { display: none !important; }
+html body details.day:not(#story) .list .srow.srow[data-site="torrey"] .wtab { grid-column: 1 / -1 !important; grid-row: 2 !important; }
+html body details.day:not(#story) .list .srow.srow[data-site="torrey"] .spills .rx:nth-child(n) { display: inline-flex !important; }
+@media (max-width: 700px) { html body details.day:not(#story) .list .srow.srow[data-site="torrey"] .dscore .dsl { display: none !important; } }
+html body details.day:not(#story) .list .srow.srow[data-site="torrey"] .nmw { flex-direction: column !important; align-items: flex-start !important; gap: 1px !important; }
+html body details.day:not(#story) .list .srow.srow[data-site="torrey"] > .spills { flex-wrap: wrap !important; min-width: 0 !important; }
+html body details.day:not(#story) .list .srow.srow[data-site="torrey"] .wtab .hwt { grid-template-columns: 34px repeat(10, minmax(0, 1fr)) !important; max-width: 640px !important; }
 </style>
 </head>
 <body>
