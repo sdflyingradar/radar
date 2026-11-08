@@ -46,3 +46,16 @@
   if (days) new MutationObserver(add).observe(days, { childList: true });
   add();
 })();
+
+/* computer: shorter words on the tiles so name and verdict fit one line (Laguna/Horse, XC) */
+(function () {
+  const wide = () => window.matchMedia("(min-width: 900px)").matches;
+  const fix = () => {
+    if (!wide()) return;
+    document.querySelectorAll('.list .srow[data-site="lagunahorse"] .nm').forEach((n) => { if (/Fuzz/.test(n.textContent)) n.textContent = n.textContent.replace(/\/​?Fuzz/, ""); });
+    document.querySelectorAll(".list .srow .nmw .lab").forEach((l) => { if (l.textContent.trim() === "Cross-country") l.textContent = "XC"; });
+  };
+  const days = document.getElementById("days");
+  if (days) new MutationObserver(fix).observe(days, { childList: true });
+  fix();
+})();

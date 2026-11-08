@@ -146,3 +146,35 @@ html body details.day[data-date]:not(#story) > summary.hd .notes .rx { order: 1 
   html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .wtab, html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .wtab .hwt { width: 100% !important; max-width: none !important; }
 }
 @media (min-width: 900px) { html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] { padding-right: 12px !important; } }
+
+/* computer: tighter tiles. Name and verdict on one line; height, launch wind and wind aloft on one line ("5.5k ft");
+   Torrey on the same lines, with a compact hourly strip, so a row of tiles is short */
+@media (min-width: 900px) {
+  html[data-lay] body details.day[data-date]:not(#story) > summary.hd { width: 240px !important; grid-template-columns: 86px minmax(0, 1fr) !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list { margin-left: 240px !important; }
+  html[data-lay] body details.day:not(#story) .list .srow.srow .nmw { flex-direction: row !important; align-items: baseline !important; gap: 6px !important; flex-wrap: nowrap !important; white-space: nowrap; min-width: 0; overflow: hidden; }
+  html[data-lay] body details.day:not(#story) .list .srow.srow .nmw .nm { flex: 0 1 auto !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+  html[data-lay] body details.day:not(#story) .list .srow .tx .facts { flex-direction: row !important; flex-wrap: nowrap !important; align-items: center; gap: 9px !important; white-space: nowrap; }
+  html[data-lay] body details.day:not(#story) .list .srow .facts .sep { display: none !important; }
+  html[data-lay] body details.day:not(#story) .list .srow .facts .wa { order: 0; } html[data-lay] body details.day:not(#story) .list .srow .facts .fl { order: 1; } html[data-lay] body details.day:not(#story) .list .srow .facts .fa { order: 2; }
+  html[data-lay] body details.day:not(#story) .list .srow .facts .hl { display: none; } html[data-lay] body details.day:not(#story) .list .srow .facts .hk { display: inline; }
+  html[data-lay] body details.day:not(#story) .list .srow .facts small { display: none; }
+  html[data-lay] body details.day:not(#story) .list .srow.srow { padding-bottom: 15px !important; }
+  /* Torrey: name + verdict + warnings on the first line like the others, then a compact strip */
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] { row-gap: 5px !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .wtab .hwt { row-gap: 1px !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .wtab .hwt .hh { font-size: .5rem !important; line-height: 1 !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .wtab .hwt .hc { height: 5px !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .wtab .hwt .wc { padding: 1px 0 !important; flex-direction: row !important; gap: 2px; justify-content: center; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .wtab .hwt .wc b { font-size: .64rem !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .wtab .hwt .wc i { width: 8px !important; height: 10px !important; }
+}
+@media (min-width: 900px) {
+  html[data-lay] body details.day:not(#story) .list .srow.srow .nmw .nm { white-space: nowrap !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .wtab .hwt .wc b small { display: none !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] .wtab .hwt .wc { gap: 1px !important; overflow: hidden; }
+}
+@media (min-width: 900px) and (max-width: 1180px) {
+  html[data-lay] body details.day:not(#story) .list .srow .spills .rx { font-size: .5rem !important; padding: 0 4px !important; }
+  html[data-lay] body details.day:not(#story) .list .srow .tx .facts { gap: 6px !important; }
+}

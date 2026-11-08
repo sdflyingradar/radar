@@ -922,10 +922,11 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
 /* each fact stays whole ("launch 9g11 mph" never splits from its value) */
 .srow .facts .fi, .srow .facts .wa { white-space: nowrap; }
 .srow .facts .fi { display: inline-flex; align-items: center; gap: 3px; }
+.srow .facts .hk { display: none; }
 .srow .facts svg.wic { width: 1.45em; height: 1.02em; flex: none; color: #5b6573; margin-right: 1px; }
 </style>
 <link rel="stylesheet" href="scripts/ui/grid.css?v=202611081140">
-<link rel="stylesheet" href="scripts/ui/first.css?v=202611081300">
+<link rel="stylesheet" href="scripts/ui/first.css?v=202611081315">
 </head>
 <body>
 <div class="wrap">
@@ -1397,9 +1398,11 @@ function siteFacts(c) {
   /* top to bottom: height of lift, wind aloft, launch wind */
   const f = (k) => (c.factors || []).find((x) => x.k === k);
   const h = f("Height") || f("Thermal height"), w = f("Wind 1 pm"), a = f("Wind aloft");
-  return [h && h.v !== "–" ? `<span class="wa">${LIFT}${esc(h.v)}</span>` : "",
-          a && a.v !== "–" ? `<span class="fi">${ALOFT_IC}${windHtml(a.v, "mph")}</span>` : "",
-          w && w.v !== "–" ? `<span class="fi">${LAUNCH_IC}${windHtml(w.v, "mph")}</span>` : ""].filter(Boolean).join('<span class="sep">·</span>');
+  /* the height also as "5.5k ft" for the one-line facts on a computer */
+  const hk = (v) => v.replace(/(\d+),(\d)\d\d/g, (m, a, b) => `${a}.${b}k`).replace(/\.0k/, "k");
+  return [h && h.v !== "–" ? `<span class="wa">${LIFT}<span class="hl">${esc(h.v)}</span><span class="hk">${esc(hk(h.v))}</span></span>` : "",
+          a && a.v !== "–" ? `<span class="fi fa">${ALOFT_IC}${windHtml(a.v, "mph")}</span>` : "",
+          w && w.v !== "–" ? `<span class="fi fl">${LAUNCH_IC}${windHtml(w.v, "mph")}</span>` : ""].filter(Boolean).join('<span class="sep">·</span>');
 }
 function sitePills(c) {
   const adj = c.adj || [];
@@ -1811,6 +1814,6 @@ $("#reload").addEventListener("click", load);
 })();
 </script>
 <script src="scripts/ui/grid.js?v=202611081135"></script>
-<script src="scripts/ui/first.js?v=202611081300"></script>
+<script src="scripts/ui/first.js?v=202611081310"></script>
 </body>
 </html>
