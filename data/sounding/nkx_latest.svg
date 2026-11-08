@@ -2,7 +2,7 @@
 <rect width="800" height="880" fill="#fff"/>
 <defs><clipPath id="c0"><rect x="52" y="84" width="548" height="742"/></clipPath></defs>
 <text x="52" y="24" font-size="16" font-weight="700" fill="#111827">NKX sounding<tspan dx="8" font-size="12.5" font-weight="500" fill="#6b7280">12Z (4 am PST) · 8 Nov 2026</tspan></text>
-<text x="790" y="24" text-anchor="end" font-size="13" font-weight="700" fill="#e07b00">Today: high 88°F <tspan font-weight="500">(83–90)</tspan> → thermals ~5,500 ft <tspan font-weight="500">(1,100–6,200)</tspan></text>
+<text x="790" y="24" text-anchor="end" font-size="13" font-weight="700" fill="#e07b00">Today: high 88°F <tspan font-weight="500">(83–90)</tspan> → thermals ~5,600 ft <tspan font-weight="500">(1,100–6,200)</tspan></text>
 <path d="M52 45h16" stroke="#ff0000" stroke-width="2.4" stroke-linecap="round"/><text x="74" y="49" fill="#111827">Temperature</text>
 <path d="M151.3 45h16" stroke="#00c400" stroke-width="2.4" stroke-linecap="round"/><text x="173.3" y="49" fill="#111827">Dew point</text>
 <path d="M238 45h16" stroke="#0000ff" stroke-width="2.4" stroke-linecap="round"/><text x="260" y="49" fill="#111827">Cloudbase</text>
@@ -79,9 +79,9 @@
 <circle cx="327.3" cy="150.8" r="3.6" fill="#fff" stroke="#0000ff" stroke-width="1.8"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#00c400" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="380.3,807.9 382.9,807.5 380.3,805.7 359.2,801.1 362.5,797.9 362.5,793.9 357.2,750.0 359.8,735.9 360.5,670.1 363.8,653.8 361.8,641.4 365.1,628.0 344.7,599.6 327.6,587.4 328.2,583.6 324.3,576.1 317.7,570.1 313.1,560.7 311.1,549.2 296.6,530.0 298.0,526.3 295.3,516.3 297.3,507.4 288.7,494.9 277.6,490.5 265.7,481.5 256.5,453.0 245.3,445.7 244.6,443.0 231.5,438.1 175.5,431.0 180.8,427.7 173.5,425.0 144.6,420.1 81.4,416.6 80.0,415.1 94.5,411.7 94.5,410.0 59.6,401.3 68.2,397.7 111.0,391.7 103.1,384.2 136.0,375.8 130.7,373.6 143.2,365.2 142.6,359.8 146.5,350.5 151.1,347.0 152.5,336.4 184.7,327.8 178.8,323.7 153.1,316.5 161.0,310.5 180.8,307.3 187.4,298.0 198.6,293.0 195.3,283.9 199.2,281.0 190.0,263.9 147.9,251.6 144.6,221.5 149.8,159.4 145.9,154.2 134.7,148.3 133.4,142.1 114.3,137.6 103.7,130.8 107.0,128.4 159.7,121.1 190.6,111.4 192.6,107.6 189.3,92.2 183.4,85.3 182.7,78.2 178.8,75.3 180.1,69.3 169.6,63.0 174.2,56.7 171.6,43.1"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#ff0000" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="471.1,807.9 518.5,801.1 521.1,790.3 504.0,735.9 454.0,622.2 448.7,586.5 420.4,509.0 417.8,494.9 419.1,482.2 405.3,451.8 403.3,437.7 411.2,428.9 424.4,396.5 421.1,370.0 375.0,263.9 373.0,253.0 362.5,227.5 327.6,152.8 317.1,119.4 280.8,43.1"/>
-<polyline clip-path="url(#c0)" fill="none" stroke="#e07b00" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round" points="556.8,807.9 456.1,597.6"/>
-<circle cx="456.1" cy="597.6" r="4.6" fill="#e07b00" stroke="#fff" stroke-width="1.8"/>
-<text x="556.8" y="840" text-anchor="middle" font-size="12" font-weight="800" fill="#e07b00">88</text>
+<polyline clip-path="url(#c0)" fill="none" stroke="#e07b00" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round" points="557.6,807.9 456.1,596.0"/>
+<circle cx="456.1" cy="596.0" r="4.6" fill="#e07b00" stroke="#fff" stroke-width="1.8"/>
+<text x="557.6" y="840" text-anchor="middle" font-size="12" font-weight="800" fill="#e07b00">88</text>
 <text x="508.6" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">75</text>
 <text x="581.7" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">95</text>
 <path d="M600 150.8L605 150.8" stroke="#0000ff" stroke-width="1.2"/>
@@ -96,9 +96,9 @@
 <path d="M600 433.8L605 438.9" stroke="#3b6fd8" stroke-width="1.2"/>
 <rect x="605" y="431.4" width="29.2" height="15" rx="3.5" fill="#3b6fd8"/>
 <text x="619.6" y="442.7" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">INV</text>
-<path d="M600 597.6L605 597.6" stroke="#e07b00" stroke-width="1.2"/>
-<rect x="605" y="590.1" width="61.2" height="15" rx="3.5" fill="#e07b00"/>
-<text x="635.6" y="601.4" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Top 5.5k</text>
+<path d="M600 596.0L605 596.0" stroke="#e07b00" stroke-width="1.2"/>
+<rect x="605" y="588.5" width="61.2" height="15" rx="3.5" fill="#e07b00"/>
+<text x="635.6" y="599.8" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Top 5.6k</text>
 <path d="M600 803.8L605 803.8" stroke="#3b6fd8" stroke-width="1.2"/>
 <rect x="605" y="796.3" width="29.2" height="15" rx="3.5" fill="#3b6fd8"/>
 <text x="619.6" y="807.6" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">INV</text>
