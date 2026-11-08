@@ -893,6 +893,13 @@ html body details.day:not(#story) .band .when .dword.long { font-size: .68rem !i
 @media (min-width: 700px) { .srow .wtab .hwt { max-width: 640px; } .srow .wtab .hwt .wc b { font-size: .78rem; } .srow .wtab .hwt .wc b small { font-size: .62rem; } .srow .wtab .hwt .hh, .srow .wtab .hwt .ml { font-size: .7rem; } .srow .wtab .hwt .wc i { width: 12px; height: 14px; } }
 .ov .grad { white-space: nowrap; color: var(--muted, #6b7280); font-variant-numeric: tabular-nums; }
 .ov .grad.weak { color: #b07a12; } .ov .grad.sa { color: #b42f2f; font-weight: 600; }
+/* three buttons top right, one size, stacked in a clean column, in the logo's three colours */
+.hbtns { position: absolute; top: 4px; right: 0; display: grid; grid-auto-rows: auto; gap: 6px; justify-items: stretch; }
+.hbtns .howbtn { position: static; text-align: center; border: 0 !important; font-weight: 700; box-shadow: 0 1px 2px rgba(43,29,20,.2); }
+.hbtns .hb1 { background: #c26a24 !important; color: #1a110b !important; }
+.hbtns .hb2 { background: #7a5a44 !important; color: #fff !important; }
+.hbtns .hb3 { background: #b39a85 !important; color: #1a110b !important; }
+.hbtns .howbtn:hover { filter: brightness(1.08); }
 </style>
 </head>
 <body>
@@ -914,7 +921,11 @@ html body details.day:not(#story) .band .when .dword.long { font-size: .68rem !i
 <g stroke="#2b1d14" stroke-width="1.6" fill="none" opacity=".8"><path d="M-40 4 L-3 34"/><path d="M-18 -6 L-2 34"/><path d="M18 -6 L2 34"/><path d="M40 4 L3 34"/></g>
 <circle cx="0" cy="38" r="6" fill="#2b1d14"/><path d="M-5 42 L5 42 L3 48 L-3 48 Z" fill="#2b1d14"/></g></svg><span class="wm"><span class="wm1">SD Flying</span><span class="wm2">Radar<svg class="chev3" viewBox="0 0 228 100" aria-hidden="true"><path d="M0 0 H42 L68 50 L42 100 H0 L26 50 Z" fill="#c26a24"/><path d="M80 0 H122 L148 50 L122 100 H80 L106 50 Z" fill="#7a5a44"/><path d="M160 0 H202 L228 50 L202 100 H160 L186 50 Z" fill="#b39a85"/></svg></span></span></h1>
     <p class="fresh-top" id="freshTop"></p>
-    <a class="howbtn" href="how.html">What this is<span class="hl2">&nbsp;&amp; how it works</span> <span aria-hidden="true">→</span></a>
+    <nav class="hbtns" aria-label="More">
+      <a class="howbtn hb1" href="how.html">What this is<span class="hl2">&nbsp;&amp; how it works</span> <span aria-hidden="true">→</span></a>
+      <a class="howbtn hb2" href="lax-dag.html" title="Santa Ana watch: LAX minus Barstow-Daggett pressure, observed and by model">LAX–DAG <span aria-hidden="true">→</span></a>
+      <a class="howbtn hb3" href="sounding.html" title="Latest weather balloon (Miramar / Edwards)">Sounding <span aria-hidden="true">→</span></a>
+    </nav>
   </header>
 
   <div id="warn"></div>
@@ -1143,9 +1154,7 @@ function render(data) {
     <div class="wlist">${sm ? lines("Pattern", sm.pattern) + lines("For flying", sm.flying) : lines("Outlook", bl)}</div>`
       + `<div class="wrow wlink"><span><a href="${esc(n.url)}" target="_blank" rel="noopener">Full NWS discussion</a> <span class="muted">· ${fmtWhen(n.issued)}</span></span></div>`
     : `<summary class="hd"><span class="when">Weather Overview</span>${ov}</summary>`;
-  let sndRow = document.getElementById("sndrow");
-  if (!sndRow) { sndRow = document.createElement("div"); sndRow.id = "sndrow"; $("#story").after(sndRow); }
-  sndRow.innerHTML = `<a class="sndq" href="lax-dag.html" title="Santa Ana watch: LAX minus Barstow-Daggett pressure, observed and by model">LAX–DAG →</a>` + SNDQ;
+
 
   /* models that rated this day (HRRR+RRFS, then RRFS with NAM/ECMWF help, then global only) */
   const MODEL_ORDER = ["HRRR", "RRFS", "NAM", "ECMWF", "GFS", "ICON"];
