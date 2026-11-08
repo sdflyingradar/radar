@@ -117,14 +117,15 @@ html body details.day[data-date]:not(#story) > summary.hd .notes .rx { order: 1 
 }
 
 /* computer: Torrey sits in the second SD row next to Laguna/Horse, a little wider (two columns), with a thin
-   vertical line labelled COAST in front of it; trips follow. Three rows of tiles in all. */
+   vertical line labelled COAST in front of it; trips follow. Three rows of tiles in all. It flows with the grid
+   (no fixed row), so an open site's detail always sits right under its own row. */
 @media (min-width: 900px) {
-  html[data-lay] body details.day[data-date]:not(#story) > .list > .sgrp.coast { grid-row: 3 !important; grid-column: 3 !important; justify-self: start; align-self: stretch;
-    width: 16px; margin: 0 !important; padding: 0 !important; writing-mode: vertical-rl; transform: rotate(180deg); text-align: center;
-    display: flex !important; align-items: center; justify-content: center; border-left: 1px solid #d5dbe2; font-size: .55rem !important; letter-spacing: .14em; color: #98a2b3; }
-  html[data-lay] body details.day[data-date]:not(#story) > .list > .sgrp.coast::after, html[data-lay] body details.day[data-date]:not(#story) > .list > .sgrp.coast::before { display: none !important; }
-  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] { grid-row: 3 !important; grid-column: 3 / span 2 !important; margin-left: 26px !important; width: auto !important; min-width: 0 !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .sgrp.coast { display: none !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] { grid-column: span 2 !important; margin-left: 26px !important; width: auto !important; min-width: 0 !important; overflow: visible !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] > .coastlbl { display: flex !important; }
 }
+.srow > .coastlbl { display: none; position: absolute; left: -25px; top: 0; bottom: 0; width: 16px; align-items: center; justify-content: center;
+  writing-mode: vertical-rl; transform: rotate(180deg); border-left: 1px solid #d5dbe2; font-size: .55rem; font-weight: 700; letter-spacing: .14em; color: #98a2b3; pointer-events: none; }
 /* computer: Torrey's name, verdict and warnings on one top line, so the wind timeline gets the room */
 @media (min-width: 900px) {
   html[data-lay] body details.day[data-date]:not(#story) > .list > .srow.srow[data-site="torrey"] { display: grid !important; grid-template-columns: auto minmax(0, 1fr) auto !important; column-gap: 10px !important; row-gap: 8px !important; align-items: center !important; }

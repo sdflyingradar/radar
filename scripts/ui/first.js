@@ -36,3 +36,13 @@
   window.addEventListener("resize", openAll);
   openAll();
 })();
+
+/* computer: the COAST label on the line in front of Torrey's tile */
+(function () {
+  const add = () => document.querySelectorAll('.list .srow[data-site="torrey"]').forEach((t) => {
+    if (!t.querySelector(":scope > .coastlbl")) { const s = document.createElement("span"); s.className = "coastlbl"; s.textContent = "COAST"; t.appendChild(s); }
+  });
+  const days = document.getElementById("days");
+  if (days) new MutationObserver(add).observe(days, { childList: true });
+  add();
+})();
