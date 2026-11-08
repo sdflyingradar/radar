@@ -2089,12 +2089,12 @@ $("#reload").addEventListener("click", load);
       aloft: ["Wind aloft", a ? a.v : "", "strong or wrong flow aloft"],
       gust: ["Gusts", "", "over 18 mph"],
       storm: ["Storms", "", "overdevelopment risk"],
-      xccap: ["Height", "", "above XC height, but no XC conditions: counts as a 3.4"],
+      xccap: ["XC", "not on", "height is XC-worthy, but wind or climb rule out XC: the height counts as a 3.4"],
       other: ["Other", "", ""],
       glass: ["Glass-off", "", "an evening glass-off holds it up"],
       models: ["Models", mods, "the models' blend"],
     };
-    const stepCat = { launch: "launch", climb: "climb", lowlift: "height", offshore: "aloft", aloft: "aloft", xccap: "height" };
+    const stepCat = { launch: "launch", climb: "climb", lowlift: "height", offshore: "aloft", aloft: "aloft" };
     const baseHit = new Set(bp ? bp.steps.filter(([, v]) => v < 0).map(([k]) => stepCat[k]).filter(Boolean) : []);
     const isGood = (p) => !hit.has(p.cat) && !baseHit.has(p.cat) && (bp ? true : !p.why && p.q >= 0.4);
     if (bp) {
