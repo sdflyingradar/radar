@@ -37,3 +37,4 @@ html body details.day:not(#story):not([open]) > summary.hd .sum .sc .sc-t { just
   html body details.day:not(#story):not([open]) > summary.hd .sum .sc { padding: 4px 8px !important; }
   html body details.day:not(#story):not([open]) > summary.hd .sum .sgrp { font-size: .5rem !important; letter-spacing: .06em !important; }
 }
+details.day > summary.hd .sum .sc[hidden] { display: none !important; }

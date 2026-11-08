@@ -964,6 +964,7 @@ html body details.day:not(#story):not([open]) > summary.hd .sum .sc .sc-t { just
   html body details.day:not(#story):not([open]) > summary.hd .sum .sc { padding: 4px 8px !important; }
   html body details.day:not(#story):not([open]) > summary.hd .sum .sgrp { font-size: .5rem !important; letter-spacing: .06em !important; }
 }
+details.day > summary.hd .sum .sc[hidden] { display: none !important; }
 
 </style>
 </head>
@@ -1871,6 +1872,32 @@ $("#reload").addEventListener("click", load);
     apply();
   };
   apply();
+})();
+
+/* LAB, phone: only three SD mountain sites on the first layer (still always Little Black or Blossom) */
+(function () {
+  const phone = () => window.matchMedia("(max-width: 640px)").matches;
+  const HOME = /^(Little Black|Blossom)$/;
+  const trim = () => {
+    document.querySelectorAll("details.day[data-date] > summary .sum").forEach((sum) => {
+      const kids = [...sum.children];
+      const g2 = kids.findIndex((k, i) => i > 0 && k.classList.contains("sgrp"));
+      const mtn = kids.slice(1, g2 < 0 ? kids.length : g2).filter((k) => k.classList.contains("sc"));
+      mtn.forEach((p) => { p.hidden = false; });
+      if (!phone() || mtn.length <= 3) return;
+      const name = (p) => ((p.querySelector("b") || p).textContent || "").trim();
+      const keep = mtn.slice(0, 3);
+      if (!keep.some((p) => HOME.test(name(p)))) {
+        const home = mtn.find((p) => HOME.test(name(p)));
+        if (home) keep[2] = home;
+      }
+      mtn.forEach((p) => { if (!keep.includes(p)) p.hidden = true; });
+    });
+  };
+  const days = document.getElementById("days");
+  if (days) new MutationObserver(trim).observe(days, { childList: true });
+  window.addEventListener("resize", trim);
+  trim();
 })();
 
 </script>
