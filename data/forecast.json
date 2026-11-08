@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-08T14:57+00:00",
+ "generated": "2026-11-08T15:18+00:00",
  "sample": false,
  "calib": {
   "2026-11-08": {
@@ -29703,15 +29703,15 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus), surface heat flux (6500 values)",
-  "HRRR trips: using the last good run, fetched 1.7 h ago",
+  "HRRR trips: using the last good run, fetched 2.1 h ago",
   "RRFS: ok (ncep_rrfs_conus), surface heat flux (8060 values)",
-  "RRFS trips: using the last good run, fetched 4.9 h ago",
-  "GFS: using the last good run, fetched 1.7 h ago",
-  "ECMWF: using the last good run, fetched 1.7 h ago",
-  "ICON: using the last good run, fetched 1.7 h ago",
-  "ens GFS ens: using the last good run, fetched 1.6 h ago",
-  "ens ECMWF ens: using the last good run, fetched 9.9 h ago",
-  "ens ICON ens: using the last good run, fetched 10.7 h ago",
+  "RRFS trips: using the last good run, fetched 5.2 h ago",
+  "GFS: using the last good run, fetched 2.1 h ago",
+  "ECMWF: using the last good run, fetched 2.0 h ago",
+  "ICON: using the last good run, fetched 2.0 h ago",
+  "ens GFS ens: using the last good run, fetched 2.0 h ago",
+  "ens ECMWF ens: using the last good run, fetched 10.3 h ago",
+  "ens ICON ens: using the last good run, fetched 11.1 h ago",
   "NWS AFD: ok",
   "gradient HRRR: bias +1.1 mb over 72 h",
   "gradient RRFS: bias +0.9 mb over 72 h",
@@ -29720,8 +29720,8 @@
   "gradient ICON: bias -0.1 mb over 72 h",
   "clouds HRRR: ok (ncep_hrrr_conus)",
   "clouds RRFS: ok (ncep_rrfs_conus)",
-  "clouds ECMWF: using the last good run, fetched 1.6 h ago",
-  "clouds ICON: using the last good run, fetched 1.6 h ago",
+  "clouds ECMWF: using the last good run, fetched 2.0 h ago",
+  "clouds ICON: using the last good run, fetched 2.0 h ago",
   "wind: GFS and ICON use ECMWF's winds where RRFS and ECMWF overlap"
  ],
  "sources": [
@@ -29732,7 +29732,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-11-08T13:00+00:00",
-   "fetched": "2026-11-08T14:56+00:00",
+   "fetched": "2026-11-08T15:18+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -29742,7 +29742,7 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": "2026-11-08T06:00+00:00",
-   "fetched": "2026-11-08T14:56+00:00",
+   "fetched": "2026-11-08T15:18+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -29818,7 +29818,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-11-08T10:34:00+00:00",
-   "fetched": "2026-11-08T14:57+00:00",
+   "fetched": "2026-11-08T15:18+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -29828,7 +29828,7 @@
    "id": "LAX-DAG",
    "status": "ok",
    "run": "2026-11-08T14:00Z",
-   "fetched": "2026-11-08T14:57+00:00",
+   "fetched": "2026-11-08T15:18+00:00",
    "url": "https://www.weather.gov/lox/LAXGRDNEW"
   },
   {
@@ -29838,7 +29838,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-08T14:57+00:00",
+   "fetched": "2026-11-08T15:18+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
@@ -30685,21 +30685,23 @@
      "trend": 0.0
     },
     "blossom": {
-     "rating": 1.0,
-     "label": "No go",
-     "tags": [],
+     "rating": 2.0,
+     "label": "Marginal",
+     "tags": [
+      "glass-off"
+     ],
      "xc": false,
      "rain_p": 0.0,
      "good_glass": false,
      "base": 3.67,
      "adj": [
       [
-       "offshore 4+ mph aloft: 2 at most",
-       -1.7
-      ],
-      [
        "wind 20\u201345\u00b0 off launch",
        -1.0
+      ],
+      [
+       "offshore 4+ mph aloft: 2 at most",
+       -0.7
       ]
      ],
      "hours": {
@@ -30773,7 +30775,7 @@
       16
      ],
      "note": "not flyable",
-     "p_fly": 0.0,
+     "p_fly": 0.02,
      "p_xc": 0.0,
      "agree": "split",
      "models": {
@@ -30951,7 +30953,7 @@
       }
      },
      "was": 1.0,
-     "trend": 0.0
+     "trend": 1.0
     },
     "elsinore": {
      "rating": 3.2,
@@ -31216,8 +31218,12 @@
      "base": 2.07,
      "adj": [
       [
+       "wind 20\u201345\u00b0 off launch",
+       -1.0
+      ],
+      [
        "offshore 6+ mph below 5,500 ft: no-go",
-       -1.1
+       -0.1
       ]
      ],
      "hours": {
@@ -32543,8 +32549,8 @@
        ]
       }
      },
-     "was": 3.4,
-     "trend": -1.3
+     "was": 3.2,
+     "trend": -1.1
     },
     "santabarbara": {
      "rating": 3.92,
@@ -33821,25 +33827,27 @@
        ]
       }
      },
-     "was": 3.9,
-     "trend": -1.9
+     "was": 2.9,
+     "trend": -0.9
     },
     "blossom": {
-     "rating": 1.0,
-     "label": "No go",
-     "tags": [],
+     "rating": 2.0,
+     "label": "Marginal",
+     "tags": [
+      "glass-off"
+     ],
      "xc": false,
      "rain_p": 0.0,
      "good_glass": false,
      "base": 5.0,
      "adj": [
       [
-       "offshore 4+ mph aloft: 2 at most",
-       -3.0
-      ],
-      [
        "wind 20\u201345\u00b0 off launch",
        -1.0
+      ],
+      [
+       "offshore 4+ mph aloft: 2 at most",
+       -2.0
       ]
      ],
      "hours": {
@@ -33913,8 +33921,8 @@
       16
      ],
      "note": "cross wind",
-     "p_fly": 0.1,
-     "p_xc": 0.04,
+     "p_fly": 0.43,
+     "p_xc": 0.1,
      "agree": "agree",
      "models": {
       "HRRR": 5.0,
@@ -34095,7 +34103,7 @@
       }
      },
      "was": 1.0,
-     "trend": 0.0
+     "trend": 1.0
     },
     "elsinore": {
      "rating": 3.07,
@@ -34630,7 +34638,7 @@
        -1.0
       ],
       [
-       "offshore 6+ mph below 4,000 ft: no-go",
+       "wind 20\u201345\u00b0 off launch",
        -1.0
       ]
      ],
@@ -34735,13 +34743,13 @@
        "k": "Wind 1 pm",
        "v": "E 5g6",
        "sub": "later WNW 10g12 \u00b7 gusty",
-       "q": 0.33
+       "q": 0.2
       },
       {
        "k": "Wind aloft",
        "v": "E 8 mph",
        "sub": "at 5,400 ft \u00b7 blows over the back \u00b7 ECMWF ENE 9 mph",
-       "q": 0.2
+       "q": 1.0
       },
       {
        "k": "Rain & storms",
@@ -35694,8 +35702,8 @@
        ]
       }
      },
-     "was": 4.2,
-     "trend": -2.0
+     "was": 3.2,
+     "trend": -1.0
     },
     "santabarbara": {
      "rating": 4.13,
@@ -36880,12 +36888,12 @@
        ]
       }
      },
-     "was": 3.3,
-     "trend": -2.3
+     "was": 1.0,
+     "trend": 0.0
     },
     "blossom": {
-     "rating": 1.0,
-     "label": "No go",
+     "rating": 2.0,
+     "label": "Marginal",
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
@@ -36893,12 +36901,12 @@
      "base": 3.67,
      "adj": [
       [
-       "offshore 4+ mph aloft: 2 at most",
-       -1.7
-      ],
-      [
        "wind 20\u201345\u00b0 off launch",
        -1.0
+      ],
+      [
+       "offshore 4+ mph aloft: 2 at most",
+       -0.7
       ]
      ],
      "hours": {
@@ -36969,8 +36977,8 @@
      },
      "gwin": null,
      "note": "over the back",
-     "p_fly": 0.2,
-     "p_xc": 0.13,
+     "p_fly": 0.23,
+     "p_xc": 0.2,
      "agree": "split",
      "models": {
       "RRFS": 5.0,
@@ -37137,8 +37145,8 @@
        ]
       }
      },
-     "was": 2.0,
-     "trend": -1.0
+     "was": 2.7,
+     "trend": -0.7
     },
     "elsinore": {
      "rating": 3.2,
@@ -37378,8 +37386,8 @@
        ]
       }
      },
-     "was": 3.2,
-     "trend": 0.0
+     "was": 2.9,
+     "trend": 0.3
     },
     "soboba": {
      "rating": 1.0,
@@ -37391,8 +37399,12 @@
      "base": 2.75,
      "adj": [
       [
+       "wind 20\u201345\u00b0 off launch",
+       -1.0
+      ],
+      [
        "offshore 6+ mph below 5,500 ft: no-go",
-       -1.8
+       -0.8
       ]
      ],
      "hours": {
@@ -37619,8 +37631,8 @@
        ]
       }
      },
-     "was": 3.2,
-     "trend": -2.2
+     "was": 1.0,
+     "trend": 0.0
     },
     "otay": {
      "rating": 1.0,
@@ -37632,8 +37644,12 @@
      "base": 3.08,
      "adj": [
       [
+       "wind 20\u201345\u00b0 off launch",
+       -1.0
+      ],
+      [
        "offshore 6+ mph below 4,000 ft: no-go",
-       -2.1
+       -1.1
       ]
      ],
      "hours": {
@@ -37875,8 +37891,8 @@
        ]
       }
      },
-     "was": 1.0,
-     "trend": 0.0
+     "was": 2.0,
+     "trend": -1.0
     },
     "whalesv": {
      "rating": 2.0,
@@ -38877,8 +38893,8 @@
        ]
       }
      },
-     "was": 3.9,
-     "trend": 1.1
+     "was": 5.0,
+     "trend": -0.0
     },
     "owens": {
      "rating": 2.0,
@@ -39700,8 +39716,12 @@
      "base": 3.0,
      "adj": [
       [
+       "wind 20\u201345\u00b0 off launch",
+       -1.0
+      ],
+      [
        "offshore 6+ mph below 4,000 ft: no-go",
-       -2.0
+       -1.0
       ]
      ],
      "hours": {
@@ -39798,7 +39818,7 @@
       {
        "k": "Wind 1 pm",
        "v": "E 7g14",
-       "sub": "later WNW 5g10 \u00b7 over the back",
+       "sub": "later WNW 5g10",
        "q": 0.0
       },
       {
@@ -40347,8 +40367,8 @@
        ]
       }
      },
-     "was": 1.0,
-     "trend": 0.0
+     "was": 1.9,
+     "trend": -0.9
     },
     "otay": {
      "rating": 1.0,
@@ -40360,8 +40380,12 @@
      "base": 3.0,
      "adj": [
       [
+       "wind 20\u201345\u00b0 off launch",
+       -1.0
+      ],
+      [
        "offshore 6+ mph below 4,000 ft: no-go",
-       -2.0
+       -1.0
       ]
      ],
      "hours": {
@@ -40581,8 +40605,8 @@
      "trend": 0.0
     },
     "whalesv": {
-     "rating": 1.0,
-     "label": "No go",
+     "rating": 2.0,
+     "label": "Marginal",
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
@@ -40590,12 +40614,12 @@
      "base": 4.47,
      "adj": [
       [
-       "offshore 4+ mph aloft: 2 at most",
-       -2.5
-      ],
-      [
        "wind 20\u201345\u00b0 off launch",
        -1.0
+      ],
+      [
+       "offshore 4+ mph aloft: 2 at most",
+       -1.5
       ]
      ],
      "hours": {
@@ -40666,8 +40690,8 @@
      },
      "gwin": null,
      "note": "cross wind",
-     "p_fly": 0.32,
-     "p_xc": 0.28,
+     "p_fly": 0.49,
+     "p_xc": 0.32,
      "agree": "split",
      "models": {
       "GFS": 4.5,
@@ -40809,7 +40833,7 @@
       }
      },
      "was": 1.0,
-     "trend": 0.0
+     "trend": 1.0
     },
     "lagunahorse": {
      "rating": 1.0,
@@ -41479,31 +41503,27 @@
      "trend": 0.0
     },
     "owens": {
-     "rating": 1.0,
-     "label": "No go",
+     "rating": 1.62,
+     "label": "Marginal",
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
      "good_glass": false,
-     "base": 2.4,
+     "base": 2.62,
      "adj": [
-      [
-       "off season: 2 at most",
-       -0.4
-      ],
       [
        "wind 20\u201345\u00b0 off launch",
        -1.0
       ]
      ],
      "hours": {
-      "9": 1.8,
-      "10": 2.9,
-      "11": 3.2,
-      "12": 1.0,
-      "13": 1.3,
-      "14": 1.2,
-      "15": 1.1,
+      "9": 2.5,
+      "10": 2.1,
+      "11": 2.1,
+      "12": 2.6,
+      "13": 2.7,
+      "14": 2.6,
+      "15": 2.1,
       "16": 2.8
      },
      "win": [
@@ -41514,72 +41534,72 @@
      "hwind_m": null,
      "hwind_avg": {
       "9": [
-       345,
-       4,
-       6,
+       139,
+       1,
+       3,
        3
       ],
       "10": [
-       358,
-       3,
-       3,
-       3
-      ],
-      "11": [
-       39,
-       3,
-       3,
-       3
-      ],
-      "12": [
-       36,
-       2,
-       4,
-       3
-      ],
-      "13": [
-       55,
+       194,
        2,
        5,
        3
       ],
-      "14": [
-       25,
+      "11": [
+       181,
        2,
-       4,
+       6,
+       3
+      ],
+      "12": [
+       189,
+       3,
+       7,
+       3
+      ],
+      "13": [
+       181,
+       3,
+       7,
+       3
+      ],
+      "14": [
+       184,
+       3,
+       6,
        3
       ],
       "15": [
-       236,
+       182,
        2,
-       4,
+       5,
        3
       ],
       "16": [
-       282,
-       1,
-       1,
+       153,
+       2,
+       3,
        3
       ]
      },
      "gwin": null,
-     "note": "Walt's Point: weak thermals",
-     "p_fly": 0.33,
+     "note": "Flynn's: over the back",
+     "p_fly": 0.67,
      "p_xc": 0.0,
-     "agree": "mixed",
+     "agree": "split",
      "models": {
-      "GFS": 2.4,
-      "ECMWF": 2.1,
+      "GFS": 2.6,
+      "ECMWF": 1.0,
       "ICON": 3.0
      },
      "n_members": 0,
      "lead": "ECMWF",
      "top_ft": 10100.0,
-     "base_ft": 14200.0,
+     "base_ft": 14400.0,
      "wstar": 1.3,
      "sink": 1.1,
      "core": 1.4,
-     "sunset": "4:48pm",
+     "sunset": "4:47pm",
      "factors": [
       {
        "k": "Height",
@@ -41589,13 +41609,13 @@
       },
       {
        "k": "Wind 1 pm",
-       "v": "SW 1g8",
-       "sub": "later SW 1",
-       "q": 0.33
+       "v": "ESE 3g11",
+       "sub": "later E 1 \u00b7 over the back",
+       "q": 0.0
       },
       {
        "k": "Wind aloft",
-       "v": "SSE 4 mph",
+       "v": "S 8 mph",
        "sub": "at 10,900 ft",
        "q": 1.0
       },
@@ -41607,14 +41627,14 @@
       },
       {
        "k": "Model agreement",
-       "v": "mixed",
-       "sub": "GFS 2.4 \u00b7 ECMWF 2.1 \u00b7 ICON 3.0",
-       "q": 0.62
+       "v": "split",
+       "sub": "GFS 2.6 \u00b7 ECMWF 1.0 \u00b7 ICON 3.0",
+       "q": 0.19
       }
      ],
      "alt_source": "models",
-     "ground_ft": 3999,
-     "launch_ft": 9000,
+     "ground_ft": 4101,
+     "launch_ft": 5600,
      "style": "thermal",
      "why": [
       "weak"
@@ -41622,42 +41642,40 @@
      "when": {},
      "diag": {
       "GFS": {
-       "r": 2.4,
+       "r": 2.6,
        "top": 9200.0,
        "w": 1.2,
        "wind": [
-        19,
+        225,
         4,
         4
        ],
        "aloft": [
-        19,
-        3
+        145,
+        4
        ],
        "wet": 0.0,
        "wind_src": "GFS",
-       "why": [
-        "otb",
-        "lid"
-       ],
+       "why": [],
        "used": true
       },
       "ECMWF": {
-       "r": 2.1,
+       "r": 1.0,
        "top": 10500.0,
        "w": 1.3,
        "wind": [
-        219,
-        1,
-        8
+        115,
+        3,
+        11
        ],
        "aloft": [
-        164,
-        4
+        171,
+        8
        ],
        "wet": 0.0,
        "wind_src": "ECMWF",
        "why": [
+        "otb",
         "weak"
        ],
        "used": true
@@ -41667,13 +41685,13 @@
        "top": 10100.0,
        "w": 1.6,
        "wind": [
-        56,
-        1,
-        1
+        210,
+        2,
+        5
        ],
        "aloft": [
-        160,
-        5
+        164,
+        12
        ],
        "wet": 0.0,
        "wind_src": "ICON",
@@ -41681,7 +41699,7 @@
        "used": true
       }
      },
-     "launch_name": "Walt's Point",
+     "launch_name": "Flynn's",
      "cloud": {
       "okta": 0,
       "cover": 0.0,
@@ -41703,7 +41721,7 @@
       }
      },
      "was": 1.0,
-     "trend": 0.0
+     "trend": 0.6
     }
    },
    "regime": {
@@ -42243,8 +42261,8 @@
        ]
       }
      },
-     "was": 2.8,
-     "trend": 0.3
+     "was": 2.7,
+     "trend": 0.4
     },
     "blossom": {
      "rating": 2.76,
@@ -42469,8 +42487,8 @@
        ]
       }
      },
-     "was": 2.0,
-     "trend": 0.8
+     "was": 3.0,
+     "trend": -0.2
     },
     "elsinore": {
      "rating": 3.2,
@@ -42910,8 +42928,8 @@
        ]
       }
      },
-     "was": 3.5,
-     "trend": 0.4
+     "was": 4.2,
+     "trend": -0.3
     },
     "otay": {
      "rating": 1.0,
@@ -42923,12 +42941,8 @@
      "base": 3.0,
      "adj": [
       [
-       "over the back aloft: 2 at most",
-       -1.0
-      ],
-      [
        "offshore 6+ mph below 4,000 ft: no-go",
-       -1.0
+       -2.0
       ]
      ],
      "hours": {
@@ -43157,7 +43171,7 @@
        -1.0
       ],
       [
-       "offshore 6+ mph below 4,000 ft: no-go",
+       "wind 20\u201345\u00b0 off launch",
        -1.0
       ]
      ],
@@ -43256,13 +43270,13 @@
        "k": "Wind 1 pm",
        "v": "W 7g15",
        "sub": "later WNW 5g19",
-       "q": 0.49
+       "q": 0.2
       },
       {
        "k": "Wind aloft",
        "v": "ESE 18 mph",
        "sub": "at 6,900 ft",
-       "q": 0.2
+       "q": 1.0
       },
       {
        "k": "Rain & storms",
@@ -44044,8 +44058,8 @@
      "trend": -0.4
     },
     "owens": {
-     "rating": 1.0,
-     "label": "No go",
+     "rating": 2.0,
+     "label": "Glass-off",
      "tags": [
       "windy"
      ],
@@ -44055,12 +44069,12 @@
      "base": 3.21,
      "adj": [
       [
-       "off season: 2 at most",
-       -1.2
-      ],
-      [
        "wind 20\u201345\u00b0 off launch",
        -1.0
+      ],
+      [
+       "off season: 2 at most",
+       -0.2
       ]
      ],
      "hours": {
@@ -44133,7 +44147,7 @@
       14,
       16
      ],
-     "note": "Walt's Point: low lid, 10,600 ft",
+     "note": "Walt's Point",
      "p_fly": 0.67,
      "p_xc": 0.0,
      "agree": "mixed",
@@ -44270,7 +44284,7 @@
        ]
       }
      },
-     "was": 1.0,
+     "was": 2.0,
      "trend": 0.0
     }
    },
@@ -44590,8 +44604,8 @@
        ]
       }
      },
-     "was": 4.0,
-     "trend": -2.6
+     "was": 3.9,
+     "trend": -2.5
     },
     "lb": {
      "rating": 1.0,
@@ -45260,8 +45274,8 @@
        ]
       }
      },
-     "was": 3.2,
-     "trend": -2.2
+     "was": 3.1,
+     "trend": -2.1
     },
     "soboba": {
      "rating": 1.0,
@@ -45482,8 +45496,8 @@
        ]
       }
      },
-     "was": 4.2,
-     "trend": -3.2
+     "was": 2.0,
+     "trend": -1.0
     },
     "otay": {
      "rating": 1.0,
@@ -46626,36 +46640,32 @@
        ]
       }
      },
-     "was": 4.2,
-     "trend": -2.1
+     "was": 3.7,
+     "trend": -1.6
     },
     "owens": {
-     "rating": 1.0,
-     "label": "No go",
+     "rating": 1.9,
+     "label": "Marginal",
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
      "good_glass": false,
-     "base": 2.22,
+     "base": 2.9,
      "adj": [
-      [
-       "off season: 2 at most",
-       -0.2
-      ],
       [
        "wind 20\u201345\u00b0 off launch",
        -1.0
       ]
      ],
      "hours": {
-      "9": 2.6,
-      "10": 3.0,
-      "11": 2.0,
-      "12": 2.4,
-      "13": 2.2,
-      "14": 2.1,
-      "15": 1.2,
-      "16": 1.0
+      "9": 2.1,
+      "10": 2.5,
+      "11": 2.7,
+      "12": 2.9,
+      "13": 2.9,
+      "14": 2.9,
+      "15": 2.7,
+      "16": 2.3
      },
      "win": [
       11,
@@ -46665,72 +46675,72 @@
      "hwind_m": null,
      "hwind_avg": {
       "9": [
-       322,
+       198,
        2,
-       5,
+       6,
        3
       ],
       "10": [
-       350,
-       2,
-       4,
+       205,
+       3,
+       8,
        3
       ],
       "11": [
-       77,
-       2,
-       4,
+       200,
+       3,
+       8,
        3
       ],
       "12": [
-       173,
+       192,
        3,
-       5,
+       8,
        3
       ],
       "13": [
-       178,
+       187,
        3,
-       7,
+       8,
        3
       ],
       "14": [
-       179,
-       3,
-       6,
+       183,
+       4,
+       9,
        3
       ],
       "15": [
-       188,
-       2,
-       6,
+       178,
+       4,
+       9,
        3
       ],
       "16": [
-       243,
-       2,
-       5,
+       168,
+       3,
+       9,
        3
       ]
      },
      "gwin": null,
-     "note": "Walt's Point: strong wind aloft",
-     "p_fly": 0.33,
+     "note": "Flynn's: over the back",
+     "p_fly": 0.67,
      "p_xc": 0.0,
      "agree": "split",
      "models": {
-      "GFS": 2.2,
+      "GFS": 2.9,
       "ECMWF": 1.0,
       "ICON": 3.1
      },
      "n_members": 0,
      "lead": "ECMWF",
      "top_ft": 10400.0,
-     "base_ft": 12600.0,
+     "base_ft": 13300.0,
      "wstar": 1.2,
      "sink": 1.1,
      "core": 1.4,
-     "sunset": "4:47pm",
+     "sunset": "4:46pm",
      "factors": [
       {
        "k": "Height",
@@ -46740,13 +46750,13 @@
       },
       {
        "k": "Wind 1 pm",
-       "v": "WSW 3g9",
-       "sub": "later WSW 4g11",
+       "v": "SE 4g13",
+       "sub": "later ESE 3g15 \u00b7 over the back",
        "q": 0.0
       },
       {
        "k": "Wind aloft",
-       "v": "SE 10 mph",
+       "v": "SSE 12 mph",
        "sub": "at 11,300 ft",
        "q": 1.0
       },
@@ -46759,33 +46769,33 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "GFS 2.2 \u00b7 ECMWF 1.0 \u00b7 ICON 3.1",
+       "sub": "GFS 2.9 \u00b7 ECMWF 1.0 \u00b7 ICON 3.1",
        "q": 0.14
       }
      ],
      "alt_source": "models",
-     "ground_ft": 3999,
-     "launch_ft": 9000,
+     "ground_ft": 4101,
+     "launch_ft": 5600,
      "style": "thermal",
      "why": [
-      "aloft",
       "otb",
+      "gusty",
       "weak"
      ],
      "when": {},
      "diag": {
       "GFS": {
-       "r": 2.2,
+       "r": 2.9,
        "top": 9700.0,
        "w": 1.2,
        "wind": [
-        125,
-        4,
-        5
+        204,
+        3,
+        4
        ],
        "aloft": [
-        152,
-        8
+        151,
+        5
        ],
        "wet": 0.0,
        "wind_src": "GFS",
@@ -46797,19 +46807,19 @@
        "top": 11000.0,
        "w": 1.6,
        "wind": [
-        240,
-        3,
-        9
+        131,
+        4,
+        13
        ],
        "aloft": [
-        136,
-        10
+        158,
+        12
        ],
        "wet": 0.0,
        "wind_src": "ECMWF",
        "why": [
-        "aloft",
         "otb",
+        "gusty",
         "weak"
        ],
        "used": true
@@ -46819,13 +46829,13 @@
        "top": 10400.0,
        "w": 1.2,
        "wind": [
-        162,
-        1,
-        1
+        233,
+        3,
+        8
        ],
        "aloft": [
-        159,
-        9
+        144,
+        10
        ],
        "wet": 0.0,
        "wind_src": "ICON",
@@ -46833,7 +46843,7 @@
        "used": true
       }
      },
-     "launch_name": "Walt's Point",
+     "launch_name": "Flynn's",
      "cloud": {
       "okta": 2,
       "cover": 0.2,
@@ -46851,7 +46861,7 @@
       }
      },
      "was": 1.0,
-     "trend": 0.0
+     "trend": 0.9
     }
    },
    "regime": {
@@ -47201,7 +47211,7 @@
        -0.2
       ],
       [
-       "offshore 6+ mph below 4,000 ft: no-go",
+       "wind 20\u201345\u00b0 off launch",
        -0.1
       ]
      ],
@@ -47306,7 +47316,7 @@
        "k": "Wind aloft",
        "v": "SE 11 mph",
        "sub": "at 1,400 ft",
-       "q": 0.2
+       "q": 1.0
       },
       {
        "k": "Rain & storms",
@@ -48192,7 +48202,7 @@
       {
        "k": "Wind 1 pm",
        "v": "SE 24g55",
-       "sub": "later SSW 8g17 \u00b7 gusty",
+       "sub": "later SSW 8g17",
        "q": 0.0
       },
       {
@@ -49205,9 +49215,11 @@
      }
     },
     "owens": {
-     "rating": 1.0,
-     "label": "No go",
-     "tags": [],
+     "rating": 1.85,
+     "label": "Marginal",
+     "tags": [
+      "glass-off"
+     ],
      "xc": false,
      "rain_p": 0.0,
      "good_glass": false,
@@ -49216,10 +49228,6 @@
       [
        "little sun (mid/high cloud)",
        -0.2
-      ],
-      [
-       "off season: 2 at most",
-       -0.8
       ],
       [
        "wind 20\u201345\u00b0 off launch",
@@ -49486,5 +49494,5 @@
    }
   }
  ],
- "trend_ref": "2026-11-07T17:52+00:00"
+ "trend_ref": "2026-11-07T19:12+00:00"
 }
