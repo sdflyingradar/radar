@@ -65,3 +65,5 @@ html[data-lay] body details.day:not(#story) .list .srow .dscore { flex: none; }
 }
 /* grid and tiles: an opened day drops the first-layer site pills (the tiles below replace them) */
 html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .sum, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .sum { display: none !important; }
+/* the little hour strip on the tiles is gone: the thermal panel in the third level shows the day hour by hour */
+html[data-lay] body details.day:not(#story) .list .srow .mstrip { display: none !important; }
