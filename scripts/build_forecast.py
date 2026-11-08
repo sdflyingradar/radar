@@ -1676,11 +1676,18 @@ DAYNAMES = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", 
 NWS_RAIN = re.compile(r"\b(showers?|rain|rainfall|drizzle|thunderstorms?)\b", re.I)
 
 
-def nws_rain_days(nws, dates):
-    """Dates (from `dates`) that the NWS discussion names in a sentence about showers or rain."""
+NWS_SA = re.compile(r"\bsanta\s+anas?\b", re.I)
+
+
+def nws_rain_days(nws, dates, pat=None, now_if_undated=False):
+    """Dates (from `dates`) that the NWS discussion names in a sentence about showers or rain (or `pat`).
+    now_if_undated: a matching sentence with no day in it counts for today ("Santa Ana winds continue")."""
     if not nws or not dates:
         return set()
-    parts = [nws.get("synopsis") or ""] + list((nws.get("summary") or {}).get("flying") or []) + list(nws.get("systems") or [])
+    pat = pat or NWS_RAIN
+    sm = nws.get("summary") or {}
+    parts = ([nws.get("synopsis") or ""] + list(sm.get("flying") or []) + list(sm.get("pattern") or [])
+             + list(nws.get("systems") or []) + list(nws.get("bullets") or []))
     text = " ".join(x.strip().rstrip(".") + "." for x in parts if x and x.strip())
     first = date.fromisoformat(dates[0])
 
@@ -1696,18 +1703,25 @@ def nws_rain_days(nws, dates):
     names = r"(today|tonight|tomorrow|" + "|".join(DAYNAMES) + r")"
     out = set()
     for sent in re.split(r"(?<=[.!?])\s+", text):
-        if not NWS_RAIN.search(sent):
+        if not pat.search(sent):
             continue
+        hit = False
         for a, b in re.findall(names + r"\s+(?:through|to|into|-)\s+" + names, sent, re.I):
             d0, d1 = day_of(a), day_of(b)
             while d0 and d1 and d0 <= d1:
-                out.add(d0.isoformat()); d0 += timedelta(days=1)
+                out.add(d0.isoformat()); d0 += timedelta(days=1); hit = True
         for w in re.findall(names, sent, re.I):
             if day_of(w):
-                out.add(day_of(w).isoformat())
+                out.add(day_of(w).isoformat()); hit = True
         if re.search(r"\bweekend\b", sent, re.I):
             sat = first + timedelta(days=(5 - first.weekday()) % 7)
-            out |= {sat.isoformat(), (sat + timedelta(days=1)).isoformat()}
+            out |= {sat.isoformat(), (sat + timedelta(days=1)).isoformat()}; hit = True
+            if re.search(r"\b(through|into|over)\s+(the\s+)?weekend\b", sent, re.I):
+                d0 = first                                      # "through the weekend": from today until Sunday
+                while d0 <= sat + timedelta(days=1):
+                    out.add(d0.isoformat()); d0 += timedelta(days=1)
+        if not hit and now_if_undated:
+            out.add(first.isoformat())
     return out & set(dates)
 
 def weather_steps(rating, shower_p, nws_rain, cloud, rain_ok=False, ridge=False):
@@ -1833,11 +1847,13 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             cell["det"] = {k: cell["det"][k] for k in rating_models(cell["det"])}
     regimes = day_regimes(det, sites)
     nws_days = nws_rain_days(nws, [d for d in sorted(days) if d >= datetime.now(timezone.utc).astimezone(_tz()).date().isoformat()][:DAYS])
+    nws_sa = nws_rain_days(nws, [d for d in sorted(days) if d >= datetime.now(timezone.utc).astimezone(_tz()).date().isoformat()][:DAYS],
+                           NWS_SA, now_if_undated=True)
     today = datetime.now(timezone.utc).astimezone(_tz()).date().isoformat()
     out_days = []
     for dstr in [d for d in sorted(days) if d >= today][:DAYS]:
         drow = {"date": dstr, "sites": {}, "regime": regimes.get(dstr),
-                "nws_rain": dstr in nws_days}
+                "nws_rain": dstr in nws_days, "nws_sa": dstr in nws_sa}
         for s in sites:
             cell = days[dstr].get(s["id"])
             if not cell or (not cell["det"] and not cell["ens"]):
