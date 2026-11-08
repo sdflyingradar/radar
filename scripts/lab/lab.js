@@ -61,7 +61,7 @@
       let k = 0;
       for (const t of tiles) {
         const nm = (t.querySelector(".nm") || {}).textContent;
-        const f = from.find((x) => x.name === (nm || "").trim());
+        const f = from.find((x) => x.name === (nm || "").replace(/\u200b/g, "").trim());
         const r = t.getBoundingClientRect();
         if (r.bottom < -50 || r.top > innerHeight + 50) continue;      // off screen: no show
         if (f) {
