@@ -61,7 +61,7 @@ const SUMMITS = [['Palomar Mtn', 33.363, -116.836, 6140], ['Hot Springs Mtn', 33
     ['Laguna Mtns', 32.867, -116.422, 6271], ['El Cajon Mtn', 32.902, -116.807, 3675], ['Otay Mtn', 32.601, -116.846, 3566],
     ['Santiago Pk', 33.711, -117.534, 5689], ['San Jacinto Pk', 33.815, -116.679, 10834], ['San Gorgonio', 34.099, -116.825, 11503],
     ['Toro Pk', 33.524, -116.425, 8716]];
-const SITE_NAME = { torrey: 'Torrey', lb: 'Little Black', blossom: 'Blossom', otay: 'Otay', whalesv: "Whale's V", lagunahorse: 'Laguna', elsinore: 'Elsinore', soboba: 'Soboba', marshall: 'Marshall' };
+const SITE_NAME = { santabarbara: 'Santa Barbara', owens: 'Owens', torrey: 'Torrey', lb: 'Little Black', blossom: 'Blossom', otay: 'Otay', whalesv: "Whale's V", lagunahorse: 'Laguna', elsinore: 'Elsinore', soboba: 'Soboba', marshall: 'Marshall' };
 const WHY_TXT = { offshore: 'offshore flow aloft', otb: 'over the back', cross: 'cross wind', windy: 'blown out', strong: 'strong on launch', gusty: 'gusty',
   lid: 'low lid', weak: 'weak thermals', aloft: 'strong wind aloft', light: 'too light', aloftdir: 'wrong flow aloft', drift: 'strong drift' };
 // the radar's verdict for a region on a date: its best launch, score, label and reasons
@@ -76,7 +76,17 @@ function radarVerdict(radar, regionId, date) {
   return { site: SITE_NAME[id] || id, score: v, label: c.label || '', why: v < 2.5 ? why : '', color: scoreCol(v) };
 }
 const REGION_SITES = { coast: ['torrey'], north: ['lb'], east: ['blossom'], south: ['otay', 'whalesv'], mountains: ['lagunahorse'],
-  inland_empire: ['elsinore', 'soboba'], marshall: ['marshall'] };
+  inland_empire: ['elsinore', 'soboba'], marshall: ['marshall'], santabarbara: ['santabarbara'], owens: ['owens'] };
+
+// trip-area insets: map box [x, y, w, h] in map pixels, geographic bounds [lat0, lat1, lon0, lon1], a coast line
+// where there is one, and the launches
+const INSETS = [
+  { id: 'santabarbara', label: 'SANTA BARBARA', box: [10, 800, 190, 96], bounds: [34.36, 34.62, -119.95, -119.08],
+    coast: [[34.41, -119.98], [34.42, -119.85], [34.405, -119.70], [34.42, -119.60], [34.40, -119.52], [34.37, -119.43], [34.34, -119.30], [34.28, -119.20], [34.25, -119.05]],
+    sites: [['EJ Bowl · Skyport', 34.49, -119.70], ['Ojai', 34.5023, -119.169]] },
+  { id: 'owens', label: 'OWENS VALLEY', box: [14, 916, 130, 280], bounds: [36.35, 37.65, -118.55, -117.85],
+    sites: [["Walt's Pt", 36.4727, -118.1149], ["Flynn's", 37.3884, -118.295], ['Paiute', 37.5215, -118.295]] },
+];
 
 // region lettering: [lat, lon], rotation, size
 const NAME_AT = {   // placed by a collision search against every other label
@@ -110,7 +120,7 @@ function miniMapSVG(D, day, radar) {
   const o = [`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" aria-hidden="true">`,
     `<rect width="${W}" height="${H}" fill="#f5f4f0"/>`,
     `<polygon points="${COAST.map(P).join(' ')} -50,${H + 50} -50,-50" fill="#cfe2ee"/>`];
-  for (const rg of D.regions) {
+  for (const rg of D.regions.filter(x => !x.inset)) {
     const dd = rg.days.find(x => x.date === (D.regions[0].days[day] || {}).date) || rg.days[Math.min(day, rg.days.length - 1)];
     const v = regionRate(rg, dd, radar);
     o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="${v != null ? scoreCol(v) : '#cbd5e1'}" fill-opacity=".6" stroke="#fff" stroke-width="8" stroke-linejoin="round"/>`);
@@ -156,12 +166,12 @@ function mapSVG(D, day = 0, radar = null, opts = {}) {
   // regions: heat glow in score colours + thin white borders
   const regs = D.regions;
   o.push(`<g opacity=".55">`);
-  for (const rg of regs) {
+  for (const rg of regs.filter(x => !x.inset)) {
     const v = rate(rg, rg.days[Math.min(day, rg.days.length - 1)]);
     o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="${v != null ? scoreCol(v) : '#cbd5e1'}" filter="url(#soft)"/>`);
   }
   o.push(`</g>`);
-  for (const rg of regs) o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-opacity=".9"/>`);
+  for (const rg of regs.filter(x => !x.inset)) o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-opacity=".9"/>`);
   // mountains over the colours, in the chosen style
   const along = (spine, n, cb) => { for (let i = 0; i <= n; i++) {
     const t = i / n, seg = t * (spine.length - 1), k = Math.min(spine.length - 2, Math.floor(seg)), u = seg - k;
@@ -249,8 +259,30 @@ function mapSVG(D, day = 0, radar = null, opts = {}) {
     box('range', x, y + bh * 0.35, bw, bh, 0, 'middle');
     o.push(`<text x="${f(x)}" y="${f(y + 3.5)}" transform="rotate(${rot} ${f(x)} ${f(y)})" text-anchor="middle" font-size="10" font-style="italic" font-weight="600" letter-spacing="2.2" fill="#5b5141" stroke="#fff" stroke-width="2.5" stroke-opacity=".6" paint-order="stroke">${n}</text>`);
   }
+  // trip areas as insets over the ocean, bottom left (like Alaska and Hawaii on a US map)
+  for (const ins of INSETS) {
+    const rg = regs.find(x => x.id === ins.id);
+    if (!rg) continue;
+    const [bx, by, bw, bh] = ins.box, [la0, la1, lo0, lo1] = ins.bounds, pad = 8;
+    const ix = lo => bx + pad + (lo - lo0) / (lo1 - lo0) * (bw - 2 * pad), iy = la => by + 22 + (la1 - la) / (la1 - la0) * (bh - 22 - pad);
+    const IP = ([la, lo]) => `${f(ix(lo))},${f(iy(la))}`;
+    const v = rate(rg, rg.days[Math.min(day, rg.days.length - 1)]);
+    box('title', bx + bw / 2, by + bh * 0.65, bw, bh, 0, 'middle');
+    o.push(`<g filter="url(#shadow)"><rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="10" fill="${LAND}"/></g>`);
+    o.push(`<clipPath id="ic_${ins.id}"><rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="10"/></clipPath><g clip-path="url(#ic_${ins.id})">`);
+    if (ins.coast) o.push(`<polygon points="${ins.coast.map(IP).join(' ')} ${bx - 20},${by + bh + 20}" fill="${WATER}" stroke="${SHORE}" stroke-width="1.1"/>`);
+    o.push(`<polygon points="${rg.poly.map(IP).join(' ')}" fill="${v != null ? scoreCol(v) : '#cbd5e1'}" fill-opacity=".5" stroke="#fff" stroke-width="1.4"/>`);
+    for (const [n, la, lo] of ins.sites) {
+      const x = ix(lo), y = iy(la);
+      o.push(`<circle cx="${f(x)}" cy="${f(y)}" r="3.6" fill="#ea580c" stroke="#fff" stroke-width="1.3"/>`);
+      o.push(`<text x="${f(x + 6)}" y="${f(y + 3.5)}" font-size="9.5" font-weight="700" fill="#9a3412" stroke="${LAND}" stroke-width="2.5" paint-order="stroke">${n}</text>`);
+    }
+    o.push(`</g><rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="10" fill="none" stroke="#d1d5db"/>`);
+    o.push(`<text x="${bx + 10}" y="${by + 15}" font-size="9.5" font-weight="800" letter-spacing="1.2" fill="${MUTED}">${ins.label}</text>`);
+    o.push(`<g class="rg" data-id="${rg.id}" style="cursor:pointer"><rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="10" fill="#000" fill-opacity="0"/></g>`);
+  }
   // tap targets: the whole region (names live in the panel that opens; the map shows colour only)
-  for (const rg of regs) o.push(`<g class="rg" data-id="${rg.id}" style="cursor:pointer"><polygon points="${rg.poly.map(P).join(' ')}" fill="#000" fill-opacity="0"/></g>`);
+  for (const rg of regs.filter(x => !x.inset)) o.push(`<g class="rg" data-id="${rg.id}" style="cursor:pointer"><polygon points="${rg.poly.map(P).join(' ')}" fill="#000" fill-opacity="0"/></g>`);
   // title card + north arrow (top right), scale bar
   const tx = W - 214;
   box('title', tx + 98, 74 - 52 * 0.15, 196, 56, 0, 'middle');

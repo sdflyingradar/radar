@@ -55,6 +55,15 @@ REGIONS = [
      "points": [("Marshall", 34.21, -117.30), ("Crestline", 34.24, -117.29), ("Cajon / Devore", 34.22, -117.40), ("Lytle Creek", 34.22, -117.48), ("Highland foothills", 34.15, -117.17), ("San Gorgonio slopes", 34.08, -116.90)]},
     {"id": "inland_empire", "name": "Inland Empire", "poly": [[33.95, -117.55], [33.95, -116.80], [33.45, -116.80], [33.45, -117.38], [33.55, -117.55]],
      "points": [("Elsinore", 33.63, -117.37), ("Perris", 33.78, -117.23), ("Soboba", 33.80, -116.96), ("Temecula", 33.49, -117.15), ("Menifee", 33.70, -117.18)]},
+    # trip areas, drawn as insets on the map (like Alaska and Hawaii on a US map)
+    {"id": "santabarbara", "name": "Santa Barbara", "inset": True,
+     "poly": [[34.58, -119.90], [34.58, -119.10], [34.43, -119.10], [34.41, -119.55], [34.43, -119.90]],
+     "points": [("EJ Bowl", 34.494, -119.703), ("Skyport", 34.481, -119.685), ("La Cumbre Peak", 34.494, -119.713),
+                ("Montecito crest", 34.481, -119.576), ("Peak 4864", 34.480, -119.432), ("Ojai (Chief's Peak)", 34.502, -119.169)]},
+    {"id": "owens", "name": "Owens Valley", "inset": True,
+     "poly": [[37.60, -118.50], [37.60, -118.10], [37.20, -118.00], [36.80, -117.95], [36.40, -117.98], [36.40, -118.30], [36.90, -118.40], [37.30, -118.50]],
+     "points": [("Walt's Point", 36.473, -118.115), ("Black Eagle (Inyos)", 36.818, -118.043), ("Mazourka (Inyos)", 36.977, -118.123),
+                ("Flynn's", 37.388, -118.295), ("Paiute", 37.522, -118.295)]},
 ]
 LEVELS = [950, 925, 850, 700, 600, 500]    # enough for the mixed-layer top; fewer variables keep the Open-Meteo budget
 STD_HEIGHT_M = {1000: 110, 975: 320, 950: 540, 925: 760, 900: 990, 850: 1460, 800: 1950, 700: 3010, 600: 4210, 500: 5570}
@@ -71,7 +80,7 @@ MODELS = [("HRRR", ["ncep_hrrr_conus", "gfs_hrrr"], 3), ("RRFS", ["ncep_rrfs_con
 HIRES, GLOBAL = ("HRRR", "RRFS"), ("ECMWF", "GFS", "ICON")
 HIRES_W = {"HRRR": 2, "RRFS": 1}
 REUSE_H = 5.5                      # like the radar: global models fetched again only when older than this
-SLOW = {"palomar", "desert", "palmsj"}   # no launch: every model only every REUSE_H (like the radar's trip areas)
+SLOW = {"palomar", "desert", "palmsj", "santabarbara", "owens"}   # no launch: every model only every REUSE_H (like the radar's trip areas)
 MODEL_WEIGHT = {"HRRR": 3, "RRFS": 3, "ECMWF": 1, "GFS": 1, "ICON": 1}
 
 
@@ -558,7 +567,7 @@ def finish(by_day, today):
 
 # quiet reference lines in the panel: the region's launches (from the radar's sites.json), or a peak where it has none
 REGION_SITES = {"coast": ["torrey"], "north": ["lb"], "east": ["blossom"], "south": ["otay", "whalesv"], "mountains": ["lagunahorse"],
-                "inland_empire": ["elsinore", "soboba"], "marshall": ["marshall"]}
+                "inland_empire": ["elsinore", "soboba"], "marshall": ["marshall"], "santabarbara": ["santabarbara"], "owens": ["owens"]}
 REGION_PEAK = {"palomar": ("Palomar Mtn", 6140), "desert": ("Villager Pk", 5756), "palmsj": ("San Jacinto Pk", 10834)}
 
 
@@ -681,7 +690,7 @@ def main():
     gen = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
     regs = []
     for r in REGIONS:
-        regs.append({"id": r["id"], "name": r["name"], "title": r["name"].upper(), "poly": r["poly"], "own_score": bool(r.get("score")),
+        regs.append({"id": r["id"], "name": r["name"], "title": r["name"].upper(), "poly": r["poly"], "own_score": bool(r.get("score")), "inset": bool(r.get("inset")),
                      "points": [{"name": n, "lat": la, "lon": lo, "elev_ft": ELEV.get((la, lo))} for n, la, lo in r["points"]],
                      "floor_ft": terrain_floor(r) ,
                      "marks": region_marks(r["id"]),
