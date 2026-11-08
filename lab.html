@@ -968,6 +968,8 @@ html[data-lay] body details.day:not(#story) .list .srow .dscore { flex: none; }
   html[data-lay="grid"] body details.day:not(#story) .list .det.det > .dsec:first-child, html[data-lay="tiles"] body details.day:not(#story) .list .det.det > .dsec:first-child { grid-row: 1 / span 3; }
   html[data-lay="grid"] body details.day:not(#story) .list .det.det > .dsec:not(:first-child), html[data-lay="tiles"] body details.day:not(#story) .list .det.det > .dsec:not(:first-child) { grid-column: 2; margin-top: 0; }
 }
+/* grid and tiles: an opened day drops the first-layer site pills (the tiles below replace them) */
+html[data-lay="grid"] body details.day[open]:not(#story) > summary.hd .sum, html[data-lay="tiles"] body details.day[open]:not(#story) > summary.hd .sum { display: none !important; }
 
 </style>
 </head>
@@ -1896,6 +1898,40 @@ $("#reload").addEventListener("click", load);
       if (wasShown && Math.abs(dy) > 2) window.scrollBy({ top: dy, behavior: "instant" });
     });
   };
+})();
+/* LAB: opening a day in grid/tiles: each first-layer pill flies into its tile, the other tiles fade in after */
+(function () {
+  const lay = () => document.documentElement.dataset.lay;
+  const calm = () => window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.addEventListener("click", (e) => {
+    const sm = e.target.closest("details.day[data-date] > summary.hd"); if (!sm) return;
+    const day = sm.parentElement;
+    if (day.open || lay() === "list") { day._from = null; return; }
+    day._from = [...sm.querySelectorAll(".sum .sc")].map((p) => ({ name: (p.querySelector("b") || p).textContent.trim(), r: p.getBoundingClientRect() }));
+  }, true);
+  document.addEventListener("toggle", (e) => {
+    const day = e.target; if (!day.matches || !day.matches("details.day[data-date]") || !day.open || lay() === "list" || calm()) return;
+    const from = day._from || []; day._from = null;
+    requestAnimationFrame(() => {
+      const tiles = [...day.querySelectorAll(".list .srow")];
+      let k = 0;
+      for (const t of tiles) {
+        const nm = (t.querySelector(".nm") || {}).textContent;
+        const f = from.find((x) => x.name === (nm || "").trim());
+        const r = t.getBoundingClientRect();
+        if (r.bottom < -50 || r.top > innerHeight + 50) continue;      // off screen: no show
+        if (f) {
+          const dx = f.r.left - r.left, dy = f.r.top - r.top, sx = f.r.width / r.width, sy = f.r.height / r.height;
+          t.animate([{ transformOrigin: "0 0", transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`, opacity: .9 },
+                     { transformOrigin: "0 0", transform: "none", opacity: 1 }], { duration: 420, easing: "cubic-bezier(.2,.8,.2,1)" });
+          t.querySelectorAll(".nmrow ~ *, .lab, .dscore").forEach((x) => x.animate([{ opacity: 0 }, { opacity: 0, offset: .55 }, { opacity: 1 }], { duration: 420 }));
+        } else {
+          t.animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], { duration: 300, delay: 180 + 35 * k++, easing: "ease-out", fill: "backwards" });
+        }
+      }
+      day.querySelectorAll(".list .sgrp").forEach((g) => g.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, delay: 150, fill: "backwards" }));
+    });
+  }, true);
 })();
 
 </script>
