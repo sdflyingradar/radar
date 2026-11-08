@@ -1,6 +1,6 @@
 /* LAB: layout switcher for the opened day (list = today's page, grid = 2-3 columns, tiles = compact like the first layer) */
 (function () {
-  const LAYS = [["list", "List"], ["grid", "Grid"], ["tiles", "Tiles"]];
+  const LAYS = [["list", "List"], ["grid", "Grid"]];
   const q = (location.search.match(/[?&]lay=(\w+)/) || [])[1];
   let lay = q || (() => { try { return localStorage.getItem("labLay"); } catch (e) { return null; } })() || "grid";
   if (!LAYS.some(([k]) => k === lay)) lay = "grid";
