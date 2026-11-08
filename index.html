@@ -885,6 +885,12 @@ html body details.day:not(#story) .list .srow.srow .spills .rx.warn, html body d
 html body details.day:not(#story) .list .srow.srow .spills .rx.ok {
   background: #fff !important; color: #23753c !important; box-shadow: 0 0 0 1.5px #3aa457, 0 0 8px rgba(58,164,87,.45) !important; }
 html body details.day .list .srow.srow .spills .rx.warn .ic-svg, html body details.day .list .srow.srow .spills .rx.warn .ic { color: #c23434; }
+/* "Cross-country" fits the side column on one line: a size smaller */
+html body details.day:not(#story) .band .when .dword.long { font-size: .68rem !important; white-space: nowrap !important; letter-spacing: -.01em; }
+@media (min-width: 700px) { html body details.day:not(#story) .band .when .dword.long { font-size: .9rem !important; } }
+/* Torrey's wind table on a computer: the full card width, not the narrow first column */
+.srow .wtab { grid-column: 1 / -1; }
+@media (min-width: 700px) { .srow .wtab .hwt { max-width: 640px; } }
 </style>
 </head>
 <body>
@@ -1171,7 +1177,7 @@ function render(data) {
     const mods = dayModels(d) ? `${dayModels(d)}${runAt ? `<br>${esc(fmtTime(runAt).toLowerCase())}${d.frozen_at ? " final" : ""}` : ""}` : "";
     return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol};--dc:var(${QSTOP[dayLvl] || "--muted"})"${open ? " open" : ""}>
       <summary class="hd"><span class="band">
-        <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${bm ? `<span class="dword" style="--dc:var(${QSTOP[dayLvl]})" title="best of Little Black, Blossom and Elsinore">${DAY_WORD[dayLvl]}</span>` : ""}</span>
+        <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${bm ? `<span class="dword${dayLvl >= 4 ? " long" : ""}" style="--dc:var(${QSTOP[dayLvl]})" title="best of Little Black, Blossom and Elsinore">${DAY_WORD[dayLvl]}</span>` : ""}</span>
         ${mods ? `<span class="mods">${mods}</span>` : ""}
         <span class="exp" aria-hidden="true"><i class="chev"></i></span></span>
         <span class="notes">${dayBoxes(d)}${regimeHtml(d.regime)}${((d.regime && d.regime.also) || []).map((a) => regimeHtml({ type: a.type, agree: a.agree, weak: true })).join("")}</span>
@@ -1264,7 +1270,7 @@ const siteName = (s) => (s.id === "lb" ? "Little Black" : s.short);
 const SD_SITES = new Set(["torrey", "lb", "blossom", "otay", "lagunahorse", "elsinore"]);   // San Diego sites + Elsinore (a home site): always listed
 const DAY_COLOUR = true;    // the day colour shows as a stripe on the left edge; the cards stay silver
 const DAY_SITES = new Set(["lb", "blossom", "elsinore"]);
-const DAY_WORD = { 1: "No-go", 2: "Marginal", 3: "Site fly", 4: "XC", 5: "XC" };
+const DAY_WORD = { 1: "No-go", 2: "Marginal", 3: "Site fly", 4: "Cross-country", 5: "Cross-country" };
 const DAY_LT = new Set([2, 3]);   // light chip colours (orange, yellow) take dark text   // the sites that set a day's colour
 const TRIP_IDS = new Set(["soboba", "marshall", "santabarbara", "owens"]);
 /* the day chip is about San Diego; when a trip area is better than that, the chip says so ("No-go in SD") */
