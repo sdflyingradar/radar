@@ -152,6 +152,11 @@ def base_breakdown(D, base_r):
     glass = mean(lambda v: v.get("glass", 0.0))
     rest = base_r - (lv - sum(loss.values()) + glass)
     steps = [[c, -round(x, 2)] for c, x in sorted(loss.items(), key=lambda t: -t[1]) if x >= 0.05]
+    # which models a step comes from, when not all of them (e.g. offshore in ICON only), with their wind aloft
+    for st in steps:
+        who = [k for k, v in bp.items() if v["loss"].get(st[0], 0.0) >= 0.3]
+        if who and len(who) < len(bp):
+            st.append([[k, [round(D[k]["tw13"][0]), round(D[k]["tw13"][1] * 1.15078)] if D[k].get("tw13") else None] for k in who])
     if glass >= 0.05:
         steps.append(["glass", round(glass, 2)])
     if abs(rest) >= 0.05:

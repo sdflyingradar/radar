@@ -117,7 +117,16 @@
       out.push(row("lg-base", "", c.style === "ridge" ? "Ridge lift" : "Models", c.style === "ridge" && w ? w.v : "", c.style === "ridge" ? "" : mods, `<b>${r1(base)}</b>`));
     }
     if (fine.length) out.push(row("lg-good", "✓", "", fine.join(" · "), "", ""));
-    if (bp) for (const [k, v] of bp.steps) { const [n, val, why] = STEP[k] || [k, "", ""]; out.push(row(v < 0 ? "lg-bad" : "lg-plus", v < 0 ? "−" : "+", n, val, why, pts(v))); }
+    const DIRS = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+    if (bp) for (const [k, v, who] of bp.steps) {
+      let [n, val, why] = STEP[k] || [k, "", ""];
+      /* a step only some models give: name them, with their own wind aloft (the blended wind would hide it) */
+      if (who && who.length) {
+        val = who.map(([m, w]) => `${m === "ECMWF" ? "EC" : m}${(k === "offshore" || k === "aloft") && w ? ` ${DIRS[Math.round(w[0] / 22.5) % 16]} ${w[1]}` : ""}`).join(", ");
+        why = `${why ? why + " · " : ""}${who.length === 1 ? "one model" : "some models"}`;
+      }
+      out.push(row(v < 0 ? "lg-bad" : "lg-plus", v < 0 ? "−" : "+", n, val, why, pts(v)));
+    }
     else if (!bp && w && w.q < 0.4) out.push(row("lg-soft", "−", c.style === "ridge" ? "Wind" : "Launch wind", "", "light or cross (already in the start)", ""));
     for (const [t, v] of adj) out.push(row("lg-bad", "−", nameOf(t), "", short(t), pts(v)));
     out.push(row("lg-total", "=", "Score", "", "", `<b>${r1(c.rating)}</b>`));
