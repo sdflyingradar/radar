@@ -28,6 +28,8 @@ a{color:#2563eb}
 .seg.stn a{font-size:13px;padding:5px 12px;border-radius:999px;color:var(--muted);text-decoration:none}
 .seg.stn a[aria-current="page"]{background:var(--ink);color:#fff}
 .seg.stn{max-width:100%;flex-wrap:wrap}
+.seg.stn a.stale{color:#a3a9b1;border:1px dashed #c9ced4;margin:0 1px}
+.seg.stn a.stale[aria-current="page"]{background:#e5e7eb;color:#6b7280;border-style:dashed}
 @media (max-width:520px){.seg.stn a{font-size:12px;padding:5px 8px}}
 @media (max-width:380px){.seg.stn a{font-size:11px;padding:5px 6px}}
 .pathbox{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0 0}
@@ -47,7 +49,7 @@ a{color:#2563eb}
 <p class="note">Cloudbase = surface dewpoint lifted at constant mixing ratio until it meets the temperature curve. Orange lines = dry adiabats (5.4 °F/1000 ft) from the surface every 5 °F, ending at the thermal top for that surface temperature. Zoomed to the flyable range. Blue bands = inversions. Dashed grey lines = launch heights of the nearby sites. Bold line = forecast afternoon high at the launch site (median of the GFS, ECMWF and ICON ensembles); shaded band = 10th–90th percentile of those runs. Updated by a GitHub Action after each 00Z/12Z launch.</p>
 </div>
 <script src="scripts/sounding/core.js?v=202611090935"></script>
-<script src="scripts/sounding/timeline.js?v=202611091400"></script>
+<script src="scripts/sounding/timeline.js?v=202611091420"></script>
 <script src="scripts/region/regionmap.js?v=202611071100"></script>
 <script src="scripts/sounding/pathmap.js?v=202611091410"></script>
 
@@ -61,6 +63,14 @@ a{color:#2563eb}
                    yum: { file: 'data/sounding/stations/YUM_latest.txt', fc: 'surface_forecast_yum.json', name: 'Yuma Proving Ground', lat: 32.87, lon: -114.33, h1: 'Yuma sounding', track: 'data/sounding/stations/YUM_track.csv' },
                    vef: { file: 'data/sounding/stations/VEF_latest.txt', fc: 'surface_forecast_vef.json', name: 'Las Vegas', lat: 36.05, lon: -115.18, h1: 'Las Vegas sounding', track: 'data/sounding/stations/VEF_track.csv' } }[STN];
     document.querySelectorAll('#stn a').forEach(a => { if (a.dataset.s === STN) a.setAttribute('aria-current', 'page'); });
+    // a balloon with no data in the last 2 days: grey with a dashed edge
+    fetch('data/sounding/stations.json?' + Date.now()).then(r => r.json()).then(M => {
+      document.querySelectorAll('#stn a').forEach(a => {
+        const m = M[a.dataset.s.toUpperCase()], t = m && Date.parse(m.obs.replace(/Z$/, ':00Z').replace(/:(\d\d):00Z$/, ':$1:00Z'));
+        const age = m && isFinite(t) ? (Date.now() - t) / 3600e3 : Infinity;
+        if (age > 48) { a.classList.add('stale'); a.title = m ? `no balloon since ${m.obs.slice(0, 10)}` : 'no balloon on file'; }
+      });
+    }).catch(() => {});
     document.getElementById('h1').textContent = INFO.h1;
     document.title = INFO.h1 + ' – SoCal Flying Radar';
     const res = await fetch(INFO.file + '?' + Date.now());
@@ -73,7 +83,7 @@ a{color:#2563eb}
     const tm = snd.title.match(/_(\d\d)00Z_(\d\d)_(\w{3})_(\d{4})$/);
     const shown = tm ? new Date(Date.UTC(+tm[4], ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].indexOf(tm[3]), +tm[2], +tm[1])) : null;
     const drawTl = () => { document.getElementById('tl').innerHTML = timelineSVG({ now: new Date(), shown, site: STN }); };
-    if (STN === 'nkx' || STN === 'vbg') { drawTl(); setInterval(drawTl, 60000); } else document.getElementById('tl').hidden = true;
+    if (STN === 'nkx' || STN === 'vbg' || STN === 'vef') { drawTl(); setInterval(drawTl, 60000); } else document.getElementById('tl').hidden = true;
     // launches within ~70 mi of the balloon, for the quiet height lines
     let launches = [];
     try {

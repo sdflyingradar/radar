@@ -14,7 +14,7 @@ function tlHour(d) { return tlFmt(d, { hour: 'numeric', minute: '2-digit' }).rep
 function tlDay(d) { return tlFmt(d, { weekday: 'short' }); }
 
 function timelineSVG({ now = new Date(), shown = null, fetched = null, site = 'nkx' } = {}) {
-  const VBG = site === 'vbg';
+  const VBG = site === 'vbg', VEF = site === 'vef';
   const H = 3600e3;
   const W = 800, Hh = 160;
   const t0 = new Date(now.getTime() - 15 * H), t1 = new Date(now.getTime() + 9 * H);
@@ -120,6 +120,45 @@ function timelineSVG({ now = new Date(), shown = null, fetched = null, site = 'n
       <path d="M-4 -10 h8 l-1.4 4 h-5.2 z" fill="#475569"/>
       <rect x="-14" y="-4" width="34" height="4" rx="1" fill="#8a96a5"/>
     </g>`;
+  // an original cartoon Vegas showman (white jumpsuit with gold studs and a high collar, black pompadour, gold shades)
+  const showman = (x, y) => `<g transform="translate(${x} ${y})">
+      <ellipse cx="0" cy="22.5" rx="9.5" ry="1.6" fill="#000" opacity=".12"/>
+      <path d="M-3.4 12 L-5.4 21 M3.4 12 L5.4 21" stroke="#fbfbf8" stroke-width="4.2" stroke-linecap="round"/>
+      <path d="M-8 21.2 l1.6 -1.8 h3 M3.4 21.2 l1.6 -1.8 h3" stroke="#fbfbf8" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M-7.6 21.6 h4.6 M3 21.6 h4.6" stroke="#1f2937" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M-6.6 -2 Q-7.6 6 -5.6 13 H5.6 Q7.6 6 6.6 -2 Q0 -5 -6.6 -2 Z" fill="#fbfbf8" stroke="#e5e7eb" stroke-width=".6"/>
+      <path d="M-1.6 -3.2 L0 3 L1.6 -3.2" fill="#e3b48c"/>
+      <rect x="-5.8" y="8.6" width="11.6" height="2.4" rx="1" fill="#d4a017"/>
+      <circle cx="-4" cy="1" r=".7" fill="#d4a017"/><circle cx="4" cy="1" r=".7" fill="#d4a017"/><circle cx="-4.6" cy="5" r=".7" fill="#d4a017"/><circle cx="4.6" cy="5" r=".7" fill="#d4a017"/>
+      <path d="M-6.2 -1 Q-10 4 -9 9" fill="none" stroke="#fbfbf8" stroke-width="3.6" stroke-linecap="round"/>
+      <path d="M-10.6 7 l1.6 3 1.6 -3" fill="#fbfbf8" stroke="#e5e7eb" stroke-width=".4"/>
+      <circle cx="-9" cy="9.8" r="1.7" fill="#e3b48c"/>
+      <path d="M6.2 -1 Q10.6 -6.4 11 -13.6" fill="none" stroke="#fbfbf8" stroke-width="3.6" stroke-linecap="round"/>
+      <circle cx="11" cy="-14.7" r="1.8" fill="#e3b48c"/>
+      <path d="M-5.6 -3 L-7.4 -9 L-3 -5 Z M5.6 -3 L7.4 -9 L3 -5 Z" fill="#fbfbf8" stroke="#e5e7eb" stroke-width=".5"/>
+      <rect x="-2.1" y="-6.6" width="4.2" height="3" fill="#d8a77f"/>
+      <ellipse cx="0" cy="-11" rx="5.4" ry="6" fill="#e3b48c"/>
+      <path d="M-5.8 -10.4 Q-7 -19.6 0.6 -20.4 Q7.4 -20.4 6.2 -14.2 Q4.6 -17.2 -0.4 -16.8 Q-4.2 -16.2 -4.8 -10.4 Z" fill="#111827"/>
+      <path d="M-5.6 -9.6 V-12.6 M5.4 -9.6 V-12.6" stroke="#111827" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M-5 -12 H-0.6 Q-0.4 -9.4 -2.3 -9 Q-4.6 -8.8 -5 -10.6 Z" fill="#c9a227" stroke="#8a6d10" stroke-width=".4"/>
+      <path d="M5 -12 H0.6 Q0.4 -9.4 2.3 -9 Q4.6 -8.8 5 -10.6 Z" fill="#c9a227" stroke="#8a6d10" stroke-width=".4"/>
+      <path d="M-2.4 -7.6 Q0.6 -5.6 2.6 -7.2" fill="none" stroke="#1f2937" stroke-width=".9" stroke-linecap="round"/>
+    </g>`;
+  // generic casino towers and a bulb-lit sign (no names)
+  const casinos = () => {
+    const bulbs = [];
+    for (let i = 0; i < 9; i++) bulbs.push(`<circle cx="${84 + i * 5}" cy="66" r=".9" fill="#fde68a"/><circle cx="${84 + i * 5}" cy="82" r=".9" fill="#fde68a"/>`);
+    return `<rect x="66" y="34" width="20" height="88" fill="#d9c7a8"/><path d="M66 34 l10 -10 10 10 z" fill="#c9a227"/>
+      <path d="M70 44 h12 M70 52 h12 M70 60 h12 M70 68 h12 M70 76 h12 M70 84 h12 M70 92 h12 M70 100 h12" stroke="#b49a6c" stroke-width="1.4" stroke-dasharray="2 1.6"/>
+      <rect x="104" y="44" width="26" height="78" fill="#e8b7c8"/><rect x="104" y="40" width="26" height="5" fill="#d48aa6"/>
+      <path d="M108 52 h18 M108 60 h18 M108 68 h18 M108 76 h18 M108 84 h18 M108 92 h18 M108 100 h18" stroke="#c9879f" stroke-width="1.4" stroke-dasharray="2 1.6"/>
+      <rect x="88" y="90" width="16" height="32" fill="#b9c9d8"/>
+      <rect x="80" y="62" width="48" height="24" rx="3" fill="#7c2d12" stroke="#c9a227" stroke-width="1.2"/>
+      ${bulbs.join('')}
+      <text x="104" y="77.6" text-anchor="middle" font-size="9" font-weight="800" fill="#fde68a" letter-spacing=".8">CASINO</text>
+      <rect x="102" y="86" width="4" height="36" fill="#7c2d12"/>
+      <path d="M128 122 V96" stroke="#8b6b3a" stroke-width="2"/><path d="M128 96 q-8 -2 -12 4 M128 96 q8 -2 12 4 M128 96 q-5 -6 -11 -5 M128 96 q5 -6 11 -5" stroke="#3f8f4f" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+  };
   o.push(`<g transform="translate(10 4)">
     <defs>
       <clipPath id="scn"><rect x="0" y="4" width="136" height="148" rx="10"/></clipPath>
@@ -130,7 +169,18 @@ function timelineSVG({ now = new Date(), shown = null, fetched = null, site = 'n
       <rect x="0" y="4" width="136" height="148" fill="url(#tlsky)"/>
       <circle cx="120" cy="24" r="7" fill="#fde68a"/><circle cx="120" cy="24" r="11" fill="#fde68a" opacity=".25"/>
       <path d="M86 30 q4 -5 9 -2 q3 -4 8 -1 q5 0 4 4 h-21 z" fill="#fff" opacity=".9"/>
-${VBG ? `      <path d="M0 100 H136 V122 H0 Z" fill="#7fb3d9"/>
+${VEF ? `      <path d="M0 102 Q24 92 50 100 Q80 90 110 98 Q124 94 136 98 V122 H0 Z" fill="#e4c9a4"/>
+      ${casinos()}
+      <rect x="0" y="122" width="136" height="30" fill="#a3acb7"/>
+      <rect x="0" y="122" width="136" height="2" fill="#8f99a5"/>
+      <path d="M4 142h12M26 142h12M48 142h12M70 142h12M92 142h12M114 142h12" stroke="#f8fafc" stroke-width="1.6"/>
+      <g transform="translate(-14 -4)"><g class="${flying ? 'tl-rise' : 'tl-bob'}">
+        <path d="M52.5 70 Q51 87 53 108" fill="none" stroke="#64748b" stroke-width="0.8"/>
+        <ellipse cx="52.5" cy="56" rx="10.5" ry="13" fill="#fff" stroke="#cbd5e1"/>
+        <ellipse cx="48.5" cy="51" rx="3" ry="4" fill="#f1f5f9"/>
+        <rect x="50" y="68.5" width="5" height="3.4" rx="1" fill="${ACC}"/>
+      </g></g>
+      ${showman(28, 120)}` : VBG ? `      <path d="M0 100 H136 V122 H0 Z" fill="#7fb3d9"/>
       <path d="M0 103 q8 -2 16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t8 0" fill="none" stroke="#e8f2fa" stroke-width=".8" opacity=".8"/>
       <path d="M36 122 Q46 98 70 100 Q98 92 136 98 V122 Z" fill="#c9b98f"/>
       <path d="M52 122 Q70 106 96 108 Q118 104 136 108 V122 Z" fill="#b5a57a"/>
@@ -168,11 +218,11 @@ ${VBG ? `      <path d="M0 100 H136 V122 H0 Z" fill="#7fb3d9"/>
       </g></g>
       ${pilot(62, 120)}`}
     </g>
-    <text x="68" y="18" text-anchor="middle" font-size="9.5" font-weight="700" fill="${INK}">${VBG ? 'Vandenberg SFB' : 'MCAS Miramar'}</text>
+    <text x="68" y="18" text-anchor="middle" font-size="9.5" font-weight="700" fill="${INK}">${VBG ? 'Vandenberg SFB' : VEF ? 'Las Vegas' : 'MCAS Miramar'}</text>
   </g>`);
 
   // ---- timeline ----
-  o.push(`<text x="${x0}" y="22" font-size="12" font-weight="700" fill="${INK}">${VBG ? 'VBG' : 'NKX'} balloon timeline <tspan font-weight="500" fill="${MUTED}">(Pacific time)</tspan></text>`);
+  o.push(`<text x="${x0}" y="22" font-size="12" font-weight="700" fill="${INK}">${VBG ? 'VBG' : VEF ? 'VEF' : 'NKX'} balloon timeline <tspan font-weight="500" fill="${MUTED}">(Pacific time)</tspan></text>`);
   o.push(`<path d="M${x0} ${yAxis}H${x1}" stroke="${EDGE}" stroke-width="2" stroke-linecap="round"/>`);
   // hour ticks every 3 h on local clock
   const startH = new Date(Math.ceil(t0 / H) * H);
