@@ -815,7 +815,7 @@ html body details.day:not(#story) > summary.hd .sum .sc.sc.sc, html body details
 .hstrip:has(.hw) .wbr { grid-row: 3; }
 .hstrip:has(.hw) .hl { grid-row: 4; }
 
-/* Torrey: score strip plus a launch-wind row per model (HRRR, RRFS, EC), arrow over 7g11 */
+/* Torrey: score strip plus a launch-wind row per model (HRRR, RRFS, ECMWF), arrow over 7g11 */
 .hwt { display: grid; grid-template-columns: 26px repeat(10, minmax(0, 1fr)); gap: 1px; max-width: 540px; align-items: center; }
 .hwt .hh { font-size: .56rem; color: var(--muted); text-align: center; font-weight: 600; }
 .hwt .ml { font-size: .52rem; font-weight: 700; color: #475467; align-self: stretch; display: flex; align-items: center; padding-left: 2px; border-radius: 3px 0 0 3px; }
@@ -1525,7 +1525,7 @@ function windTable(c) {
   return `<div class="hwt"><span></span>${HH.map((h) => `<span class="hh">${hlab(h)}</span>`).join("")}<span class="ml">score</span>${HH.map((h) => {
       const v = hrs[String(h)];
       return `<span class="hc" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
-    }).join("")}<span class="ml" title="average of ${Object.keys(hm).map((m) => (m === "ECMWF" ? "EC" : m)).join(", ")}"></span>${HH.map((h) => {
+    }).join("")}<span class="ml" title="average of ${Object.keys(hm).map((m) => m).join(", ")}"></span>${HH.map((h) => {
       /* one row: wind averaged across the models (mean speed and gust, vector-mean direction); each model in the tooltip */
       const ws = Object.entries(hm).map(([m, w]) => [m, w[String(h)]]).filter(([, w]) => w && w[1] != null);
       if (!ws.length) return wcell(null).replace('class="wc', `class="wc${hrs[String(h)] == null ? " late" : ""}`);
@@ -1538,7 +1538,7 @@ function windTable(c) {
         dir = Math.round((Math.atan2(u, v) * 180 / Math.PI + 360) % 360);
       }
       const cell = wcell([dir, Math.round(sp), gs.length ? Math.round(gs.reduce((a, b) => a + b, 0) / gs.length) : null]);
-      const tip = ws.map(([m, w]) => `${m === "ECMWF" ? "EC" : m} ${w[1]}${w[2] != null && w[2] > w[1] ? "g" + w[2] : ""}`).join(" · ");
+      const tip = ws.map(([m, w]) => `${m} ${w[1]}${w[2] != null && w[2] > w[1] ? "g" + w[2] : ""}`).join(" · ");
       return cell.replace(/ title="[^"]*"/, ` title="${tip} mph"`).replace('class="wc', `class="wc${hrs[String(h)] == null ? " late" : ""}`);
     }).join("")}</div>`;
 }
@@ -1572,7 +1572,7 @@ function modelWindTable(c) {
   return `<div class="hwt"><span></span>${HH.map((h) => `<span class="hh">${hlab(h)}</span>`).join("")}<span class="ml">score</span>${HH.map((h) => {
       const v = hrs[String(h)];
       return `<span class="hc" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
-    }).join("")}<span class="ml" title="average of the models">avg</span>${HH.map((h) => wcell(avgWind(hm, h)).replace('class="wc', `class="wc avg${hrs[String(h)] == null ? " late" : ""}`)).join("")}${Object.entries(hm).map(([m, ws]) => `<span class="ml">${m === "ECMWF" ? "EC" : m}</span>${HH.map((h) => wcell(ws[String(h)]).replace('class="wc', `class="wc${hrs[String(h)] == null ? " late" : ""}`)).join("")}`).join("")}</div>`;
+    }).join("")}<span class="ml" title="average of the models">avg</span>${HH.map((h) => wcell(avgWind(hm, h)).replace('class="wc', `class="wc avg${hrs[String(h)] == null ? " late" : ""}`)).join("")}${Object.entries(hm).map(([m, ws]) => `<span class="ml">${m}</span>${HH.map((h) => wcell(ws[String(h)]).replace('class="wc', `class="wc${hrs[String(h)] == null ? " late" : ""}`)).join("")}`).join("")}</div>`;
 }
 function miniStrip(c) {
   const hrs = c.hours || {}, win = c.win || [];
@@ -1848,7 +1848,7 @@ $("#reload").addEventListener("click", load);
   window.addEventListener("scroll", () => (tip.hidden = true), { passive: true });
 })();
 </script>
-<script src="scripts/ui/grid.js?v=202611082200"></script>
+<script src="scripts/ui/grid.js?v=202611082205"></script>
 <script src="scripts/ui/first.js?v=202611082100"></script>
 </body>
 </html>

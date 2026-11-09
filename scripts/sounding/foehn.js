@@ -128,7 +128,7 @@ function foehnChartSVG(G) {
   for (const [m, s] of series) line(s, FOEHN_COL[m] || '#6b7280', 1.8);
   line(obs, '#111827', 2.6);
   o.push('</svg>');
-  const legend = `<div class="fleg"><span><i style="background:#111827"></i>observed</span>${series.map(([m]) => `<span><i style="background:${FOEHN_COL[m] || '#6b7280'}"></i>${m === 'ECMWF' ? 'EC' : m}</span>`).join('')}${G.generated ? `<span class="fupd">updated ${clk(Date.parse(G.generated.replace(/([+-]\d\d:\d\d|Z)?$/, (z) => z || 'Z')))}</span>` : ''}</div>`;
+  const legend = `<div class="fleg"><span><i style="background:#111827"></i>observed</span>${series.map(([m]) => `<span><i style="background:${FOEHN_COL[m] || '#6b7280'}"></i>${m}</span>`).join('')}${G.generated ? `<span class="fupd">updated ${clk(Date.parse(G.generated.replace(/([+-]\d\d:\d\d|Z)?$/, (z) => z || 'Z')))}</span>` : ''}</div>`;
   return o.join('') + legend;
 }
 
