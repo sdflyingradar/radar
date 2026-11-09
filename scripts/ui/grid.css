@@ -206,7 +206,7 @@ html[data-lay="grid"] body details.day:not(#story) .list .srow.srow::before, htm
 #wxpop .wlink { margin-top: 10px; font-size: .8rem; }
 #wxpop.nonotch .wxp-card::before { display: none; }
 /* the three tiles share the full width, a third each, and look alike (the weather one is a button) */
-#assets { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; justify-content: stretch; }
+#assets { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; justify-content: stretch; margin: -10px 0 4px !important; }
 #assets .asset { min-width: 0; width: 100%; box-sizing: border-box; }
 #assets .asset.wx { font: inherit; line-height: 1.1; color: #26303a; margin: 0; }
 #assets .asset > span { min-width: 0; }
@@ -234,3 +234,4 @@ html[data-lay] body details.day:not(#story) .list .det.det { padding-top: 22px !
 html body details.day .det > button.detx { width: 46px !important; height: 15px !important; min-width: 0 !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; }
 html body details.day .det > button.detx:hover { height: 17px !important; }
 html body details.day .det > button.detx svg { width: 11px !important; height: 7px !important; max-width: none; }
+@media (min-width: 900px) { #assets { margin: -22px 0 -2px !important; } }
