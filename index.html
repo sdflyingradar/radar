@@ -926,7 +926,7 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
 .srow .facts svg.wic { width: 1.45em; height: 1.02em; flex: none; color: #5b6573; margin-right: 1px; }
 </style>
 <link rel="stylesheet" href="scripts/ui/grid.css?v=202611081140">
-<link rel="stylesheet" href="scripts/ui/first.css?v=202611081715">
+<link rel="stylesheet" href="scripts/ui/first.css?v=202611081955">
 </head>
 <body>
 <div class="wrap">
@@ -1221,7 +1221,10 @@ function render(data) {
   const TRIP_ORDER = ["soboba", "marshall", "santabarbara", "owens"];
   const listSites = {
     coast: everySite.filter((s) => s.id === "torrey"),
-    mtn: everySite.filter((s) => s.id !== "torrey" && !TRIPS.has(s.id)),
+    /* SD mountain in a fixed order: Little Black, Blossom, Elsinore, Laguna/Horse, Otay, Whale's V (others after) */
+    mtn: everySite.filter((s) => s.id !== "torrey" && !TRIPS.has(s.id))
+      .sort((x, y) => { const O = ["lb", "blossom", "elsinore", "lagunahorse", "otay", "whalesv"], ix = O.indexOf(x.id), iy = O.indexOf(y.id);
+        return (ix < 0 ? 99 : ix) - (iy < 0 ? 99 : iy); }),
     trips: TRIP_ORDER.map((id) => everySite.find((s) => s.id === id)).filter(Boolean),
   };
   const cardFor = (d, i) => {
