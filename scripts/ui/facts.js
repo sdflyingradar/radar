@@ -31,6 +31,7 @@
     const tip = o == null ? "launch window" : o <= -RIM ? "wind into the launch window" : o <= 0 ? "wind at the edge of the launch window" : o <= 20 ? `crosswind, ${Math.round(o)}° outside the launch window` : `wind from behind the launch (${Math.round(o)}° off)`;
     return `<svg class="ldial" viewBox="0 0 20 20" aria-hidden="true"><title>${tip}</title><circle cx="10" cy="10" r="7.6" fill="#fff" stroke="#d5dbe2" stroke-width="1"/>${wedges}${arcs}${arrow}</svg>`;
   };
+  window.factsIcons = { dial, liftIc };            // the how-it-works page draws its examples with these
   window.siteFactsHook = function (html, c, s, { LIFT, LAUNCH_IC, ALOFT_IC }) {
     if (!s) return html;
     const f = (k) => (c.factors || []).find((x) => x.k === k);
