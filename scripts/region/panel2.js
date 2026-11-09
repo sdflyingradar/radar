@@ -151,25 +151,22 @@ function panel2SVG(data, di = 0) {
     const k0 = hrs.indexOf(data.win[0]), k1 = hrs.indexOf(data.win[1]);
     if (k0 >= 0 && k1 >= 0) o.push(`<rect x="${f(X(k0))}" y="${yG}" width="${f(X(k1 + 1) - X(k0))}" height="${f(gh)}" fill="none" stroke="#c2410c" stroke-width="1.2" stroke-dasharray="3 3"/>`);
   }
-  // wind arrows every 1,000 ft (and at the ground)
+  // wind arrows: one arrow per height, one column of arrows per hour, never two at the same height.
+  // Every 1,000 ft; where a probe's ground lies within 500 ft of that height (landing fields, valleys, slopes),
+  // the arrow is that ground wind (10 m), otherwise the free-air wind. The lowest ground gets its own arrow when it
+  // lies more than 600 ft below the first row.
   const asz = Math.min(13, cw * 0.36);
   hrs.forEach((h, k) => {
-    const wl = H(h).wl;
-    if (!wl || !wl.length) return;
-    const gmin = Math.min(...(H(h).gw || []).map(g => g[0]), wl[0][0]);
-    for (let z = Math.ceil((gmin + 600) / 1000) * 1000; z <= zmax - 300; z += 1000) {
-      const w = p2windAt(wl, z);
+    const wl = H(h).wl || [], gw = (H(h).gw || []).filter(g => g[0] >= zmin);
+    if (!wl.length && !gw.length) return;
+    const gwind = (g) => [g[1], g[2], Math.max(g[2], g[3] ?? g[2])];
+    const gmin = Math.min(...gw.map(g => g[0]), wl.length ? wl[0][0] : 1e9);
+    const first = Math.ceil((gmin + 300) / 1000) * 1000;
+    if (gw.length && first - gw[0][0] > 600) o.push(p2arrow(CX(k), Math.min(Y(gw[0][0]) - asz * 0.4, yG + gh - asz * 0.7), gwind(gw[0]), asz));
+    for (let z = first; z <= zmax - 300; z += 1000) {
+      const near = gw.filter(g => Math.abs(g[0] - z) <= 500).sort((a, b) => Math.abs(a[0] - z) - Math.abs(b[0] - z))[0];
+      const w = near ? gwind(near) : p2windAt(wl, z);
       if (w) o.push(p2arrow(CX(k), Y(z), w, asz));
-    }
-  });
-  // ground wind (10 m) at the region's probes, low to high: landing fields and valleys below the launches,
-  // drawn at their own height in the left half of the hour; arrows closer than 400 ft are merged (lowest kept)
-  hrs.forEach((h, k) => {
-    let last = -1e9;
-    for (const g of H(h).gw || []) {
-      if (g[0] < zmin || g[0] - last < 400) continue;
-      last = g[0];
-      o.push(p2arrow(CX(k) - cw * 0.22, Y(g[0]) - asz * 0.55, [g[1], g[2], Math.max(g[2], g[3] ?? g[2])], asz * 0.85));
     }
   });
   // lift legend (m/s)
