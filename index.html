@@ -1286,7 +1286,13 @@ function render(data) {
       const k = +jb.dataset.jump, sid = jb.dataset.sid, from = jb.closest("details.day"), to = $(`#day-${k}`);
       if (!to) return;
       const y0 = jb.closest(".therm").getBoundingClientRect().top;
-      if (from && from !== to) from.open = false;
+      if (from && from !== to) {
+        /* phone: close the old day; computer (every day stays open): just fold its open site */
+        if (window.matchMedia("(min-width: 900px)").matches) {
+          from.querySelectorAll('[data-site][aria-expanded="true"]').forEach((x) => x.setAttribute("aria-expanded", "false"));
+          from.querySelectorAll(".det").forEach((d) => { d.hidden = true; });
+        } else from.open = false;
+      }
       to.open = true;
       const row = to.querySelector(`.srow[data-site="${sid}"]`);
       if (row && row.getAttribute("aria-expanded") !== "true") row.click();
