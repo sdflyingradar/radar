@@ -164,6 +164,32 @@ def base_breakdown(D, base_r):
     return {"lv": round(lv, 2), "steps": steps}
 
 
+OUTLIER_LOW = 1.0     # a global model this far below the best other model is left out of a site's day (optimistic)
+
+
+def keep_models(det_r):
+    """Which models rate a site's day, optimistically: a global model (GFS, ECMWF, ICON) more than OUTLIER_LOW
+    below the best other model is an outlier and is left out, so one odd model can't sink the day."""
+    det_r = {k: v for k, v in det_r.items() if v is not None}
+    keep = dict(det_r)
+    for k, v in det_r.items():
+        others = [x for m, x in det_r.items() if m != k]
+        if k in GLOBAL and others and v < max(others) - OUTLIER_LOW and len(keep) > 1:
+            keep.pop(k)
+    return keep
+
+
+def site_blend(det_r):
+    """A site's day from its models: HRRR / RRFS days as blend(); on global-only days the mean of the best two."""
+    keep = keep_models(det_r)
+    if not keep:
+        return None, keep
+    if "HRRR" in keep or rrfs_led(keep) or len(keep) < 2:
+        return blend(keep), keep
+    best = dict(sorted(keep.items(), key=lambda t: -t[1])[:2])
+    return sum(best.values()) / len(best), best
+
+
 def blend(ratings):
     """{model: value} -> the day's value: weighted mean on HRRR/RRFS days, weighted median otherwise."""
     ratings = {k: v for k, v in ratings.items() if v is not None}
@@ -2028,11 +2054,16 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             if s.get("style") == "switch" and s.get("inland"):
                 inland_check(s, D, days[dstr].get(s["inland"], {}).get("det", {}))
             det_r = {k: v["rating"] for k, v in D.items()}
+            # optimistic: an outlier global model is left out of this site's day (its rules too)
+            _r, _keep = site_blend(det_r)
+            if _keep and len(_keep) < len(det_r):
+                D = {k: D[k] for k in _keep}
+                det_r = {k: det_r[k] for k in _keep}
             # rating from the regular models; the ensembles (coarser, no PBL height) only give the
             # spread of outcomes, recentred on the regular models so their bias doesn't leak in
             ens_r = [a["rating"] for a in cell["ens"]]
             if det_r:
-                rating = blend(det_r)
+                rating = site_blend(det_r)[0]
             else:
                 rating = median(ens_r)
             base_r = rating
