@@ -37,9 +37,10 @@ function p2icon(kind, x, y) {
 // wind at height z (ft) from the profile [[z, dir, mph, max], ...], interpolated (direction as a vector)
 function p2windAt(wl, z) {
   if (!wl || !wl.length) return null;
-  if (z < wl[0][0]) return z > wl[0][0] - 2500 ? wl[0] : null;     // just below the lowest level: its wind
+  const as = (x) => [x[1], x[2], x[3] ?? x[2]];                   // [dir, mean, strongest]
+  if (z < wl[0][0]) return z > wl[0][0] - 2500 ? as(wl[0]) : null;     // just below the lowest level: its wind
   let a = wl[0], b = wl[wl.length - 1];
-  if (z >= b[0]) return z - b[0] < 2500 ? b : null;
+  if (z >= b[0]) return z - b[0] < 2500 ? as(b) : null;
   for (let k = 0; k < wl.length - 1; k++) if (z >= wl[k][0] && z <= wl[k + 1][0]) { a = wl[k]; b = wl[k + 1]; break; }
   const t = b[0] === a[0] ? 0 : (z - a[0]) / (b[0] - a[0]);
   const rad = (d) => d * Math.PI / 180;
