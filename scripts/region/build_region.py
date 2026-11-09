@@ -586,7 +586,7 @@ def build_days(data, idx, today, now_local, name, acc, gid=None, snd=None, terr=
         if hh not in HOURS:
             continue
         k = (dt.date.fromisoformat(d) - today).days
-        if k < 0 or k > 6 or (k == 0 and now_local.hour >= 19):   # 7 days like the radar; after 7 pm today is over
+        if k < 0 or k > 6:   # 7 days like the radar, today included until midnight (the radar keeps it too)
             continue
         sk = snd if k == 0 else None
         ps = [point_hour(data[j]["hourly"], i, data[j].get("elevation") or 300, tune(gid), sk) for j in idx]
