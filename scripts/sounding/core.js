@@ -186,6 +186,7 @@ function analyze(lv, opts = {}) {
 }
 
 // ---------- SVG ----------
+const esc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 // Same layout and scales as the Topaflyers chart, with a modern finish.
 // Original Topaflyers colours (green slightly deepened so it reads on white).
 const COLORS = { temp: '#ff0000', dew: '#00c400', cloud: '#0000ff', thermal: '#ffa500', lapse: '#ff0000', wind: '#ff0000' };
@@ -302,6 +303,17 @@ function renderSVG(snd, opts = {}) {
   for (let z = 0; z <= ZMAX; z += zstep) o.push(`<text x="${P1.x0 - 8}" y="${f(Y(z) + 4)}" text-anchor="end">${z}${z ? 'k' : ''}</text>`);
   o.push(`<text x="${f((P1.x0 + P1.x1) / 2)}" y="${bot + 47}" text-anchor="middle">Temperature (°F)</text>`);
   o.push(`<text x="13" y="${f((top + bot) / 2)}" transform="rotate(-90 13 ${f((top + bot) / 2)})" text-anchor="middle">Altitude MSL (ft)</text>`);
+
+  // nearby launch heights: one quiet dashed line each; launches within 200 ft of each other share a line
+  if (opts.launches && opts.launches.length) {
+    const ls = opts.launches.filter(l => isFinite(l.ft) && l.ft / 1000 < ZMAX).sort((a, b) => a.ft - b.ft), groups = [];
+    for (const l of ls) { const g = groups[groups.length - 1]; if (g && l.ft - g[0].ft <= 200) g.push(l); else groups.push([l]); }
+    for (const g of groups) {
+      const ft = g.reduce((a, l) => a + l.ft, 0) / g.length, y = Y(ft / 1000);
+      o.push(`<path d="M${P1.x0} ${f(y)}H${P1.x1}" stroke="#8b95a1" stroke-width=".8" stroke-dasharray="2 3" opacity=".75"/>`);
+      o.push(`<text x="${P1.x0 + 5}" y="${f(y - 3)}" font-size="9.5" font-weight="600" fill="#8b95a1" stroke="${PANEL}" stroke-width="3" paint-order="stroke">${g.map(l => esc(l.name)).join(' · ')} ${(Math.round(ft / 100) * 100).toLocaleString('en-US')}</text>`);
+    }
+  }
 
   // inversions: shaded bands
   for (const v of invs) o.push(`<rect x="${P1.x0}" y="${f(Y(v.b))}" width="${P1.x1 - P1.x0}" height="${f(Math.max(2, Y(v.a) - Y(v.b)))}" fill="${INVC}" fill-opacity="0.12"/>`);
