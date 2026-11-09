@@ -47,6 +47,28 @@ def iem(stn, c):
     return text, url
 
 
+def iem_latest(stn, now, days=7):
+    """The latest launch of the last few days from the Iowa archive, at whatever hour it flew (the military sites
+    launch on their own schedule, often not at 12Z). Returns (text, url, launch time) or raises."""
+    url = ("https://mesonet.agron.iastate.edu/cgi-bin/request/raob.py?"
+           f"station=K{stn}&sts={now - dt.timedelta(days=days):%Y-%m-%dT%H}:00Z&ets={now:%Y-%m-%dT%H}:59Z")
+    lines = get(url).strip().splitlines()
+    if len(lines) < 10:
+        raise ValueError("nothing in the last %d days" % days)
+    head, rows = lines[0], lines[1:]
+    col = [h.strip().lower() for h in head.split(",")].index("validutc")
+    by = {}
+    for L in rows:
+        by.setdefault(L.split(",")[col].strip(), []).append(L)
+    good = sorted(t for t, r in by.items() if len(r) >= 10)
+    print(f"{stn} iem: launches in the last {days} days: {', '.join(good) or 'none'}")
+    if not good:
+        raise ValueError("no full launch")
+    t = good[-1]
+    when = dt.datetime.strptime(t[:16].replace("T", " "), "%Y-%m-%d %H:%M").replace(tzinfo=dt.timezone.utc)
+    return "\n".join([head] + by[t]) + "\n", url, when
+
+
 def levels(text):
     return sum(1 for L in text.splitlines() if re.match(r"\s*-?\d", L))
 
@@ -95,6 +117,19 @@ def main():
             break
         else:
             print(f"{stn}: no launch found for {c:%Y-%m-%d %HZ}")
+            if stn in ("EDW", "YUM"):                  # military: take their latest launch, whenever it flew
+                try:
+                    text, url, when = iem_latest(stn, now)
+                    obs = f"{when:%Y-%m-%dT%H:%M}Z"
+                    if meta.get(stn, {}).get("obs") != obs:
+                        path = f"stations/{stn}_latest.txt"
+                        text = f"{wmo} {stn} {name} Observations at {when:%H}Z {when:%d %b %Y}\n" + text
+                        with open(os.path.join(OUT, path), "w") as f:
+                            f.write(f"# source: {url}\n# fetched: {now:%Y-%m-%dT%H:%MZ}\n" + text)
+                        meta[stn] = {"name": name, "lat": la, "lon": lo, "obs": obs, "file": path, "levels": levels(text), "v": 2}
+                        print(f"{stn}: saved latest launch {obs}")
+                except Exception as e:  # noqa: BLE001
+                    print(f"{stn} iem latest: {str(e)[:120]}")
     with open(os.path.join(OUT, "stations.json"), "w") as f:
         json.dump(meta, f, indent=1)
     return 0
