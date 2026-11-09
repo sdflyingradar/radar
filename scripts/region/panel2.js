@@ -200,3 +200,67 @@ function panel2SVG(data, di = 0) {
   return o.join('');
 }
 if (typeof module !== 'undefined') module.exports = { panel2SVG };
+
+// ---- the legend: a "Legend" button under the chart opens a small window that explains the chart ----
+const P2_LEGEND_BTN = '<div class="p2lgw"><button type="button" class="p2leg">Legend</button></div>';
+function panel2LegendHTML() {
+  const sw = (c, extra = '') => `<i style="background:${c};${extra}"></i>`;
+  const arrow = (fill, rim) => `<svg viewBox="-9 -10 18 20" width="16" height="18"><path d="M0 -9 L6.5 8 L0 4.2 L-6.5 8 Z" fill="${fill}" stroke="${rim}" stroke-width="2" stroke-linejoin="round"/></svg>`;
+  const row = (a, t) => `<div class="p2r"><span class="p2s">${a}</span><span>${t}</span></div>`;
+  return `<div class="p2card" role="dialog" aria-label="Chart legend"><div class="p2hd"><b>Reading the detailed chart</b><button type="button" class="p2x" aria-label="Close">×</button></div>
+    <h4>Top strip · how good each hour is</h4>
+    ${row(sw('#6f757d'), 'not worth it')}${row(sw('#b9bec5'), 'glide down or soar')}${row(sw('#f3dd1c'), 'local thermal flying')}${row(sw('#35b04f'), 'cross-country')}${row(sw('#16773a'), 'big cross-country')}
+    <h4>Clouds</h4>
+    ${row(sw('#d6dbe1', 'border-radius:6px') + sw('#8a929c', 'border-radius:6px'), 'high (H), mid (M) and low (L) layers: the darker, the more of the sky they cover')}
+    ${row('☀️', 'weather for the hour: sun, some cloud, cloudy, showers, thunder')}
+    <h4>Lift</h4>
+    <div class="p2r p2col"><span class="p2s">${P2_LIFT.map(([v, c]) => `<i style="background:${c};width:26px;color:${v >= 2.5 ? '#fff' : '#26303a'};font:600 9px/12px system-ui;text-align:center;font-style:normal">${v}</i>`).join('')}</span><span>orange cells: how fast thermals climb (m/s), every 500 ft up to the top of lift</span></div>
+    ${row(sw('#cdd2d8', 'border-radius:8px;width:14px;height:20px'), 'grey column: cumulus, from cloud base to cloud top; wider and darker = more clouds')}
+    ${row(sw('#e58ac2', 'opacity:.55'), 'pink band: inversion, a stable layer that caps or weakens thermals')}
+    ${row(sw('#efe6d6'), 'ground; dashed lines are site heights; the dotted box is the site\'s flying window')}
+    <h4>Wind arrows</h4>
+    ${row(arrow('#3fc25a', '#3fc25a'), 'arrows point where the wind blows to, one per 1,000 ft; near the ground they show the wind at the landing fields and valleys')}
+    ${[['#fff', '#9aa3ad', 'calm, under 4 mph'], ['#3fc25a', '#3fc25a', 'fine, 4–9 mph'], ['#f5d90a', '#f5d90a', 'noticeable, 10–15 mph'], ['#f08a1c', '#f08a1c', 'strong, 16–18 mph'],
+      ['#e0262a', '#e0262a', 'stop, 19–22 mph'], ['#151515', '#151515', 'no-go, over 22 mph']].map(([f, r, t]) => row(arrow(f, r), t)).join('')}
+    ${row(arrow('#fff', '#3fc25a') + arrow('#3fc25a', '#f08a1c'), 'fill = the average wind over the region; rim = the strongest wind anywhere in it (a strong rim means it blows harder somewhere)')}
+    <h4>Bottom line</h4>
+    <p>The day's strongest climb and highest top of lift, with their times.</p></div>`;
+}
+(function () {
+  if (typeof document === 'undefined') return;
+  let ov = null;
+  const close = (fromBack) => {
+    if (!ov) return;
+    ov.remove(); ov = null; document.documentElement.style.overflow = '';
+    if (!fromBack && history.state && history.state.p2) history.back();
+  };
+  window.addEventListener('popstate', () => { if (ov) close(true); });
+  document.addEventListener('keydown', (e) => { if (ov && e.key === 'Escape') close(); });
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.p2leg')) return;
+    e.stopPropagation(); e.preventDefault();
+    ov = document.createElement('div');
+    ov.id = 'p2pop';
+    ov.innerHTML = panel2LegendHTML();
+    document.body.appendChild(ov);
+    document.documentElement.style.overflow = 'hidden';
+    history.pushState({ p2: 1 }, '');
+    ov.addEventListener('click', (ev) => { if (ev.target === ov || ev.target.closest('.p2x')) close(); });
+  }, true);
+  const css = document.createElement('style');
+  css.textContent = `.p2lgw{display:flex;justify-content:center;margin:6px 0 2px}
+.p2leg{font:600 .74rem/1 system-ui,sans-serif;color:#475467;background:#fff;border:1px solid #d5dbe2;border-radius:999px;padding:6px 14px;cursor:pointer}
+.p2leg:hover{border-color:#26303a}
+#p2pop{position:fixed;inset:0;z-index:120;background:rgba(15,23,42,.4);display:flex;align-items:flex-start;justify-content:center;padding:max(40px,6vh) 12px 12px;overflow-y:auto}
+#p2pop .p2card{background:#fff;border-radius:16px;max-width:520px;width:100%;padding:14px 18px 18px;box-shadow:0 20px 50px -12px rgba(0,0,0,.35);font:14px/1.4 system-ui,sans-serif;color:#26303a;margin-bottom:24px}
+#p2pop .p2hd{display:flex;align-items:center;gap:10px;margin-bottom:4px}#p2pop .p2hd b{flex:1;font-size:1.05rem}
+#p2pop .p2x{width:34px;height:34px;border-radius:50%;border:0;background:#1f2937;color:#fff;font:600 22px/1 system-ui,sans-serif;cursor:pointer}
+#p2pop h4{margin:14px 0 6px;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:#98a2b3}
+#p2pop .p2r{display:flex;align-items:center;gap:10px;padding:3px 0;font-size:.86rem}
+#p2pop .p2s{display:inline-flex;gap:3px;align-items:center;flex:none;min-width:30px}
+#p2pop .p2s i{display:inline-block;width:20px;height:12px;border-radius:3px}
+#p2pop p{margin:0;font-size:.86rem}
+#p2pop .p2col{flex-direction:column;align-items:flex-start;gap:5px}#p2pop .p2col .p2s{gap:1px;flex-wrap:wrap}`;
+  document.head.appendChild(css);
+})();
+if (typeof module !== 'undefined') module.exports.panel2LegendHTML = panel2LegendHTML;
