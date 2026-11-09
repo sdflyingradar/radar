@@ -250,9 +250,9 @@ function panel2LegendHTML() {
     ov.addEventListener('click', (ev) => { if (ev.target === ov || ev.target.closest('.p2x')) close(); });
   }, true);
   const css = document.createElement('style');
-  css.textContent = `.p2lgw{display:flex;justify-content:flex-end;margin:2px 4px 0}
-.p2leg{font:500 .7rem/1 system-ui,sans-serif;color:#98a2b3;background:none;border:0;padding:4px 6px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;text-decoration-color:#d5dbe2}
-.p2leg:hover{color:#475467}
+  css.textContent = `.p2lgw{display:flex;justify-content:center;margin:4px 0 0}
+.p2leg{font:600 .72rem/1 system-ui,sans-serif;color:#667085;background:#f7f8fa;border:1px solid #e4e7ec;border-radius:999px;padding:5px 14px;cursor:pointer}
+.p2leg:hover{color:#26303a;border-color:#98a2b3}
 #p2pop{position:fixed;inset:0;z-index:120;background:rgba(15,23,42,.4);display:flex;align-items:flex-start;justify-content:center;padding:max(40px,6vh) 12px 12px;overflow-y:auto}
 #p2pop .p2card{background:#fff;border-radius:16px;max-width:520px;width:100%;padding:14px 18px 18px;box-shadow:0 20px 50px -12px rgba(0,0,0,.35);font:14px/1.4 system-ui,sans-serif;color:#26303a;margin-bottom:24px}
 #p2pop .p2hd{display:flex;align-items:center;gap:10px;margin-bottom:4px}#p2pop .p2hd b{flex:1;font-size:1.05rem}
