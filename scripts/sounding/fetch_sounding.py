@@ -171,7 +171,12 @@ if __name__ == "__main__":
     rc = main()
     try:
         fetch_surface_forecast()
-        fetch_surface_forecast(34.90, -117.92, "surface_forecast_edw.json")   # Edwards AFB balloon page
+        for la, lo, fn in ((34.90, -117.92, "surface_forecast_edw.json"), (34.75, -120.57, "surface_forecast_vbg.json"),
+                           (32.87, -114.33, "surface_forecast_yum.json"), (36.05, -115.18, "surface_forecast_vef.json")):
+            try:
+                fetch_surface_forecast(la, lo, fn)          # the other balloon pages
+            except Exception as e:  # noqa: BLE001
+                print(fn, "failed:", e)
     except Exception as e:  # noqa: BLE001  (forecast is optional)
         print("forecast failed:", e)
     sys.exit(rc)

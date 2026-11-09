@@ -2,7 +2,7 @@
 const fs = require('fs'), path = require('path');
 const { parseSounding, renderSVG } = require('./core.js');
 const dir = path.join(__dirname, '..', '..', 'data', 'sounding');
-const STNS = [['nkx', 'nkx_latest.txt', 'surface_forecast.json'], ['edw', 'stations/EDW_latest.txt', 'surface_forecast_edw.json']];
+const STNS = [['nkx', 'nkx_latest.txt', 'surface_forecast.json'], ...['edw', 'vbg', 'yum', 'vef'].map(k => [k, `stations/${k.toUpperCase()}_latest.txt`, `surface_forecast_${k}.json`])];
 for (const [id, file, fc] of STNS) {
   let txt;
   try { txt = fs.readFileSync(path.join(dir, file), 'utf8'); } catch (e) { console.log(`${id}: no data`); continue; }

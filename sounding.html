@@ -27,6 +27,9 @@ a{color:#2563eb}
 .seg.stn{margin:0 0 10px}
 .seg.stn a{font-size:13px;padding:5px 12px;border-radius:999px;color:var(--muted);text-decoration:none}
 .seg.stn a[aria-current="page"]{background:var(--ink);color:#fff}
+.seg.stn{max-width:100%;flex-wrap:wrap}
+@media (max-width:520px){.seg.stn a{font-size:12px;padding:5px 8px}}
+@media (max-width:380px){.seg.stn a{font-size:11px;padding:5px 6px}}
 .pathbox{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0 0}
 .pathbox .ph{font-size:13px;font-weight:700;margin:0 2px 6px}
 .pathbox svg{width:100%;height:auto;display:block;border-radius:10px}
@@ -34,7 +37,7 @@ a{color:#2563eb}
 <style>html.embed header { display: none; } html.embed body { padding: 0 !important; margin: 0 !important; background: #fff !important; } html.embed .wrap, html.embed main { padding-left: 0 !important; padding-right: 0 !important; margin-top: 0 !important; }</style>
 </head><body><div class="wrap">
 <header><h1 id="h1">NKX sounding</h1><a class="back" href="./">← Radar</a></header>
-<div class="seg stn" id="stn"><a href="sounding.html" data-s="nkx">Miramar</a><a href="sounding.html?stn=edw" data-s="edw">Edwards</a></div>
+<div class="seg stn" id="stn"><a href="sounding.html" data-s="nkx">Miramar</a><a href="sounding.html?stn=edw" data-s="edw">Edwards</a><a href="sounding.html?stn=vbg" data-s="vbg">Vandenberg</a><a href="sounding.html?stn=yum" data-s="yum">Yuma</a><a href="sounding.html?stn=vef" data-s="vef">Vegas</a></div>
 <div id="plot">Loading…</div>
 <div class="stats" id="stats"></div>
 <div id="tl" class="tl"></div>
@@ -51,14 +54,17 @@ a{color:#2563eb}
 <script>
 (async () => {
   try {
-    const STN = /[?&]stn=edw/.test(location.search) ? 'edw' : 'nkx';
+    const STN = ((location.search.match(/[?&]stn=(edw|vbg|yum|vef)\b/) || [])[1]) || 'nkx';
     const INFO = { nkx: { file: 'data/sounding/nkx_latest.txt', fc: 'surface_forecast.json', name: 'Miramar', lat: 32.85, lon: -117.12, h1: 'NKX sounding', track: 'data/sounding/stations/NKX_track.csv' },
-                   edw: { file: 'data/sounding/stations/EDW_latest.txt', fc: 'surface_forecast_edw.json', name: 'Edwards AFB', lat: 34.90, lon: -117.92, h1: 'Edwards sounding', track: 'data/sounding/stations/EDW_track.csv' } }[STN];
+                   edw: { file: 'data/sounding/stations/EDW_latest.txt', fc: 'surface_forecast_edw.json', name: 'Edwards AFB', lat: 34.90, lon: -117.92, h1: 'Edwards sounding', track: 'data/sounding/stations/EDW_track.csv' },
+                   vbg: { file: 'data/sounding/stations/VBG_latest.txt', fc: 'surface_forecast_vbg.json', name: 'Vandenberg', lat: 34.75, lon: -120.57, h1: 'Vandenberg sounding', track: 'data/sounding/stations/VBG_track.csv' },
+                   yum: { file: 'data/sounding/stations/YUM_latest.txt', fc: 'surface_forecast_yum.json', name: 'Yuma Proving Ground', lat: 32.87, lon: -114.33, h1: 'Yuma sounding', track: 'data/sounding/stations/YUM_track.csv' },
+                   vef: { file: 'data/sounding/stations/VEF_latest.txt', fc: 'surface_forecast_vef.json', name: 'Las Vegas', lat: 36.05, lon: -115.18, h1: 'Las Vegas sounding', track: 'data/sounding/stations/VEF_track.csv' } }[STN];
     document.querySelectorAll('#stn a').forEach(a => { if (a.dataset.s === STN) a.setAttribute('aria-current', 'page'); });
     document.getElementById('h1').textContent = INFO.h1;
     document.title = INFO.h1 + ' – SoCal Flying Radar';
     const res = await fetch(INFO.file + '?' + Date.now());
-    if (!res.ok) throw new Error(STN === 'edw' ? 'no Edwards launch on file yet (they do not fly every day)' : 'HTTP ' + res.status);
+    if (!res.ok) throw new Error(STN === 'edw' || STN === 'yum' ? `no ${INFO.name} launch on file yet (the military sites do not fly every day or share every flight)` : 'HTTP ' + res.status);
     const txt = await res.text();
     let forecast = null;
     try { forecast = await (await fetch('data/sounding/' + INFO.fc + '?' + Date.now())).json(); } catch (e) {}
