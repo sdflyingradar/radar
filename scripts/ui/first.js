@@ -56,6 +56,8 @@
 (function () {
   const wide = () => window.matchMedia("(min-width: 900px)").matches;
   const fix = () => {
+    /* phone: the day card pill says Laguna/Horse too, so it fits the slimmer pill */
+    document.querySelectorAll('details.day[data-date] .sum .sc b').forEach((b) => { if (/Laguna\/​?Horse\/​?Fuzz/.test(b.textContent)) b.textContent = b.textContent.replace(/\/​?Fuzz/, ""); });
     if (!wide()) return;
     document.querySelectorAll('.list .srow[data-site="lagunahorse"] .nm').forEach((n) => { if (/Fuzz/.test(n.textContent)) n.textContent = n.textContent.replace(/\/​?Fuzz/, ""); });
     document.querySelectorAll(".list .srow .nmw .lab").forEach((l) => { if (l.textContent.trim() === "Cross-country") l.textContent = "XC"; });
