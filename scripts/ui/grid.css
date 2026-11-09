@@ -222,3 +222,15 @@ html[data-lay="grid"] body details.day:not(#story) .list .srow.srow::before, htm
   background: #fff !important; color: #26303a !important; border: 1px solid #d5dbe2 !important; box-shadow: 0 2px 8px -3px rgba(0,0,0,.25); }
 #thfull .thf-x::before, #wxpop .wxp-x::before { content: ""; }
 #wxpop .wxp-hd .wxp-x svg, #thfull .thf-x svg { width: 14px !important; height: 14px !important; }
+
+/* the close tab on an open detail's upper rim (the tile's bottom tab, upside down), in place of the little notch */
+html[data-lay] body details.day:not(#story) .list .det.det::before { display: none !important; }
+html[data-lay] body details.day:not(#story) .list .det.det { padding-top: 22px !important; }
+.det > .detx { position: absolute; top: 0; left: clamp(8px, calc(var(--ax, 50%) - 23px), calc(100% - 54px)); width: 46px; height: 15px; padding: 0; border: 0;
+  border-radius: 0 0 9px 9px; background: var(--rc, #94a3b8); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2;
+  transition: height .15s ease, width .15s ease; }
+.det > .detx:hover { height: 17px; }
+.det > .detx svg { width: 11px; height: 7px; }
+html body details.day .det > button.detx { width: 46px !important; height: 15px !important; min-width: 0 !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; }
+html body details.day .det > button.detx:hover { height: 17px !important; }
+html body details.day .det > button.detx svg { width: 11px !important; height: 7px !important; max-width: none; }

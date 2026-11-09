@@ -1,6 +1,13 @@
 /* Opened day in the grid: where a site's third level goes (after the last tile of its row, full width; under the
    site in the list layout), the pills-to-tiles morph, the score steps and the full-screen thermal panel. */
 (function () {
+  /* the close tab: closes the open site (as tapping its tile again) */
+  document.addEventListener("click", (e) => {
+    const x = e.target.closest(".det > .detx"); if (!x) return;
+    e.stopPropagation();
+    const day = x.closest("details.day"), row = day && day.querySelector('.srow[aria-expanded="true"]');
+    if (row) row.click(); else x.closest(".det").hidden = true;
+  }, true);
   window.labPlace = (b, det) => {
     const y0 = b.getBoundingClientRect().top;
     const wasShown = !det.hidden;
@@ -13,6 +20,14 @@
       const L = b.parentElement.getBoundingClientRect(), r = b.getBoundingClientRect();
       det.style.setProperty("--ax", `${Math.round(r.left - L.left + Math.min(r.width / 2, 48))}px`);
     }
+    /* a close tab on the detail's upper rim, in the site's colour, right under its tile (chevron up) */
+    if (!det.querySelector(":scope > .detx")) {
+      const x = document.createElement("button");
+      x.type = "button"; x.className = "detx"; x.setAttribute("aria-label", "Close");
+      x.innerHTML = '<svg viewBox="0 0 12 8" aria-hidden="true"><path d="M1.5 6.2 6 2 10.5 6.2" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      det.prepend(x);
+    }
+    det.style.setProperty("--rc", getComputedStyle(b).getPropertyValue("--rc"));
     det.classList.remove("lab-in"); void det.offsetWidth; det.classList.add("lab-in");
     /* keep the tapped tile where the finger is when another detail above it closes */
     requestAnimationFrame(() => {
