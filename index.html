@@ -936,7 +936,7 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
 .dtsw input:checked + i::after { transform: translateX(13px); }
 .dtsw input:focus-visible + i { outline: 2px solid #c26a24; outline-offset: 2px; }
 </style>
-<link rel="stylesheet" href="scripts/ui/grid.css?v=202611082235">
+<link rel="stylesheet" href="scripts/ui/grid.css?v=202611082255">
 <link rel="stylesheet" href="scripts/ui/first.css?v=202611081955">
 </head>
 <body>
@@ -1425,8 +1425,8 @@ function siteFacts(c, s) {
   const out = [h && h.v !== "–" ? `<span class="wa">${LIFT}<span class="hl">${esc(h.v)}</span><span class="hk">${esc(hk(h.v))}</span></span>` : "",
           a && a.v !== "–" ? `<span class="fi fa">${ALOFT_IC}${windHtml(a.v, "mph")}</span>` : "",
           w && w.v !== "–" ? `<span class="fi fl">${LAUNCH_IC}${windHtml(w.v, "mph")}</span>` : ""].filter(Boolean).join('<span class="sep">·</span>');
-  /* the lab can restyle the facts (window.siteFactsHook) */
-  return window.siteFactsHook ? window.siteFactsHook(out, c, s, { LIFT, LAUNCH_IC }) : out;
+  /* scripts/ui/facts.js colours the facts (window.siteFactsHook) */
+  return window.siteFactsHook ? window.siteFactsHook(out, c, s, { LIFT, LAUNCH_IC, ALOFT_IC }) : out;
 }
 function sitePills(c) {
   const adj = c.adj || [];
@@ -1852,6 +1852,7 @@ $("#reload").addEventListener("click", load);
   window.addEventListener("scroll", () => (tip.hidden = true), { passive: true });
 })();
 </script>
+<script src="scripts/ui/facts.js?v=202611082245"></script>
 <script src="scripts/ui/grid.js?v=202611082205"></script>
 <script src="scripts/ui/first.js?v=202611082100"></script>
 </body>

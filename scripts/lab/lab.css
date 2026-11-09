@@ -6,5 +6,3 @@
 #labbar button { border: 0; border-radius: 999px; padding: 8px 13px; background: transparent; color: #cbd5e1; font: inherit; cursor: pointer; }
 #labbar button[aria-pressed="true"] { background: #fff; color: #111827; }
 #labbar a { color: #fbbf24; text-decoration: none; padding: 8px 12px 8px 8px; }
-.srow .facts svg.lic { width: 1.05em; height: 1.05em; vertical-align: -.12em; margin-right: 3px; }
-.srow .facts svg.ldial { width: 1.75em; height: 1.75em; margin-left: -2px; flex: none; margin-right: 2px; }

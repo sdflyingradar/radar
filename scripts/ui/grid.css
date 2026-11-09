@@ -235,3 +235,10 @@ html body details.day .det > button.detx { width: 46px !important; height: 15px 
 html body details.day .det > button.detx:hover { height: 17px !important; }
 html body details.day .det > button.detx svg { width: 11px !important; height: 7px !important; max-width: none; }
 @media (min-width: 900px) { #assets { margin: -22px 0 -2px !important; } }
+/* coloured tile facts (scripts/ui/facts.js): lift arrows, launch dial, aloft icon. Every icon sits in the same
+   1.6em slot so the numbers line up (phone) and the gaps are even (computer) */
+html[data-lay] body details.day:not(#story) .list .srow .facts > span > svg:first-child { width: 1.6em !important; height: 1.2em !important; flex: none; margin: 0 5px 0 0 !important; vertical-align: -.25em; }
+html[data-lay] body details.day:not(#story) .list .srow .facts > span > svg.ldial:first-child { height: 1.5em !important; vertical-align: -.4em; }
+html[data-lay] body details.day:not(#story) .list .srow .facts > span { display: inline-flex; align-items: center; }
+@media (max-width: 899px) { html[data-lay] body details.day:not(#story) .list .srow .facts { gap: 3px !important; } }
+@media (min-width: 900px) { html[data-lay] body details.day:not(#story) .list .srow .tx .facts { gap: 14px !important; } }
