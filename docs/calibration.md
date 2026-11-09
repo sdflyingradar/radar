@@ -10,5 +10,5 @@ Reports from local pilots, kept to check the scoring. No names, no sources.
 | Sun 2026-11-08 | 4.0 XC · top 5,400 ft (models 4,700–5,400) · capped at 4 (below the 5,500 ft great-XC mark) | the best US distances that weekend: ~45–49 mi from EJ west to the VOR spine and east to Fillmore / Santa Paula; 6,000–6,300 ft at La Cumbre, 7,000–7,560 ft at the Topa Bluffs; smooth, light and variable |
 
 Reading: Sunday's height was under-forecast by ~1,000 ft at the front range and ~2,000 ft at the Topa Bluffs, so a
-great-XC day showed as a 4. Added the Topa Bluffs as a height point (2026-11-09). If more days show the models low here,
-add a height bias for the area.
+great-XC day showed as a 4. No change yet (one day; the Bluffs may be one pilot's reference, not a usual climb). If more
+days show the models low here, add a height bias for the area.
