@@ -178,3 +178,42 @@ html body details.day[data-date]:not(#story) > summary.hd .notes .rx { order: 1 
   html[data-lay] body details.day:not(#story) .list .srow .spills .rx { font-size: .5rem !important; padding: 0 4px !important; }
   html[data-lay] body details.day:not(#story) .list .srow .tx .facts { gap: 6px !important; }
 }
+
+/* the day column holds only the day (big, with the date and "today" under it); the verdict and the tiny model line
+   move to the top of the middle column, over the signals */
+@media (max-width: 640px) {
+  html body details.day:not(#story):not([open]) > summary.hd { grid-template-columns: 58px 112px minmax(0, 1fr) !important; grid-template-rows: auto auto 1fr !important; row-gap: 2px !important;
+    background: linear-gradient(#e7eaee, #e7eaee) no-repeat calc(14px + 58px + 4px) 12px / 1px calc(100% - 24px) !important; }
+  html body details.day:not(#story):not([open]) > summary.hd .band, html body details.day:not(#story):not([open]) > summary.hd .when { display: contents !important; }
+  html body details.day:not(#story):not([open]) > summary.hd .when .dn { grid-column: 1; grid-row: 1; font-size: 1.55rem !important; line-height: 1 !important; letter-spacing: -.02em; }
+  html body details.day:not(#story):not([open]) > summary.hd .when small:not(.rel) { grid-column: 1; grid-row: 2; font-size: .78rem !important; color: #6b7280; margin-top: 3px; }
+  html body details.day:not(#story):not([open]) > summary.hd .when .rel { grid-column: 1; grid-row: 3; align-self: start; justify-self: start; margin-top: 6px !important; font-size: .56rem !important; font-weight: 700;
+    letter-spacing: .08em; text-transform: uppercase; color: #fff !important; background: var(--dc, #64748b); padding: 2px 6px; border-radius: 999px; }
+  html body details.day:not(#story):not([open]) > summary.hd .when .rel { font-size: 0 !important; } 
+  html body details.day:not(#story):not([open]) > summary.hd .when .rel::after { content: "today"; font-size: .56rem; }
+  html body details.day:not(#story):not([open]) > summary.hd .when .dword { grid-column: 2; grid-row: 1; padding-left: 8px; margin: 0 !important; font-size: .95rem !important; line-height: 1.1 !important; white-space: nowrap; }
+  html body details.day:not(#story):not([open]) > summary.hd .band .mods { grid-column: 2; grid-row: 2; padding-left: 8px; margin: 0 0 4px !important; font-size: .54rem !important; line-height: 1.25; white-space: nowrap; }
+  html body details.day:not(#story):not([open]) > summary.hd .band .mods br { display: none; }
+  html body details.day:not(#story):not([open]) > summary.hd .notes { grid-column: 2 !important; grid-row: 3 !important; padding-left: 8px !important; }
+  html body details.day:not(#story):not([open]) > summary.hd .sum { grid-column: 3 !important; grid-row: 1 / span 3 !important; }
+  html body details.day:not(#story):not([open]) > summary.hd .notes { box-shadow: none !important; }
+  html body details.day:not(#story):not([open]) > summary.hd .sum { box-shadow: inset 1px 0 0 #e7eaee; padding-left: 8px !important; }
+}
+@media (min-width: 900px) {
+  html[data-lay] body details.day[data-date]:not(#story) > summary.hd { grid-template-columns: 74px minmax(0, 1fr) !important; grid-template-rows: auto auto 1fr !important; row-gap: 2px !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > summary.hd .band, html[data-lay] body details.day[data-date]:not(#story) > summary.hd .when { display: contents !important; }
+  html[data-lay] body details.day[data-date]:not(#story) > summary.hd .when .dn { grid-column: 1; grid-row: 1; font-size: 1.8rem !important; line-height: 1 !important; letter-spacing: -.02em; }
+  html[data-lay] body details.day[data-date]:not(#story) > summary.hd .when small:not(.rel) { grid-column: 1; grid-row: 2; font-size: .85rem !important; color: #6b7280; margin-top: 4px; }
+  html[data-lay] body details.day[data-date]:not(#story) > summary.hd .when .rel { grid-column: 1; grid-row: 3; align-self: start; justify-self: start; margin-top: 8px !important; font-size: 0 !important;
+    background: var(--dc, #64748b); color: #fff !important; padding: 2px 7px; border-radius: 999px; }
+  html[data-lay] body details.day[data-date]:not(#story) > summary.hd .when .rel::after { content: "today"; font-size: .6rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  html[data-lay] body details.day[data-date]:not(#story) > summary.hd .when .dword { grid-column: 2; grid-row: 1; margin: 0 !important; font-size: 1.1rem !important; line-height: 1.1 !important; white-space: nowrap; }
+  html[data-lay] body details.day[data-date]:not(#story) > summary.hd .band .mods { grid-column: 2; grid-row: 2; margin: 0 0 6px !important; font-size: .6rem !important; white-space: nowrap; }
+  html[data-lay] body details.day[data-date]:not(#story) > summary.hd .band .mods br { display: none; }
+  html[data-lay] body details.day[data-date]:not(#story) > summary.hd .notes { grid-row: 3 !important; }
+}
+@media (max-width: 640px) {
+  html body details.day:not(#story):not([open]) > summary.hd .notes { align-self: start !important; margin-top: 2px !important; padding-top: 0 !important; }
+}
+/* a little more air between the signals and the pattern pills under them */
+html body details.day[data-date]:not(#story) > summary.hd .notes .sig { margin-bottom: 6px !important; }

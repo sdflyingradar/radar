@@ -59,3 +59,13 @@
   if (days) new MutationObserver(fix).observe(days, { childList: true });
   fix();
 })();
+
+/* the tiny model line on one row: "HRRR · RRFS · 12:00 pm" */
+(function () {
+  const fix = () => document.querySelectorAll("details.day[data-date] > summary .band .mods").forEach((m) => {
+    if (m.querySelector("br")) m.innerHTML = m.innerHTML.replace(/<br\s*\/?>/g, " · ");
+  });
+  const days = document.getElementById("days");
+  if (days) new MutationObserver(fix).observe(days, { childList: true });
+  fix();
+})();
