@@ -26,13 +26,14 @@ class RawArchive(unittest.TestCase):
         ens = {"GFS ens": ("sample", bf.sample_response(sites, bf.ENS_LEVELS, members=4, seed=6), None)}
         raw = json.loads(json.dumps({"at": bf.now_iso(), "sites": [s["id"] for s in sites], "det": det, "ens": ens,
                                      "nws": bf.sample_nws(), "grad": {}, "cdata": None}))
-        today = bf.utcnow().astimezone(bf._tz()).date().isoformat()
+        # the day the build itself starts with (sample data is made in the machine's clock, so do not assume a date)
+        first = bf.build(sites, json.loads(json.dumps(det)), json.loads(json.dumps(ens)), raw["nws"], [], sources=[], parents=parents, cdata=None)["days"][0]["date"]
         with tempfile.TemporaryDirectory() as t:
-            p = bf.archive_raw(raw, today, Path(t))
+            p = bf.archive_raw(raw, first, Path(t))
             with gzip.open(p, "rt") as fh:
                 back = json.load(fh)
         day = rescore.rescore(back)
-        self.assertEqual(day.get("date"), today)
+        self.assertEqual(day.get("date"), first)
         self.assertTrue(day.get("sites"))
         self.assertIsNone(bf._NOW)
 
