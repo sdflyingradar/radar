@@ -265,3 +265,5 @@ html body details.day[data-date]:not(#story) > summary.hd .when small:not(.rel) 
   html body details.day:not(#story):not([open]) > summary.hd { grid-template-columns: 64px 104px minmax(0, 1fr) !important; background-position: calc(14px + 64px + 4px) 12px !important; }
   html body details.day:not(#story):not([open]) > summary.hd .when .dword { font-size: .84rem !important; }
 }
+/* no TODAY tag */
+html body details.day[data-date]:not(#story) > summary.hd .when .rel { display: none !important; }
