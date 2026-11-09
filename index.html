@@ -1455,7 +1455,7 @@ function sitePills(c) {
     [/top of lift over/, "strong wind aloft"], [/blown out/, "blown out"], [/not calm/, "not calm"],
     [/over the back aloft/, "over the back aloft"], [/off season/, "off season"], [/NW to N aloft/, "NW–N"], [/^offshore .*no-go/, "offshore flow aloft"], [/^offshore .*2 at most/, "offshore"], [/^offshore /, "light offshore"]];
   const seen = new Set(out.map((x) => x.replace(/<i[^>]*>.*?<\/i>/g, "").replace(/<[^>]+>/g, "").trim().toLowerCase()));
-  adj.filter(([t]) => !/rain|sun|4 at most$/.test(t) || /outside the launch window|blown|calm|season/.test(t)).forEach(([t]) => {
+  adj.filter(([t]) => !/edge of the launch window/.test(t)).filter(([t]) => !/rain|sun|4 at most$/.test(t) || /outside the launch window|blown|calm|season/.test(t)).forEach(([t]) => {
     const s = (SHORT.find(([re]) => re.test(t)) || [null, t])[1];
     if (seen.has(s.toLowerCase())) return;
     seen.add(s.toLowerCase());
@@ -1862,8 +1862,8 @@ $("#reload").addEventListener("click", load);
   window.addEventListener("scroll", () => (tip.hidden = true), { passive: true });
 })();
 </script>
-<script src="scripts/ui/facts.js?v=202611082245"></script>
-<script src="scripts/ui/grid.js?v=202611090930"></script>
+<script src="scripts/ui/facts.js?v=202611090950"></script>
+<script src="scripts/ui/grid.js?v=202611090950"></script>
 <script src="scripts/ui/first.js?v=202611082340"></script>
 </body>
 </html>

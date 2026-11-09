@@ -632,16 +632,21 @@ def site_face(site):
     return None if span == 0 or span >= 300 else (w[0] + span / 2) % 360
 
 
+RIM_DEG = 15                  # the outer 15 degrees inside a launch window: fine, but a small nick (yellow on the dial)
+RIM_NICK = 0.3
+
+
 def off_window(site, d):
-    """Degrees the wind is outside the launch window (0 = inside it, where it is all fine). With several
-    launches, the one it fits best."""
+    """Degrees the wind is outside the launch window; inside it, minus how deep inside (-30 = 30 degrees in from
+    the nearest edge). With several launches, the one it fits best."""
     w = site.get("dir")
     if not w or d is None:
         return None
     wins = w if isinstance(w[0], (list, tuple)) else [w]
     best = None
     for lo, hi in wins:
-        o = 0.0 if wrap_in(d, lo, hi) else min(angdiff(d, lo), angdiff(d, hi))
+        edge = min(angdiff(d, lo), angdiff(d, hi))
+        o = (-90.0 if (hi - lo) % 360 == 0 or hi - lo >= 359 else -edge) if wrap_in(d, lo, hi) else edge
         best = o if best is None else min(best, o)
     return best
 
@@ -1425,6 +1430,8 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "gust18": sum(1 for s in blk if s.get("gcat", 0) >= 2) / len(blk),
         "offcat": (lambda offs: sum(0 if o <= 20 else 1 if o <= 45 else 2 for o in offs) / len(offs) if offs else 0.0)(   # off = outside the window
             [s["off"] for s in blk if s.get("off") is not None]),
+        "rim": (lambda offs: sum(1 for o in offs if -RIM_DEG < o <= 20) / len(offs) if offs else 0.0)(
+            [s["off"] for s in blk if s.get("off") is not None]),
         "launch": max(set(x["launch"] for x in blk if x["launch"]) or {None}, key=lambda v: sum(1 for x in blk if x["launch"] == v)),
         "a_max": med("a_max"), "a_spd": a_spd, "a_dir": a_dir,
         "aloftdir": sum(1 for s in blk if {"aloftdir", "drift"} & set(s["codes"])) >= 2,
@@ -2205,7 +2212,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 elif (tw_mph is not None and tw_mph > t1) or (lw_b is not None and lw_b > calm.get("launch_mph", 8)):
                     caps.append((2.0, "not calm enough: 2 at most"))
             # how well the wind lines up with the launch through the window (thermal sites, light air ignored), the
-            # same as the launch dial on the tile: inside the launch window, or up to 20 degrees outside it, is fine;
+            # same as the launch dial on the tile: well inside the launch window is fine; the outer 15 degrees of it, or
+            # up to 20 degrees outside it, is a small nick (most of the window);
             # 20-45 degrees outside (crosswind) costs a point; more than 45 degrees outside (over the back) sinks the day
             if s.get("style") in ("thermal", "window") and D and site_face(s) is not None:
                 oc = sum(model_weight(k, D) * a.get("offcat", 0.0) for k, a in D.items()) / (sum(model_weight(k, D) for k in D) or 1)
@@ -2213,6 +2221,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                     caps.append((2.0, "wind from behind, 45°+ outside the launch window: 2 at most"))
                 elif oc >= 0.5:
                     r0 = rating; rating = max(1.0, rating - 1.0); note_adj("crosswind, 20–45° outside the launch window", r0)
+                elif sum(model_weight(k, D) * a.get("rim", 0.0) for k, a in D.items()) / (sum(model_weight(k, D) for k in D) or 1) >= 0.5:
+                    r0 = rating; rating = max(1.0, rating - RIM_NICK); note_adj("wind at the edge of the launch window", r0)
             # awkward drift at the top of lift (most of the rating weight agrees): a tag, and at some
             # sites a small nick (Blossom: NW or clearly WNW pushes XC toward the Rock Pile)
             xb = s.get("xc_bad_aloft") or {}
