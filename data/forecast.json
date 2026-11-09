@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-09T06:17+00:00",
+ "generated": "2026-11-09T06:33+00:00",
  "sample": false,
  "calib": {
   "2026-11-08": {
@@ -35757,15 +35757,15 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus), surface heat flux (7124 values)",
-  "HRRR trips: using the last good run, fetched 2.0 h ago",
+  "HRRR trips: using the last good run, fetched 2.3 h ago",
   "RRFS: ok (ncep_rrfs_conus), surface heat flux (8736 values)",
-  "RRFS trips: using the last good run, fetched 2.0 h ago",
-  "GFS: using the last good run, fetched 2.0 h ago",
-  "ECMWF: using the last good run, fetched 1.9 h ago",
-  "ICON: using the last good run, fetched 1.9 h ago",
-  "ens GFS ens: using the last good run, fetched 1.8 h ago",
-  "ens ECMWF ens: using the last good run, fetched 1.8 h ago",
-  "ens ICON ens: using the last good run, fetched 1.8 h ago",
+  "RRFS trips: using the last good run, fetched 2.2 h ago",
+  "GFS: using the last good run, fetched 2.2 h ago",
+  "ECMWF: using the last good run, fetched 2.2 h ago",
+  "ICON: using the last good run, fetched 2.2 h ago",
+  "ens GFS ens: using the last good run, fetched 2.1 h ago",
+  "ens ECMWF ens: using the last good run, fetched 2.0 h ago",
+  "ens ICON ens: using the last good run, fetched 2.1 h ago",
   "NWS AFD: ok",
   "gradient HRRR: bias +1.8 mb over 72 h",
   "gradient RRFS: bias +0.9 mb over 72 h",
@@ -35774,8 +35774,8 @@
   "gradient ICON: bias -0.1 mb over 72 h",
   "clouds HRRR: ok (ncep_hrrr_conus)",
   "clouds RRFS: ok (ncep_rrfs_conus)",
-  "clouds ECMWF: using the last good run, fetched 1.8 h ago",
-  "clouds ICON: using the last good run, fetched 1.8 h ago",
+  "clouds ECMWF: using the last good run, fetched 2.1 h ago",
+  "clouds ICON: using the last good run, fetched 2.1 h ago",
   "wind: GFS and ICON use ECMWF's winds where RRFS and ECMWF overlap"
  ],
  "sources": [
@@ -35786,7 +35786,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-11-09T04:00+00:00",
-   "fetched": "2026-11-09T06:15+00:00",
+   "fetched": "2026-11-09T06:31+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -35796,7 +35796,7 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": "2026-11-09T00:00+00:00",
-   "fetched": "2026-11-09T06:15+00:00",
+   "fetched": "2026-11-09T06:31+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -35872,7 +35872,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-11-09T06:12:00+00:00",
-   "fetched": "2026-11-09T06:17+00:00",
+   "fetched": "2026-11-09T06:32+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -35882,7 +35882,7 @@
    "id": "LAX-DAG",
    "status": "ok",
    "run": "2026-11-09T05:00Z",
-   "fetched": "2026-11-09T06:17+00:00",
+   "fetched": "2026-11-09T06:32+00:00",
    "url": "https://www.weather.gov/lox/LAXGRDNEW"
   },
   {
@@ -35892,7 +35892,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-09T06:17+00:00",
+   "fetched": "2026-11-09T06:33+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
@@ -36706,7 +36706,7 @@
      "why": [
       "otb",
       "gusty",
-      "lid"
+      "offshore"
      ],
      "when": {},
      "diag": {
@@ -36728,7 +36728,7 @@
        "why": [
         "otb",
         "gusty",
-        "lid"
+        "offshore"
        ],
        "used": true
       },
@@ -36749,7 +36749,6 @@
        "wind_src": "RRFS",
        "why": [
         "offshore",
-        "lid",
         "drift"
        ],
        "used": true
@@ -36946,7 +36945,7 @@
       14,
       16
      ],
-     "note": "weak thermals",
+     "note": "offshore (Santa Ana) aloft",
      "p_fly": 0.0,
      "p_xc": 0.0,
      "agree": "split",
@@ -37003,9 +37002,9 @@
      "launch_ft": 1500,
      "style": "window",
      "why": [
-      "weak",
       "offshore",
-      "drift"
+      "drift",
+      "gusty"
      ],
      "when": {},
      "diag": {
@@ -37025,9 +37024,9 @@
        "wet": 0.0,
        "wind_src": "HRRR",
        "why": [
-        "weak",
         "offshore",
-        "drift"
+        "drift",
+        "gusty"
        ],
        "used": true
       },
@@ -37089,7 +37088,7 @@
        "why": [
         "otb",
         "windy",
-        "weak"
+        "offshore"
        ],
        "used": false
       },
@@ -37327,8 +37326,7 @@
        "wind_src": "ECMWF",
        "why": [
         "otb",
-        "gusty",
-        "lid"
+        "gusty"
        ],
        "used": false
       },
@@ -37349,8 +37347,7 @@
        "wind_src": "ECMWF",
        "why": [
         "otb",
-        "gusty",
-        "lid"
+        "gusty"
        ],
        "used": false
       },
@@ -37371,8 +37368,7 @@
        "wind_src": "ECMWF",
        "why": [
         "otb",
-        "gusty",
-        "lid"
+        "gusty"
        ],
        "used": false
       }
@@ -37612,7 +37608,7 @@
        "why": [
         "otb",
         "gusty",
-        "weak"
+        "offshore"
        ],
        "used": false
       },
@@ -37634,7 +37630,7 @@
        "why": [
         "otb",
         "gusty",
-        "weak"
+        "offshore"
        ],
        "used": false
       },
@@ -37947,7 +37943,7 @@
        "why": [
         "otb",
         "windy",
-        "weak"
+        "offshore"
        ],
        "used": false
       }
@@ -38228,7 +38224,7 @@
        "why": [
         "windy",
         "cross",
-        "weak"
+        "offshore"
        ],
        "used": false
       }
@@ -38697,9 +38693,7 @@
        ],
        "wet": 0.0,
        "wind_src": "HRRR",
-       "why": [
-        "lid"
-       ],
+       "why": [],
        "used": true
       },
       "RRFS": {
@@ -38780,8 +38774,7 @@
        "wet": 0.0,
        "wind_src": "ECMWF",
        "why": [
-        "otb",
-        "lid"
+        "otb"
        ],
        "used": false
       }
@@ -39331,9 +39324,7 @@
        ],
        "wet": 0.0,
        "wind_src": "ECMWF",
-       "why": [
-        "weak"
-       ],
+       "why": [],
        "used": false
       }
      },
@@ -40324,7 +40315,7 @@
        "why": [
         "otb",
         "gusty",
-        "weak"
+        "offshore"
        ],
        "used": false
       },
@@ -40346,7 +40337,7 @@
        "why": [
         "otb",
         "gusty",
-        "weak"
+        "offshore"
        ],
        "used": false
       }
@@ -40780,7 +40771,7 @@
      "why": [
       "otb",
       "gusty",
-      "lid"
+      "offshore"
      ],
      "when": {},
      "diag": {
@@ -40820,7 +40811,7 @@
        "why": [
         "otb",
         "gusty",
-        "lid"
+        "offshore"
        ],
        "used": true
       },
@@ -40840,8 +40831,7 @@
        "wet": 0.0,
        "wind_src": "ECMWF",
        "why": [
-        "otb",
-        "weak"
+        "otb"
        ],
        "used": false
       },
@@ -40861,8 +40851,7 @@
        "wet": 0.0,
        "wind_src": "ECMWF",
        "why": [
-        "otb",
-        "weak"
+        "otb"
        ],
        "used": false
       },
@@ -40883,8 +40872,7 @@
        "wind_src": "ECMWF",
        "why": [
         "otb",
-        "offshore",
-        "lid"
+        "offshore"
        ],
        "used": false
       }
@@ -41026,7 +41014,7 @@
       14,
       16
      ],
-     "note": "low lid, 5,100 ft",
+     "note": "offshore (Santa Ana) aloft",
      "p_fly": 0.0,
      "p_xc": 0.0,
      "agree": "agree",
@@ -41083,7 +41071,6 @@
      "launch_ft": 1550,
      "style": "window",
      "why": [
-      "lid",
       "offshore"
      ],
      "when": {},
@@ -41104,7 +41091,6 @@
        "wet": 0.0,
        "wind_src": "HRRR",
        "why": [
-        "lid",
         "offshore"
        ],
        "used": true
@@ -41149,7 +41135,7 @@
        "why": [
         "otb",
         "windy",
-        "lid"
+        "offshore"
        ],
        "used": false
       },
@@ -41191,7 +41177,7 @@
        "why": [
         "otb",
         "windy",
-        "weak"
+        "offshore"
        ],
        "used": false
       }
@@ -43533,8 +43519,7 @@
        "wind_src": "ECMWF",
        "why": [
         "otb",
-        "gusty",
-        "lid"
+        "gusty"
        ],
        "used": false
       },
@@ -43556,7 +43541,7 @@
        "why": [
         "otb",
         "gusty",
-        "weak"
+        "offshore"
        ],
        "used": false
       },
@@ -43577,8 +43562,7 @@
        "wind_src": "ECMWF",
        "why": [
         "otb",
-        "gusty",
-        "lid"
+        "gusty"
        ],
        "used": false
       }
@@ -43798,8 +43782,7 @@
        "wind_src": "ECMWF",
        "why": [
         "otb",
-        "gusty",
-        "lid"
+        "gusty"
        ],
        "used": false
       },
@@ -43819,8 +43802,7 @@
        "wet": 0.0,
        "wind_src": "ECMWF",
        "why": [
-        "otb",
-        "lid"
+        "otb"
        ],
        "used": false
       },
@@ -43841,8 +43823,7 @@
        "wind_src": "ECMWF",
        "why": [
         "otb",
-        "gusty",
-        "lid"
+        "gusty"
        ],
        "used": false
       }
@@ -44424,7 +44405,7 @@
        "why": [
         "windy",
         "gusty",
-        "weak"
+        "offshore"
        ],
        "used": false
       }
@@ -44702,9 +44683,7 @@
        ],
        "wet": 0.0,
        "wind_src": "ECMWF",
-       "why": [
-        "lid"
-       ],
+       "why": [],
        "used": false
       },
       "ICON": {
@@ -45169,7 +45148,7 @@
      "why": [
       "otb",
       "gusty",
-      "lid"
+      "offshore"
      ],
      "when": {},
      "diag": {
@@ -45191,7 +45170,7 @@
        "why": [
         "otb",
         "gusty",
-        "lid"
+        "offshore"
        ],
        "used": true
       },
@@ -45257,7 +45236,7 @@
        "why": [
         "otb",
         "windy",
-        "lid"
+        "offshore"
        ],
        "used": false
       },
@@ -45787,8 +45766,7 @@
        "wind_src": "ECMWF",
        "why": [
         "otb",
-        "weak",
-        "lid"
+        "weak"
        ],
        "used": false
       },
@@ -45829,8 +45807,7 @@
        "wet": 0.0,
        "wind_src": "ECMWF",
        "why": [
-        "otb",
-        "weak"
+        "otb"
        ],
        "used": false
       }
@@ -46510,7 +46487,7 @@
        "why": [
         "windy",
         "gusty",
-        "lid"
+        "offshore"
        ],
        "used": false
       }
@@ -46721,7 +46698,7 @@
        "why": [
         "otb",
         "gusty",
-        "lid"
+        "offshore"
        ],
        "used": false
       },
@@ -46742,8 +46719,7 @@
        "wind_src": "ECMWF",
        "why": [
         "gusty",
-        "otb",
-        "weak"
+        "otb"
        ],
        "used": false
       },
@@ -46764,8 +46740,7 @@
        "wind_src": "ECMWF",
        "why": [
         "gusty",
-        "otb",
-        "weak"
+        "otb"
        ],
        "used": false
       }
@@ -46966,9 +46941,7 @@
        ],
        "wet": 0.0,
        "wind_src": "ECMWF",
-       "why": [
-        "lid"
-       ],
+       "why": [],
        "used": true
       },
       "ECMWF": {
@@ -46986,9 +46959,7 @@
        ],
        "wet": 0.0,
        "wind_src": "ECMWF",
-       "why": [
-        "lid"
-       ],
+       "why": [],
        "used": true
       },
       "ICON": {
@@ -47006,9 +46977,7 @@
        ],
        "wet": 0.0,
        "wind_src": "ECMWF",
-       "why": [
-        "lid"
-       ],
+       "why": [],
        "used": true
       }
      },
@@ -47455,7 +47424,7 @@
      "why": [
       "otb",
       "gusty",
-      "lid"
+      "offshore"
      ],
      "when": {},
      "diag": {
@@ -47477,7 +47446,7 @@
        "why": [
         "otb",
         "gusty",
-        "lid"
+        "offshore"
        ],
        "used": true
       },
@@ -47499,7 +47468,7 @@
        "why": [
         "otb",
         "windy",
-        "lid"
+        "offshore"
        ],
        "used": false
       },
@@ -47542,7 +47511,7 @@
        "why": [
         "windy",
         "gusty",
-        "weak"
+        "offshore"
        ],
        "used": false
       }
@@ -47822,9 +47791,7 @@
        ],
        "wet": 0.0,
        "wind_src": "ECMWF",
-       "why": [
-        "weak"
-       ],
+       "why": [],
        "used": false
       }
      },
@@ -48812,9 +48779,7 @@
        ],
        "wet": 0.0,
        "wind_src": "ECMWF",
-       "why": [
-        "weak"
-       ],
+       "why": [],
        "used": false
       },
       "ICON": {
@@ -48832,9 +48797,7 @@
        ],
        "wet": 0.0,
        "wind_src": "ECMWF",
-       "why": [
-        "weak"
-       ],
+       "why": [],
        "used": false
       }
      },
@@ -49385,7 +49348,6 @@
        "wind_src": "ICON",
        "why": [
         "gusty",
-        "lid",
         "offshore"
        ],
        "used": false
@@ -49767,8 +49729,7 @@
      "launch_ft": 2650,
      "style": "switch",
      "why": [
-      "otb",
-      "lid"
+      "otb"
      ],
      "when": {},
      "diag": {
@@ -49806,8 +49767,7 @@
        "wet": 0.0,
        "wind_src": "ECMWF",
        "why": [
-        "otb",
-        "lid"
+        "otb"
        ],
        "used": true
       },
@@ -50684,9 +50644,7 @@
        ],
        "wet": 0.0,
        "wind_src": "GFS",
-       "why": [
-        "lid"
-       ],
+       "why": [],
        "used": false
       },
       "ECMWF": {
@@ -50931,8 +50889,7 @@
        "wet": 0.0,
        "wind_src": "ECMWF",
        "why": [
-        "windy",
-        "lid"
+        "windy"
        ],
        "used": false
       },
@@ -51396,8 +51353,7 @@
        "wind_src": "ECMWF",
        "why": [
         "otb",
-        "aloft",
-        "weak"
+        "aloft"
        ],
        "used": false
       },
@@ -52332,7 +52288,7 @@
       ]
      },
      "gwin": null,
-     "note": "low lid, 5,600 ft",
+     "note": "not flyable",
      "p_fly": 0.34,
      "p_xc": 0.3,
      "agree": "agree",
@@ -52384,9 +52340,7 @@
      "ground_ft": 1348,
      "launch_ft": 2650,
      "style": "switch",
-     "why": [
-      "lid"
-     ],
+     "why": [],
      "when": {},
      "diag": {
       "GFS": {
@@ -52404,9 +52358,7 @@
        ],
        "wet": 0.0,
        "wind_src": "GFS",
-       "why": [
-        "lid"
-       ],
+       "why": [],
        "used": true
       },
       "ECMWF": {
@@ -52879,8 +52831,7 @@
        "wind_src": "GFS",
        "why": [
         "otb",
-        "gusty",
-        "lid"
+        "gusty"
        ],
        "used": false
       },
@@ -52902,7 +52853,7 @@
        "why": [
         "otb",
         "windy",
-        "lid"
+        "showers"
        ],
        "used": false
       },
@@ -53135,7 +53086,7 @@
        "why": [
         "otb",
         "gusty",
-        "lid"
+        "showers"
        ],
        "used": false
       },
@@ -53583,7 +53534,7 @@
        "why": [
         "otb",
         "windy",
-        "lid"
+        "showers"
        ],
        "used": false
       },
@@ -53815,8 +53766,8 @@
        "wind_src": "ECMWF",
        "why": [
         "windy",
-        "lid",
-        "cross"
+        "cross",
+        "lid"
        ],
        "used": false
       },
@@ -55042,8 +54993,7 @@
      "launch_ft": 2650,
      "style": "switch",
      "why": [
-      "otb",
-      "lid"
+      "otb"
      ],
      "when": {},
      "diag": {
@@ -55085,8 +55035,7 @@
        "wet": 0.0,
        "wind_src": "ECMWF",
        "why": [
-        "otb",
-        "lid"
+        "otb"
        ],
        "used": true
       },
@@ -55341,7 +55290,7 @@
        "why": [
         "otb",
         "gusty",
-        "weak"
+        "offshore"
        ],
        "used": false
       },
