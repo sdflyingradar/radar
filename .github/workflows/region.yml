@@ -2,8 +2,8 @@ name: Update SD region panel
 
 on:
   schedule:
-    - cron: "27 13-23/2 * * *"   # every 2 h through the flying day (PST 5:27 am - 3:27 pm); 5 models, keeps the Open-Meteo budget
-    - cron: "27 6,11 * * *"      # twice overnight (the global models update ~6-hourly anyway)
+    - cron: "27 13,16,19,22 * * *"   # every 3 h through the flying day (PST 5:27, 8:27, 11:27 am, 2:27 pm); Open-Meteo budget
+    - cron: "27 2 * * *"             # once in the evening (6:27 pm PST); none between 10 pm and 5 am
   workflow_dispatch: {}
 
 permissions:
