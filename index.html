@@ -873,6 +873,9 @@ html body .det .steps .st { height: 15px; padding: 0 5px; font-size: .48rem !imp
 /* thermal panel: day back / forward */
 .tnav { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 17px 2px; }
 .tnav .tnd { font-size: .74rem; font-weight: 600; color: var(--muted); }
+/* the chart's day and region, quietly above it */
+.therm .tttl { text-align: center; padding: 2px 0 6px; }
+.therm .tttl .tnd { font-size: .74rem; font-weight: 600; color: #98a2b3; letter-spacing: .02em; }
 .tnb { font: inherit; font-size: .8rem; font-weight: 700; padding: 5px 12px; border-radius: 999px; border: 1px solid #d5dbe2; background: #fff; color: #26303a; cursor: pointer; min-width: 72px; }
 .tnb:disabled { opacity: .35; cursor: default; }
 .tnb:not(:disabled):hover { border-color: #26303a; }
@@ -999,7 +1002,7 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Site details" hidden></div>
 <script id="seed" type="application/json"></script>
 <script src="scripts/region/panel.js?v=202611081255"></script>
-<script src="scripts/region/panel2.js?v=202611082155"></script>
+<script src="scripts/region/panel2.js?v=202611082212"></script>
 <script>
 (() => {
 "use strict";
@@ -1627,8 +1630,9 @@ function thermPanel(d, s, c) {
     const i = +(Object.keys(DAYKEY).find((k) => DAYKEY[k] && DAYKEY[k].date === d.date) ?? -1);
     const has = (k) => DAYKEY[k] && DAYKEY[k].sites && DAYKEY[k].sites[s.id];
     const lab = (k) => (has(k) ? dayLabel(DAYKEY[k].date).short : "");
-    const nav = `<div class="tnav"><button type="button" class="tnb" data-jump="${i - 1}" data-sid="${s.id}"${has(i - 1) ? "" : " disabled"}>‹ ${esc(lab(i - 1))}</button><span class="tnd">${esc(dayLabel(d.date).short)} · ${esc(r.name)}</span><button type="button" class="tnb" data-jump="${i + 1}" data-sid="${s.id}"${has(i + 1) ? "" : " disabled"}>${esc(lab(i + 1))} ›</button></div>`;
-    return `<div class="therm">${PANEL({ generated: REGIONS_D.generated, region: r.name, days: r.days, marks: r.marks, floor_ft: r.floor_ft, compact: true, win: c.style === "ridge" ? null : c.win, gwin: c.gwin }, di)}${nav}${PANEL !== panelSVG && typeof P2_LEGEND_BTN === "string" ? P2_LEGEND_BTN : ""}</div>`;
+    const nav = `<div class="tnav"><button type="button" class="tnb" data-jump="${i - 1}" data-sid="${s.id}"${has(i - 1) ? "" : " disabled"}>‹ ${esc(lab(i - 1))}</button><span></span><button type="button" class="tnb" data-jump="${i + 1}" data-sid="${s.id}"${has(i + 1) ? "" : " disabled"}>${esc(lab(i + 1))} ›</button></div>`;
+    const ttl = `<div class="tttl"><span class="tnd">${esc(dayLabel(d.date).short)} · ${esc(r.name)}</span></div>`;
+    return `<div class="therm">${ttl}${PANEL({ generated: REGIONS_D.generated, region: r.name, days: r.days, marks: r.marks, floor_ft: r.floor_ft, compact: true, win: c.style === "ridge" ? null : c.win, gwin: c.gwin }, di)}${PANEL !== panelSVG && typeof P2_LEGEND_BTN === "string" ? P2_LEGEND_BTN : ""}${nav}</div>`;
   } catch (e) { return ""; }
 }
 
