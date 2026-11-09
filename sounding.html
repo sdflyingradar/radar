@@ -41,7 +41,7 @@ a{color:#2563eb}
 
 <p class="note">Cloudbase = surface dewpoint lifted at constant mixing ratio until it meets the temperature curve. Orange lines = dry adiabats (5.4 °F/1000 ft) from the surface every 5 °F, ending at the thermal top for that surface temperature. Zoomed to the flyable range. Blue bands = inversions. Dashed grey lines = launch heights of the nearby sites. Bold line = forecast afternoon high at the launch site (median of the GFS, ECMWF and ICON ensembles); shaded band = 10th–90th percentile of those runs. Updated by a GitHub Action after each 00Z/12Z launch.</p>
 </div>
-<script src="scripts/sounding/core.js?v=202611090915"></script>
+<script src="scripts/sounding/core.js?v=202611090935"></script>
 <script src="scripts/sounding/timeline.js?v=202611081045"></script>
 <script src="scripts/region/regionmap.js?v=202611071100"></script>
 <script src="scripts/sounding/pathmap.js?v=202611081000"></script>
@@ -71,7 +71,10 @@ a{color:#2563eb}
     try {
       const all = (await (await fetch('sites.json?' + Date.now())).json()).sites.flatMap(p => (p.launches && p.launches.length ? p.launches : [p]).map(l => ({ name: l.short || l.name || p.name, lat: l.lat ?? p.lat, lon: l.lon ?? p.lon, ft: l.launch_ft ?? p.launch_ft })));
       const km = l => Math.hypot((l.lon - INFO.lon) * 111.2 * Math.cos(INFO.lat * Math.PI / 180), (l.lat - INFO.lat) * 111.2);
-      launches = all.filter(l => isFinite(l.lat) && isFinite(l.ft) && km(l) <= 115);
+      // Little Black has two launches, named by their height over the LZ: the 300 (the site's launch) and the 800
+      const SPLIT = { 'Little Black': [['LB (300)', 0], ['LB (800)', 500]] };
+      launches = all.filter(l => isFinite(l.lat) && isFinite(l.ft) && km(l) <= 115)
+        .flatMap(l => SPLIT[l.name] ? SPLIT[l.name].map(([name, up]) => ({ ...l, name, ft: l.ft + up })) : [l]);
     } catch (e) {}
     const r = renderSVG(snd, { forecast, launches }), A = r.analysis, s = snd.levels[0];
     document.getElementById('plot').innerHTML = r.svg;

@@ -311,7 +311,7 @@ function renderSVG(snd, opts = {}) {
     for (const g of groups) {
       const ft = g.reduce((a, l) => a + l.ft, 0) / g.length, y = Y(ft / 1000);
       o.push(`<path d="M${P1.x0} ${f(y)}H${P1.x1}" stroke="#8b95a1" stroke-width=".8" stroke-dasharray="2 3" opacity=".75"/>`);
-      o.push(`<text x="${P1.x0 + 5}" y="${f(y - 3)}" font-size="9.5" font-weight="600" fill="#8b95a1" stroke="${PANEL}" stroke-width="3" paint-order="stroke">${g.map(l => esc(l.name)).join(' · ')} ${(Math.round(ft / 100) * 100).toLocaleString('en-US')}</text>`);
+      o.push(`<text x="${P1.x0 + 5}" y="${f(y - 3)}" font-size="9.5" font-weight="600" fill="#8b95a1" stroke="${PANEL}" stroke-width="3" paint-order="stroke">${g.map(l => `${esc(l.name)} ${(Math.round(l.ft / 50) * 50).toLocaleString('en-US')}`).join(' · ')}</text>`);
     }
   }
 
