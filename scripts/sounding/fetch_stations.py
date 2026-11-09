@@ -117,7 +117,7 @@ def main():
             break
         else:
             print(f"{stn}: no launch found for {c:%Y-%m-%d %HZ}")
-            if stn in ("EDW", "YUM"):                  # military: take their latest launch, whenever it flew
+            if stn in ("EDW", "YUM", "VBG"):           # military: take their latest launch, whenever it flew
                 try:
                     text, url, when = iem_latest(stn, now)
                     obs = f"{when:%Y-%m-%dT%H:%M}Z"
