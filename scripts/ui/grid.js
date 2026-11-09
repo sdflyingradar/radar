@@ -279,7 +279,7 @@
     ov.className = "pgp";
     ov.innerHTML = `<div class="wxp-card" role="dialog" aria-label="${title}"><div class="wxp-hd">${ic ? ic.outerHTML : ""}<b>${title}</b>`
       + `<button type="button" class="wxp-x" aria-label="Close">${X}</button></div>`
-      + `<iframe src="${href}?embed=1" title="${title}" scrolling="no"></iframe></div>`;
+      + `<iframe src="${href}?embed=1&t=${Date.now()}" title="${title}" scrolling="no"></iframe></div>`;
     document.body.appendChild(ov);
     const r = a.getBoundingClientRect();
     if (r.bottom > 0 && r.bottom < innerHeight * 0.5) {
