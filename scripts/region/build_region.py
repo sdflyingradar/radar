@@ -71,7 +71,7 @@ SURFACE = ["temperature_2m", "dew_point_2m", "precipitation", "cape", "shortwave
            "cloud_cover_low", "cloud_cover_mid", "cloud_cover_high",
            "wind_speed_10m", "wind_direction_10m", "wind_gusts_10m", "boundary_layer_height"]
 LEVEL_VARS = [f"{v}_{p}hPa" for p in LEVELS for v in ("temperature", "geopotential_height")] + \
-             [f"{v}_{p}hPa" for p in (850, 700) for v in ("wind_speed", "wind_direction")]
+             [f"{v}_{p}hPa" for p in LEVELS for v in ("wind_speed", "wind_direction")]   # every level: wind arrows at every height
 # same models and logic as the radar (scripts/build_forecast.py): HRRR + RRFS where they reach, then the
 # global models; per day: HRRR x2 + RRFS x1; RRFS-led days RRFS x2 + globals together x1; else median of globals
 MODELS = [("HRRR", ["ncep_hrrr_conus", "gfs_hrrr"], 3), ("RRFS", ["ncep_rrfs_conus", "rrfs_conus", "ncep_rrfs"], 4),
@@ -159,6 +159,17 @@ def blend_hours(per_model):
            "sfc": [sfc[0], sfc[1], round(gust) if gust is not None else None], "w5k": wind("w5k"), "w10k": wind("w10k"),
            "okta": [round(wcombine([(h["okta"][i], W[m]) for m, h in hs.items()], True) or 0) for i in range(3)],
            "grid": grid, "models": names}
+    # the profile extras from the leading model; the strongest wind is the strongest any model has at that height
+    lead = max(names, key=lambda m: W[m])
+    lw = [list(x) for x in (hs[lead].get("wl") or [])]
+    for lvl in lw:
+        for m, h in hs.items():
+            for o in h.get("wl") or []:
+                if abs(o[0] - lvl[0]) < 400 and o[3] is not None:
+                    lvl[3] = max(lvl[3] or 0, o[3])
+    tops = [(h.get("cu_top_ft"), W[m]) for m, h in hs.items() if h.get("cu_top_ft")]
+    out.update({"wl": lw, "inv": hs[lead].get("inv") or [], "cu_top_ft": round(wcombine(tops, True) / 100) * 100 if tops else None,
+                "ground_ft": hs[lead].get("ground_ft")})
     return out
 
 
@@ -349,7 +360,11 @@ def point_hour(h, i, elev_m, tn=None, snd=None):
             "cl_mid": at(h, "cloud_cover_mid", i), "cl_high": at(h, "cloud_cover_high", i),
             "sfc": (at(h, "wind_direction_10m", i), at(h, "wind_speed_10m", i), at(h, "wind_gusts_10m", i)),
             "w850": (at(h, "wind_direction_850hPa", i), at(h, "wind_speed_850hPa", i)),
-            "w700": (at(h, "wind_direction_700hPa", i), at(h, "wind_speed_700hPa", i))}
+            "w700": (at(h, "wind_direction_700hPa", i), at(h, "wind_speed_700hPa", i)),
+            # the profile for the detailed chart: wind at every level above the ground, and the temperatures (inversions)
+            "wl": {p: ((at(h, f"geopotential_height_{p}hPa", i) or STD_HEIGHT_M[p]), at(h, f"wind_direction_{p}hPa", i), at(h, f"wind_speed_{p}hPa", i))
+                   for p in LEVELS if (at(h, f"geopotential_height_{p}hPa", i) or STD_HEIGHT_M[p]) > elev_m + 30},
+            "prof": pts}
 
 
 def vec_mean(pairs):
@@ -465,7 +480,56 @@ def region_hour(ps, terr=None):
                  round((M([at_mid(p) for p in ps]) or 0) / 12.5),
                  round((M([p["cl_high"] for p in ps]) or 0) / 12.5)],
         "grid": grid,
+        "wl": wind_levels(ps), "inv": inversions(ps),
+        "cu_top_ft": round(mean([p["ctop"] for p in ps if p["cu"] and p["ctop"]]) * FT / 100) * 100 if any(p["cu"] and p["ctop"] for p in ps) else None,
+        "ground_ft": round(mean([p["elev"] for p in ps]) * FT / 50) * 50,
     }
+
+
+def wind_levels(ps):
+    """Wind from the ground up for the detailed chart: [[height ft, dir, mean mph, strongest mph in the region]];
+    the first entry is the ground (10 m) at the region's mean ground height."""
+    out = []
+    g = vec_mean([(p["sfc"][0], p["sfc"][1]) for p in ps])
+    gmax = max((p["sfc"][1] for p in ps if p["sfc"][1] is not None), default=None)
+    elev = mean([p["elev"] for p in ps])
+    if g[0] is not None and elev is not None:
+        out.append([round(elev * FT / 50) * 50, g[0], g[1], round(gmax) if gmax is not None else g[1]])
+    for lev in LEVELS:
+        got = [p["wl"][lev] for p in ps if lev in p.get("wl", {}) and p["wl"][lev][2] is not None]
+        if len(got) * 2 < len(ps):
+            continue                      # most of the region's ground is above this level
+        d, sp = vec_mean([(x[1], x[2]) for x in got])
+        if d is None:
+            continue
+        z = mean([x[0] for x in got])
+        out.append([round(z * FT / 50) * 50, d, sp, round(max(x[2] for x in got))])
+    return out
+
+
+def inversions(ps):
+    """Stable layers (inversions) from the region's mean temperature profile, ground and pressure levels:
+    [[bottom ft, top ft], ...] where the air warms with height or cools less than 1 C per km."""
+    elev = mean([p["elev"] for p in ps]); t2 = mean([p["t"] for p in ps])
+    if elev is None or t2 is None:
+        return []
+    lev = {}
+    for p in ps:
+        for z, t in p.get("prof") or []:
+            lev.setdefault(round(z / 150), []).append((z, t))
+    prof = [(elev, t2)] + sorted((mean([z for z, _ in v]), mean([t for _, t in v])) for v in lev.values() if len(v) * 2 >= len(ps))
+    out = []
+    for (z0, t0), (z1, t1) in zip(prof, prof[1:]):
+        if z1 - z0 < 60:
+            continue
+        lapse = (t1 - t0) / ((z1 - z0) / 1000)          # C per km, negative = cooling with height
+        if lapse > -1.0:
+            lo, hi = round(z0 * FT / 50) * 50, round(z1 * FT / 50) * 50
+            if out and abs(out[-1][1] - lo) < 60:
+                out[-1][1] = hi
+            else:
+                out.append([lo, hi])
+    return out
 
 
 def at_mid(p):
