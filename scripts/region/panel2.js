@@ -1,5 +1,5 @@
 // Detailed region thermal chart (our own design): the day hour by hour, from the ground up.
-//   top strip   how good each hour is for flying (grey = not worth it ... dark green = big cross-country)
+//   top strip   each hour in the radar's verdict colours (no-go red ... great XC blue)
 //   clouds      high / mid / low layers in oktas (darker = more), weather symbol per hour
 //   main chart  thermal strength (m/s) as orange cells per 500 ft, cumulus as grey columns from base to top,
 //               inversions as pink bands, wind arrows at every 1,000 ft: the fill is the mean wind over the region,
@@ -7,10 +7,12 @@
 //   statistics  strongest climb and highest top of the day, with their times
 // panel2SVG(data, dayIndex) -> SVG string; same data as panelSVG (data/region/regions.json, one region).
 
-const P2_LIFT = [[0, '#fff3e6'], [0.5, '#fde2c4'], [1, '#fbc996'], [1.5, '#f8ab66'], [2, '#f48b3a'], [2.5, '#e96d1e'], [3, '#cf5512'], [3.5, '#a9420d'], [4, '#7f310b'], [4.5, '#5a2309']];
+const P2_LIFT = [[0, '#ffeedd'], [0.5, '#fdd0a2'], [1, '#fbb068'], [1.5, '#f89039'], [2, '#f1721b'], [2.5, '#e05a0c'], [3, '#c44608'], [3.5, '#a03606'], [4, '#782805'], [4.5, '#521b04']];
 // wind, mph (from the usual pilot scale in km/h: 0-6 calm, 7-14 fine, 15-24 noticeable, 25-30 strong, 31-36 stop, over 36 no-go)
 const P2_WIND = [[0, '#ffffff'], [4, '#3fc25a'], [9.5, '#f5d90a'], [15.5, '#f08a1c'], [19, '#e0262a'], [22.5, '#151515']];
-const P2_RATE = (s) => s == null ? '#e5e7eb' : s < 1.6 ? '#6f757d' : s < 2.5 ? '#b9bec5' : s < 3.5 ? '#f3dd1c' : s < 4.5 ? '#35b04f' : '#16773a';
+// the radar's own verdicts and colours: 1 no-go (red), 2 marginal (orange), 3 site fly (yellow), 4 XC (green), 5 great XC (blue)
+const P2_VERDICT = [[1, '#d8402f', 'No-go'], [2, '#ee8a1c', 'Marginal'], [3, '#f1c72b', 'Site fly'], [4, '#3aa457', 'XC'], [5, '#2f7fcf', 'Great XC']];
+const P2_RATE = (s) => s == null ? '#e5e7eb' : P2_VERDICT[Math.max(0, Math.min(4, Math.round(s) - 1))][1];
 const p2pick = (scale, v) => { let c = scale[0][1]; for (const [k, col] of scale) if (v >= k - 1e-9) c = col; return c; };
 const P2_OKTA = (n) => ['#eef4fb', '#e3e7ec', '#d6dbe1', '#c6ccd3', '#b4bbc3', '#9fa7b0', '#8a929c', '#747c86', '#5f6670'][Math.max(0, Math.min(8, n | 0))];
 
@@ -190,7 +192,7 @@ function panel2SVG(data, di = 0) {
   const stat = [best && best[0] > 0 ? `strongest climb ${best[0].toFixed(1)} m/s at ${hh(best[1])}` : 'no usable climbs', hi ? `highest top ${hi[0].toLocaleString()} ft at ${hh(hi[1])}` : ''].filter(Boolean).join('   ·   ');
   o.push(`<text x="${L}" y="${sy + (fs - 1) * 8}" font-size="${12.5 * fs}" fill="${MUTED}">${stat}</text>`);
   if (!data.compact) {
-    const key = [['#6f757d', 'not worth it'], ['#b9bec5', 'glide / soar'], ['#f3dd1c', 'local thermals'], ['#35b04f', 'cross-country'], ['#16773a', 'big XC']];
+    const key = P2_VERDICT.map(([, c, t]) => [c, t]);
     let x = L;
     for (const [c, t] of key) { o.push(`<rect x="${x}" y="${sy + 14}" width="18" height="10" fill="${c}"/><text x="${x + 24}" y="${sy + 23}" font-size="11.5" fill="${MUTED}">${t}</text>`); x += 34 + t.length * 6.4; }
     o.push(`<rect x="${x + 8}" y="${sy + 14}" width="18" height="10" fill="#e58ac2" opacity=".5"/><text x="${x + 32}" y="${sy + 23}" font-size="11.5" fill="${MUTED}">inversion</text>`);
@@ -207,24 +209,24 @@ function panel2LegendHTML() {
   const sw = (c, extra = '') => `<i style="background:${c};${extra}"></i>`;
   const arrow = (fill, rim) => `<svg viewBox="-9 -10 18 20" width="16" height="18"><path d="M0 -9 L6.5 8 L0 4.2 L-6.5 8 Z" fill="${fill}" stroke="${rim}" stroke-width="2" stroke-linejoin="round"/></svg>`;
   const row = (a, t) => `<div class="p2r"><span class="p2s">${a}</span><span>${t}</span></div>`;
-  return `<div class="p2card" role="dialog" aria-label="Chart legend"><div class="p2hd"><b>Reading the detailed chart</b><button type="button" class="p2x" aria-label="Close">×</button></div>
-    <h4>Top strip · how good each hour is</h4>
-    ${row(sw('#6f757d'), 'not worth it')}${row(sw('#b9bec5'), 'glide down or soar')}${row(sw('#f3dd1c'), 'local thermal flying')}${row(sw('#35b04f'), 'cross-country')}${row(sw('#16773a'), 'big cross-country')}
-    <h4>Clouds</h4>
-    ${row(sw('#d6dbe1', 'border-radius:6px') + sw('#8a929c', 'border-radius:6px'), 'high (H), mid (M) and low (L) layers: the darker, the more of the sky they cover')}
-    ${row('☀️', 'weather for the hour: sun, some cloud, cloudy, showers, thunder')}
-    <h4>Lift</h4>
-    <div class="p2r p2col"><span class="p2s">${P2_LIFT.map(([v, c]) => `<i style="background:${c};width:26px;color:${v >= 2.5 ? '#fff' : '#26303a'};font:600 9px/12px system-ui;text-align:center;font-style:normal">${v}</i>`).join('')}</span><span>orange cells: how fast thermals climb (m/s), every 500 ft up to the top of lift</span></div>
-    ${row(sw('#cdd2d8', 'border-radius:8px;width:14px;height:20px'), 'grey column: cumulus, from cloud base to cloud top; wider and darker = more clouds')}
-    ${row(sw('#e58ac2', 'opacity:.55'), 'pink band: inversion, a stable layer that caps or weakens thermals')}
-    ${row(sw('#efe6d6'), 'ground; dashed lines are site heights; the dotted box is the site\'s flying window')}
-    <h4>Wind arrows</h4>
-    ${row(arrow('#3fc25a', '#3fc25a'), 'arrows point where the wind blows to, one per 1,000 ft; near the ground they show the wind at the landing fields and valleys')}
-    ${[['#fff', '#9aa3ad', 'calm, under 4 mph'], ['#3fc25a', '#3fc25a', 'fine, 4–9 mph'], ['#f5d90a', '#f5d90a', 'noticeable, 10–15 mph'], ['#f08a1c', '#f08a1c', 'strong, 16–18 mph'],
-      ['#e0262a', '#e0262a', 'stop, 19–22 mph'], ['#151515', '#151515', 'no-go, over 22 mph']].map(([f, r, t]) => row(arrow(f, r), t)).join('')}
-    ${row(arrow('#fff', '#3fc25a') + arrow('#3fc25a', '#f08a1c'), 'fill = the average wind over the region; rim = the strongest wind anywhere in it (a strong rim means it blows harder somewhere)')}
-    <h4>Bottom line</h4>
-    <p>The day's strongest climb and highest top of lift, with their times.</p></div>`;
+  return `<div class="p2card" role="dialog" aria-label="Chart legend"><div class="p2hd"><b>How to read this chart</b><button type="button" class="p2x" aria-label="Close">×</button></div>
+    <h4>Top strip · the radar's verdict for each hour</h4>
+    ${P2_VERDICT.map(([, c, t]) => row(sw(c), t)).join('')}
+    <h4>Sky</h4>
+    ${row(sw('#d6dbe1', 'border-radius:6px') + sw('#8a929c', 'border-radius:6px'), 'cloud layers, high (H), middle (M) and low (L); darker grey = more of the sky covered')}
+    ${row('☀️', 'a symbol for each hour: sunny, some clouds, overcast, rain or thunderstorms')}
+    <h4>Thermals</h4>
+    <div class="p2r p2col"><span class="p2s">${P2_LIFT.map(([v, c]) => `<i style="background:${c};width:26px;color:${v >= 2 ? '#fff' : '#26303a'};font:600 9px/12px system-ui;text-align:center;font-style:normal">${v}</i>`).join('')}</span><span>climb rate in m/s, in 500 ft steps from the ground to the top of the lift: the darker, the stronger</span></div>
+    ${row(sw('#cdd2d8', 'border-radius:8px;width:14px;height:20px'), 'grey bar: cumulus clouds from their base to their top; a wider, darker bar means more of them')}
+    ${row(sw('#e58ac2', 'opacity:.55'), 'pink: a warm, stable layer (inversion) that stops or weakens the thermals')}
+    ${row(sw('#efe6d6'), 'the ground; dashed lines mark the launches, the dotted frame the site\'s best hours')}
+    <h4>Wind</h4>
+    ${row(arrow('#3fc25a', '#3fc25a'), 'one arrow per 1,000 ft, pointing downwind; the lowest ones show the wind at the landing fields and in the valleys')}
+    ${[['#fff', '#9aa3ad', 'light, under 4 mph'], ['#3fc25a', '#3fc25a', 'pleasant, 4–9 mph'], ['#f5d90a', '#f5d90a', 'breezy, 10–15 mph'], ['#f08a1c', '#f08a1c', 'strong, 16–18 mph'],
+      ['#e0262a', '#e0262a', 'too strong for most pilots, 19–22 mph'], ['#151515', '#151515', 'dangerous, over 22 mph']].map(([f, r, t]) => row(arrow(f, r), t)).join('')}
+    ${row(arrow('#fff', '#3fc25a') + arrow('#3fc25a', '#f08a1c'), 'the inside of an arrow is the typical wind across the region, its outline the windiest spot in it')}
+    <h4>Under the chart</h4>
+    <p>The best climb and the highest lift of the day, and when they happen.</p></div>`;
 }
 (function () {
   if (typeof document === 'undefined') return;
