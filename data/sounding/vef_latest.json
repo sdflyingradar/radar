@@ -1,0 +1,52 @@
+{
+  "title": "vef_1200Z_09_Nov_2026",
+  "source": "https://weather.uwyo.edu/wsgi/sounding?datetime=2026-11-09%2012:00:00&id=72388&type=TEXT:LIST&src=UNKNOWN",
+  "fetched": "2026-11-09T14:41Z",
+  "surface_ft": 2290,
+  "surface_temp_f": 55,
+  "surface_dewpoint_f": 35,
+  "cloudbase_ft_msl": 17300,
+  "trigger_temp_f": 102,
+  "forecast_high": {
+    "day": "2026-11-09",
+    "label": "today",
+    "median_f": 71.8,
+    "p10_f": 70.5,
+    "p90_f": 73,
+    "hrrr_f": 73.4,
+    "members": 122,
+    "models": [
+      "GFS ens (31)",
+      "ECMWF ens (51)",
+      "ICON ens (40)"
+    ],
+    "lat": 36.05,
+    "lon": -115.18,
+    "window": "10:00-17:00 local",
+    "source": "https://open-meteo.com/en/docs/ensemble-api",
+    "fetched": "2026-11-09T20:51Z",
+    "thermal_tops": {
+      "median_ft": 4200,
+      "low_ft": 3300,
+      "high_ft": 4600
+    }
+  },
+  "thermal_tops_ft": [
+    {
+      "surface_f": 65,
+      "top_ft": 2600
+    },
+    {
+      "surface_f": 70,
+      "top_ft": 3200
+    },
+    {
+      "surface_f": 75,
+      "top_ft": 5300
+    },
+    {
+      "surface_f": 80,
+      "top_ft": 7200
+    }
+  ]
+}
