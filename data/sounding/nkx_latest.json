@@ -1,7 +1,7 @@
 {
   "title": "nkx_1200Z_09_Nov_2026",
   "source": "https://weather.uwyo.edu/wsgi/sounding?datetime=2026-11-09%2012:00:00&id=72293&type=TEXT:LIST&src=UNKNOWN",
-  "fetched": "2026-11-09T16:49Z",
+  "fetched": "2026-11-09T20:43Z",
   "surface_ft": 440,
   "surface_temp_f": 62,
   "surface_dewpoint_f": 43,
@@ -10,10 +10,10 @@
   "forecast_high": {
     "day": "2026-11-09",
     "label": "today",
-    "median_f": 86.6,
+    "median_f": 86.2,
     "p10_f": 80.3,
-    "p90_f": 87.8,
-    "hrrr_f": 86.7,
+    "p90_f": 87.7,
+    "hrrr_f": 86.2,
     "members": 122,
     "models": [
       "GFS ens (31)",
@@ -24,9 +24,9 @@
     "lon": -117.12,
     "window": "10:00-17:00 local",
     "source": "https://open-meteo.com/en/docs/ensemble-api",
-    "fetched": "2026-11-09T16:49Z",
+    "fetched": "2026-11-09T20:43Z",
     "thermal_tops": {
-      "median_ft": 3800,
+      "median_ft": 3600,
       "low_ft": 1000,
       "high_ft": 4100
     }
