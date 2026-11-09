@@ -1450,7 +1450,7 @@ function sitePills(c) {
     .forEach((k) => out.push(`<span class="rx">${ico(k === "lid" || k === "weak" ? "lid" : k === "windy" || k === "gusty" ? "windy" : "warn")}${esc(WHY_TXT[k])}${when[k] ? ` <span class="dv">${esc(when[k])}</span>` : ""}</span>`));
   /* deductions as short chips (the full wording and the points stay in the detail view); the ones that only
      cap a 5 at 4 don't get a chip */
-  const SHORT = [[/^crosswind, 20–45° outside/, "cross wind"], [/from behind, 45°\+ outside/, "wrong direction"],
+  const SHORT = [[/^crosswind, up to 20° outside/, "cross wind"], [/from behind, 20°\+ outside/, "wrong direction"],
     [/gusts over 18/, "too windy"], [/gusts over 12/, "gusty"], [/top of lift over \d+ mph: (no-go|too windy)/, "too windy aloft"],
     [/top of lift over/, "strong wind aloft"], [/blown out/, "blown out"], [/not calm/, "not calm"],
     [/over the back aloft/, "over the back aloft"], [/off season/, "off season"], [/NW to N aloft/, "NW–N"], [/^offshore .*no-go/, "offshore flow aloft"], [/^offshore .*2 at most/, "offshore"], [/^offshore /, "light offshore"]];
@@ -1862,8 +1862,8 @@ $("#reload").addEventListener("click", load);
   window.addEventListener("scroll", () => (tip.hidden = true), { passive: true });
 })();
 </script>
-<script src="scripts/ui/facts.js?v=202611090950"></script>
-<script src="scripts/ui/grid.js?v=202611090950"></script>
+<script src="scripts/ui/facts.js?v=202611091005"></script>
+<script src="scripts/ui/grid.js?v=202611091005"></script>
 <script src="scripts/ui/first.js?v=202611082340"></script>
 </body>
 </html>

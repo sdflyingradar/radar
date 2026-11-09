@@ -90,7 +90,7 @@
   const short = (t) => String(t)
     .replace(/^offshore LAX-DAG (-?[\d.]+) mb.*/, (m, g) => `LAX–DAG ${g.replace("-", "−")} mb`)
     .replace(/^offshore (\d\+) mph below ([\d,]+) ft/, "$1 mph below $2 ft").replace(/^offshore (\d\+) mph aloft/, "$1 mph")
-    .replace(/^crosswind, 20–45° outside the launch window/, "crosswind").replace(/^wind from behind, 45°\+ outside the launch window/, "from behind").replace(/^wind at the edge of the launch window/, "edge of window")
+    .replace(/^crosswind, up to 20° outside the launch window/, "crosswind").replace(/^wind from behind, 20°\+ outside the launch window/, "from behind").replace(/^wind at the edge of the launch window/, "edge of window")
     .replace(/^gusts over (\d+) mph/, "over $1 mph").replace(/^wind at top of lift over (\d+) mph/, "top of lift $1+ mph")
     .replace(/^little sun \(mid\/high cloud\)/, "less sun").replace(/^chance of rain.*/, "showers").replace(/^rain much of the window/, "much of the window")
     .replace(/^off season/, "off season").replace(/^a 5 needs a clean day/, "a 5 needs a clean day").replace(/^NW to N aloft/, "NW–N")

@@ -632,7 +632,7 @@ def site_face(site):
     return None if span == 0 or span >= 300 else (w[0] + span / 2) % 360
 
 
-RIM_DEG = 15                  # the outer 15 degrees inside a launch window: fine, but a small nick (yellow on the dial)
+RIM_DEG = 20                  # the outer 20 degrees inside a launch window: a small nick (yellow on the dial)
 RIM_NICK = 0.3
 
 
@@ -1428,9 +1428,9 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "gust12": sum(1 for s in blk if s.get("gcat", 0) >= 1) / len(blk),
         "top_wind": (lambda v: sorted(v)[len(v) // 2] if v else None)([s["tw"][1] * 1.15078 for s in blk if s.get("tw")]),
         "gust18": sum(1 for s in blk if s.get("gcat", 0) >= 2) / len(blk),
-        "offcat": (lambda offs: sum(0 if o <= 20 else 1 if o <= 45 else 2 for o in offs) / len(offs) if offs else 0.0)(   # off = outside the window
+        "offcat": (lambda offs: sum(0 if o <= 0 else 1 if o <= 20 else 2 for o in offs) / len(offs) if offs else 0.0)(   # off = outside the window
             [s["off"] for s in blk if s.get("off") is not None]),
-        "rim": (lambda offs: sum(1 for o in offs if -RIM_DEG < o <= 20) / len(offs) if offs else 0.0)(
+        "rim": (lambda offs: sum(1 for o in offs if -RIM_DEG < o <= 0) / len(offs) if offs else 0.0)(
             [s["off"] for s in blk if s.get("off") is not None]),
         "launch": max(set(x["launch"] for x in blk if x["launch"]) or {None}, key=lambda v: sum(1 for x in blk if x["launch"] == v)),
         "a_max": med("a_max"), "a_spd": a_spd, "a_dir": a_dir,
@@ -2212,15 +2212,15 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 elif (tw_mph is not None and tw_mph > t1) or (lw_b is not None and lw_b > calm.get("launch_mph", 8)):
                     caps.append((2.0, "not calm enough: 2 at most"))
             # how well the wind lines up with the launch through the window (thermal sites, light air ignored), the
-            # same as the launch dial on the tile: well inside the launch window is fine; the outer 15 degrees of it, or
-            # up to 20 degrees outside it, is a small nick (most of the window);
-            # 20-45 degrees outside (crosswind) costs a point; more than 45 degrees outside (over the back) sinks the day
+            # same as the launch dial on the tile: more than 20 degrees inside the launch window is fine (green); the outer
+            # 20 degrees of it a small nick (yellow); up to 20 degrees outside costs a point (orange, crosswind); further
+            # out sinks the day (red); each when it holds for most of the window
             if s.get("style") in ("thermal", "window") and D and site_face(s) is not None:
                 oc = sum(model_weight(k, D) * a.get("offcat", 0.0) for k, a in D.items()) / (sum(model_weight(k, D) for k in D) or 1)
                 if oc >= 1.5:
-                    caps.append((2.0, "wind from behind, 45°+ outside the launch window: 2 at most"))
+                    caps.append((2.0, "wind from behind, 20°+ outside the launch window: 2 at most"))
                 elif oc >= 0.5:
-                    r0 = rating; rating = max(1.0, rating - 1.0); note_adj("crosswind, 20–45° outside the launch window", r0)
+                    r0 = rating; rating = max(1.0, rating - 1.0); note_adj("crosswind, up to 20° outside the launch window", r0)
                 elif sum(model_weight(k, D) * a.get("rim", 0.0) for k, a in D.items()) / (sum(model_weight(k, D) for k in D) or 1) >= 0.5:
                     r0 = rating; rating = max(1.0, rating - RIM_NICK); note_adj("wind at the edge of the launch window", r0)
             # awkward drift at the top of lift (most of the rating weight agrees): a tag, and at some
