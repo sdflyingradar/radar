@@ -1,4 +1,4 @@
-"""One-time terrain sampling for the region panels (Regtherm-style area-elevation weighting).
+"""One-time terrain sampling for the region panels (area-elevation weighting: every bit of ground lifts its own thermals).
 
 For every region polygon: sample ground height on a ~2.5 km grid (Open-Meteo elevation API, 100 points per call),
 give each cell to its nearest probe point, and store per probe a histogram of ground heights in 500 ft buckets.

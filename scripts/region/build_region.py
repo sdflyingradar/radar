@@ -1,4 +1,4 @@
-"""San Diego as one soaring region (XCTherm-style region panel).
+"""San Diego as one soaring region (region thermal panel).
 
 Pulls hourly model data for a handful of inland San Diego points from Open-Meteo, works out the soaring
 numbers the same way the radar does (mixed-layer depth from the profile and the model PBL, W* from surface
@@ -213,7 +213,7 @@ def at(h, k, i):
     return v[i] if i < len(v) else None
 
 
-# Per-region tuning (Regtherm-style), neutral unless flights say otherwise.
+# Per-region tuning, neutral unless flights say otherwise.
 #   frac: share of the sunshine that heats the air when a model has no surface heat flux (radar: 0.40 inland, 0.30 coast)
 #   heat: multiplies the heating (drier/barer ground > 1, irrigated or marine-cooled < 1)
 #   climb_off: m/s added to the climb rate
@@ -416,8 +416,8 @@ def terrain_entries(ps, terr):
 
 
 def region_grid(ps, terr=None):
-    """Climb per 500 ft band. With terrain: every bit of ground lifts its own thermals (Regtherm-style
-    area-elevation weighting); a band shows once 8% of the region's ground lies below it."""
+    """Climb per 500 ft band. With terrain: every bit of ground lifts its own thermals (area-elevation
+    weighting); a band shows once 8% of the region's ground lies below it."""
     cells = {}
     ent = terrain_entries(ps, terr) if terr and len(terr) == len(ps) else None
     if not ent:

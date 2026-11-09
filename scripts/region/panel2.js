@@ -1,4 +1,4 @@
-// Detailed region thermal chart (lab): the day hour by hour, from the ground up.
+// Detailed region thermal chart (our own design): the day hour by hour, from the ground up.
 //   top strip   how good each hour is for flying (grey = not worth it ... dark green = big cross-country)
 //   clouds      high / mid / low layers in oktas (darker = more), weather symbol per hour
 //   main chart  thermal strength (m/s) as orange cells per 500 ft, cumulus as grey columns from base to top,

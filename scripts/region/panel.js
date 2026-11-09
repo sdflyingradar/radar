@@ -1,4 +1,4 @@
-// XCTherm-style region panel (graphic view): clouds H/M/L (oktas), wind ground / 5k ft (arrows on speed colour),
+// Region panel, classic view (graphic): clouds H/M/L (oktas), wind ground / 5k ft (arrows on speed colour),
 // then a time x height grid of expected climb (m/s) in half-hour columns, cumulus as cloud icons.
 // panelSVG(data, dayIndex) -> SVG string; panelText(data, dayIndex) -> HTML. data = data/region/sd.json
 
@@ -38,7 +38,7 @@ function panelSVG(data, di = 0) {
   const cols = halfHours(day);
   const W = 1000, L = 74, R = 8, cw = (W - L - R) / cols.length;
   const INK = '#1f2328', MUTED = '#6b7280', GRID = '#dfe2e6', GRID2 = '#b9bec5';
-  // rows: from the lowest used height to well above the highest (XCTherm shows the open sky above)
+  // rows: from the lowest used height to well above the highest (the open sky above is shown too)
   const zs = new Set();
   for (const c of cols) for (const z of Object.keys(c.d.grid || {})) zs.add(+z);
   const marks = data.marks || [];
@@ -54,7 +54,7 @@ function panelSVG(data, di = 0) {
   const o = [];
   o.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${Hh}" font-family="Inter, Roboto, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" fill="${INK}">`);
   o.push(`<rect width="${W}" height="${Hh}" fill="#fff"/>`);
-  // header (as XCTherm: region, date, model + run on the right); compact (inside a radar site card): one quiet line
+  // header (region, date, model + run on the right); compact (inside a radar site card): one quiet line
   const d = new Date(day.date + 'T12:00:00');
   if (data.compact) {
     const gen = new Date(data.generated.replace('Z', ':00Z'));
