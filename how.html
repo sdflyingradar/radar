@@ -8,6 +8,7 @@
 :root { --paper:#f6f3ee; --ink:#2b1d14; --muted:#7a6a5d; --line:#d9cfc4; --red:#d23a2a; --coffee:#6f4e37; --orange:#c26a24;
   --body:"Work Sans","Helvetica Neue",Arial,sans-serif; color-scheme: light; }
 body { background:var(--paper); color:var(--ink); font-family:var(--body); margin:0; }
+main > * { min-width:0; }
 main { max-width:1120px; margin:0 auto; padding-block:28px 48px; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); display:grid; gap:28px; }
 h1 { font-size:clamp(1.7rem,4vw,2.4rem); font-weight:800; letter-spacing:-.02em; margin:0; text-wrap:balance; }
 h1 span { color:var(--orange); }
@@ -56,6 +57,11 @@ svg { width:100%; height:auto; display:block; }
 .legend { display:flex; flex-wrap:wrap; gap:6px 16px; font-size:.82rem; color:var(--muted); align-items:center; }
 .legend .chip { display:inline-flex; align-items:center; gap:6px; }
 .legend .chip i { width:18px; height:8px; display:inline-block; border-radius:2px; }
+.how ul.parts, .how ol.steps { padding-left: 20px; display: grid; gap: 8px; max-width: 76ch; }
+.how ol.steps > li, .how ul.parts > li { padding-left: 2px; min-width: 0; }
+.rules.scale { margin: 8px 0; font-size: .78rem; table-layout: fixed; } .rules.scale td { padding: 4px 3px; text-align: center; } .rules.scale th { width: 26%; white-space: normal; } .rules.scale th { font-weight: 600; }
+.rules.facts th { width: 1%; }
+.c-b { color: #2b7fd8; } .c-g { color: #2f9e57; } .c-y { color: #b8990b; } .c-o { color: #e07a0c; } .c-r { color: #d64545; }
 .rules { border-collapse:collapse; font-size:.86rem; width:100%; }
 .rules th { text-align:left; font-weight:600; padding:6px 12px 6px 0; vertical-align:top; white-space:nowrap; }
 .rules td { padding:6px 0; } .rules tr + tr { border-top:1px solid var(--line); }
@@ -95,27 +101,52 @@ svg { width:100%; height:auto; display:block; }
   <span class="chip"><i style="background:var(--q4)"></i>4 XC</span>
   <span class="chip"><i style="background:var(--q5)"></i>5 Great XC</span>
 </div>
-<p><b>Day.</b> The coloured word under the date (No-go, Marginal, Site fly, XC) is the local thermal day at Little Black, Blossom and Elsinore; the colour bar on the left says the same at a glance.</p>
-<p><b>Boxes</b> light up when they apply; tap one to see which sites. Good: <b>XC</b>, <b>glass-off</b>, <b>good height</b>. Bad: <b>low lid</b>, <b>windy</b>, <b>rain</b>, <b>cloud</b>.</p>
-<p>Below them: the day type (post-frontal, Santa Ana …, with how many models agree), then the sites in two groups: the four best San Diego mountain sites, and Torrey with the best trip area when it's good. Tap the day to open it: Torrey on top, then the mountain sites, then the trips.</p>
-<p><b>Site card.</b> Score, type of flying (Thermal, Cross-country, Ridge soaring, Glass-off), chips from good to bad (tap one for what it means), height of lift, wind on launch and at the top of lift, and the hours from 9 am to 6 pm. Tap the card for what made the score and how sure the models are.</p>
-<p><b>Updates</b> hourly through the day.</p>
+<p><b>At the top</b> three buttons open a popup without leaving the page: <b>Weather</b> (the forecasters' discussion in a few lines: what pattern is here and what is coming), <b>Sounding</b> (this morning's balloon, with today's expected thermal top on the button) and <b>LAX–DAG</b> (the Santa Ana pressure gradient, with the current number on the button).</p>
+<p><b>Each day is one card</b> in three parts:</p>
+<ul class="parts">
+  <li><b>The day</b>: name and date in the day's colour, and its verdict (No-go, Marginal, Site fly, XC). The verdict is the local thermal day at Little Black, Blossom and Elsinore.</li>
+  <li><b>Signals</b>: three good ones on top (<b>XC</b>, <b>glass-off</b>, <b>good height and climbs</b>) and four bad ones below (<b>low lid</b>, <b>windy</b>, <b>rain</b>, <b>high cloud</b>). A signal glows when it applies, dashed when only some models say so; tap it to see which sites. Under them the <b>weather pattern</b> (Santa Ana, front, pre- or post-frontal, switch day) with how many models agree, and at the bottom the models the day runs on.</li>
+  <li><b>The sites</b>: on the phone the three best San Diego mountain sites (always with Little Black or Blossom), then Torrey and the best trip area when it's good. Tap the day to open all sites as tiles. On a computer every day is open: the day on the left, the sites as tiles, Torrey on its own as the coast.</li>
+</ul>
+<p><b>A site tile</b> shows the score, the type of flying (Thermal, Cross-country, Ridge soaring, Glass-off), warnings in small pills (tap one for what it means), and three facts with coloured icons:</p>
+<table class="rules facts">
+  <tr><th>Top of lift</th><td>the height in ft MSL. Arrows <b class="c-b">blue</b> at XC height with climbs of 1 m/s or more, <b class="c-g">green</b> good local height, <b class="c-o">orange</b> modest, <b class="c-y">yellow</b> low; weak climbs are never better than orange.</td></tr>
+  <tr><th>Launch wind</th><td>a dial: the green arc is the launch's direction window, the arrow comes in from where the wind blows. <b class="c-g">Green</b> more than 20° inside the window, <b class="c-y">yellow</b> its outer 20°, <b class="c-o">orange</b> up to 20° outside (crosswind), <b class="c-r">red</b> further out (from behind).</td></tr>
+  <tr><th>Top-of-lift wind</th><td>direction and speed where you'd be flying; the icon <b class="c-g">green</b> fine, <b class="c-y">yellow</b> so-so, <b class="c-o">orange</b> poor, <b class="c-r">red</b> over the back or too strong.</td></tr>
+</table>
+<p><b>Tap a tile</b> for the details: the <b>thermal chart</b> (how strong and how high the thermals are, hour by hour; tap it for full screen, with arrows to step through the days), the wind by model, and <b>How the score was made</b>, step by step (below). The small <b>Detailed</b> switch under the chart (also at the bottom of the page) swaps in a fuller chart: wind at every 1,000 ft, inversions, cumulus and cloud, with a Legend. Your choice stays on your device.</p>
+<p><b>Updates</b> every 2 hours from 5 am to 3 pm, then at 6 and 9 pm. The region maps update at 5, 8 and 11 am, 2 and 6 pm; at night you see the last run.</p>
 </section>
 
-<h2>What the score means</h2>
+<h2>How the score is made</h2>
 <section class="how">
-<p><b>It rates the best 3 hours</b> between 10 am and the evening. Glass-off, the last 3 hours before sunset, is rated on its own and can lift a day to 3.</p>
-<p><b>Height</b> is the top of usable lift over the launch and the hills around it (maps below). <b>Climb</b> is what you can expect in a good core.</p>
-<p><b>Points off,</b> the same at every site:</p>
+<p>Every site and day gets one number from 1 to 5, built in the same steps every time. Open a site and <b>How the score was made</b> shows these steps with their points.</p>
+<ol class="steps">
+  <li><b>Start from the height.</b> The top of usable lift over the launch and the hills around it (maps below) sets the starting number. Each site has three marks: <i>good local height</i>, <i>XC height</i> and <i>great XC height</i>.
+    <table class="rules scale">
+      <tr><th>Top of lift</th><td>at launch</td><td>good local</td><td>XC height</td><td>great XC</td></tr>
+      <tr><th>Starting number</th><td>1.5</td><td>3</td><td>4</td><td>5</td></tr>
+      <tr><th>Little Black</th><td>1,050 ft</td><td>1,800 ft</td><td>2,300 ft</td><td>3,500 ft</td></tr>
+      <tr><th>Blossom</th><td>1,500 ft</td><td>2,500 ft</td><td>3,500 ft</td><td>4,500 ft</td></tr>
+      <tr><th>Elsinore</th><td>2,650 ft</td><td>4,300 ft</td><td>5,300 ft</td><td>7,300 ft</td></tr>
+    </table>
+    In between it goes up smoothly. Lift above XC height with climbs under 1 m/s starts at 3.4 at most: high but too weak to go far.</li>
+  <li><b>Shave it hour by hour.</b> Each hour keeps that number only if the hour is good to fly: <b>climb</b> (1 m/s gives about half credit, 2 m/s or more full), launch wind, gusts, wind at the top of lift, offshore flow and storms each take their share.</li>
+  <li><b>Take the best 3 hours</b> between 10 am and glass-off. Glass-off, the last 3 hours before sunset, is rated on its own and can lift a day to 3.</li>
+  <li><b>Points off for the day</b>, the same at every site, when they hold through most of the flying window:
 <table class="rules">
   <tr><th>Rain</th><td>30% of model runs wet −0.5 · 45% −1 · 60% −1.5 · rain all window: no-go</td></tr>
   <tr><th>High cloud</th><td>from 5/8: −0.25, up to −1.75 at 8/8</td></tr>
   <tr><th>Gusts</th><td>over 12 mph −1 · over 18 mph too windy</td></tr>
   <tr><th>Launch wind</th><td>light (4g8 or less): any direction · more than 20° inside the launch window: fine · its outer 20° −0.3 · up to 20° outside (cross) −1 · further outside: 2 at most</td></tr>
-  <tr><th>Offshore</th><td>at Little Black, Blossom, Otay, Whale's V (N–E at Soboba, Marshall), through most of the window: east wind in the flying layer 3+ mph or LAX–DAG −3 mb: −1 · 4+ mph or −4 mb: 2 at most · 6+ mph: no-go, even when lift is lower</td></tr>
+  <tr><th>Offshore</th><td>at Little Black, Blossom, Otay, Whale's V (N–E at Soboba, Marshall): east wind in the flying layer 3+ mph or LAX–DAG −3 mb: −1 · 4+ mph or −4 mb: 2 at most · 6+ mph: no-go, even when lift is lower</td></tr>
   <tr><th>Wind at top of lift</th><td>over 15 mph −0.5 · over 20 mph −1 · over 25 mph too windy · over the back most of the window: 2 at most · NW to N (5 mph or more) at Little Black and Blossom −0.3</td></tr>
-</table>
-<p><b>Climb</b> counts in a straight line: 1 m/s gives about half credit, 2 m/s or more full. <b>XC</b> needs the site's XC height, workable wind and at least 1 m/s climb. A <b>5</b> needs great height and nothing taken off. The <b>windy</b> chip warns of a steady breeze most of the window (10 mph on launch or 13 at the top); it takes no points.</p>
+</table></li>
+  <li><b>Limits last.</b> "2 at most" and the like are applied after all the points off, so a limit is never counted twice.</li>
+  <li><b>The verdict.</b> 3.5 or more is <b>XC</b> (with the site's XC height, workable wind and at least 1 m/s climb); a <b>5</b> needs great height and nothing taken off.</li>
+</ol>
+<p>An example: Little Black with lift to 2,600 ft starts a bit above 4. Good climbs and a west wind well inside the window keep it there, an LAX–DAG of −3 mb takes 1 off: a 3 for the day, "Site fly", even though the height says XC.</p>
+<p>The <b>windy</b> signal warns of a steady breeze most of the window (10 mph on launch or 13 at the top); it takes no points. When only some models show a step, the step names them (for example "ICON: E 12 mph").</p>
 </section>
 
 <h2>Sites with their own rules</h2>
@@ -128,21 +159,28 @@ svg { width:100%; height:auto; display:block; }
 
 <h2>Models</h2>
 <section class="how">
-<p><b>Santa Ana</b> comes from two signs: offshore (northeast to east) wind at about 5,000 ft, and the <b>LAX–DAG pressure gradient</b>, the sea-level pressure at LAX minus Barstow-Daggett. About −2 mb is weak offshore, −4 mb a real Santa Ana, −6 mb strong. Each model's gradient is checked against the two airports' actual readings over the last three days and corrected, because coarse models put Daggett at the wrong height. The current reading shows next to the Weather Overview.</p>
-<p>The first 2–3 days use HRRR and RRFS, then RRFS with ECMWF, GFS and ICON. Days 5–7 run on global models only, so expect them to change. We stay optimistic: a global model more than a point below the others at a site is left out, and on global-only days the best two count. The main page lists every source and its run time.</p>
+<p>The first 2–3 days use HRRR and RRFS, then RRFS with ECMWF, GFS and ICON. Days 5–7 run on global models only, so expect them to change. The bottom of each day lists the models and their run time.</p>
+<p><b>Optimistic on purpose:</b> a global model more than a point below the best other model at a site is left out of that site's day, and on global-only days the best two count. One model doing something odd doesn't sink a day.</p>
+<p><b>Santa Ana</b> comes from two signs: offshore (northeast to east) wind at about 5,000 ft, and the <b>LAX–DAG pressure gradient</b>, the sea-level pressure at LAX minus Barstow-Daggett. About −2 mb is weak offshore, −4 mb a real Santa Ana, −6 mb strong. Each model's gradient is checked against the two airports' actual readings over the last three days and corrected, because coarse models put Daggett at the wrong height.</p>
 </section>
 
-<h2>Two more views</h2>
+<h2>More views</h2>
 <section class="views">
   <div class="view">
     <h3>The morning balloon (sounding)</h3>
-    <p>Every morning around 4 am a weather balloon goes up from Miramar (Edwards on days they fly). It measures the real air, not a model.</p>
+    <p>Every morning around 4 am a weather balloon goes up from Miramar. It measures the real air, not a model. Edwards, Vandenberg, Yuma and Las Vegas are one tap away (Edwards and Yuma only when they fly and share it).</p>
     <ul>
       <li><b>Thermal tops:</b> how high a thermal goes for a given ground temperature, and for today's forecast high.</li>
       <li><b>Cloudbase</b> and <b>inversions</b> (the blue bands that cap the lift).</li>
+      <li><b>Launch heights</b> of the nearby sites as dashed lines, so you see at a glance whether the lift clears them.</li>
       <li><b>The balloon's path</b> on a little map, with the last few launches in grey.</li>
     </ul>
     <a class="vbtn" href="sounding.html">Open the sounding →</a>
+  </div>
+  <div class="view">
+    <h3>LAX–DAG</h3>
+    <p>The Santa Ana measure on a map of the two airports, the last days as observed and the next days by model, each corrected against the airports. Below −2 mb the air pushes offshore; around −4 mb it's a real Santa Ana.</p>
+    <a class="vbtn" href="lax-dag.html">Open LAX–DAG →</a>
   </div>
   <div class="view">
     <h3>Regions</h3>
@@ -153,7 +191,7 @@ svg { width:100%; height:auto; display:block; }
 
 <h2>What it doesn't know</h2>
 <section class="how">
-<p>Live observations, local effects, turbulence and rotor, overdevelopment, closures, permits and airspace.</p>
+<p>Live observations, local effects, turbulence and rotor, overdevelopment, closures, permits and airspace. Always check the real forecast and conditions on launch.</p>
 </section>
 
 <h2 id="sites">Where the radar measures</h2>
