@@ -13,7 +13,8 @@ function tlFmt(d, opts) { return new Intl.DateTimeFormat('en-US', Object.assign(
 function tlHour(d) { return tlFmt(d, { hour: 'numeric', minute: '2-digit' }).replace(':00', '').replace(' ', ' ').toLowerCase(); }
 function tlDay(d) { return tlFmt(d, { weekday: 'short' }); }
 
-function timelineSVG({ now = new Date(), shown = null, fetched = null } = {}) {
+function timelineSVG({ now = new Date(), shown = null, fetched = null, site = 'nkx' } = {}) {
+  const VBG = site === 'vbg';
   const H = 3600e3;
   const W = 800, Hh = 160;
   const t0 = new Date(now.getTime() - 15 * H), t1 = new Date(now.getTime() + 9 * H);
@@ -89,6 +90,36 @@ function timelineSVG({ now = new Date(), shown = null, fetched = null } = {}) {
       ${gear ? `<path d="M12 10 v4.4 M40 10 v4.6 M47 10 v4.6" stroke="#475569" stroke-width="1.1"/>
       <circle cx="12" cy="15" r="1.7" fill="#1f2937"/><circle cx="40" cy="15.2" r="2" fill="#1f2937"/><circle cx="47" cy="15.2" r="2" fill="#1f2937"/>` : ''}
     </g>`;
+  // an original cartoon astronaut (white suit, round helmet with a gold visor), arm raised with the balloon string
+  const astronaut = (x, y) => `<g transform="translate(${x} ${y})">
+      <ellipse cx="0" cy="22.5" rx="9.5" ry="1.6" fill="#000" opacity=".12"/>
+      <path d="M-3.6 12 L-4.6 21 M3.6 12 L4.6 21" stroke="#e8edf3" stroke-width="4.4" stroke-linecap="round"/>
+      <path d="M-7 21.4 h5 M2 21.4 h5" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>
+      <rect x="-9.6" y="-3" width="4" height="13" rx="1.6" fill="#cbd5e1"/>
+      <path d="M-7 -2.4 Q-8 6 -6 13.4 H6 Q8 6 7 -2.4 Q0 -5.4 -7 -2.4 Z" fill="#f4f6f8" stroke="#cbd5e1" stroke-width=".7"/>
+      <rect x="-3.6" y="1" width="7.2" height="4.6" rx="1" fill="#dbe3ec" stroke="#b6c2cf" stroke-width=".5"/>
+      <circle cx="-1.6" cy="3.3" r=".8" fill="#ef4444"/><circle cx="1.6" cy="3.3" r=".8" fill="#2563eb"/>
+      <path d="M-6.4 -1 Q-9.6 4 -8.6 9" fill="none" stroke="#f4f6f8" stroke-width="3.8" stroke-linecap="round"/>
+      <circle cx="-8.5" cy="9.8" r="2" fill="#94a3b8"/>
+      <path d="M6.4 -1 Q10.8 -6.4 11.2 -13.6" fill="none" stroke="#f4f6f8" stroke-width="3.8" stroke-linecap="round"/>
+      <circle cx="11.2" cy="-14.8" r="2" fill="#94a3b8"/>
+      <circle cx="0" cy="-11" r="8" fill="#f4f6f8" stroke="#cbd5e1" stroke-width=".8"/>
+      <path d="M-5.8 -12.4 Q-5.8 -17 0 -17 Q5.8 -17 5.8 -12.4 Q5.8 -7 0 -7 Q-5.8 -7 -5.8 -12.4 Z" fill="#c9a227"/>
+      <path d="M-4.4 -14.2 Q-2.5 -16 0 -15.6" fill="none" stroke="#fde68a" stroke-width="1.2" stroke-linecap="round" opacity=".9"/>
+      <path d="M-2.2 -9.4 Q0 -8 2.2 -9.4" fill="none" stroke="#7a5a10" stroke-width=".8" stroke-linecap="round" opacity=".7"/>
+    </g>`;
+  // a generic rocket on its pad (no markings), with a launch tower
+  const rocket = (x, y) => `<g transform="translate(${x} ${y})">
+      <rect x="12" y="-70" width="4" height="70" fill="#9aa5b2"/>
+      <path d="M12 -64 h-5 M12 -48 h-5 M12 -32 h-5 M12 -16 h-5" stroke="#9aa5b2" stroke-width="1.2"/>
+      <path d="M14 -70 l0 -5" stroke="#9aa5b2"/><circle cx="14" cy="-76" r="1.4" fill="#ef4444"/>
+      <path d="M0 -78 Q-6 -70 -6 -58 V-10 H6 V-58 Q6 -70 0 -78 Z" fill="#f8fafc" stroke="#cbd5e1" stroke-width=".8"/>
+      <rect x="-6" y="-44" width="12" height="4" fill="#e07b00"/>
+      <circle cx="0" cy="-58" r="2.4" fill="#bfdbfe" stroke="#94a3b8" stroke-width=".6"/>
+      <path d="M-6 -22 L-11 -6 L-6 -10 Z M6 -22 L11 -6 L6 -10 Z" fill="#64748b"/>
+      <path d="M-4 -10 h8 l-1.4 4 h-5.2 z" fill="#475569"/>
+      <rect x="-14" y="-4" width="34" height="4" rx="1" fill="#8a96a5"/>
+    </g>`;
   o.push(`<g transform="translate(10 4)">
     <defs>
       <clipPath id="scn"><rect x="0" y="4" width="136" height="148" rx="10"/></clipPath>
@@ -99,7 +130,21 @@ function timelineSVG({ now = new Date(), shown = null, fetched = null } = {}) {
       <rect x="0" y="4" width="136" height="148" fill="url(#tlsky)"/>
       <circle cx="120" cy="24" r="7" fill="#fde68a"/><circle cx="120" cy="24" r="11" fill="#fde68a" opacity=".25"/>
       <path d="M86 30 q4 -5 9 -2 q3 -4 8 -1 q5 0 4 4 h-21 z" fill="#fff" opacity=".9"/>
-      <path d="M0 108 Q20 96 40 104 Q62 94 84 104 Q108 96 136 104 V120 H0 Z" fill="#c9d4bd"/>
+${VBG ? `      <path d="M0 100 H136 V122 H0 Z" fill="#7fb3d9"/>
+      <path d="M0 103 q8 -2 16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t8 0" fill="none" stroke="#e8f2fa" stroke-width=".8" opacity=".8"/>
+      <path d="M36 122 Q46 98 70 100 Q98 92 136 98 V122 Z" fill="#c9b98f"/>
+      <path d="M52 122 Q70 106 96 108 Q118 104 136 108 V122 Z" fill="#b5a57a"/>
+      ${rocket(112, 122)}
+      <rect x="0" y="122" width="136" height="30" fill="#a3acb7"/>
+      <rect x="0" y="122" width="136" height="2" fill="#8f99a5"/>
+      <path d="M4 142h12M26 142h12M48 142h12M70 142h12M92 142h12M114 142h12" stroke="#f8fafc" stroke-width="1.6"/>
+      <g transform="translate(0 -4)"><g class="${flying ? 'tl-rise' : 'tl-bob'}">
+        <path d="M52.5 70 Q51 87 53 108" fill="none" stroke="#64748b" stroke-width="0.8"/>
+        <ellipse cx="52.5" cy="56" rx="10.5" ry="13" fill="#fff" stroke="#cbd5e1"/>
+        <ellipse cx="48.5" cy="51" rx="3" ry="4" fill="#f1f5f9"/>
+        <rect x="50" y="68.5" width="5" height="3.4" rx="1" fill="${ACC}"/>
+      </g></g>
+      ${astronaut(42, 120)}` : `      <path d="M0 108 Q20 96 40 104 Q62 94 84 104 Q108 96 136 104 V120 H0 Z" fill="#c9d4bd"/>
       <path d="M0 112 Q30 104 60 110 T136 108 V122 H0 Z" fill="#b5c2a6"/>
       <path d="M2 122 V96 Q30 72 58 96 V122 Z" fill="url(#tlhang)"/>
       <path d="M2 96 Q30 72 58 96" fill="none" stroke="#8d99a8" stroke-width="1.2"/>
@@ -121,13 +166,13 @@ function timelineSVG({ now = new Date(), shown = null, fetched = null } = {}) {
         <ellipse cx="48.5" cy="51" rx="3" ry="4" fill="#f1f5f9"/>
         <rect x="50" y="68.5" width="5" height="3.4" rx="1" fill="${ACC}"/>
       </g></g>
-      ${pilot(62, 120)}
+      ${pilot(62, 120)}`}
     </g>
-    <text x="68" y="18" text-anchor="middle" font-size="9.5" font-weight="700" fill="${INK}">MCAS Miramar</text>
+    <text x="68" y="18" text-anchor="middle" font-size="9.5" font-weight="700" fill="${INK}">${VBG ? 'Vandenberg SFB' : 'MCAS Miramar'}</text>
   </g>`);
 
   // ---- timeline ----
-  o.push(`<text x="${x0}" y="22" font-size="12" font-weight="700" fill="${INK}">NKX balloon timeline <tspan font-weight="500" fill="${MUTED}">(Pacific time)</tspan></text>`);
+  o.push(`<text x="${x0}" y="22" font-size="12" font-weight="700" fill="${INK}">${VBG ? 'VBG' : 'NKX'} balloon timeline <tspan font-weight="500" fill="${MUTED}">(Pacific time)</tspan></text>`);
   o.push(`<path d="M${x0} ${yAxis}H${x1}" stroke="${EDGE}" stroke-width="2" stroke-linecap="round"/>`);
   // hour ticks every 3 h on local clock
   const startH = new Date(Math.ceil(t0 / H) * H);
