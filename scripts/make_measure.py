@@ -20,18 +20,16 @@ def arcs(a, b):
 
 
 def sectors(s, l):
-    """(start, end, cls) wedges for one launch: green = within 20 deg of the face, yellow = the rest of the
-    accepted sector plus any cross sectors."""
+    """(start, end, cls) wedges for one launch, in the score's colours (the same as the launch dial on the tiles):
+    green = more than 20 deg inside the launch window, yellow = its outer 20 deg, orange = up to 20 deg outside
+    (crosswind). Beyond that it is red (from behind), not drawn."""
     w = l.get("dir") or s.get("dir")
     if not w or (w[1] - w[0]) % 360 == 0:
         return []
-    span = (w[1] - w[0]) % 360
-    face = s.get("face") if s.get("face") is not None and not l.get("dir") else (w[0] + span / 2)
-    fo = (face - w[0]) % 360
-    g0, g1 = w[0] + max(0, fo - 20), w[0] + min(span, fo + 20)
-    out = [(w[0], g0, "acc"), (g0, g1, "pref"), (g1, w[0] + span, "acc")]
-    if not l.get("dir"):
-        out += [(c[0], c[0] + (c[1] - c[0]) % 360, "acc") for c in s.get("cross") or []]
+    a, span = w[0], (w[1] - w[0]) % 360
+    rim = min(20, span / 2)
+    out = [(a - 20, a, "cross"), (a, a + rim, "rim"), (a + rim, a + span - rim, "good"),
+           (a + span - rim, a + span, "rim"), (a + span, a + span + 20, "cross")]
     return [o for o in out if o[1] - o[0] > 0.5]
 
 
