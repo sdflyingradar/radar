@@ -924,11 +924,6 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
 .srow .facts .fi { display: inline-flex; align-items: center; gap: 3px; }
 .srow .facts .hk { display: none; }
 .srow .facts svg.wic { width: 1.45em; height: 1.02em; flex: none; color: #5b6573; margin-right: 1px; }
-/* the chart choice under the thermal panel */
-.tsty { display: flex; justify-content: center; align-items: center; gap: 4px; margin: 8px 0 2px; font-size: .72rem; }
-.tsty span { color: #98a2b3; margin-right: 4px; }
-.tsty button { border: 1px solid #d5dbe2; background: #fff; color: #475467; border-radius: 999px; padding: 4px 11px; font: inherit; font-weight: 600; cursor: pointer; }
-.tsty button[aria-pressed="true"] { background: #1f2937; border-color: #1f2937; color: #fff; }
 /* footer switch: detailed therm */
 .dtsw { display: inline-flex; align-items: center; gap: 7px; font-size: .78rem; color: #475467; cursor: pointer; user-select: none; margin: 0 6px; }
 .dtsw input { position: absolute; opacity: 0; width: 0; height: 0; }
@@ -1614,14 +1609,7 @@ const chartStyle = () => { try { return localStorage.getItem("chartStyle") || "c
     if (open) { open.click(); open.click(); }
   });
 })();
-document.addEventListener("click", (e) => {
-  const b = e.target.closest(".tsty button"); if (!b) return;
-  e.stopPropagation();
-  try { localStorage.setItem("chartStyle", b.dataset.style); } catch (err) {}
-  const sw = document.getElementById("dtherm"); if (sw) sw.checked = b.dataset.style === "detailed";
-  const open = document.querySelector('.srow[aria-expanded="true"]');
-  if (open) { open.click(); open.click(); }                // redraw the open site with the other chart
-}, true);
+
 function thermPanel(d, s, c) {
   if (!THERM || !REGIONS_D || typeof panelSVG !== "function") return "";
   const PANEL = chartStyle() === "detailed" && typeof panel2SVG === "function" ? panel2SVG : panelSVG;
@@ -1634,8 +1622,7 @@ function thermPanel(d, s, c) {
     const has = (k) => DAYKEY[k] && DAYKEY[k].sites && DAYKEY[k].sites[s.id];
     const lab = (k) => (has(k) ? dayLabel(DAYKEY[k].date).short : "");
     const nav = `<div class="tnav"><button type="button" class="tnb" data-jump="${i - 1}" data-sid="${s.id}"${has(i - 1) ? "" : " disabled"}>‹ ${esc(lab(i - 1))}</button><span class="tnd">${esc(dayLabel(d.date).short)} · ${esc(r.name)}</span><button type="button" class="tnb" data-jump="${i + 1}" data-sid="${s.id}"${has(i + 1) ? "" : " disabled"}>${esc(lab(i + 1))} ›</button></div>`;
-    const sty = `<div class="tsty"><span>chart</span>${[["classic", "Classic"], ["detailed", "Detailed"]].map(([k, n]) => `<button type="button" data-style="${k}" aria-pressed="${chartStyle() === k}">${n}</button>`).join("")}</div>`;
-    return `<div class="therm">${PANEL({ generated: REGIONS_D.generated, region: r.name, days: r.days, marks: r.marks, floor_ft: r.floor_ft, compact: true, win: c.style === "ridge" ? null : c.win, gwin: c.gwin }, di)}${nav}${sty}</div>`;
+    return `<div class="therm">${PANEL({ generated: REGIONS_D.generated, region: r.name, days: r.days, marks: r.marks, floor_ft: r.floor_ft, compact: true, win: c.style === "ridge" ? null : c.win, gwin: c.gwin }, di)}${nav}</div>`;
   } catch (e) { return ""; }
 }
 
