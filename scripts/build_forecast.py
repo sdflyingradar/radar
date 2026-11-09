@@ -632,6 +632,20 @@ def site_face(site):
     return None if span == 0 or span >= 300 else (w[0] + span / 2) % 360
 
 
+def off_window(site, d):
+    """Degrees the wind is outside the launch window (0 = inside it, where it is all fine). With several
+    launches, the one it fits best."""
+    w = site.get("dir")
+    if not w or d is None:
+        return None
+    wins = w if isinstance(w[0], (list, tuple)) else [w]
+    best = None
+    for lo, hi in wins:
+        o = 0.0 if wrap_in(d, lo, hi) else min(angdiff(d, lo), angdiff(d, hi))
+        best = o if best is None else min(best, o)
+    return best
+
+
 def dir_ok(site, d):
     """True when the wind direction fits any of the site's launches."""
     w = site["dir"]
@@ -1042,7 +1056,7 @@ def score_hour(site, hr, i, levels, elev_m):
             "usable": usable, "usable_show": usable_show, "peak_top": peak_top, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, CORE * wstar - SINK),
             "gcat": gcat, "qp": qp,
             "into": bool(on and lw_mph is not None and lw_mph >= max(3.0, lo)),   # blowing into the launch, not just light
-            "off": (angdiff(ld, site_face(site)) if site_face(site) is not None and ld is not None
+            "off": (off_window(site, ld) if site_face(site) is not None and ld is not None
                     and lw_mph is not None and not light and (site["kind"] != "ridge" or lw_mph > 4) else None),
             "lw": lw_mph, "ld": ld, "lg": lg_mph, "a_max": a_max, "tw": (tw_dir, tw_spd) if tw_spd is not None else None, "a_spd": a_spd, "a_dir": a_dir,
             "pr": pr, "cape": cape, "codes": codes + (["venturi"] if venturi else []), "pts": pts_h,
@@ -1409,7 +1423,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "gust12": sum(1 for s in blk if s.get("gcat", 0) >= 1) / len(blk),
         "top_wind": (lambda v: sorted(v)[len(v) // 2] if v else None)([s["tw"][1] * 1.15078 for s in blk if s.get("tw")]),
         "gust18": sum(1 for s in blk if s.get("gcat", 0) >= 2) / len(blk),
-        "offcat": (lambda offs: sum(0 if o <= 20 else 1 if o <= 45 else 2 for o in offs) / len(offs) if offs else 0.0)(
+        "offcat": (lambda offs: sum(0 if o <= 20 else 1 if o <= 45 else 2 for o in offs) / len(offs) if offs else 0.0)(   # off = outside the window
             [s["off"] for s in blk if s.get("off") is not None]),
         "launch": max(set(x["launch"] for x in blk if x["launch"]) or {None}, key=lambda v: sum(1 for x in blk if x["launch"] == v)),
         "a_max": med("a_max"), "a_spd": a_spd, "a_dir": a_dir,
@@ -2190,14 +2204,15 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                     caps.append((1.0, f"wind at top of lift over {t2} mph: no-go"))
                 elif (tw_mph is not None and tw_mph > t1) or (lw_b is not None and lw_b > calm.get("launch_mph", 8)):
                     caps.append((2.0, "not calm enough: 2 at most"))
-            # how well the wind lines up with the launch through the window (thermal sites, light air ignored):
-            # within 20 degrees is perfect, 20-45 degrees off costs half a point, more than 45 degrees off sinks the day
+            # how well the wind lines up with the launch through the window (thermal sites, light air ignored), the
+            # same as the launch dial on the tile: inside the launch window, or up to 20 degrees outside it, is fine;
+            # 20-45 degrees outside (crosswind) costs a point; more than 45 degrees outside (over the back) sinks the day
             if s.get("style") in ("thermal", "window") and D and site_face(s) is not None:
                 oc = sum(model_weight(k, D) * a.get("offcat", 0.0) for k, a in D.items()) / (sum(model_weight(k, D) for k in D) or 1)
                 if oc >= 1.5:
-                    caps.append((2.0, "wind more than 45° off launch: 2 at most"))
+                    caps.append((2.0, "wind from behind, 45°+ outside the launch window: 2 at most"))
                 elif oc >= 0.5:
-                    r0 = rating; rating = max(1.0, rating - 1.0); note_adj("wind 20–45° off launch", r0)
+                    r0 = rating; rating = max(1.0, rating - 1.0); note_adj("crosswind, 20–45° outside the launch window", r0)
             # awkward drift at the top of lift (most of the rating weight agrees): a tag, and at some
             # sites a small nick (Blossom: NW or clearly WNW pushes XC toward the Rock Pile)
             xb = s.get("xc_bad_aloft") or {}

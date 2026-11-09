@@ -1445,17 +1445,17 @@ function sitePills(c) {
   if ((c.cloud && c.cloud.okta >= 5) || cc < 0) out.push(`<span class="rx${cc < 0 ? " strong" : ""}">${ico("cloud")}${c.cloud ? c.cloud.okta + "/8 " : ""}cloud${dv(cc)}</span>`);
   /* warnings; Torrey shows all of them across its flying day, with when they show up (am, midday, pm) */
   const when = c.when || {};
-  const SAME = { offshore: /^offshore/, gusty: /gust/, aloft: /top of lift/, windy: /too windy|blown/, cross: /off launch/ };   // no pill twice
+  const SAME = { offshore: /^offshore/, gusty: /gust/, aloft: /top of lift/, windy: /too windy|blown/, cross: /outside the launch window/ };   // no pill twice
   (c.why || []).filter((k) => WHY_TXT[k] && !/rain|showers|cape/.test(k) && !(SAME[k] && adj.some(([t]) => SAME[k].test(t)))).slice(0, Object.keys(when).length ? 4 : 2)
     .forEach((k) => out.push(`<span class="rx">${ico(k === "lid" || k === "weak" ? "lid" : k === "windy" || k === "gusty" ? "windy" : "warn")}${esc(WHY_TXT[k])}${when[k] ? ` <span class="dv">${esc(when[k])}</span>` : ""}</span>`));
   /* deductions as short chips (the full wording and the points stay in the detail view); the ones that only
      cap a 5 at 4 don't get a chip */
-  const SHORT = [[/20–45° off launch/, "cross wind"], [/more than 45° off launch/, "wrong direction"],
+  const SHORT = [[/^crosswind, 20–45° outside/, "cross wind"], [/from behind, 45°\+ outside/, "wrong direction"],
     [/gusts over 18/, "too windy"], [/gusts over 12/, "gusty"], [/top of lift over \d+ mph: (no-go|too windy)/, "too windy aloft"],
     [/top of lift over/, "strong wind aloft"], [/blown out/, "blown out"], [/not calm/, "not calm"],
     [/over the back aloft/, "over the back aloft"], [/off season/, "off season"], [/NW to N aloft/, "NW–N"], [/^offshore .*no-go/, "offshore flow aloft"], [/^offshore .*2 at most/, "offshore"], [/^offshore /, "light offshore"]];
   const seen = new Set(out.map((x) => x.replace(/<i[^>]*>.*?<\/i>/g, "").replace(/<[^>]+>/g, "").trim().toLowerCase()));
-  adj.filter(([t]) => !/rain|sun|4 at most$/.test(t) || /off launch|blown|calm|season/.test(t)).forEach(([t]) => {
+  adj.filter(([t]) => !/rain|sun|4 at most$/.test(t) || /outside the launch window|blown|calm|season/.test(t)).forEach(([t]) => {
     const s = (SHORT.find(([re]) => re.test(t)) || [null, t])[1];
     if (seen.has(s.toLowerCase())) return;
     seen.add(s.toLowerCase());
@@ -1863,7 +1863,7 @@ $("#reload").addEventListener("click", load);
 })();
 </script>
 <script src="scripts/ui/facts.js?v=202611082245"></script>
-<script src="scripts/ui/grid.js?v=202611082205"></script>
+<script src="scripts/ui/grid.js?v=202611090930"></script>
 <script src="scripts/ui/first.js?v=202611082340"></script>
 </body>
 </html>

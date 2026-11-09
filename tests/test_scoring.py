@@ -242,9 +242,10 @@ class Physics(unittest.TestCase):
         self.assertNotIn("cross", calm_cross["codes"])
         self.assertAlmostEqual(calm_cross["q"], on["q"])
         self.assertEqual(cross["launch"], "cross-N")
-        # at Little Black the cost of a cross wind is the day rule on degrees off the launch (see off/offcat)
-        self.assertGreater(cross["off"], 45)
-        self.assertLessEqual(h(270, 8)["off"], 20)
+        # at Little Black the cost of a cross wind is the day rule on degrees outside the launch window (see off/offcat)
+        self.assertEqual(cross["off"], 20)                 # NNW: 20 deg past the 320 edge, still fine
+        self.assertGreater(h(30, 8)["off"], 45)            # NNE: over the back
+        self.assertEqual(h(290, 8)["off"], 0)              # WNW: inside the window, all fine
 
     def test_sites_have_real_positions(self):
         parents = json.loads((ROOT / "sites.json").read_text())["sites"]
