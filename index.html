@@ -1041,7 +1041,7 @@ const ft = (v) => (v == null ? "–" : (Math.round(v / 100) * 100).toLocaleStrin
 const pct = (p) => (p == null ? "–" : `${Math.round(p * 100)}%`);
 const r1 = (r) => (r == null ? "–" : String(Math.max(1, Math.min(5, Math.round(r)))));
 const RX = { "Front": ["front", "Front"], "Pre-frontal": ["pre", "Pre-frontal"], "Post-frontal": ["post", "Post-frontal"],
-  "Santa Ana": ["sa", "Santa Ana"], "Switch day": ["switch", "Switch day"], "Pre/post-frontal": ["prepost", "Pre/post-frontal"] };
+  "Santa Ana": ["sa", "Santa Ana"], "Switch day": ["switch", "Switch day"], "Pre/post-frontal": ["prepost", "Pre-/post front"] };
 /* weather-pill icons: one small symbol per kind of notice */
 const ICON = { "Front": "≋", "Pre-frontal": "↗", "Post-frontal": "★", "Santa Ana": "⇇", "Switch day": "⇆", "Pre/post-frontal": "⇅",
   cloud: "☁", warn: "⚠" };
@@ -1122,7 +1122,7 @@ const cloudPill = (d) => {
 const regimeHtml = (rg, small) => {
   if (!rg || !rg.type || !RX[rg.type]) return "";
   const pctTxt = rg.agree != null && rg.agree < 0.995 ? `${Math.round(rg.agree * 100)}%` : "";   // share of models that agree
-  const label = rg.weak && rg.type === "Front" ? "Weak front" : rg.type;       // a pointer worth checking, not a big rainy front
+  const label = rg.weak && rg.type === "Front" ? "Weak front" : RX[rg.type][1];       // a pointer worth checking, not a big rainy front
   const name = small ? esc(rg.weak && rg.type === "Front" ? "Weak front" : RX[rg.type][1]) : `<span class="rx-l">${esc(label)}</span><span class="rx-s">${esc(label)}</span>`;
   const strong = !rg.weak && (rg.agree == null || rg.agree >= 0.75);
   /* good for flying, bad, or neutral (a weak front, pre-frontal) */
