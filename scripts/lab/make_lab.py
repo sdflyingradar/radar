@@ -14,6 +14,6 @@ def sub(a, b):
 
 sub("<title>SD Flying Radar</title>", '<title>SD Flying Radar · lab</title>\n<meta name="robots" content="noindex,nofollow">')
 sub("</head>", "<style>\n" + lab_css + "\n</style>\n</head>")
-sub("</body>", '<script src="scripts/region/panel2.js?v=202611082045"></script>\n<script>\n' + lab_js + "\n</script>\n</body>")
+sub("</body>", "<script>\n" + lab_js + "\n</script>\n</body>")
 (root / "lab.html").write_text(s)
 print("lab.html written")

@@ -36,7 +36,8 @@ function p2icon(kind, x, y) {
 
 // wind at height z (ft) from the profile [[z, dir, mph, max], ...], interpolated (direction as a vector)
 function p2windAt(wl, z) {
-  if (!wl || !wl.length || z < wl[0][0] - 1) return null;
+  if (!wl || !wl.length) return null;
+  if (z < wl[0][0]) return z > wl[0][0] - 2500 ? wl[0] : null;     // just below the lowest level: its wind
   let a = wl[0], b = wl[wl.length - 1];
   if (z >= b[0]) return z - b[0] < 2500 ? b : null;
   for (let k = 0; k < wl.length - 1; k++) if (z >= wl[k][0] && z <= wl[k + 1][0]) { a = wl[k]; b = wl[k + 1]; break; }
@@ -154,12 +155,21 @@ function panel2SVG(data, di = 0) {
   hrs.forEach((h, k) => {
     const wl = H(h).wl;
     if (!wl || !wl.length) return;
-    for (let z = Math.ceil((wl[0][0] + 400) / 1000) * 1000; z <= zmax - 300; z += 1000) {
+    const gmin = Math.min(...(H(h).gw || []).map(g => g[0]), wl[0][0]);
+    for (let z = Math.ceil((gmin + 600) / 1000) * 1000; z <= zmax - 300; z += 1000) {
       const w = p2windAt(wl, z);
       if (w) o.push(p2arrow(CX(k), Y(z), w, asz));
     }
-    const g0 = wl[0];
-    if (g0[0] >= zmin) o.push(p2arrow(CX(k), Math.min(Y(g0[0]) - asz * 0.7, yG + gh - asz * 0.7), [g0[1], g0[2], g0[3] ?? g0[2]], asz));
+  });
+  // ground wind (10 m) at the region's probes, low to high: landing fields and valleys below the launches,
+  // drawn at their own height in the left half of the hour; arrows closer than 400 ft are merged (lowest kept)
+  hrs.forEach((h, k) => {
+    let last = -1e9;
+    for (const g of H(h).gw || []) {
+      if (g[0] < zmin || g[0] - last < 400) continue;
+      last = g[0];
+      o.push(p2arrow(CX(k) - cw * 0.22, Y(g[0]) - asz * 0.55, [g[1], g[2], Math.max(g[2], g[3] ?? g[2])], asz * 0.85));
+    }
   });
   // lift legend (m/s)
   const lx = L + 6, ly = yG + 6;

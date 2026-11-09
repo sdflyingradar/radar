@@ -168,7 +168,7 @@ def blend_hours(per_model):
                 if abs(o[0] - lvl[0]) < 400 and o[3] is not None:
                     lvl[3] = max(lvl[3] or 0, o[3])
     tops = [(h.get("cu_top_ft"), W[m]) for m, h in hs.items() if h.get("cu_top_ft")]
-    out.update({"wl": lw, "inv": hs[lead].get("inv") or [], "cu_top_ft": round(wcombine(tops, True) / 100) * 100 if tops else None,
+    out.update({"wl": lw, "gw": hs[lead].get("gw") or [], "inv": hs[lead].get("inv") or [], "cu_top_ft": round(wcombine(tops, True) / 100) * 100 if tops else None,
                 "ground_ft": hs[lead].get("ground_ft")})
     return out
 
@@ -481,24 +481,22 @@ def region_hour(ps, terr=None):
                  round((M([p["cl_high"] for p in ps]) or 0) / 12.5)],
         "grid": grid,
         "wl": wind_levels(ps), "inv": inversions(ps),
+        # ground wind (10 m) at each probe, low to high: the landing fields and valleys below the launches
+        "gw": sorted([[round(p["elev"] * FT / 50) * 50, round(p["sfc"][0]), round(p["sfc"][1]), round(p["sfc"][2]) if p["sfc"][2] is not None else None]
+                      for p in ps if p["sfc"][0] is not None and p["sfc"][1] is not None]),
         "cu_top_ft": round(mean([p["ctop"] for p in ps if p["cu"] and p["ctop"]]) * FT / 100) * 100 if any(p["cu"] and p["ctop"] for p in ps) else None,
         "ground_ft": round(mean([p["elev"] for p in ps]) * FT / 50) * 50,
     }
 
 
 def wind_levels(ps):
-    """Wind from the ground up for the detailed chart: [[height ft, dir, mean mph, strongest mph in the region]];
-    the first entry is the ground (10 m) at the region's mean ground height."""
+    """Free-air wind at every pressure level above the region's lowest ground, for the detailed chart:
+    [[height ft, dir, mean mph, strongest mph in the region]], low to high (the ground winds are in "gw")."""
     out = []
-    g = vec_mean([(p["sfc"][0], p["sfc"][1]) for p in ps])
-    gmax = max((p["sfc"][1] for p in ps if p["sfc"][1] is not None), default=None)
-    elev = mean([p["elev"] for p in ps])
-    if g[0] is not None and elev is not None:
-        out.append([round(elev * FT / 50) * 50, g[0], g[1], round(gmax) if gmax is not None else g[1]])
     for lev in LEVELS:
         got = [p["wl"][lev] for p in ps if lev in p.get("wl", {}) and p["wl"][lev][2] is not None]
-        if len(got) * 2 < len(ps):
-            continue                      # most of the region's ground is above this level
+        if not got:
+            continue                      # all of the region's ground is above this level (free air over the valleys counts)
         d, sp = vec_mean([(x[1], x[2]) for x in got])
         if d is None:
             continue
