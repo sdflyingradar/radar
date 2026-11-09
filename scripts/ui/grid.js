@@ -157,7 +157,7 @@
     const btn = (b, k) => b ? `<button type="button" class="thf-nav thf-${k ? "next" : "prev"}" data-k="${k}"${b.disabled ? " disabled" : ""} aria-label="${k ? "Next" : "Previous"} day"><i>${k ? "›" : "‹"}</i><span>${b.textContent.replace(/[‹›]/g, "").trim()}</span></button>` : "<span></span>";
     ov = document.createElement("div");
     ov.id = "thfull";
-    ov.innerHTML = `<div class="thf-in"><div class="thf-hd"><div class="thf-t"><b>${dn} <span>${dt}</span></b><small>${region}</small></div><button type="button" class="thf-x" aria-label="Close">×</button></div><div class="thf-body">${btn(nb[0], 0)}<div class="thf-svg"></div>${btn(nb[1], 1)}</div></div>`;
+    ov.innerHTML = `<div class="thf-in"><div class="thf-hd"><div class="thf-t"><b>${dn} <span>${dt}</span></b><small>${region}</small></div><button type="button" class="thf-x" aria-label="Close"><svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true"><path d="M2.5 2.5 L11.5 11.5 M11.5 2.5 L2.5 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="thf-body">${btn(nb[0], 0)}<div class="thf-svg"></div>${btn(nb[1], 1)}</div></div>`;
     const c = svg.cloneNode(true);
     c.removeAttribute("width"); c.removeAttribute("height");
     c.setAttribute("preserveAspectRatio", "xMidYMid meet");
@@ -223,7 +223,7 @@
     const list = story.querySelector(".wlist"), link = story.querySelector(".wlink");
     ov = document.createElement("div");
     ov.id = "wxpop";
-    ov.innerHTML = `<div class="wxp-card" role="dialog" aria-label="Weather overview"><div class="wxp-hd">${ICON}<b>Weather overview</b><button type="button" class="wxp-x" aria-label="Close">×</button></div>
+    ov.innerHTML = `<div class="wxp-card" role="dialog" aria-label="Weather overview"><div class="wxp-hd">${ICON}<b>Weather overview</b><button type="button" class="wxp-x" aria-label="Close"><svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true"><path d="M2.5 2.5 L11.5 11.5 M11.5 2.5 L2.5 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
       <div class="wxp-line">${(story.querySelector(".ov") || {}).textContent || ""}</div>${list ? list.outerHTML : ""}${link ? link.outerHTML : ""}</div>`;
     document.body.appendChild(ov);
     const r = tile.getBoundingClientRect();

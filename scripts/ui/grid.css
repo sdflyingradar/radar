@@ -217,3 +217,8 @@ html[data-lay="grid"] body details.day:not(#story) .list .srow.srow::before, htm
   #assets .asset svg { width: 22px !important; height: 22px !important; }
   #assets .asset b { font-size: .74rem; } #assets .asset small { font-size: .66rem; }
 }
+/* every close button: white, a thin edge, the × centred */
+#thfull .thf-x, #wxpop .wxp-x { display: inline-flex !important; align-items: center; justify-content: center; padding: 0 !important; line-height: 1 !important;
+  background: #fff !important; color: #26303a !important; border: 1px solid #d5dbe2 !important; box-shadow: 0 2px 8px -3px rgba(0,0,0,.25); }
+#thfull .thf-x::before, #wxpop .wxp-x::before { content: ""; }
+#wxpop .wxp-hd .wxp-x svg, #thfull .thf-x svg { width: 14px !important; height: 14px !important; }

@@ -209,7 +209,7 @@ function panel2LegendHTML() {
   const sw = (c, extra = '') => `<i style="background:${c};${extra}"></i>`;
   const arrow = (fill, rim) => `<svg viewBox="-9 -10 18 20" width="16" height="18"><path d="M0 -9 L6.5 8 L0 4.2 L-6.5 8 Z" fill="${fill}" stroke="${rim}" stroke-width="2" stroke-linejoin="round"/></svg>`;
   const row = (a, t) => `<div class="p2r"><span class="p2s">${a}</span><span>${t}</span></div>`;
-  return `<div class="p2card" role="dialog" aria-label="Chart legend"><div class="p2hd"><b>How to read this chart</b><button type="button" class="p2x" aria-label="Close">×</button></div>
+  return `<div class="p2card" role="dialog" aria-label="Chart legend"><div class="p2hd"><b>How to read this chart</b><button type="button" class="p2x" aria-label="Close"><svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true"><path d="M2.5 2.5 L11.5 11.5 M11.5 2.5 L2.5 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
     <h4>Top strip · the radar's verdict for each hour</h4>
     ${P2_VERDICT.map(([, c, t]) => row(sw(c), t)).join('')}
     <h4>Sky</h4>
@@ -256,7 +256,7 @@ function panel2LegendHTML() {
 #p2pop{position:fixed;inset:0;z-index:120;background:rgba(15,23,42,.4);display:flex;align-items:flex-start;justify-content:center;padding:max(40px,6vh) 12px 12px;overflow-y:auto}
 #p2pop .p2card{background:#fff;border-radius:16px;max-width:520px;width:100%;padding:14px 18px 18px;box-shadow:0 20px 50px -12px rgba(0,0,0,.35);font:14px/1.4 system-ui,sans-serif;color:#26303a;margin-bottom:24px}
 #p2pop .p2hd{display:flex;align-items:center;gap:10px;margin-bottom:4px}#p2pop .p2hd b{flex:1;font-size:1.05rem}
-#p2pop .p2x{width:34px;height:34px;border-radius:50%;border:0;background:#1f2937;color:#fff;font:600 22px/1 system-ui,sans-serif;cursor:pointer}
+#p2pop .p2x{width:34px;height:34px;border-radius:50%;border:1px solid #d5dbe2;background:#fff;color:#26303a;display:inline-flex;align-items:center;justify-content:center;padding:0;line-height:1;box-shadow:0 2px 8px -3px rgba(0,0,0,.25);font:600 22px/1 system-ui,sans-serif;cursor:pointer}
 #p2pop h4{margin:14px 0 6px;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:#98a2b3}
 #p2pop .p2r{display:flex;align-items:center;gap:10px;padding:3px 0;font-size:.86rem}
 #p2pop .p2s{display:inline-flex;gap:3px;align-items:center;flex:none;min-width:30px}
