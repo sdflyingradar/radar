@@ -2141,7 +2141,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             off_season = bool(s.get("season_months")) and int(dstr[5:7]) not in s["season_months"]
             if off_season:
                 caps.append((2.0, "off season: 2 at most"))
-            # a 5 needs the site's "great" height (xc_top_ft + xc_span_ft, e.g. Little Black 3,500 ft) in at
+            # a 5 needs the site's "great" height (xc_top_ft + xc_span_ft, e.g. Little Black 3,200 ft) in at
             # least the best model; short of it the day shows 4 at most (Torrey's ridge scale is its own)
             great_ft = (s.get("xc_top_ft") or 0) + (s.get("xc_span_ft") or 1000)
             tops = [v["top"] * FT for v in D.values() if v.get("top")] if D else []

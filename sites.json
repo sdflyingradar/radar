@@ -88,8 +88,8 @@
         10,
         130
       ],
-      "xc_top_ft": 2300,
-      "xc_span_ft": 1200,
+      "xc_top_ft": 2600,
+      "xc_span_ft": 600,
       "routes": [
         {
           "to": 30,
@@ -208,7 +208,7 @@
         10,
         130
       ],
-      "xc_top_ft": 3500,
+      "xc_top_ft": 4000,
       "xc_span_ft": 1000,
       "routes": [
         {
@@ -311,8 +311,8 @@
         230,
         320
       ],
-      "xc_top_ft": 5300,
-      "xc_span_ft": 2000,
+      "xc_top_ft": 6500,
+      "xc_span_ft": 1000,
       "routes": [
         {
           "to": 140,

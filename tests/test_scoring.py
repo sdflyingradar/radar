@@ -164,9 +164,11 @@ class WindowRating(unittest.TestCase):
         lb = next(x for x in json.loads((ROOT / "sites.json").read_text())["sites"] if x["id"] == "lb")
         self.assertEqual(lb["style"], "window")
         # heights are top of usable lift (the usual soaring forecasts style). Local pilot calls: 10-26 (~2,000 ft at noon) a 3-4,
-        # 10-27 (~2,400 ft) a 4; 1,500 ft is a sled ride
+        # 10-27 (~2,400 ft) a 4; 1,500 ft is a sled ride. XC height set at 2,600 ft, great at 3,200 ft (11-09)
         self.assertGreaterEqual(bf.ceil_level(lb, 2000), 3.0)
-        self.assertGreaterEqual(bf.ceil_level(lb, 2400), 4.0)
+        self.assertGreaterEqual(bf.ceil_level(lb, 2400), 3.5)
+        self.assertGreaterEqual(bf.ceil_level(lb, 2600), 4.0)
+        self.assertGreaterEqual(bf.ceil_level(lb, 3200), 5.0)
         self.assertLess(bf.ceil_level(lb, 1500), 3.0)
 
 
