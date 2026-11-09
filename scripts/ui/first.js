@@ -34,6 +34,11 @@
   const days = document.getElementById("days");
   if (days) new MutationObserver(openAll).observe(days, { childList: true });
   window.addEventListener("resize", openAll);
+  /* safety net: on a computer a day must never end up closed (whatever closed it), so reopen it right away */
+  document.addEventListener("toggle", (e) => {
+    const d = e.target;
+    if (wide() && d.matches && d.matches("details.day[data-date]") && !d.open) d.open = true;
+  }, true);
   openAll();
 })();
 
