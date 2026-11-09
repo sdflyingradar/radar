@@ -934,6 +934,12 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
 .dtsw i::after { content: ""; position: absolute; left: 2px; top: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; transition: transform .15s; box-shadow: 0 1px 2px rgba(0,0,0,.25); }
 .dtsw input:checked + i { background: #2f9e57; }
 .dtsw input:checked + i::after { transform: translateX(13px); }
+.tnav .tmid { display: inline-flex; align-items: center; gap: 10px; }
+.tnav .p2leg { font: 600 .7rem/1 system-ui, sans-serif; color: #667085; background: #f7f8fa; border: 1px solid #e4e7ec; border-radius: 999px; padding: 5px 10px; cursor: pointer; }
+.dtsw.sm { font-size: .7rem; gap: 5px; margin: 0; color: #667085; }
+.dtsw.sm i { width: 24px; height: 14px; } .dtsw.sm i::after { width: 10px; height: 10px; }
+.dtsw.sm input:checked + i::after { transform: translateX(10px); }
+@media (max-width: 640px) { .tnav { gap: 6px; } .tnav .tnb { min-width: 58px; padding: 5px 10px; } .tnav .tmid { gap: 8px; } }
 .dtsw input:focus-visible + i { outline: 2px solid #c26a24; outline-offset: 2px; }
 </style>
 <link rel="stylesheet" href="scripts/ui/grid.css?v=202611082255">
@@ -1612,11 +1618,15 @@ const chartStyle = () => { try { return localStorage.getItem("chartStyle") || "c
 (() => {
   const sw = document.getElementById("dtherm"); if (!sw) return;
   sw.checked = chartStyle() === "detailed";
-  sw.addEventListener("change", () => {
-    try { localStorage.setItem("chartStyle", sw.checked ? "detailed" : "classic"); } catch (err) {}
+  const set = (on) => {
+    try { localStorage.setItem("chartStyle", on ? "detailed" : "classic"); } catch (err) {}
+    sw.checked = on;
     const open = document.querySelector('.srow[aria-expanded="true"]');
     if (open) { open.click(); open.click(); }
-  });
+  };
+  sw.addEventListener("change", () => set(sw.checked));
+  /* the small switch next to the day buttons under each chart: the same choice */
+  document.addEventListener("change", (e) => { if (e.target.classList && e.target.classList.contains("dtx")) set(e.target.checked); });
 })();
 
 function thermPanel(d, s, c) {
@@ -1630,9 +1640,9 @@ function thermPanel(d, s, c) {
     const i = +(Object.keys(DAYKEY).find((k) => DAYKEY[k] && DAYKEY[k].date === d.date) ?? -1);
     const has = (k) => DAYKEY[k] && DAYKEY[k].sites && DAYKEY[k].sites[s.id];
     const lab = (k) => (has(k) ? dayLabel(DAYKEY[k].date).short : "");
-    const nav = `<div class="tnav"><button type="button" class="tnb" data-jump="${i - 1}" data-sid="${s.id}"${has(i - 1) ? "" : " disabled"}>‹ ${esc(lab(i - 1))}</button><span></span><button type="button" class="tnb" data-jump="${i + 1}" data-sid="${s.id}"${has(i + 1) ? "" : " disabled"}>${esc(lab(i + 1))} ›</button></div>`;
+    const nav = `<div class="tnav"><button type="button" class="tnb" data-jump="${i - 1}" data-sid="${s.id}"${has(i - 1) ? "" : " disabled"}>‹ ${esc(lab(i - 1))}</button><span class="tmid">${PANEL !== panelSVG ? '<button type="button" class="p2leg">Legend</button>' : ""}<label class="dtsw sm" title="Detailed chart: wind at every height, inversions, cumulus (stays on this device)"><input type="checkbox" class="dtx"${PANEL !== panelSVG ? " checked" : ""}><i></i>Detailed</label></span><button type="button" class="tnb" data-jump="${i + 1}" data-sid="${s.id}"${has(i + 1) ? "" : " disabled"}>${esc(lab(i + 1))} ›</button></div>`;
     const ttl = `<div class="tttl"><span class="tnd">${esc(dayLabel(d.date).short)} · ${esc(r.name)}</span></div>`;
-    return `<div class="therm">${ttl}${PANEL({ generated: REGIONS_D.generated, region: r.name, days: r.days, marks: r.marks, floor_ft: r.floor_ft, compact: true, win: c.style === "ridge" ? null : c.win, gwin: c.gwin }, di)}${PANEL !== panelSVG && typeof P2_LEGEND_BTN === "string" ? P2_LEGEND_BTN : ""}${nav}</div>`;
+    return `<div class="therm">${ttl}${PANEL({ generated: REGIONS_D.generated, region: r.name, days: r.days, marks: r.marks, floor_ft: r.floor_ft, compact: true, win: c.style === "ridge" ? null : c.win, gwin: c.gwin }, di)}${nav}</div>`;
   } catch (e) { return ""; }
 }
 
