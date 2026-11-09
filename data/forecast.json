@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-09T21:58+00:00",
+ "generated": "2026-11-09T22:02+00:00",
  "sample": false,
  "calib": {
   "2026-11-09": {
@@ -33483,17 +33483,15 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus), surface heat flux (6812 values)",
-  "HRRR trips: using the last good run, fetched 1.8 h ago",
-  "HRRR: ok (ncep_hrrr_conus), surface heat flux (2489 values)",
+  "HRRR trips: using the last good run, fetched 0.1 h ago",
   "RRFS: ok (ncep_rrfs_conus), surface heat flux (8372 values)",
-  "RRFS trips: using the last good run, fetched 1.8 h ago",
-  "RRFS: ok (ncep_rrfs_conus), surface heat flux (3059 values)",
-  "GFS: using the last good run, fetched 1.8 h ago",
-  "ECMWF: using the last good run, fetched 1.8 h ago",
+  "RRFS trips: using the last good run, fetched 0.1 h ago",
+  "GFS: using the last good run, fetched 1.9 h ago",
+  "ECMWF: using the last good run, fetched 1.9 h ago",
   "ICON: using the last good run, fetched 1.8 h ago",
   "ens GFS ens: using the last good run, fetched 5.6 h ago",
-  "ens ECMWF ens: using the last good run, fetched 5.5 h ago",
-  "ens ICON ens: using the last good run, fetched 5.5 h ago",
+  "ens ECMWF ens: using the last good run, fetched 5.6 h ago",
+  "ens ICON ens: using the last good run, fetched 5.6 h ago",
   "NWS AFD: ok",
   "gradient HRRR: bias +2.2 mb over 72 h",
   "gradient RRFS: bias +0.9 mb over 72 h",
@@ -33514,7 +33512,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-11-09T20:00+00:00",
-   "fetched": "2026-11-09T21:56+00:00",
+   "fetched": "2026-11-09T22:01+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -33524,7 +33522,7 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": "2026-11-09T12:00+00:00",
-   "fetched": "2026-11-09T21:56+00:00",
+   "fetched": "2026-11-09T22:01+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -33600,7 +33598,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-11-09T20:05:00+00:00",
-   "fetched": "2026-11-09T21:58+00:00",
+   "fetched": "2026-11-09T22:02+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -33610,7 +33608,7 @@
    "id": "LAX-DAG",
    "status": "ok",
    "run": "2026-11-09T21:00Z",
-   "fetched": "2026-11-09T21:58+00:00",
+   "fetched": "2026-11-09T22:02+00:00",
    "url": "https://www.weather.gov/lox/LAXGRDNEW"
   },
   {
@@ -33620,7 +33618,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-09T21:58+00:00",
+   "fetched": "2026-11-09T22:02+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
