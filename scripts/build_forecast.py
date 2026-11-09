@@ -1322,8 +1322,13 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     # Torrey has no fixed window: it can work in the morning, midday or evening, so its warnings come from the
     # whole flying day, each with the part of the day it shows up in
     span = [s for _, s in hours] if style == "ridge" else (blk if local >= 0.25 else [s for _, s in hours])
+    # a low top early or late is just the day warming up or cooling down: lid / weak only count from the
+    # thermal part of the day (11 am to 3 pm), so a no-go day for other reasons doesn't also say "low lid"
+    mid = {id(s) for h, s in hours if 11 <= h <= 15}
     for s in span:
         for c in s["codes"]:
+            if c in ("lid", "weak") and style != "ridge" and id(s) not in mid:
+                continue
             counts[c] = counts.get(c, 0) + 1
     when = {}
     if style == "ridge":
