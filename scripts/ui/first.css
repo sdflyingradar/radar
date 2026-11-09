@@ -232,3 +232,6 @@ html body details.day[data-date]:not(#story) > summary.hd .notes .sig { margin-b
   html[data-lay] body details.day[data-date]:not(#story) > summary.hd .when small:not(.rel) { grid-row: 2; align-self: start; }
   html[data-lay] body details.day[data-date]:not(#story) > summary.hd .when .rel { grid-row: 2; margin-top: 28px !important; }
 }
+/* the day in the day's verdict colour (a darker tone of it), no background */
+html body details.day[data-date]:not(#story) > summary.hd .when .dn { color: color-mix(in srgb, var(--dc) 72%, #1f2328) !important; font-weight: 800 !important; }
+html body details.day[data-date]:not(#story) > summary.hd .when small:not(.rel) { color: color-mix(in srgb, var(--dc) 60%, #6b7280) !important; font-weight: 600 !important; }
