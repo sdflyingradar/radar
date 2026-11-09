@@ -258,7 +258,7 @@
 
 /* Sounding and LAX–DAG open as a popup over the radar in the same style as the weather popup: a white card
    hanging from its button with a notch, the page inside (loaded with ?embed, no header) at its full height, the
-   overlay scrolls. Back, the X, Escape or a tap outside close it; a ctrl/cmd-click still opens the page itself. */
+   overlay scrolls. Back, the X, Escape or a tap outside close it. Miramar / Edwards switch inside the popup. */
 (function () {
   let ov = null, timer = null;
   const X = '<svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true"><path d="M2.5 2.5 L11.5 11.5 M11.5 2.5 L2.5 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
@@ -278,7 +278,7 @@
     ov.id = "wxpop";
     ov.className = "pgp";
     ov.innerHTML = `<div class="wxp-card" role="dialog" aria-label="${title}"><div class="wxp-hd">${ic ? ic.outerHTML : ""}<b>${title}</b>`
-      + `<a class="pgp-open" href="${href}" title="Open as its own page">Open page ↗</a><button type="button" class="wxp-x" aria-label="Close">${X}</button></div>`
+      + `<button type="button" class="wxp-x" aria-label="Close">${X}</button></div>`
       + `<iframe src="${href}?embed=1" title="${title}" scrolling="no"></iframe></div>`;
     document.body.appendChild(ov);
     const r = a.getBoundingClientRect();

@@ -30,7 +30,7 @@ a{color:#2563eb}
 .pathbox{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0 0}
 .pathbox .ph{font-size:13px;font-weight:700;margin:0 2px 6px}
 .pathbox svg{width:100%;height:auto;display:block;border-radius:10px}
-</style><script>if (/[?&]embed\b/.test(location.search)) { document.documentElement.classList.add("embed"); document.addEventListener("click", (e) => { const a = e.target.closest && e.target.closest("a[href]"); if (a && !a.target && !/^#/.test(a.getAttribute("href"))) a.target = "_top"; }); }</script>
+</style><script>if (/[?&]embed\b/.test(location.search)) { document.documentElement.classList.add("embed"); document.addEventListener("click", (e) => { const a = e.target.closest && e.target.closest("a[href]"); if (!a || a.target || /^#/.test(a.getAttribute("href"))) return; const u = new URL(a.href, location.href); if (u.origin === location.origin && /(sounding|lax-dag)\.html$/.test(u.pathname)) { u.searchParams.set("embed", "1"); a.href = u.href; } else a.target = "_top"; }); }</script>
 <style>html.embed header { display: none; } html.embed body { padding: 0 !important; margin: 0 !important; background: #fff !important; } html.embed .wrap, html.embed main { padding-left: 0 !important; padding-right: 0 !important; margin-top: 0 !important; }</style>
 </head><body><div class="wrap">
 <header><h1 id="h1">NKX sounding</h1><a class="back" href="./">← Radar</a></header>
