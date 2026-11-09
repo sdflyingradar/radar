@@ -255,3 +255,33 @@
   new MutationObserver(build).observe(document.querySelector(".wrap") || document.body, { childList: true, subtree: true });
   build();
 })();
+
+/* Sounding and LAX–DAG open as a popup over the radar (a full-screen sheet on the phone, a large card on the
+   computer) instead of leaving the page. The page itself loads inside with ?embed (no header). Back, the X,
+   Escape or a tap outside close it; a ctrl/cmd-click still opens the page on its own. */
+(function () {
+  let ov = null;
+  const X = '<svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true"><path d="M2.5 2.5 L11.5 11.5 M11.5 2.5 L2.5 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  const close = (fromBack) => {
+    if (!ov) return;
+    ov.remove(); ov = null; document.documentElement.style.overflow = "";
+    if (!fromBack && history.state && history.state.pg) history.back();
+  };
+  window.addEventListener("popstate", () => { if (ov) close(true); });
+  document.addEventListener("keydown", (e) => { if (ov && e.key === "Escape") close(); });
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest && e.target.closest('#assets a.asset[href="sounding.html"], #assets a.asset[href="lax-dag.html"]');
+    if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+    e.preventDefault();
+    const href = a.getAttribute("href"), title = (a.querySelector("b") || {}).textContent || "";
+    ov = document.createElement("div");
+    ov.id = "pgpop";
+    ov.innerHTML = `<div class="pgp-card" role="dialog" aria-label="${title}"><div class="pgp-hd"><b>${title}</b>`
+      + `<a class="pgp-open" href="${href}" title="Open as its own page">Open page ↗</a><button type="button" class="pgp-x" aria-label="Close">${X}</button></div>`
+      + `<iframe src="${href}?embed=1" title="${title}"></iframe></div>`;
+    document.body.appendChild(ov);
+    document.documentElement.style.overflow = "hidden";
+    history.pushState({ pg: 1 }, "");
+    ov.addEventListener("click", (ev) => { if (ev.target === ov || ev.target.closest(".pgp-x")) close(); });
+  });
+})();
