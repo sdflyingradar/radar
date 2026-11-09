@@ -256,15 +256,15 @@
   build();
 })();
 
-/* Sounding and LAX–DAG open as a popup over the radar (a full-screen sheet on the phone, a large card on the
-   computer) instead of leaving the page. The page itself loads inside with ?embed (no header). Back, the X,
-   Escape or a tap outside close it; a ctrl/cmd-click still opens the page on its own. */
+/* Sounding and LAX–DAG open as a popup over the radar in the same style as the weather popup: a white card
+   hanging from its button with a notch, the page inside (loaded with ?embed, no header) at its full height, the
+   overlay scrolls. Back, the X, Escape or a tap outside close it; a ctrl/cmd-click still opens the page itself. */
 (function () {
-  let ov = null;
+  let ov = null, timer = null;
   const X = '<svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true"><path d="M2.5 2.5 L11.5 11.5 M11.5 2.5 L2.5 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
   const close = (fromBack) => {
     if (!ov) return;
-    ov.remove(); ov = null; document.documentElement.style.overflow = "";
+    clearInterval(timer); ov.remove(); ov = null; document.documentElement.style.overflow = "";
     if (!fromBack && history.state && history.state.pg) history.back();
   };
   window.addEventListener("popstate", () => { if (ov) close(true); });
@@ -273,15 +273,27 @@
     const a = e.target.closest && e.target.closest('#assets a.asset[href="sounding.html"], #assets a.asset[href="lax-dag.html"]');
     if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
     e.preventDefault();
-    const href = a.getAttribute("href"), title = (a.querySelector("b") || {}).textContent || "";
+    const href = a.getAttribute("href"), title = (a.querySelector("b") || {}).textContent || "", ic = a.querySelector("svg");
     ov = document.createElement("div");
-    ov.id = "pgpop";
-    ov.innerHTML = `<div class="pgp-card" role="dialog" aria-label="${title}"><div class="pgp-hd"><b>${title}</b>`
-      + `<a class="pgp-open" href="${href}" title="Open as its own page">Open page ↗</a><button type="button" class="pgp-x" aria-label="Close">${X}</button></div>`
-      + `<iframe src="${href}?embed=1" title="${title}"></iframe></div>`;
+    ov.id = "wxpop";
+    ov.className = "pgp";
+    ov.innerHTML = `<div class="wxp-card" role="dialog" aria-label="${title}"><div class="wxp-hd">${ic ? ic.outerHTML : ""}<b>${title}</b>`
+      + `<a class="pgp-open" href="${href}" title="Open as its own page">Open page ↗</a><button type="button" class="wxp-x" aria-label="Close">${X}</button></div>`
+      + `<iframe src="${href}?embed=1" title="${title}" scrolling="no"></iframe></div>`;
     document.body.appendChild(ov);
+    const r = a.getBoundingClientRect();
+    if (r.bottom > 0 && r.bottom < innerHeight * 0.5) {
+      ov.style.paddingTop = `${Math.round(r.bottom + 12)}px`;
+      const card = ov.querySelector(".wxp-card"), cr = card.getBoundingClientRect();
+      card.style.setProperty("--nx", `${Math.max(16, Math.round(r.left + r.width / 2 - cr.left))}px`);
+    } else ov.classList.add("nonotch");
+    /* the page inside at its full height, so the popup scrolls like the weather one */
+    const fr = ov.querySelector("iframe");
+    const fit = () => { try { const h = fr.contentDocument.documentElement.scrollHeight; if (h && Math.abs(h - fr.offsetHeight) > 2) fr.style.height = `${h}px`; } catch (err) {} };
+    fr.addEventListener("load", fit);
+    timer = setInterval(fit, 400);
     document.documentElement.style.overflow = "hidden";
     history.pushState({ pg: 1 }, "");
-    ov.addEventListener("click", (ev) => { if (ev.target === ov || ev.target.closest(".pgp-x")) close(); });
+    ov.addEventListener("click", (ev) => { if (ev.target === ov || ev.target.closest(".wxp-x")) close(); });
   });
 })();
