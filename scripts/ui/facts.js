@@ -4,7 +4,7 @@
    Launch dial: the launch's direction window as a bold dark arc on the rim with a light grey wedge, and the wind as an
    arrow from outside the dial into its centre: green more than 20 deg inside the window, yellow its outer 20 deg,
    orange up to 20 deg outside (cross), red further out (from behind).
-   Aloft icon: green fine, yellow so-so, orange poor, red blows over the back or too strong. */
+   Aloft icon: the detailed chart's speed colours, red at least when over the back or offshore. */
 (function () {
   const DIR16 = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
   const deg = (v) => { const m = String(v || "").match(/\b(N|NNE|NE|ENE|E|ESE|SE|SSE|S|SSW|SW|WSW|W|WNW|NW|NNW)\b/); return m ? DIR16.indexOf(m[1]) * 22.5 : null; };
@@ -52,8 +52,17 @@
     if (s.dirs && s.dirs.length && w && w.v !== "–")
       out = out.replace(new RegExp(LAUNCH_IC.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + '(<span class="wa"[^>]*>)<svg[^>]*>.*?</svg>'), (m, sp) => dial(s.dirs, deg(w.v)) + sp);
     const a = f("Wind aloft");
-    if (ALOFT_IC && a && a.v !== "–" && a.q != null) {
-      const col = a.q >= 0.8 ? "#2f9e57" : a.q >= 0.5 ? "#d4a90c" : a.q >= 0.3 ? "#ef8a17" : "#d64545";
+    if (ALOFT_IC && a && a.v !== "–") {
+      /* the detailed chart's speed colours (white/green ≤9.5, yellow ≤15.5, orange ≤19, red ≤22.5, black above), from
+         the window's average speed, one step up when the strongest is 2+ steps above it; over the back or offshore
+         (a capped day step) is always at least red */
+      const m = String(a.v).match(/(\d+)(?:\s*g\s*(\d+))?/);
+      const SP = [[4, 0], [9.5, 1], [15.5, 2], [19, 3], [22.5, 4], [1e9, 5]];
+      const band = (v) => SP.findIndex(([lim]) => v <= lim);
+      let b = m ? Math.max(1, band(+m[1])) : 1;
+      if (m && m[2] && band(+m[2]) - b >= 2) b += 1;
+      if (a.q != null && a.q <= 0.2) b = Math.max(b, 4);
+      const col = ["#2f9e57", "#2f9e57", "#d4a90c", "#ef8a17", "#d64545", "#151515"][b];
       out = out.replace(ALOFT_IC, ALOFT_IC.replace('class="wic"', `class="wic" style="color:${col}"`));
     }
     return out;
