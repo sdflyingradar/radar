@@ -74,44 +74,77 @@ def chart(sid, big, wide=False):
     P = lambda x, y: (W / 2 + x * R, Hh / 2 - y * R)
     o = [f'<svg viewBox="0 0 {W} {Hh}" role="img" aria-label="Measuring points for {html.escape(s["name"])}">']
     step = 10 if ext < 40 else 25
+    # label sizes in viewBox units (match the page CSS: .big / .small .pl .ll .km)
+    FS = {"pl": 29, "ll": 31, "km": 24} if big else {"pl": 18, "ll": 19, "km": 15}
+    boxes = []                                       # [x0, y0, x1, y1] already taken: wedges, dots, labels
+    def tbox(x, y, txt, cls, anchor):
+        w = len(txt) * FS[cls] * 0.56
+        x0 = x if anchor == "start" else x - w if anchor == "end" else x - w / 2
+        return [x0 - 2, y - FS[cls] * 0.8, x0 + w + 2, y + FS[cls] * 0.25]
+    def free(bx):
+        if bx[0] < 2 or bx[2] > W - 2 or bx[1] < 2 or bx[3] > Hh - 2:
+            return False
+        return not any(bx[0] < c[2] and bx[2] > c[0] and bx[1] < c[3] and bx[3] > c[1] for c in boxes)
+    def place(cands, txt, cls):
+        """the first candidate (x, y, anchor) that hits nothing; the first one if all do"""
+        for x, y, an in cands:
+            bx = tbox(x, y, txt, cls, an)
+            if free(bx):
+                boxes.append(bx)
+                return x, y, an
+        x, y, an = cands[0]
+        boxes.append(tbox(x, y, txt, cls, an))
+        return x, y, an
+    rings = []
     for r in range(step, int(ext) + 1, step):
         if r * R > Hh / 2 - 4:                       # landscape: only the rings that fit
             continue
-        o.append(f'<circle cx="{W/2}" cy="{Hh/2}" r="{r*R:.1f}" class="ring"/><text x="{W/2+r*R*0.707+3:.1f}" '
-                 f'y="{Hh/2-r*R*0.707-3:.1f}" class="km">{r} km</text>')
+        rings.append(r)
+        o.append(f'<circle cx="{W/2}" cy="{Hh/2}" r="{r*R:.1f}" class="ring"/>')
     o.append(f'<line x1="{W/2}" y1="{pad/2}" x2="{W/2}" y2="{Hh-pad/2}" class="axis"/><line x1="{pad/2}" y1="{Hh/2}" '
              f'x2="{W-pad/2}" y2="{Hh/2}" class="axis"/><text x="{W/2}" y="{pad/2-4}" class="north">N</text>')
+    boxes.append([W / 2 - 12, 0, W / 2 + 12, pad / 2])
     wr = 34 if sid in EXP else (62 if big else 44)     # trip areas span tens of km: smaller wedges
     for l, ((x, y), _) in zip(launches, L):
         X, Y = P(x, y)
         o += [wedge(X, Y, wr, a0, a1, c) for a0, a1, c in sectors(s, l)]
-    near = lambda x, y: any(math.hypot(x - a, y - b) < 3 for (a, b), _ in L)
+        boxes.append([X - wr - 6, Y - wr - 6, X + wr + 6, Y + wr + 6])   # the launch window (and a margin): never write over it
+    dot = 9 if big else 7
     for (x, y), n in pts:
         X, Y = P(x, y)
-        o.append(f'<circle cx="{X:.1f}" cy="{Y:.1f}" r="{9 if big else 7}" class="pt"/>')
-        if n.endswith("launch") or any(math.hypot(x - a, y - b) < 0.2 for (a, b), _ in L):
-            continue                                  # the point at a launch: the launch name says it
-        if near(x, y):
-            anchor, dx, dy = "start", 14, 4
-        else:
-            anchor, dx = ("start", 10) if x >= 0 else ("end", -10)
-            if abs(x) < 1:
-                anchor, dx = "middle", 0
-            dy = -10 if y >= 0 else 18
-            if abs(y) < 1:
-                dy = 4
-        if anchor == "start" and X + dx > W - 110:
-            anchor, dx, dy = "end", -10, 18
-        if sid in EXP:                                # trip areas: points are spread out, label each one below it
-            anchor, dx, dy = ("start", 8, 24) if n in below else ("start", 8, -12)
-        o.append(f'<text x="{X+dx:.1f}" y="{Y+dy:.1f}" text-anchor="{anchor}" class="pl">{html.escape(short_label(n))}</text>')
-    seen = []
+        o.append(f'<circle cx="{X:.1f}" cy="{Y:.1f}" r="{dot}" class="pt"/>')
+        boxes.append([X - dot, Y - dot, X + dot, Y + dot])
+    # launch names: below the window, else left / right / above it
     for (x, y), n in L:
         X, Y = P(x, y)
-        dyl = 5 + (20 if any(math.hypot(x - a, y - b) < 4 for a, b in seen) else 0)   # two launches close together: one label lower
-        seen.append((x, y))
-        o.append(f'<text x="{X-14:.1f}" y="{Y+dyl:.1f}" text-anchor="end" class="ll">{html.escape(short_label(n))}</text>' if len(L) > 1
-                 else f'<text x="{X:.1f}" y="{Y+22:.1f}" class="ll" text-anchor="middle">{html.escape(n)}</text>')
+        t = short_label(n)
+        g = FS["ll"]
+        cands = [(X, Y + wr + g, "middle"), (X - wr - 6, Y + g * 0.35, "end"), (X + wr + 6, Y + g * 0.35, "start"),
+                 (X, Y - wr - 6, "middle"), (X - wr - 6, Y + wr, "end"), (X + wr + 6, Y + wr, "start"),
+                 (X - wr - 6, Y - wr + g, "end"), (X + wr + 6, Y - wr + g, "start"), (X, Y + wr + 2 * g, "middle"),
+                 (X - wr - 6, Y + wr + g, "end"), (X + wr + 6, Y + wr + g, "start")]
+        x1, y1, an = place(cands, t, "ll")
+        o.append(f'<text x="{x1:.1f}" y="{y1:.1f}" text-anchor="{an}" class="ll">{html.escape(t)}</text>')
+    # height points: right, left, above, below the dot
+    for (x, y), n in pts:
+        X, Y = P(x, y)
+        if n.endswith("launch") or any(math.hypot(x - a, y - b) < 1.5 for (a, b), _ in L):
+            continue                                  # a point at (or right by) a launch: the launch name says it
+        t = short_label(n)
+        g = FS["pl"]
+        d = dot + 4
+        cands = [(X + d, Y + g * 0.35, "start"), (X - d, Y + g * 0.35, "end"), (X, Y - d - 2, "middle"), (X, Y + d + g * 0.8, "middle"),
+                 (X + d, Y - d, "start"), (X - d, Y - d, "end"), (X + d, Y + d + g * 0.6, "start"), (X - d, Y + d + g * 0.6, "end")]
+        cands += [(cx + (cx - X) * 0.8, cy + (cy - Y) * 0.8, an) for cx, cy, an in cands]     # a bit further out
+        x1, y1, an = place(cands, t, "pl")
+        o.append(f'<text x="{x1:.1f}" y="{y1:.1f}" text-anchor="{an}" class="pl">{html.escape(t)}</text>')
+    # distance on each ring: lower left first, else the other diagonals
+    for r in rings:
+        rr = r * R * 0.707
+        cands = [(W / 2 - rr - 3, Hh / 2 + rr + FS["km"], "end"), (W / 2 + rr + 3, Hh / 2 + rr + FS["km"], "start"),
+                 (W / 2 - rr - 3, Hh / 2 - rr - 3, "end"), (W / 2 + rr + 3, Hh / 2 - rr - 3, "start")]
+        x1, y1, an = place(cands, f"{r} km", "km")
+        o.append(f'<text x="{x1:.1f}" y="{y1:.1f}" text-anchor="{an}" class="km">{r} km</text>')
     o.append("</svg>")
     note = f"{len(hp)} height points · wind from the launch" if hp else "wind and height from the launch point only"
     return (f'<figure class="site {"big" if big else "small"}{" wide" if wide else ""}"><figcaption><b>{html.escape(s["name"])}</b>'
