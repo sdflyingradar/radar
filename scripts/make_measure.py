@@ -52,7 +52,7 @@ def short_label(n):
     return m.group(1) if m else SHORT.get(n, n)
 
 
-def chart(sid, big):
+def chart(sid, big, wide=False):
     s = S[sid]
     launches = s.get("launches") or [{"name": s["short"], "lat": s["lat"], "lon": s["lon"]}]
     hp = s.get("height_points") or []
@@ -62,17 +62,25 @@ def chart(sid, big):
     below = {p["name"] for p in hp if p.get("label") == "below"}
     L = [(xy(l["lat"], l["lon"], lat0, lon0), l["name"]) for l in launches]
     ext = max([12] + [max(abs(a), abs(b)) for (a, b), _ in pts + L]) + 4
-    W = 520 if big else 300
+    W = 640 if wide else 520 if big else 300
+    Hh = 300 if wide else W                          # landscape: an area spread east-west (Santa Barbara / Ojai)
     pad = 34
-    R = (W / 2 - pad) / ext
-    P = lambda x, y: (W / 2 + x * R, W / 2 - y * R)
-    o = [f'<svg viewBox="0 0 {W} {W}" role="img" aria-label="Measuring points for {html.escape(s["name"])}">']
+    if wide:
+        ex = max([12] + [abs(a) for (a, b), _ in pts + L]) + 6
+        ey = max([6] + [abs(b) for (a, b), _ in pts + L]) + 6
+        R = min((W / 2 - pad - 40) / ex, (Hh / 2 - pad) / ey)
+    else:
+        R = (W / 2 - pad) / ext
+    P = lambda x, y: (W / 2 + x * R, Hh / 2 - y * R)
+    o = [f'<svg viewBox="0 0 {W} {Hh}" role="img" aria-label="Measuring points for {html.escape(s["name"])}">']
     step = 10 if ext < 40 else 25
     for r in range(step, int(ext) + 1, step):
-        o.append(f'<circle cx="{W/2}" cy="{W/2}" r="{r*R:.1f}" class="ring"/><text x="{W/2+r*R*0.707+3:.1f}" '
-                 f'y="{W/2-r*R*0.707-3:.1f}" class="km">{r} km</text>')
-    o.append(f'<line x1="{W/2}" y1="{pad/2}" x2="{W/2}" y2="{W-pad/2}" class="axis"/><line x1="{pad/2}" y1="{W/2}" '
-             f'x2="{W-pad/2}" y2="{W/2}" class="axis"/><text x="{W/2}" y="{pad/2-4}" class="north">N</text>')
+        if r * R > Hh / 2 - 4:                       # landscape: only the rings that fit
+            continue
+        o.append(f'<circle cx="{W/2}" cy="{Hh/2}" r="{r*R:.1f}" class="ring"/><text x="{W/2+r*R*0.707+3:.1f}" '
+                 f'y="{Hh/2-r*R*0.707-3:.1f}" class="km">{r} km</text>')
+    o.append(f'<line x1="{W/2}" y1="{pad/2}" x2="{W/2}" y2="{Hh-pad/2}" class="axis"/><line x1="{pad/2}" y1="{Hh/2}" '
+             f'x2="{W-pad/2}" y2="{Hh/2}" class="axis"/><text x="{W/2}" y="{pad/2-4}" class="north">N</text>')
     wr = 34 if sid in EXP else (62 if big else 44)     # trip areas span tens of km: smaller wedges
     for l, ((x, y), _) in zip(launches, L):
         X, Y = P(x, y)
@@ -97,13 +105,16 @@ def chart(sid, big):
         if sid in EXP:                                # trip areas: points are spread out, label each one below it
             anchor, dx, dy = ("start", 8, 24) if n in below else ("start", 8, -12)
         o.append(f'<text x="{X+dx:.1f}" y="{Y+dy:.1f}" text-anchor="{anchor}" class="pl">{html.escape(short_label(n))}</text>')
+    seen = []
     for (x, y), n in L:
         X, Y = P(x, y)
-        o.append(f'<text x="{X-14:.1f}" y="{Y+5:.1f}" text-anchor="end" class="ll">{html.escape(short_label(n))}</text>' if len(L) > 1
+        dyl = 5 + (20 if any(math.hypot(x - a, y - b) < 4 for a, b in seen) else 0)   # two launches close together: one label lower
+        seen.append((x, y))
+        o.append(f'<text x="{X-14:.1f}" y="{Y+dyl:.1f}" text-anchor="end" class="ll">{html.escape(short_label(n))}</text>' if len(L) > 1
                  else f'<text x="{X:.1f}" y="{Y+22:.1f}" class="ll" text-anchor="middle">{html.escape(n)}</text>')
     o.append("</svg>")
     note = f"{len(hp)} height points · wind from the launch" if hp else "wind and height from the launch point only"
-    return (f'<figure class="site {"big" if big else "small"}"><figcaption><b>{html.escape(s["name"])}</b>'
+    return (f'<figure class="site {"big" if big else "small"}{" wide" if wide else ""}"><figcaption><b>{html.escape(s["name"])}</b>'
             f'<span>{note}</span></figcaption>{"".join(o)}</figure>')
 
 
@@ -112,18 +123,14 @@ def main():
     page = p.read_text()
     big = "".join(chart(x, True) for x in BIG if x in S)
     small = "".join(chart(x, False) for x in SMALL if x in S)
-    exp = "".join(chart(x, True) for x in EXP if x in S)
+    # trip areas with the others: Owens next to Marshall, Santa Barbara / Ojai as a wide (landscape) card
+    small += "".join(chart(x, False) for x in EXP if x in S and x != "santabarbara")
+    if "santabarbara" in S:
+        small += chart("santabarbara", False, wide=True)
     page = re.sub(r'<div class="grid big">.*?</div>\n<h2>', lambda m: f'<div class="grid big">{big}</div>\n<h2>', page, flags=re.S)
-    page = re.sub(r'<div class="grid small">.*?</div>\n(<h2 class="exp">|</main>)',
+    page = re.sub(r'<h2 class="exp">.*?<div class="grid big exp">.*?</div>\n', '', page, flags=re.S)   # no separate section
+    page = re.sub(r'<div class="grid small">.*?</div>\n\s*(<h2>|</main>)',
                   lambda m: f'<div class="grid small">{small}</div>\n{m.group(1)}', page, flags=re.S)
-    block = ('<h2 class="exp">Experimental · areas for a flying trip</h2>\n'
-             '<p class="expnote">Work in progress: several launches per area, measured along the terrain between them. '
-             'The rating takes the best launch of the day.</p>\n'
-             f'<div class="grid big exp">{exp}</div>\n')
-    if '<h2 class="exp">' in page:
-        page = re.sub(r'<h2 class="exp">.*?<div class="grid big exp">.*?</div>\n', lambda m: block, page, flags=re.S)
-    else:
-        page = page.replace('</main>', block + '</main>', 1)
     p.write_text(page)
     print("how.html redrawn")
 
