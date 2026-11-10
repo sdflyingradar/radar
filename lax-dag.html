@@ -21,6 +21,7 @@ h1{font-size:19px;font-weight:700;margin:0;letter-spacing:-.01em}
 .fnav{display:flex;align-items:center;gap:8px;margin-top:14px}.fnav .ph{flex:1;text-align:center;margin:0}
 .fnav button{font:600 .78rem/1 system-ui,sans-serif;color:#344054;background:#fff;border:1px solid #d5dbe2;border-radius:999px;padding:6px 12px;cursor:pointer}
 .fnav button:disabled{opacity:.35;cursor:default}
+#fchart svg.dscore{display:block;width:100%;height:auto;margin-top:-6px}
 </style><script>if (/[?&]embed\b/.test(location.search)) { document.documentElement.classList.add("embed"); document.addEventListener("click", (e) => { const a = e.target.closest && e.target.closest("a[href]"); if (!a || a.target || /^#/.test(a.getAttribute("href"))) return; const u = new URL(a.href, location.href); if (u.origin === location.origin && /(sounding|lax-dag)\.html$/.test(u.pathname)) { u.searchParams.set("embed", "1"); a.href = u.href; } else a.target = "_top"; }); }</script>
 <style>html.embed header { display: none; } html.embed body { padding: 0 !important; margin: 0 !important; background: #fff !important; } html.embed .wrap, html.embed main { padding-left: 0 !important; padding-right: 0 !important; margin-top: 0 !important; }</style>
 </head><body><div class="wrap">
@@ -30,7 +31,7 @@ h1{font-size:19px;font-weight:700;margin:0;letter-spacing:-.01em}
   <div class="fnav"><button type="button" id="fback">‹ Earlier</button><div class="ph" id="ftitle">Next days · by model</div><button type="button" id="ffwd" disabled>Later ›</button></div><div id="fchart">Loading…</div>
   <p class="note">Sea-level pressure at LAX minus Barstow-Daggett, the standard SoCal offshore measure. Below zero the desert pressure is higher and the air pushes offshore: about −2 mb weak, −4 mb a real Santa Ana, −6 mb strong. Black = observed at the two airports; the coloured lines are the models, each corrected by how far it was off the airports' readings over the last three days.</p>
 </div>
-<script src="scripts/sounding/foehn.js?v=202611101405"></script>
+<script src="scripts/sounding/foehn.js?v=202611101420"></script>
 <script>
 (async () => {
   try {
@@ -38,14 +39,18 @@ h1{font-size:19px;font-weight:700;margin:0;letter-spacing:-.01em}
     document.getElementById('fmap').innerHTML = foehnMapSVG(G);
     const el = document.getElementById('fchart'), back = document.getElementById('fback'), fwd = document.getElementById('ffwd'), ttl = document.getElementById('ftitle');
     el.innerHTML = foehnChartSVG(G);
+    /* the San Diego day score under it, on the same time axis */
+    let DS = null;
+    const drawDS = (win) => { const sv = el.querySelector('svg'); if (DS && sv) sv.insertAdjacentHTML('afterend', dayScoreSVG(DS, win)); };
+    fetch('data/dayscore.json?' + Date.now()).then(r => r.json()).then(j => { DS = j; drawDS(null); }).catch(() => {});
     /* scroll back a month at a time through the observed record (data/gradient_obs.json) */
     let H = null, k = 0;
     const toT = (key) => Date.parse(key + ':00:00Z');
     const show = () => {
-      if (k === 0) { el.innerHTML = foehnChartSVG(G); ttl.textContent = 'Next days · by model'; }
+      if (k === 0) { el.innerHTML = foehnChartSVG(G); drawDS(null); ttl.textContent = 'Next days · by model'; }
       else {
         const t1 = Date.now() - 2 * 864e5 - (k - 1) * 30 * 864e5, t0 = t1 - 30 * 864e5;     // a month per step
-        el.innerHTML = foehnChartSVG({ obs: { ...H.hourly, ...G.obs } }, { t0, t1 });
+        el.innerHTML = foehnChartSVG({ obs: { ...H.hourly, ...G.obs } }, { t0, t1 }); drawDS({ t0, t1 });
         const d = (t) => new Date(t).toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles', month: 'short', day: 'numeric' });
         ttl.textContent = `Observed · ${d(t0)} – ${d(t1)}`;
       }

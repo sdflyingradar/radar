@@ -1620,6 +1620,30 @@ def keep_gradient_history(obs, log, path=None):
     path.write_text(json.dumps(h, separators=(",", ":")))
 
 
+DAY_SCORE_SITES = ("lb", "blossom", "elsinore")      # the local thermal day: the best of these (as the radar's day colour)
+
+
+def write_day_scores(result, log, root=None):
+    """data/dayscore.json: the San Diego day score (best of Little Black, Blossom, Elsinore) for every archived day (as
+    the radar said it on the day) and the forecast days, for the LAX-DAG chart. Kept as long as the pressure history."""
+    root = root or ROOT / "data"
+    out = {}
+    cut = (datetime.now(timezone.utc) - timedelta(days=GRAD_KEEP_DAYS)).strftime("%Y-%m-%d")
+    for f in sorted((root / "archive").glob("20*.json")):
+        try:
+            day = json.loads(f.read_text()).get("day") or {}
+            r = [c["rating"] for k, c in (day.get("sites") or {}).items() if k in DAY_SCORE_SITES and c and c.get("rating") is not None]
+            if r and f.stem >= cut:
+                out[f.stem] = {"s": round(max(r), 2), "obs": 1}
+        except Exception:  # noqa: BLE001
+            continue
+    for day in result.get("days") or []:
+        r = [c["rating"] for k, c in (day.get("sites") or {}).items() if k in DAY_SCORE_SITES and c and c.get("rating") is not None]
+        if r and day["date"] not in out:
+            out[day["date"]] = {"s": round(max(r), 2)}
+    (root / "dayscore.json").write_text(json.dumps(dict(sorted(out.items())), separators=(",", ":")))
+
+
 def model_gradient(hours, obs):
     """One model's LAX-DAG from its pressure_msl, corrected by its median miss against the observed gradient
     over the past days (coarse grids put Daggett at the wrong height, which skews its sea-level pressure).
@@ -3167,6 +3191,7 @@ def main(argv=None):
             "thresholds": {"weak": GRAD_WEAK, "santa_ana": GRAD_SA, "strong": -6.0}}, separators=(",", ":")))
         try:
             keep_gradient_history(GRAD.get("obs_hourly", {}), log)
+            write_day_scores(result, log)
         except Exception as e:  # noqa: BLE001 - the history must never cost a forecast
             log.append(f"gradient history: failed ({e})")
     if not args.sample:

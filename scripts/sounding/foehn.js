@@ -140,3 +140,31 @@ function foehnChartSVG(G, win) {
 }
 
 if (typeof module !== 'undefined') module.exports = { foehnMapSVG, foehnChartSVG };
+
+/* The San Diego day score (best of Little Black, Blossom, Elsinore; data/dayscore.json) as a quiet strip under the
+   LAX-DAG chart, on the same time axis: one point a day at noon, the line coloured by the score (no-go red to great
+   blue), past days as the radar said them on the day (solid), coming days as forecast (dashed, open dots). */
+function dayScoreSVG(S, win) {
+  const W = 760, H = 74, L = 40, R = 14, T = 8, B = 18;
+  const now = Date.now(), t0 = win ? win.t0 : now - 2 * 864e5, t1 = win ? win.t1 : now + 7 * 864e5;
+  const X = (t) => L + (t - t0) / (t1 - t0) * (W - L - R), Y = (v) => T + (5 - v) / 4 * (H - T - B), f = (v) => v.toFixed(1);
+  const COL = ['#d8402f', '#ee8a1c', '#f1c72b', '#3aa457', '#2f7fcf'], col = (v) => COL[Math.max(1, Math.min(5, Math.round(v))) - 1];
+  const noon = (d) => Date.parse(d + 'T20:00:00Z');                       // local noon (PST)
+  const pts = Object.entries(S || {}).map(([d, x]) => [noon(d), x.s, !!x.obs]).filter(([t]) => t >= t0 - 864e5 && t <= t1 + 864e5).sort((a, b) => a[0] - b[0]);
+  const o = [`<svg viewBox="0 0 ${W} ${H}" class="dscore" role="img" aria-label="San Diego day score"><defs><clipPath id="dsc"><rect x="${L}" y="0" width="${W - L - R}" height="${H}"/></clipPath></defs>`];
+  for (const v of [1, 3, 5]) o.push(`<line x1="${L}" x2="${W - R}" y1="${f(Y(v))}" y2="${f(Y(v))}" stroke="#eef0f3"/><text x="${L - 6}" y="${f(Y(v) + 3)}" text-anchor="end" font-size="9" fill="#98a2b3">${v}</text>`);
+  o.push(`<text x="${L + 4}" y="${H - 4}" font-size="9.5" font-weight="600" fill="#98a2b3">SD day score</text>`);
+  o.push('<g clip-path="url(#dsc)">');
+  for (let i = 1; i < pts.length; i++) {
+    const [a, b] = [pts[i - 1], pts[i]];
+    if (b[0] - a[0] > 1.6 * 864e5) continue;
+    o.push(`<line x1="${f(X(a[0]))}" y1="${f(Y(a[1]))}" x2="${f(X(b[0]))}" y2="${f(Y(b[1]))}" stroke="${col((a[1] + b[1]) / 2)}" stroke-width="2" stroke-linecap="round"${b[2] ? '' : ' stroke-dasharray="3 3"'}/>`);
+  }
+  const long = t1 - t0 > 12 * 864e5;
+  for (const [t, v, ob] of pts) o.push(`<circle cx="${f(X(t))}" cy="${f(Y(v))}" r="${long ? 2 : 3}" fill="${ob ? col(v) : '#fff'}" stroke="${col(v)}" stroke-width="1.3"><title>${new Date(t).toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles', weekday: 'short', month: 'short', day: 'numeric' })}: ${v.toFixed(1)}${ob ? '' : ' (forecast)'}</title></circle>`);
+  o.push('</g>');
+  if (now >= t0 && now <= t1) o.push(`<line x1="${f(X(now))}" x2="${f(X(now))}" y1="${T}" y2="${H - B}" stroke="#26303a" stroke-dasharray="2 3" opacity=".6"/>`);
+  o.push('</svg>');
+  return o.join('');
+}
+if (typeof module !== 'undefined') module.exports = Object.assign(module.exports || {}, { dayScoreSVG });
