@@ -65,8 +65,8 @@ REGIONS = [
      "points": [("Walt's Point", 36.473, -118.115), ("Black Eagle (Inyos)", 36.818, -118.043), ("Mazourka (Inyos)", 36.977, -118.123),
                 ("Flynn's", 37.388, -118.295), ("Paiute", 37.522, -118.295)]},
 ]
-LEVELS = [950, 925, 850, 700, 600, 500]    # enough for the mixed-layer top; fewer variables keep the Open-Meteo budget
-STD_HEIGHT_M = {1000: 110, 975: 320, 950: 540, 925: 760, 900: 990, 850: 1460, 800: 1950, 700: 3010, 600: 4210, 500: 5570}
+LEVELS = [975, 950, 925, 900, 875, 850, 700, 500]   # every 25 hPa (~700-800 ft) through the launch-to-top-of-lift band, then 700 and 500
+STD_HEIGHT_M = {1000: 110, 975: 320, 950: 540, 925: 760, 900: 990, 875: 1220, 850: 1460, 800: 1950, 700: 3010, 600: 4210, 500: 5570}
 SURFACE = ["temperature_2m", "dew_point_2m", "precipitation", "cape", "shortwave_radiation",
            "cloud_cover_low", "cloud_cover_mid", "cloud_cover_high",
            "wind_speed_10m", "wind_direction_10m", "wind_gusts_10m", "boundary_layer_height"]
@@ -714,7 +714,7 @@ def main():
         """Fetch one model for a set of points, or reuse a cached copy younger than REUSE_H (Open-Meteo budget)."""
         if not pts:
             return [], None
-        cpath, key = os.path.join(cache_dir, f"{name}_{tag}.json"), ",".join(f"{la},{lo}" for _, la, lo in pts)
+        cpath, key = os.path.join(cache_dir, f"{name}_{tag}.json"), ",".join(f"{la},{lo}" for _, la, lo in pts) + "|" + ",".join(map(str, LEVELS))
         if reuse:
             try:
                 with open(cpath) as f:
