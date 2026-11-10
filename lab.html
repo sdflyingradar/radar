@@ -1626,7 +1626,7 @@ const SITE_REGION = { torrey: "coast", lb: "north", blossom: "east", otay: "sout
 let REGIONS_D = null;
 if (THERM) fetch(`data/region/regions.json?t=${Date.now()}`, { cache: "no-store" }).then((r) => r.json()).then((j) => { REGIONS_D = j; }).catch(() => {});
 /* which thermal chart this device shows: classic or detailed (a per-device choice, under the chart) */
-const chartStyle = () => { try { return localStorage.getItem("chartStyle") || "classic"; } catch (e) { return "classic"; } };
+const chartStyle = () => { try { return localStorage.getItem("chartStyle") === "classic" ? "classic" : "detailed"; } catch (e) { return "detailed"; } };   // detailed by default
 /* the footer switch: detailed therm mode on this device (same choice as the buttons under the chart) */
 (() => {
   const sw = document.getElementById("dtherm"); if (!sw) return;
