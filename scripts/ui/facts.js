@@ -1,5 +1,5 @@
 /* Tile facts with meaning in colour.
-   Lift icon: by how good the height is for the site: blue at XC height (with climbs of 1 m/s+), green good local,
+   Lift icon: blue with climbs of 2 m/s+, or at great XC height, or 1.5 m/s+ at XC height; green good local height,
    orange modest, yellow low; weak climbs (under 0.7 m/s) never better than orange.
    Launch dial: the launch's direction window as a bold dark arc on the rim with a light grey wedge, and the wind as an
    arrow from outside the dial into its centre: green more than 20 deg inside the window, yellow its outer 20 deg, orange up to 20 deg outside (cross), orange 20-45 deg
@@ -40,9 +40,10 @@
     const cl = c.wstar != null ? Math.max(0, (c.core || 1.4) * c.wstar - (c.sink || 1.1)) : null;
     let out = html;
     if (top && c.style !== "ridge") {
-      const lf = s.launch_ft || 0, xc = s.xc_top_ft || lf + 2500;
-      let k = top >= xc ? 3 : top >= lf + 1500 ? 2 : top >= lf + 700 ? 1 : 0;
-      if (cl != null && cl < 1 && k === 3) k = 2;
+      const lf = s.launch_ft || 0, xc = s.xc_top_ft || lf + 2500, great = xc + (s.xc_span_ft || 1000);
+      /* blue: climbs of 2 m/s or more, or great XC height, or both 1.5 m/s and XC height */
+      const blue = (cl != null && cl >= 2) || top >= great || (cl != null && cl >= 1.5 && top >= xc);
+      let k = blue ? 3 : top >= lf + 1500 ? 2 : top >= lf + 700 ? 1 : 0;
       if (cl != null && cl < 0.7) k = Math.min(k, 1);
       const col = ["#e2bf12", "#ef8a17", "#2f9e57", "#2b7fd8"][k];
       const tip = ["low", "modest height", "good local height", "cross-country height"][k] + (cl != null ? `, climbs about ${cl.toFixed(1)} m/s` : "");
