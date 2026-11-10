@@ -1576,9 +1576,13 @@ def obs_gradient(log):
     return {k: round(slp["KLAX"][k] - slp["KDAG"][k], 1) for k in both}
 
 
+GRAD_KEEP_DAYS = 92
+
+
 def keep_gradient_history(obs, log, path=None):
     """Every observed LAX-DAG hour, kept for good in data/gradient_obs.json ({utc 'YYYY-MM-DDTHH': mb}, ~200 KB a
-    year) so the LAX-DAG chart can scroll back. The first time, the past year is filled in from the Iowa METAR archive."""
+    year) so the LAX-DAG chart can scroll back (3 months; older hours are dropped). The first time, the past is filled in from
+    the Iowa METAR archive."""
     path = path or ROOT / "data" / "gradient_obs.json"
     try:
         h = json.loads(path.read_text()) if path.exists() else {}
@@ -1588,7 +1592,7 @@ def keep_gradient_history(obs, log, path=None):
     if not h.get("backfilled"):
         try:
             end = datetime.now(timezone.utc)
-            start = end - timedelta(days=366)
+            start = end - timedelta(days=GRAD_KEEP_DAYS)
             url = ("https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=LAX&station=DAG&data=mslp"
                    f"&year1={start.year}&month1={start.month}&day1={start.day}&year2={end.year}&month2={end.month}&day2={end.day}"
                    "&tz=Etc/UTC&format=onlycomma&missing=empty&report_type=3")
@@ -1610,7 +1614,8 @@ def keep_gradient_history(obs, log, path=None):
         except Exception as e:  # noqa: BLE001 - try again next run
             log.append(f"gradient history: backfill failed ({str(e)[:80]})")
     hourly.update(obs or {})
-    h["hourly"] = dict(sorted(hourly.items()))
+    cut = (datetime.now(timezone.utc) - timedelta(days=GRAD_KEEP_DAYS)).strftime("%Y-%m-%dT%H")
+    h["hourly"] = dict(sorted((k, v) for k, v in hourly.items() if k >= cut))      # keep 3 months
     h["note"] = "observed LAX minus Barstow-Daggett sea-level pressure, mb, by UTC hour"
     path.write_text(json.dumps(h, separators=(",", ":")))
 
