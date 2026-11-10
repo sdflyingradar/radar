@@ -247,3 +247,8 @@ html[data-lay] body details.day:not(#story) .list .srow .facts > span { display:
 #wxpop.pgp .wxp-hd { padding: 0 2px 0 4px; }
 #wxpop.pgp .pgp-open { font-size: .76rem; color: #667085; text-decoration: none; margin-right: 2px; }
 #wxpop.pgp iframe { display: block; width: 100%; height: 70vh; border: 0; }
+/* tiny timeline of the day's update runs, above the footer */
+#sched { max-width: 640px; margin: 18px auto 0; padding: 0 16px; }
+#sched .sch-h { font-size: .74rem; font-weight: 700; color: #475467; margin: 0 0 2px; }
+#sched .sch-h span { font-weight: 500; color: #98a2b3; }
+#sched svg { display: block; width: 100%; height: auto; }

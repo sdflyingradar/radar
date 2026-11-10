@@ -943,7 +943,7 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
 @media (max-width: 640px) { .tnav { gap: 6px; } .tnav .tnb { min-width: 58px; padding: 5px 10px; } .tnav .tmid { gap: 8px; } }
 .dtsw input:focus-visible + i { outline: 2px solid #c26a24; outline-offset: 2px; }
 </style>
-<link rel="stylesheet" href="scripts/ui/grid.css?v=202611091240">
+<link rel="stylesheet" href="scripts/ui/grid.css?v=202611101150">
 <link rel="stylesheet" href="scripts/ui/first.css?v=202611082335">
 <style>
 /* ===== LAB bar ===== */
@@ -1008,6 +1008,7 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
       <span id="fresh"></span>
       <button type="button" id="reload">Reload</button>
     </div>
+  <div id="sched" aria-live="off"></div>
   <footer>
     <span id="foot"></span>
     <label class="dtsw" title="Show the detailed thermal chart (wind at every height, inversions, cumulus) everywhere on this device"><input type="checkbox" id="dtherm"><i></i>Detailed therm</label>
@@ -1875,6 +1876,7 @@ $("#reload").addEventListener("click", load);
 })();
 </script>
 <script src="scripts/ui/facts.js?v=202611101005"></script>
+<script src="scripts/ui/sched.js?v=202611101155"></script>
 <script src="scripts/ui/grid.js?v=202611091300"></script>
 <script src="scripts/ui/first.js?v=202611082340"></script>
 <script>
