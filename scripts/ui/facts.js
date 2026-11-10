@@ -2,8 +2,8 @@
    Lift icon: blue with climbs of 2 m/s+, or at great XC height, or 1.5 m/s+ at XC height; green XC height with 1 m/s+;
    yellow local height with 0.5 m/s+; orange anything less.
    Launch dial: the launch's direction window as a bold dark arc on the rim with a light grey wedge, and the wind as an
-   arrow from outside the dial into its centre: green more than 20 deg inside the window, yellow its outer 20 deg, orange up to 20 deg outside (cross), orange 20-45 deg
-   off (cross), red more than 45 deg off (over the back side).
+   arrow from outside the dial into its centre: green more than 20 deg inside the window, yellow its outer 20 deg,
+   orange up to 20 deg outside (cross), red further out (from behind).
    Aloft icon: green fine, yellow so-so, orange poor, red blows over the back or too strong. */
 (function () {
   const DIR16 = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
