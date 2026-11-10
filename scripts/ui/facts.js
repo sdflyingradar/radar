@@ -53,7 +53,7 @@
       out = out.replace(new RegExp(LAUNCH_IC.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + '(<span class="wa"[^>]*>)<svg[^>]*>.*?</svg>'), (m, sp) => dial(s.dirs, deg(w.v)) + sp);
     const a = f("Wind aloft");
     if (ALOFT_IC && a && a.v !== "–") {
-      /* the detailed chart's speed colours (white/green ≤9.5, yellow ≤15.5, orange ≤19, red ≤22.5, black above), from
+      /* the detailed chart's speed colours (green ≤9.5, yellow ≤15.5, orange ≤19, red above), from
          the window's average speed, one step up when the strongest is 2+ steps above it; over the back or offshore
          (a capped day step) from 5 mph: one step worse, at least orange */
       const m = String(a.v).match(/(\d+)(?:\s*g\s*(\d+))?/);
@@ -62,7 +62,7 @@
       let b = m ? Math.max(1, band(+m[1])) : 1;
       if (m && m[2] && band(+m[2]) - b >= 2) b += 1;
       if (a.q != null && a.q <= 0.2 && m && +m[1] >= 5) b = Math.min(5, Math.max(b + 1, 3));   // over the back / offshore: one step worse, at least orange (light air: no change)
-      const col = ["#2f9e57", "#2f9e57", "#d4a90c", "#ef8a17", "#d64545", "#151515"][b];
+      const col = ["#2f9e57", "#2f9e57", "#d4a90c", "#ef8a17", "#d64545", "#d64545"][b];
       out = out.replace(ALOFT_IC, ALOFT_IC.replace('class="wic"', `class="wic" style="color:${col}"`));
     }
     return out;

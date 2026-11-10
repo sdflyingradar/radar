@@ -9,7 +9,7 @@
 
 const P2_LIFT = [[0, '#ffeedd'], [0.5, '#fdd0a2'], [1, '#fbb068'], [1.5, '#f89039'], [2, '#f1721b'], [2.5, '#e05a0c'], [3, '#c44608'], [3.5, '#a03606'], [4, '#782805'], [4.5, '#521b04']];
 // wind, mph (from the usual pilot scale in km/h: 0-6 calm, 7-14 fine, 15-24 noticeable, 25-30 strong, 31-36 stop, over 36 no-go)
-const P2_WIND = [[0, '#ffffff'], [4, '#3fc25a'], [9.5, '#f5d90a'], [15.5, '#f08a1c'], [19, '#e0262a'], [22.5, '#151515']];
+const P2_WIND = [[0, '#ffffff'], [4, '#3fc25a'], [9.5, '#f5d90a'], [15.5, '#f08a1c'], [19, '#e0262a']];   // 19+ mph: red (no black)
 // the radar's own verdicts and colours: 1 no-go (red), 2 marginal (orange), 3 site fly (yellow), 4 XC (green), 5 great XC (blue)
 const P2_VERDICT = [[1, '#d8402f', 'No-go'], [2, '#ee8a1c', 'Marginal'], [3, '#f1c72b', 'Site fly'], [4, '#3aa457', 'XC'], [5, '#2f7fcf', 'Great XC']];
 const P2_RATE = (s) => s == null ? '#e5e7eb' : P2_VERDICT[Math.max(0, Math.min(4, Math.round(s) - 1))][1];
@@ -223,7 +223,7 @@ function panel2LegendHTML() {
     <h4>Wind</h4>
     ${row(arrow('#3fc25a', '#3fc25a'), 'one arrow per 1,000 ft, pointing downwind; the lowest ones show the wind at the landing fields and in the valleys')}
     ${[['#fff', '#9aa3ad', 'light, under 4 mph'], ['#3fc25a', '#3fc25a', 'pleasant, 4–9 mph'], ['#f5d90a', '#f5d90a', 'breezy, 10–15 mph'], ['#f08a1c', '#f08a1c', 'strong, 16–18 mph'],
-      ['#e0262a', '#e0262a', 'too strong for most pilots, 19–22 mph'], ['#151515', '#151515', 'dangerous, over 22 mph']].map(([f, r, t]) => row(arrow(f, r), t)).join('')}
+      ['#e0262a', '#e0262a', 'too strong for most pilots, over 19 mph']].map(([f, r, t]) => row(arrow(f, r), t)).join('')}
     ${row(arrow('#fff', '#3fc25a') + arrow('#3fc25a', '#f08a1c'), 'the inside of an arrow is the typical wind across the region, its outline the windiest spot in it')}
     <h4>Under the chart</h4>
     <p>The best climb and the highest lift of the day, and when they happen.</p></div>`;
