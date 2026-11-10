@@ -936,11 +936,14 @@ def score_hour(site, hr, i, levels, elev_m):
         on = dir_ok(site, ld)
         # too light to matter at a thermal site: 4g8 or less; anything stronger from behind is over the back
         light = site["kind"] != "ridge" and lw_mph <= LIGHT_MPH and (lg_mph is None or lg_mph <= LIGHT_GUST_MPH)
-        off_h = angdiff(ld, site_face(site)) if site_face(site) is not None and not light and lw_mph > 4 else None
-        good_launch = ((on and lo <= lw_mph <= hi and (off_h is None or off_h <= 20))
-                       or light)
-        # the launch-wind bar's share for this hour: 1 = good, 0.6 = 20-45 deg off the face, else 0
-        launch_pts = 1.0 if good_launch else 0.6 if (on and lo <= lw_mph <= hi and off_h is not None and off_h <= 45) else 0.0
+        # degrees outside the launch window (inside: minus how deep in), like the day rule and the tile's dial
+        off_h = off_window(site, ld) if site_face(site) is not None and not light and lw_mph > 4 else None
+        inwin = on if off_h is None else off_h <= 0
+        good_launch = (inwin and lo <= lw_mph <= hi) or light
+        # the launch-wind bar's share for this hour: 1 = well inside the window (green), 0.85 its outer 20 deg
+        # (yellow), 0.6 up to 20 deg outside (orange, cross), else 0
+        launch_pts = (1.0 if good_launch and (off_h is None or off_h <= -RIM_DEG) else 0.85 if good_launch
+                      else 0.6 if (lo <= lw_mph <= hi and off_h is not None and off_h <= 20) else 0.0)
         launch = "good"
         cross = next((c for c in site.get("cross", []) if wrap_in(ld, c[0], c[1])), None) if not on and not light else None
         if cross and (lw_mph >= CROSS_FREE_MPH or site["kind"] != "ridge"):
@@ -1349,6 +1352,12 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
             if c in ("lid", "weak") and style != "ridge" and id(s) not in mid:
                 continue
             counts[c] = counts.get(c, 0) + 1
+    # and only when they hold for most of those hours: one low hour on the shoulder of a 3,000 ft day isn't a lid
+    if style != "ridge":
+        n_mid = sum(1 for s in span if id(s) in mid)
+        for c in ("lid", "weak"):
+            if c in counts and counts[c] < max(2, (n_mid + 1) // 2):
+                del counts[c]
     when = {}
     if style == "ridge":
         for c in counts:
@@ -2381,8 +2390,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                         else:
                             pts += sum(v for k_, v in pts_by.items() if k_ in lab)
                     return 0.2 if capped else round(max(0.2, 1 - 0.4 * pts), 2)
-                lq = bar_from({"gusts over 12": 1, "20–45° off": 1, "not into launch": 0.5},
-                              ("gusts over 18", "more than 45° off", "not calm"))
+                lq = bar_from({"gusts over 12": 1, "crosswind, up to 20°": 1, "edge of the launch window": 0.3, "not into launch": 0.5},
+                              ("gusts over 18", "from behind, 20°+", "not calm"))
                 aq = bar_from({"top of lift over 15": 0.5, "top of lift over 20": 1, "NW to N aloft": 0.5},
                               ("top of lift over 25", "over the back aloft", "offshore"))
                 for f in factors:
