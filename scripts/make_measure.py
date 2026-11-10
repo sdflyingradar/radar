@@ -41,6 +41,17 @@ def wedge(X, Y, r, a0, a1, cls):
             f'class="sec {cls}"/>')
 
 
+SHORT = {"Hemet / toward Soboba": "Hemet", "Monument Peak (Mt Laguna)": "Monument Pk", "El Cajon Mountain peak": "El Cajon Mtn",
+         "between Laguna and Horse": "middle", "Black Eagle (Inyos)": "Black Eagle", "Mazourka (Inyos)": "Mazourka",
+         "Montecito crest": "Montecito", "La Cumbre Peak": "La Cumbre", "Ojai (Chief's Peak)": "Ojai", "Santiago Peak": "Santiago Pk", "Stonewall Peak": "Stonewall"}
+
+
+def short_label(n):
+    """Small maps, readable labels: '10 km N' (the rings say the distance) -> 'N'; long names shortened."""
+    m = re.match(r"^\d+ km ([NSEW]{1,3})( of the middle)?$", n)
+    return m.group(1) if m else SHORT.get(n, n)
+
+
 def chart(sid, big):
     s = S[sid]
     launches = s.get("launches") or [{"name": s["short"], "lat": s["lat"], "lon": s["lon"]}]
@@ -85,10 +96,10 @@ def chart(sid, big):
             anchor, dx, dy = "end", -10, 18
         if sid in EXP:                                # trip areas: points are spread out, label each one below it
             anchor, dx, dy = ("start", 8, 24) if n in below else ("start", 8, -12)
-        o.append(f'<text x="{X+dx:.1f}" y="{Y+dy:.1f}" text-anchor="{anchor}" class="pl">{html.escape(n)}</text>')
+        o.append(f'<text x="{X+dx:.1f}" y="{Y+dy:.1f}" text-anchor="{anchor}" class="pl">{html.escape(short_label(n))}</text>')
     for (x, y), n in L:
         X, Y = P(x, y)
-        o.append(f'<text x="{X-14:.1f}" y="{Y+5:.1f}" text-anchor="end" class="ll">{html.escape(n)}</text>' if len(L) > 1
+        o.append(f'<text x="{X-14:.1f}" y="{Y+5:.1f}" text-anchor="end" class="ll">{html.escape(short_label(n))}</text>' if len(L) > 1
                  else f'<text x="{X:.1f}" y="{Y+22:.1f}" class="ll" text-anchor="middle">{html.escape(n)}</text>')
     o.append("</svg>")
     note = f"{len(hp)} height points · wind from the launch" if hp else "wind and height from the launch point only"
