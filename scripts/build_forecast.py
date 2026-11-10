@@ -2536,7 +2536,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
         "weights": MODEL_WEIGHT,
         "ensembles": {k: v[0] for k, v in ens.items() if v[0]},
         "log": log, "sources": sources or [], "nws": nws,
-        "sites": [{**{k: s.get(k) for k in ("id", "name", "short", "tier", "launch_ft", "lz_ft", "kind", "xc_top_ft", "xc_span_ft", "note")},
+        "sites": [{**{k: s.get(k) for k in ("id", "name", "short", "tier", "launch_ft", "lz_ft", "kind", "ok_ft", "xc_top_ft", "xc_span_ft", "note")},
                    # launch direction windows (from, to in degrees) for the little launch dial on the tiles
                    "dirs": [l["dir"] for l in s.get("launches") or [] if l.get("dir")] or ([s["dir"]] if s.get("dir") else [])}
                   for s in (parents or sites)],
