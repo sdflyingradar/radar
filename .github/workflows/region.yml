@@ -2,9 +2,10 @@ name: Update SD region panel
 
 on:
   schedule:
-    - cron: "27 13,16,19,22 * * *"   # every 3 h through the flying day (PST 5:27, 8:27, 11:27 am, 2:27 pm); Open-Meteo budget
-    - cron: "27 2 * * *"             # once in the evening (6:27 pm PST); none between 10 pm and 5 am
-    - cron: "7 14 * * *"             # quiet backup for the 5:27 am run (does nothing if that one already came)
+    - cron: "34 13,15,16,20,23 * * *"   # 5:34, 7:34, 8:34 am, 12:34, 3:34 pm PST (an hour later in PDT); a few min after the forecast
+    - cron: "34 2,6 * * *"              # 6:34 pm, 10:34 pm PST
+    - cron: "34 10 * * *"               # 2:34 am PST: HRRR / RRFS only, the global models are reused (budget)
+    - cron: "14 14 * * *"               # quiet backup for the 5:34 am run (does nothing if that one already came)
   workflow_dispatch: {}
 
 permissions:
@@ -30,7 +31,7 @@ jobs:
         run: |
           go=1
           case "${{ github.event.schedule }}" in
-            "27 13,16,19,22 * * *"|"7 14 * * *")
+            "34 13,15,16,20,23 * * *"|"14 14 * * *")
               age=$(python3 -c "import json,datetime as d;g=json.load(open('data/region/regions.json'))['generated'].replace('Z','+00:00');t=d.datetime.fromisoformat(g if '+' in g[10:] else g+'+00:00');print(int((d.datetime.now(d.timezone.utc)-t).total_seconds()/60))" 2>/dev/null || echo 9999)
               echo "data is $age min old"
               [ "$age" -lt 50 ] && go=0 ;;
@@ -56,7 +57,9 @@ jobs:
       - name: Sample region terrain (only when polygons change)
         run: python -u scripts/region/terrain.py
       - name: Build SD region panel data
-        run: python -u scripts/region/build_region.py
+        run: |
+          if [ "${{ github.event.schedule }}" = "34 10 * * *" ]; then export REUSE_H=99; fi
+          python -u scripts/region/build_region.py
       - name: Keep global model runs for next time
         if: always()
         uses: actions/cache/save@v4

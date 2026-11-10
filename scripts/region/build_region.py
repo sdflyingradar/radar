@@ -79,7 +79,7 @@ MODELS = [("HRRR", ["ncep_hrrr_conus", "gfs_hrrr"], 3), ("RRFS", ["ncep_rrfs_con
           ("ICON", ["icon_global", "icon_seamless"], 7)]
 HIRES, GLOBAL = ("HRRR", "RRFS"), ("ECMWF", "GFS", "ICON")
 HIRES_W = {"HRRR": 2, "RRFS": 1}
-REUSE_H = 5.5                      # like the radar: global models fetched again only when older than this
+REUSE_H = float(os.environ.get("REUSE_H", 5.5))   # like the radar: global models fetched again only when older than this
 SLOW = {"palomar", "desert", "palmsj", "santabarbara", "owens"}   # no launch: every model only every REUSE_H (like the radar's trip areas)
 MODEL_WEIGHT = {"HRRR": 3, "RRFS": 3, "ECMWF": 1, "GFS": 1, "ICON": 1}
 

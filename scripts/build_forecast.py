@@ -53,9 +53,9 @@ ENS_MODELS = {
 # the high-res models are fetched every run but only for the days they cover; the global models and the
 # ensembles, which update about every 6 hours, are reused from the last run while they are fresher than this
 MODEL_DAYS = {"HRRR": 3, "RRFS": 4}          # forecast days asked for (HRRR runs 48 h, RRFS a bit longer)
-REUSE_H = 5.5                                 # global models: fetch again only when older than this
+REUSE_H = float(os.environ.get("REUSE_H", 5.5))         # global models: fetch again only when older than this (the 2:30 am run: 99)
 SLOW_PARENTS = {"santabarbara", "owens"}      # trip areas: their high-res data too is refreshed only every REUSE_H
-ENS_REUSE_H = 11.5                            # ensembles (each member counts, so they are the costly part): twice a day
+ENS_REUSE_H = float(os.environ.get("ENS_REUSE_H", 11.5))  # ensembles (each member counts, so they are the costly part): twice a day
 OPTIONAL_MODELS = {"RRFS"}           # not listed as "failed" while Open-Meteo doesn't offer it yet
 # trust for lift and rating (local experience: HRRR usually right, then NAM; GFS/ECMWF/ICON for the longer range)
 MODEL_WEIGHT = {"HRRR": 3, "RRFS": 3, "NAM": 2, "ECMWF": 1, "GFS": 1, "ICON": 1}

@@ -2,9 +2,10 @@ name: Update forecast
 
 on:
   schedule:
-    - cron: "17 13-23/2 * * *"   # every 2 h through the day: 5, 7, 9, 11 am, 1, 3 pm PST (an hour later in PDT); Open-Meteo budget
-    - cron: "17 2,5 * * *"       # evening: 6 pm and 9 pm PST; then nothing until the 5 am run
-    - cron: "57 13 * * *"        # quiet backup for the 5 am run (does nothing if that one already came)
+    - cron: "30 13,15,16,18,20,22 * * *"   # 5:30, 7:30, 8:30, 10:30 am, 12:30, 2:30 pm PST (an hour later in PDT)
+    - cron: "30 0,2,6 * * *"               # 4:30, 6:30 pm, 10:30 pm PST
+    - cron: "30 10 * * *"                  # 2:30 am PST: HRRR / RRFS only, the global models are reused (budget)
+    - cron: "10 14 * * *"                  # quiet backup for the 5:30 am run (does nothing if that one already came)
   workflow_dispatch: {}       # "Run workflow" button on the Actions tab
 
 permissions:
@@ -30,7 +31,7 @@ jobs:
         run: |
           go=1
           case "${{ github.event.schedule }}" in
-            "17 13-23/2 * * *"|"57 13 * * *")
+            "30 13,15,16,18,20,22 * * *"|"10 14 * * *")
               age=$(python3 -c "import json,datetime as d;g=json.load(open('data/forecast.json'))['generated'].replace('Z','+00:00');t=d.datetime.fromisoformat(g if '+' in g[10:] else g+'+00:00');print(int((d.datetime.now(d.timezone.utc)-t).total_seconds()/60))" 2>/dev/null || echo 9999)
               echo "data is $age min old"
               [ "$age" -lt 50 ] && go=0 ;;
@@ -56,7 +57,10 @@ jobs:
           key: om-${{ github.run_id }}
           restore-keys: om-
       - name: Build forecast
-        run: python -u scripts/build_forecast.py
+        run: |
+          # the 2:30 am run only refreshes HRRR / RRFS; the global models and ensembles come from the last run
+          if [ "${{ github.event.schedule }}" = "30 10 * * *" ]; then export REUSE_H=99 ENS_REUSE_H=99; fi
+          python -u scripts/build_forecast.py
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}   # optional: Claude summary of the NWS discussion
       - name: Keep model runs for next time

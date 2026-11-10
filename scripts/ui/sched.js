@@ -3,8 +3,8 @@
    local time); GitHub can start a run a little late. */
 (function () {
   const RUNS = {
-    forecast: { label: "Forecast", col: "#26303a", utc: ["13:17", "15:17", "17:17", "19:17", "21:17", "23:17", "02:17", "05:17"] },
-    maps: { label: "Therm", col: "#2b7fd8", utc: ["13:27", "16:27", "19:27", "22:27", "02:27"] },
+    forecast: { label: "Forecast", col: "#26303a", utc: ["13:30", "15:30", "16:30", "18:30", "20:30", "22:30", "00:30", "02:30", "06:30", "10:30"] },
+    maps: { label: "Therm", col: "#2b7fd8", utc: ["13:34", "15:34", "16:34", "20:34", "23:34", "02:34", "06:34", "10:34"] },
     balloon: { label: "Balloon", col: "#e07a0c", utc: ["13:47", "14:47", "15:47", "16:47", "01:47", "02:47"] },
   };
   const TZ = "America/Los_Angeles";
