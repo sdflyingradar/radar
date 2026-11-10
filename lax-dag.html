@@ -30,7 +30,7 @@ h1{font-size:19px;font-weight:700;margin:0;letter-spacing:-.01em}
   <div class="fnav"><button type="button" id="fback">‹ Earlier</button><div class="ph" id="ftitle">Next days · by model</div><button type="button" id="ffwd" disabled>Later ›</button></div><div id="fchart">Loading…</div>
   <p class="note">Sea-level pressure at LAX minus Barstow-Daggett, the standard SoCal offshore measure. Below zero the desert pressure is higher and the air pushes offshore: about −2 mb weak, −4 mb a real Santa Ana, −6 mb strong. Black = observed at the two airports; the coloured lines are the models, each corrected by how far it was off the airports' readings over the last three days.</p>
 </div>
-<script src="scripts/sounding/foehn.js?v=202611100740"></script>
+<script src="scripts/sounding/foehn.js?v=202611101405"></script>
 <script>
 (async () => {
   try {
@@ -38,19 +38,19 @@ h1{font-size:19px;font-weight:700;margin:0;letter-spacing:-.01em}
     document.getElementById('fmap').innerHTML = foehnMapSVG(G);
     const el = document.getElementById('fchart'), back = document.getElementById('fback'), fwd = document.getElementById('ffwd'), ttl = document.getElementById('ftitle');
     el.innerHTML = foehnChartSVG(G);
-    /* scroll back a week at a time through the observed record (data/gradient_obs.json) */
+    /* scroll back a month at a time through the observed record (data/gradient_obs.json) */
     let H = null, k = 0;
     const toT = (key) => Date.parse(key + ':00:00Z');
     const show = () => {
       if (k === 0) { el.innerHTML = foehnChartSVG(G); ttl.textContent = 'Next days · by model'; }
       else {
-        const t1 = Date.now() - 2 * 864e5 - (k - 1) * 7 * 864e5, t0 = t1 - 7 * 864e5;
+        const t1 = Date.now() - 2 * 864e5 - (k - 1) * 30 * 864e5, t0 = t1 - 30 * 864e5;     // a month per step
         el.innerHTML = foehnChartSVG({ obs: { ...H.hourly, ...G.obs } }, { t0, t1 });
         const d = (t) => new Date(t).toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles', month: 'short', day: 'numeric' });
         ttl.textContent = `Observed · ${d(t0)} – ${d(t1)}`;
       }
       fwd.disabled = k === 0;
-      back.disabled = !!H && H.first && Date.now() - 2 * 864e5 - k * 7 * 864e5 <= H.first;
+      back.disabled = !!H && H.first && Date.now() - 2 * 864e5 - k * 30 * 864e5 <= H.first;
     };
     back.addEventListener('click', async () => {
       if (!H) {

@@ -119,18 +119,21 @@ function foehnChartSVG(G, win) {
   o.push(`<line x1="${L}" x2="${W - R}" y1="${f(Y(0))}" y2="${f(Y(0))}" stroke="#98a2b3"/>`);
   // days: midnight lines and weekday labels (Pacific)
   const day = new Date(t0); day.setUTCHours(8, 0, 0, 0);
-  for (let t = day.getTime(); t <= t1; t += 864e5) {
-    if (t >= t0) o.push(`<line x1="${f(X(t))}" x2="${f(X(t))}" y1="${T}" y2="${H - B}" stroke="#e4e7ec"/>`);
+  const long = t1 - t0 > 12 * 864e5;            // a month on one chart: a label every 5 days, faint lines
+  for (let t = day.getTime(), i = 0; t <= t1; t += 864e5, i++) {
+    const dom = +new Date(t + 432e5).toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles', day: 'numeric' });
+    if (t >= t0) o.push(`<line x1="${f(X(t))}" x2="${f(X(t))}" y1="${T}" y2="${H - B}" stroke="#e4e7ec"${long && dom % 5 !== 1 ? ' opacity=".45"' : ''}/>`);
     const mid = t + 432e5;
+    if (long && (dom % 5 !== 1 || dom === 31)) continue;
     if (mid > t0 && mid < t1) o.push(`<text x="${f(X(mid))}" y="${H - B + 16}" text-anchor="middle" font-size="11" font-weight="600" fill="#475467">${new Date(mid).toLocaleDateString('en-US', win ? { timeZone: 'America/Los_Angeles', month: 'numeric', day: 'numeric' } : { timeZone: 'America/Los_Angeles', weekday: 'short' })}</text>`);
   }
   if (now >= t0 && now <= t1) o.push(`<line x1="${f(X(now))}" x2="${f(X(now))}" y1="${T}" y2="${H - B}" stroke="#26303a" stroke-dasharray="2 3"/><text x="${f(X(now) + 3)}" y="${T + 9}" font-size="9.5" fill="#26303a">now ${clk(now)}</text>`);
   const line = (pts, c, w, dash) => pts.length > 1 && o.push(`<polyline points="${pts.map(([t, v]) => `${f(X(t))},${f(Y(v))}`).join(' ')}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"${dash ? ` stroke-dasharray="${dash}"` : ''}/>`);
   for (const [m, s] of series) line(s, FOEHN_COL[m] || '#6b7280', 1.8);
-  // observed: break the line where hours are missing (more than 3 h)
+  // observed: break the line where hours are missing (more than 3 h); thinner on a month
   let seg = [];
-  for (const p of obs) { if (seg.length && p[0] - seg[seg.length - 1][0] > 3 * 36e5) { line(seg, '#111827', 2.6); seg = []; } seg.push(p); }
-  line(seg, '#111827', 2.6);
+  for (const p of obs) { if (seg.length && p[0] - seg[seg.length - 1][0] > 3 * 36e5) { line(seg, '#111827', long ? 1.4 : 2.6); seg = []; } seg.push(p); }
+  line(seg, '#111827', long ? 1.4 : 2.6);
   o.push('</svg>');
   const legend = `<div class="fleg"><span><i style="background:#111827"></i>observed</span>${series.map(([m]) => `<span><i style="background:${FOEHN_COL[m] || '#6b7280'}"></i>${m}</span>`).join('')}${G.generated && !win ? `<span class="fupd">updated ${clk(Date.parse(G.generated.replace(/([+-]\d\d:\d\d|Z)?$/, (z) => z || 'Z')))}</span>` : ''}</div>`;
   return o.join('') + legend;
