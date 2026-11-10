@@ -1567,6 +1567,45 @@ def obs_gradient(log):
     return {k: round(slp["KLAX"][k] - slp["KDAG"][k], 1) for k in both}
 
 
+def keep_gradient_history(obs, log, path=None):
+    """Every observed LAX-DAG hour, kept for good in data/gradient_obs.json ({utc 'YYYY-MM-DDTHH': mb}, ~200 KB a
+    year) so the LAX-DAG chart can scroll back. The first time, the past year is filled in from the Iowa METAR archive."""
+    path = path or ROOT / "data" / "gradient_obs.json"
+    try:
+        h = json.loads(path.read_text()) if path.exists() else {}
+    except Exception:  # noqa: BLE001
+        h = {}
+    hourly = h.get("hourly", {})
+    if not h.get("backfilled"):
+        try:
+            end = datetime.now(timezone.utc)
+            start = end - timedelta(days=366)
+            url = ("https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=LAX&station=DAG&data=mslp"
+                   f"&year1={start.year}&month1={start.month}&day1={start.day}&year2={end.year}&month2={end.month}&day2={end.day}"
+                   "&tz=Etc/UTC&format=onlycomma&missing=empty&report_type=3")
+            req = urllib.request.Request(url, headers={"User-Agent": UA})
+            with urllib.request.urlopen(req, timeout=180) as r:
+                text = r.read().decode()
+            slp = {"LAX": {}, "DAG": {}}
+            for line in text.splitlines()[1:]:
+                parts = line.split(",")
+                if len(parts) >= 3 and parts[0] in slp and parts[2]:
+                    try:
+                        slp[parts[0]][parts[1][:13].replace(" ", "T")] = float(parts[2])
+                    except ValueError:
+                        pass
+            old = {k: round(slp["LAX"][k] - slp["DAG"][k], 1) for k in slp["LAX"] if k in slp["DAG"]}
+            hourly = {**old, **hourly}
+            h["backfilled"] = end.strftime("%Y-%m-%d")
+            log.append(f"gradient history: filled in {len(old)} past hours")
+        except Exception as e:  # noqa: BLE001 - try again next run
+            log.append(f"gradient history: backfill failed ({str(e)[:80]})")
+    hourly.update(obs or {})
+    h["hourly"] = dict(sorted(hourly.items()))
+    h["note"] = "observed LAX minus Barstow-Daggett sea-level pressure, mb, by UTC hour"
+    path.write_text(json.dumps(h, separators=(",", ":")))
+
+
 def model_gradient(hours, obs):
     """One model's LAX-DAG from its pressure_msl, corrected by its median miss against the observed gradient
     over the past days (coarse grids put Daggett at the wrong height, which skews its sea-level pressure).
@@ -3112,6 +3151,10 @@ def main(argv=None):
             "generated": now_iso(), "points": {k: [la, lo] for k, la, lo in GRAD_PTS}, "slp": OBS_SLP,
             "obs": GRAD.get("obs_hourly", {}), "models": {m: {"bias": v["bias"], "hourly": v["hourly"]} for m, v in GRAD["models"].items()},
             "thresholds": {"weak": GRAD_WEAK, "santa_ana": GRAD_SA, "strong": -6.0}}, separators=(",", ":")))
+        try:
+            keep_gradient_history(GRAD.get("obs_hourly", {}), log)
+        except Exception as e:  # noqa: BLE001 - the history must never cost a forecast
+            log.append(f"gradient history: failed ({e})")
     if not args.sample:
         save_snapshot(result, ROOT / "data" / "history")
         try:

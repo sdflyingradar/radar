@@ -4,6 +4,7 @@ on:
   schedule:
     - cron: "27 13,16,19,22 * * *"   # every 3 h through the flying day (PST 5:27, 8:27, 11:27 am, 2:27 pm); Open-Meteo budget
     - cron: "27 2 * * *"             # once in the evening (6:27 pm PST); none between 10 pm and 5 am
+    - cron: "7 14 * * *"             # quiet backup for the 5:27 am run (does nothing if that one already came)
   workflow_dispatch: {}
 
 permissions:
@@ -14,7 +15,31 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  gate:
+    # the morning run and its quiet backup ~40 min later: whichever starts second does nothing if the other has
+    # already brought fresh data (GitHub's scheduler can be an hour late or skip a run)
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.check.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: data/region/regions.json
+          sparse-checkout-cone-mode: false
+      - id: check
+        run: |
+          go=1
+          case "${{ github.event.schedule }}" in
+            "27 13,16,19,22 * * *"|"7 14 * * *")
+              age=$(python3 -c "import json,datetime as d;g=json.load(open('data/region/regions.json'))['generated'].replace('Z','+00:00');t=d.datetime.fromisoformat(g if '+' in g[10:] else g+'+00:00');print(int((d.datetime.now(d.timezone.utc)-t).total_seconds()/60))" 2>/dev/null || echo 9999)
+              echo "data is $age min old"
+              [ "$age" -lt 50 ] && go=0 ;;
+          esac
+          echo "go=$go" >> "$GITHUB_OUTPUT"
+
   region:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

@@ -95,12 +95,13 @@ function foehnMapSVG(G) {
 }
 
 const clk = (t) => new Date(t).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', weekday: 'short', hour: 'numeric', minute: '2-digit' }).replace(/ AM| PM/, (m) => m.toLowerCase().trim()).replace(/(\d) (am|pm)/, '$1$2');
-function foehnChartSVG(G) {
+function foehnChartSVG(G, win) {
   const W = 760, H = 320, L = 40, R = 14, T = 16, B = 34;
-  const now = Date.now(), t0 = now - 2 * 864e5, t1 = now + 7 * 864e5;
+  // win: {t0, t1} to look back at earlier days (observed only); default: the last 2 days and the next 7
+  const now = Date.now(), t0 = win ? win.t0 : now - 2 * 864e5, t1 = win ? win.t1 : now + 7 * 864e5;
   const toT = k => Date.parse(k + ':00:00Z');
-  const series = Object.entries(G.models || {}).map(([m, v]) => [m, Object.entries(v.hourly || {}).map(([k, y]) => [toT(k), y]).filter(([t]) => t >= now - 3 * 36e5 && t <= t1).sort((a, b) => a[0] - b[0])]);
-  const obs = Object.entries(G.obs || {}).map(([k, y]) => [toT(k), y]).filter(([t]) => t >= t0).sort((a, b) => a[0] - b[0]);
+  const series = win ? [] : Object.entries(G.models || {}).map(([m, v]) => [m, Object.entries(v.hourly || {}).map(([k, y]) => [toT(k), y]).filter(([t]) => t >= now - 3 * 36e5 && t <= t1).sort((a, b) => a[0] - b[0])]);
+  const obs = Object.entries(G.obs || {}).map(([k, y]) => [toT(k), y]).filter(([t]) => t >= t0 && t <= t1).sort((a, b) => a[0] - b[0]);
   const ys = [...obs.map(p => p[1]), ...series.flatMap(([, s]) => s.map(p => p[1])), -6.5, 2];
   const y0 = Math.floor(Math.min(...ys)), y1 = Math.ceil(Math.max(...ys));
   const X = t => L + (t - t0) / (t1 - t0) * (W - L - R), Y = v => T + (y1 - v) / (y1 - y0) * (H - T - B), f = v => v.toFixed(1);
@@ -121,14 +122,17 @@ function foehnChartSVG(G) {
   for (let t = day.getTime(); t <= t1; t += 864e5) {
     if (t >= t0) o.push(`<line x1="${f(X(t))}" x2="${f(X(t))}" y1="${T}" y2="${H - B}" stroke="#e4e7ec"/>`);
     const mid = t + 432e5;
-    if (mid > t0 && mid < t1) o.push(`<text x="${f(X(mid))}" y="${H - B + 16}" text-anchor="middle" font-size="11" font-weight="600" fill="#475467">${new Date(mid).toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles', weekday: 'short' })}</text>`);
+    if (mid > t0 && mid < t1) o.push(`<text x="${f(X(mid))}" y="${H - B + 16}" text-anchor="middle" font-size="11" font-weight="600" fill="#475467">${new Date(mid).toLocaleDateString('en-US', win ? { timeZone: 'America/Los_Angeles', month: 'numeric', day: 'numeric' } : { timeZone: 'America/Los_Angeles', weekday: 'short' })}</text>`);
   }
-  o.push(`<line x1="${f(X(now))}" x2="${f(X(now))}" y1="${T}" y2="${H - B}" stroke="#26303a" stroke-dasharray="2 3"/><text x="${f(X(now) + 3)}" y="${T + 9}" font-size="9.5" fill="#26303a">now ${clk(now)}</text>`);
+  if (now >= t0 && now <= t1) o.push(`<line x1="${f(X(now))}" x2="${f(X(now))}" y1="${T}" y2="${H - B}" stroke="#26303a" stroke-dasharray="2 3"/><text x="${f(X(now) + 3)}" y="${T + 9}" font-size="9.5" fill="#26303a">now ${clk(now)}</text>`);
   const line = (pts, c, w, dash) => pts.length > 1 && o.push(`<polyline points="${pts.map(([t, v]) => `${f(X(t))},${f(Y(v))}`).join(' ')}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"${dash ? ` stroke-dasharray="${dash}"` : ''}/>`);
   for (const [m, s] of series) line(s, FOEHN_COL[m] || '#6b7280', 1.8);
-  line(obs, '#111827', 2.6);
+  // observed: break the line where hours are missing (more than 3 h)
+  let seg = [];
+  for (const p of obs) { if (seg.length && p[0] - seg[seg.length - 1][0] > 3 * 36e5) { line(seg, '#111827', 2.6); seg = []; } seg.push(p); }
+  line(seg, '#111827', 2.6);
   o.push('</svg>');
-  const legend = `<div class="fleg"><span><i style="background:#111827"></i>observed</span>${series.map(([m]) => `<span><i style="background:${FOEHN_COL[m] || '#6b7280'}"></i>${m}</span>`).join('')}${G.generated ? `<span class="fupd">updated ${clk(Date.parse(G.generated.replace(/([+-]\d\d:\d\d|Z)?$/, (z) => z || 'Z')))}</span>` : ''}</div>`;
+  const legend = `<div class="fleg"><span><i style="background:#111827"></i>observed</span>${series.map(([m]) => `<span><i style="background:${FOEHN_COL[m] || '#6b7280'}"></i>${m}</span>`).join('')}${G.generated && !win ? `<span class="fupd">updated ${clk(Date.parse(G.generated.replace(/([+-]\d\d:\d\d|Z)?$/, (z) => z || 'Z')))}</span>` : ''}</div>`;
   return o.join('') + legend;
 }
 

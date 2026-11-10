@@ -18,22 +18,48 @@ h1{font-size:19px;font-weight:700;margin:0;letter-spacing:-.01em}
 .fleg .fupd{margin-left:auto;color:#6b7280}
 .fleg i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:5px;vertical-align:3px}
 .note{font-size:11px;color:var(--muted);line-height:1.45;margin:8px 2px 0}
+.fnav{display:flex;align-items:center;gap:8px;margin-top:14px}.fnav .ph{flex:1;text-align:center;margin:0}
+.fnav button{font:600 .78rem/1 system-ui,sans-serif;color:#344054;background:#fff;border:1px solid #d5dbe2;border-radius:999px;padding:6px 12px;cursor:pointer}
+.fnav button:disabled{opacity:.35;cursor:default}
 </style><script>if (/[?&]embed\b/.test(location.search)) { document.documentElement.classList.add("embed"); document.addEventListener("click", (e) => { const a = e.target.closest && e.target.closest("a[href]"); if (!a || a.target || /^#/.test(a.getAttribute("href"))) return; const u = new URL(a.href, location.href); if (u.origin === location.origin && /(sounding|lax-dag)\.html$/.test(u.pathname)) { u.searchParams.set("embed", "1"); a.href = u.href; } else a.target = "_top"; }); }</script>
 <style>html.embed header { display: none; } html.embed body { padding: 0 !important; margin: 0 !important; background: #fff !important; } html.embed .wrap, html.embed main { padding-left: 0 !important; padding-right: 0 !important; margin-top: 0 !important; }</style>
 </head><body><div class="wrap">
 <header><h1>LAX–DAG gradient</h1><a class="back" href="./">← Radar</a></header>
 <div class="box">
   <div id="fmap"></div>
-  <div class="ph" style="margin-top:14px">Next days · by model</div><div id="fchart">Loading…</div>
+  <div class="fnav"><button type="button" id="fback">‹ Earlier</button><div class="ph" id="ftitle">Next days · by model</div><button type="button" id="ffwd" disabled>Later ›</button></div><div id="fchart">Loading…</div>
   <p class="note">Sea-level pressure at LAX minus Barstow-Daggett, the standard SoCal offshore measure. Below zero the desert pressure is higher and the air pushes offshore: about −2 mb weak, −4 mb a real Santa Ana, −6 mb strong. Black = observed at the two airports; the coloured lines are the models, each corrected by how far it was off the airports' readings over the last three days.</p>
 </div>
-<script src="scripts/sounding/foehn.js?v=202611082205"></script>
+<script src="scripts/sounding/foehn.js?v=202611100740"></script>
 <script>
 (async () => {
   try {
     const G = await (await fetch('data/gradient.json?' + Date.now())).json();
     document.getElementById('fmap').innerHTML = foehnMapSVG(G);
-    document.getElementById('fchart').innerHTML = foehnChartSVG(G);
+    const el = document.getElementById('fchart'), back = document.getElementById('fback'), fwd = document.getElementById('ffwd'), ttl = document.getElementById('ftitle');
+    el.innerHTML = foehnChartSVG(G);
+    /* scroll back a week at a time through the observed record (data/gradient_obs.json) */
+    let H = null, k = 0;
+    const toT = (key) => Date.parse(key + ':00:00Z');
+    const show = () => {
+      if (k === 0) { el.innerHTML = foehnChartSVG(G); ttl.textContent = 'Next days · by model'; }
+      else {
+        const t1 = Date.now() - 2 * 864e5 - (k - 1) * 7 * 864e5, t0 = t1 - 7 * 864e5;
+        el.innerHTML = foehnChartSVG({ obs: { ...H.hourly, ...G.obs } }, { t0, t1 });
+        const d = (t) => new Date(t).toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles', month: 'short', day: 'numeric' });
+        ttl.textContent = `Observed · ${d(t0)} – ${d(t1)}`;
+      }
+      fwd.disabled = k === 0;
+      back.disabled = !!H && H.first && Date.now() - 2 * 864e5 - k * 7 * 864e5 <= H.first;
+    };
+    back.addEventListener('click', async () => {
+      if (!H) {
+        try { H = await (await fetch('data/gradient_obs.json?' + Date.now())).json(); H.first = toT(Object.keys(H.hourly)[0]); }
+        catch (e) { back.disabled = true; ttl.textContent = 'No earlier data yet'; return; }
+      }
+      k++; show();
+    });
+    fwd.addEventListener('click', () => { if (k > 0) { k--; show(); } });
   } catch (e) { document.getElementById('fchart').textContent = 'Could not load the gradient: ' + e.message; }
 })();
 </script></div></body></html>
