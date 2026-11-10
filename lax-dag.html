@@ -21,6 +21,11 @@ h1{font-size:19px;font-weight:700;margin:0;letter-spacing:-.01em}
 .fnav{display:flex;align-items:center;gap:8px;margin-top:14px}.fnav .ph{flex:1;text-align:center;margin:0}
 .fnav button{font:600 .78rem/1 system-ui,sans-serif;color:#344054;background:#fff;border:1px solid #d5dbe2;border-radius:999px;padding:6px 12px;cursor:pointer}
 .fnav button:disabled{opacity:.35;cursor:default}
+.dsw{display:flex;align-items:center;justify-content:flex-end;gap:6px;font:500 .72rem/1 system-ui,sans-serif;color:#98a2b3;margin:6px 2px 0;cursor:pointer;user-select:none}
+.dsw input{position:absolute;opacity:0;pointer-events:none}
+.dsw i{position:relative;width:24px;height:14px;border-radius:999px;background:#d5dbe2;transition:background .15s}
+.dsw i::after{content:"";position:absolute;top:2px;left:2px;width:10px;height:10px;border-radius:50%;background:#fff;transition:transform .15s}
+.dsw input:checked+i{background:#667085}.dsw input:checked+i::after{transform:translateX(10px)}
 #fchart svg.dscore{display:block;width:100%;height:auto;margin-top:-6px}
 </style><script>if (/[?&]embed\b/.test(location.search)) { document.documentElement.classList.add("embed"); document.addEventListener("click", (e) => { const a = e.target.closest && e.target.closest("a[href]"); if (!a || a.target || /^#/.test(a.getAttribute("href"))) return; const u = new URL(a.href, location.href); if (u.origin === location.origin && /(sounding|lax-dag)\.html$/.test(u.pathname)) { u.searchParams.set("embed", "1"); a.href = u.href; } else a.target = "_top"; }); }</script>
 <style>html.embed header { display: none; } html.embed body { padding: 0 !important; margin: 0 !important; background: #fff !important; } html.embed .wrap, html.embed main { padding-left: 0 !important; padding-right: 0 !important; margin-top: 0 !important; }</style>
@@ -28,7 +33,7 @@ h1{font-size:19px;font-weight:700;margin:0;letter-spacing:-.01em}
 <header><h1>LAX–DAG gradient</h1><a class="back" href="./">← Radar</a></header>
 <div class="box">
   <div id="fmap"></div>
-  <div class="fnav"><button type="button" id="fback">‹ Earlier</button><div class="ph" id="ftitle">Next days · by model</div><button type="button" id="ffwd" disabled>Later ›</button></div><div id="fchart">Loading…</div>
+  <div class="fnav"><button type="button" id="fback">‹ Earlier</button><div class="ph" id="ftitle">Next days · by model</div><button type="button" id="ffwd" disabled>Later ›</button></div><div id="fchart">Loading…</div><label class="dsw" title="Show the San Diego day score under the chart, on the same days"><input type="checkbox" id="dson"><i></i>SD day score</label>
   <p class="note">Sea-level pressure at LAX minus Barstow-Daggett, the standard SoCal offshore measure. Below zero the desert pressure is higher and the air pushes offshore: about −2 mb weak, −4 mb a real Santa Ana, −6 mb strong. Black = observed at the two airports; the coloured lines are the models, each corrected by how far it was off the airports' readings over the last three days.</p>
 </div>
 <script src="scripts/sounding/foehn.js?v=202611101420"></script>
@@ -41,7 +46,11 @@ h1{font-size:19px;font-weight:700;margin:0;letter-spacing:-.01em}
     el.innerHTML = foehnChartSVG(G);
     /* the San Diego day score under it, on the same time axis */
     let DS = null;
-    const drawDS = (win) => { const sv = el.querySelector('svg'); if (DS && sv) sv.insertAdjacentHTML('afterend', dayScoreSVG(DS, win)); };
+    const dson = document.getElementById('dson');
+    try { dson.checked = localStorage.getItem('laxdagDS') === '1'; } catch (e) {}
+    let curWin = null;
+    const drawDS = (win) => { curWin = win; const old = el.querySelector('svg.dscore'); if (old) old.remove(); const sv = el.querySelector('svg'); if (dson.checked && DS && sv) sv.insertAdjacentHTML('afterend', dayScoreSVG(DS, win)); };
+    dson.addEventListener('change', () => { try { localStorage.setItem('laxdagDS', dson.checked ? '1' : '0'); } catch (e) {} drawDS(curWin); });
     fetch('data/dayscore.json?' + Date.now()).then(r => r.json()).then(j => { DS = j; drawDS(null); }).catch(() => {});
     /* scroll back a month at a time through the observed record (data/gradient_obs.json) */
     let H = null, k = 0;
