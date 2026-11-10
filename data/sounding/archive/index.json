@@ -1,6 +1,11 @@
 {
  "NKX": [
   {
+   "t": "2026-11-10T00Z",
+   "txt": "archive/NKX_20261110_00Z.txt",
+   "track": null
+  },
+  {
    "t": "2026-11-09T12Z",
    "txt": "archive/NKX_20261109_12Z.txt",
    "track": "archive/NKX_20261109_12Z_track.csv"
@@ -49,6 +54,11 @@
   }
  ],
  "VBG": [
+  {
+   "t": "2026-11-09T12Z",
+   "txt": "archive/VBG_20261109_12Z.txt",
+   "track": "archive/VBG_20261109_12Z_track.csv"
+  },
   {
    "t": "2026-11-09T00Z",
    "txt": "archive/VBG_20261109_00Z.txt",
