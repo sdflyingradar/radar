@@ -77,6 +77,7 @@ jobs:
           git config user.email "forecast-bot@users.noreply.github.com"
           git add data/region
           git diff --cached --quiet && exit 0
+          python3 scripts/runlog.py region && git add data/runs   # when this update landed, for the timeline
           git commit -m "Region update $(date -u +%Y-%m-%dT%H:%MZ)"
           for i in 1 2 3; do
             git pull --rebase -X theirs origin main && git push && exit 0

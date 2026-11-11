@@ -251,4 +251,6 @@ html[data-lay] body details.day:not(#story) .list .srow .facts > span { display:
 #sched { max-width: 640px; margin: 18px auto 0; padding: 0 16px; }
 #sched .sch-h { font-size: .74rem; font-weight: 700; color: #475467; margin: 0 0 2px; }
 #sched .sch-h span { font-weight: 500; color: #98a2b3; }
+#sched .sch-rows { display: flex; flex-wrap: wrap; gap: 2px 12px; font-size: .7rem; color: #475467; margin-top: 1px; }
+#sched .sch-rows i { font-style: normal; color: #98a2b3; }
 #sched svg { display: block; width: 100%; height: auto; }
