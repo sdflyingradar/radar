@@ -999,7 +999,7 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
   <div id="sched" aria-live="off"></div>
   <footer>
     <span id="foot"></span>
-    <label class="dtsw" title="Airgram: thermals, wind at every height, inversions and cumulus in one picture (off: the climb grid); stays on this device"><input type="checkbox" id="dtherm"><i></i>Airgram</label>
+    <label class="dtsw" title="SkyGram: thermals, wind at every height, inversions and cumulus in one picture (off: the climb grid); stays on this device"><input type="checkbox" id="dtherm"><i></i>SkyGram</label>
     <button type="button" id="archBtn" hidden title="Every past day as the radar forecast it that day">Archive</button>
     <a id="runNow" class="btnlink" href="#" target="_blank" rel="noopener" hidden title="Opens GitHub, where you press Run workflow">Start new forecast run</a>
   </footer>
@@ -1641,7 +1641,7 @@ function thermPanel(d, s, c) {
     const i = +(Object.keys(DAYKEY).find((k) => DAYKEY[k] && DAYKEY[k].date === d.date) ?? -1);
     const has = (k) => DAYKEY[k] && DAYKEY[k].sites && DAYKEY[k].sites[s.id];
     const lab = (k) => (has(k) ? dayLabel(DAYKEY[k].date).short : "");
-    const nav = `<div class="tnav"><button type="button" class="tnb" data-jump="${i - 1}" data-sid="${s.id}"${has(i - 1) ? "" : " disabled"}>‹ ${esc(lab(i - 1))}</button><span class="tmid">${PANEL !== panelSVG ? '<button type="button" class="p2leg">Legend</button>' : ""}<label class="dtsw sm" title="Airgram: thermals, wind at every height, inversions and cumulus in one picture (off: the climb grid); stays on this device"><input type="checkbox" class="dtx"${PANEL !== panelSVG ? " checked" : ""}><i></i>Airgram</label></span><button type="button" class="tnb" data-jump="${i + 1}" data-sid="${s.id}"${has(i + 1) ? "" : " disabled"}>${esc(lab(i + 1))} ›</button></div>`;
+    const nav = `<div class="tnav"><button type="button" class="tnb" data-jump="${i - 1}" data-sid="${s.id}"${has(i - 1) ? "" : " disabled"}>‹ ${esc(lab(i - 1))}</button><span class="tmid">${PANEL !== panelSVG ? '<button type="button" class="p2leg">Legend</button>' : ""}<label class="dtsw sm" title="SkyGram: thermals, wind at every height, inversions and cumulus in one picture (off: the climb grid); stays on this device"><input type="checkbox" class="dtx"${PANEL !== panelSVG ? " checked" : ""}><i></i>SkyGram</label></span><button type="button" class="tnb" data-jump="${i + 1}" data-sid="${s.id}"${has(i + 1) ? "" : " disabled"}>${esc(lab(i + 1))} ›</button></div>`;
     const ttl = `<div class="tttl"><span class="tnd">${esc(dayLabel(d.date).short)} · ${esc(r.name)}</span></div>`;
     return `<div class="therm">${ttl}${PANEL({ generated: REGIONS_D.generated, region: r.name, days: r.days, marks: r.marks, floor_ft: r.floor_ft, compact: true, win: c.style === "ridge" ? null : c.win, gwin: c.gwin }, di)}${nav}</div>`;
   } catch (e) { return ""; }
