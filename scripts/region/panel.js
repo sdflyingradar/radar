@@ -5,7 +5,7 @@
 const PANEL_CLIMB = [[0, '#ffeedd'], [0.5, '#fdd0a2'], [1, '#fbb068'], [1.5, '#f89039'], [2, '#f1721b'], [2.5, '#e05a0c'], [3, '#c44608'], [3.5, '#a03606'], [4, '#782805'], [4.5, '#521b04']];   // the same orange as the detailed chart
 const PANEL_WIND = [[0, '#eef1f4'], [4, '#a6e3b3'], [9.5, '#f9eb87'], [15.5, '#f7bb7a'], [19, '#f08486']];   // the detailed chart's wind colours, lighter
 const pick = (scale, v) => { let c = scale[0][1]; for (const [k, col] of scale) if (v >= k - 1e-9) c = col; return c; };
-const OKTA = ['#ffffff', '#ececec', '#e0e0e0', '#cdcdcd', '#bdbdbd', '#a3a3a3', '#8c8c8c', '#727272', '#5c5c5c'];
+const OKTA = ['#eef4fb', '#e3e7ec', '#d6dbe1', '#c6ccd3', '#b4bbc3', '#9fa7b0', '#8a929c', '#747c86', '#5f6670'];   // the same cloud shades as the detailed chart
 
 // half-hour columns from hourly data: on the hour as forecast, half past = mean of the two hours
 function halfHours(day) {
