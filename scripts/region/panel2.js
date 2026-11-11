@@ -94,7 +94,9 @@ function panel2SVG(data, di = 0) {
   // heights: from just below the ground to well above the highest lift, cloud and marks
   // the ground: the lowest of the region's mean ground and its lowest thermal cell (valleys lift too)
   const lowCell = Math.min(...hrs.flatMap(h => Object.keys(H(h).grid || {}).map(Number)), 1e9);
-  const ground = Math.min(...hrs.map(h => H(h).ground_ft ?? (data.floor_ft ?? 0)), lowCell);
+  // ... and its lowest ground-wind probe, so no arrow ever sits underground
+  const lowWind = Math.min(...hrs.flatMap(h => (H(h).gw || []).map(g => g[0])), 1e9);
+  const ground = Math.min(...hrs.map(h => H(h).ground_ft ?? (data.floor_ft ?? 0)), lowCell, lowWind);
   const zs = [];
   for (const h of hrs) { for (const z of Object.keys(H(h).grid || {})) zs.push(+z + 500); if (H(h).cu_top_ft) zs.push(H(h).cu_top_ft); if (H(h).top_max_ft) zs.push(H(h).top_max_ft); }
   const marks = data.marks || [];
@@ -195,11 +197,11 @@ function panel2SVG(data, di = 0) {
     const wl = H(h).wl || [], gw = (H(h).gw || []).filter(g => g[0] >= zmin);
     if (!wl.length && !gw.length) return;
     const gwind = (g) => [g[1], g[2], Math.max(g[2], g[3] ?? g[2])];
-    const gmin = Math.min(...gw.map(g => g[0]), wl.length ? wl[0][0] : 1e9);
-    const first = Math.ceil((gmin + 300) / 1000) * 1000;
+    const first = Math.ceil((Math.max(ground, zmin) + 300) / 1000) * 1000;   // from just above the chart's ground: no gap
+
     if (gw.length && first - gw[0][0] > 600) o.push(p2arrow(CX(k), Math.min(Y(gw[0][0]) - asz * 0.4, yG + gh - asz * 0.7), gwind(gw[0]), asz));
     for (let z = first; z <= zmax - 300; z += 1000) {
-      const near = gw.filter(g => Math.abs(g[0] - z) <= 500).sort((a, b) => Math.abs(a[0] - z) - Math.abs(b[0] - z))[0];
+      const near = gw.filter(g => Math.abs(g[0] - z) <= 700).sort((a, b) => Math.abs(a[0] - z) - Math.abs(b[0] - z))[0];
       const w = near ? gwind(near) : p2windAt(wl, z);
       if (w) o.push(p2arrow(CX(k), Y(z), w, asz));
     }
