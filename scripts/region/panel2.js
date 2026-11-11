@@ -125,6 +125,7 @@ function panel2SVG(data, di = 0) {
   }
   // top strip: how good each hour is
   hrs.forEach((h, k) => o.push(`<rect x="${f(X(k) + 0.6)}" y="${yS}" width="${f(cw - 1.2)}" height="13" fill="${P2_RATE(H(h).score)}"/>`));
+  o.push(`<text x="${L - 8}" y="${f(yS + 6.5 + 4 * fs)}" text-anchor="end" font-size="${12 * fs}" font-weight="700">Verdict</text>`);
   // cloud layers: high, mid, low
   // a quiet grid: one faint cell per hour and layer, so clear skies don't read as a dark empty block
   [0, 1, 2].forEach(r => hrs.forEach((h, k) => o.push(`<rect x="${f(X(k) + 0.8)}" y="${yC + r * ch + 1}" width="${f(cw - 1.6)}" height="${ch - 2}" rx="3" fill="#f6f8fa" stroke="#e8ebef" stroke-width=".8"/>`)));
