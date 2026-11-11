@@ -105,7 +105,7 @@ function panel2SVG(data, di = 0) {
   const gh = (zmax - zmin) * pxft;
   const Y = (z) => yG + gh - (z - zmin) * pxft;
   const yB = yG + gh, yA = yB + 40 * fs;              // the time axis and the climb legend sit under the chart
-  const Hh = yA + (data.compact ? 44 : 70);
+  const Hh = yA + (data.compact ? 44 : 32);
   const f = (v) => v.toFixed(1);
   const o = [];
   o.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${Hh}" font-family="Inter, Roboto, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" fill="${INK}">`);
@@ -221,14 +221,15 @@ function panel2SVG(data, di = 0) {
   const sy = yA + 18;
   const stat = [best && best[0] > 0 ? `strongest climb ${best[0].toFixed(1)} m/s at ${hh(best[1])}` : 'no usable climbs', hi ? `highest top ${hi[0].toLocaleString()} ft at ${hh(hi[1])}` : ''].filter(Boolean).join('   ·   ');
   o.push(`<text x="${L}" y="${sy + (fs - 1) * 8}" font-size="${12.5 * fs}" fill="${MUTED}">${stat}</text>`);
+  // inversion and cumulus keys, bottom right (under the climb key)
+  { const ty = sy + (fs - 1) * 8, t = 11.5 * fs, cx = W - R - 58 * fs, ix = cx - 92 * fs;
+    o.push(`<rect x="${f(ix)}" y="${f(ty - 9 * fs)}" width="${f(18 * fs)}" height="${f(10 * fs)}" fill="#e58ac2" opacity=".5"/><text x="${f(ix + 24 * fs)}" y="${f(ty)}" font-size="${f(t)}" fill="${MUTED}">inversion</text>`);
+    o.push(`<rect x="${f(cx)}" y="${f(ty - 11 * fs)}" width="${f(12 * fs)}" height="${f(14 * fs)}" rx="${f(5 * fs)}" fill="#cdd2d8"/><text x="${f(cx + 18 * fs)}" y="${f(ty)}" font-size="${f(t)}" fill="${MUTED}">cumulus</text>`); }
   if (!data.compact) {
     // verdict colours sit with the strip at the top (right); inversion and cumulus stay down here
     const key = P2_VERDICT.map(([, c, t]) => [c, t]), kw = ([, t]) => 33 + [...t].reduce((a, ch) => a + ('ilft '.includes(ch) ? 3.4 : /[A-Z]/.test(ch) ? 7.6 : 6.2), 0);   // rough text width
     let vx = W - R - key.reduce((a, k) => a + kw(k), 0) + 6;
     for (const k of key) { const [c, t] = k; o.push(`<rect x="${f(vx)}" y="${yS - 15}" width="16" height="9" rx="1.5" fill="${c}"/><text x="${f(vx + 21)}" y="${yS - 6.5}" font-size="11" fill="${MUTED}">${t}</text>`); vx += kw(k); }
-    const x = L - 8;
-    o.push(`<rect x="${x + 8}" y="${sy + 14}" width="18" height="10" fill="#e58ac2" opacity=".5"/><text x="${x + 32}" y="${sy + 23}" font-size="11.5" fill="${MUTED}">inversion</text>`);
-    o.push(`<rect x="${x + 112}" y="${sy + 12}" width="12" height="14" rx="5" fill="#cdd2d8"/><text x="${x + 130}" y="${sy + 23}" font-size="11.5" fill="${MUTED}">cumulus</text>`);
   }
   o.push('</svg>');
   return o.join('');
