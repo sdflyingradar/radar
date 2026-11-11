@@ -2343,7 +2343,10 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             tags = []
             if lead and lead.get("switch_tag"):
                 tags.append(lead["switch_tag"])
-            if lead and lead["glass"] and not ridge:
+            # glass-off when at least half the models used for the day see it (not just the lead model)
+            gsrc = next((a for a in ([lead] if lead else []) + list(D.values()) if a and a.get("glass")), None)
+            glass_day = bool(not ridge and D and gsrc and sum(1 for a in D.values() if a.get("glass")) * 2 >= len(D))
+            if glass_day:
                 tags.append("glass-off")
             # a warning only (no points): windy through most of the window, whatever the direction (not Torrey,
             # which needs the wind)
@@ -2475,8 +2478,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 # every other site: launch wind hour by hour averaged across the models used for the day
                 # (third level of the card); [direction, mph, gust mph, number of models]
                 "hwind_avg": avg_hw([cell["all"][m].get("hw") for m in D if m in cell["all"]]) if not ridge else None,
-                "gwin": lead.get("gwin") if lead and lead.get("glass") and not ridge else None,
-                "glass_ft": lead.get("glass_ft") if lead and lead.get("glass") and not ridge else None,
+                "gwin": gsrc.get("gwin") if glass_day else None,
+                "glass_ft": gsrc.get("glass_ft") if glass_day else None,
                 "note": note_for(s, lead_view, xc),
                 "p_fly": round(p_fly, 2), "p_xc": round(p_xc, 2),
                 "agree": factors[-1]["v"], "models": {k: round(v, 1) for k, v in det_r.items()},
