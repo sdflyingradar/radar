@@ -167,12 +167,16 @@ function panel2SVG(data, di = 0) {
     // lift: one rounded column per hour, the 500 ft steps as sharp colour bands, shaded like a cylinder
     const cells = Object.entries(g).filter(([, v]) => typeof v === 'number').map(([zk, v]) => [+zk, v]).filter(([z]) => z + 500 > zmin && z < zmax).sort((a, b) => a[0] - b[0]);
     if (cells.length) {
-      const z0 = Math.max(cells[0][0], zmin), z1 = Math.min(cells[cells.length - 1][0] + 500, zmax), yT = Y(z1), yBt = Y(z0), hh = yBt - yT, id = `lg${U}${k}`;
-      const stops = cells.slice().reverse().map(([z, v]) => { const c = p2pick(P2_LIFT, v), a = (Y(Math.min(z + 500, z1)) - yT) / hh, b = (Y(Math.max(z, z0)) - yT) / hh; return `<stop offset="${Math.max(0, a).toFixed(3)}" stop-color="${c}"/><stop offset="${Math.min(1, b).toFixed(3)}" stop-color="${c}"/>`; }).join('');
-      // the column's width follows its best climb: full from 2 m/s, a bit slimmer at 1.5, slimmer at 1 and below
-      const vmax = Math.max(...cells.map(c => c[1])), cwid = bw * (vmax >= 2 ? 1 : vmax >= 1.5 ? 0.82 : 0.64), cx0 = CX(k) - cwid / 2;
-      const r = Math.min(cwid / 2, 9), d = `M${f(cx0)} ${f(yBt)} V${f(yT + r)} Q${f(cx0)} ${f(yT)} ${f(cx0 + r)} ${f(yT)} H${f(cx0 + cwid - r)} Q${f(cx0 + cwid)} ${f(yT)} ${f(cx0 + cwid)} ${f(yT + r)} V${f(yBt)} Z`;
-      o.push(`<defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1">${stops}</linearGradient></defs><path d="${d}" fill="url(#${id})" filter="url(#sh${U})"/><path d="${d}" fill="url(#cyl${U})"/>`);
+      // each 500 ft segment as wide as its climb: full from 2 m/s, a bit slimmer at 1.5, slimmer at 1 and below;
+      // the segments stack into one column (one shadow), the top one rounded, all shaded like a cylinder
+      const wv = (v) => bw * (v >= 2 ? 1 : v >= 1.5 ? 0.8 : 0.5), top = cells[cells.length - 1][0];
+      const seg = cells.map(([z, v]) => {
+        const w = wv(v), x = CX(k) - w / 2, yt = Y(Math.min(z + 500, zmax)), yb = Y(Math.max(z, zmin)), r = z === top ? Math.min(w / 2, 9, yb - yt) : 0;
+        const d = r ? `M${f(x)} ${f(yb)} V${f(yt + r)} Q${f(x)} ${f(yt)} ${f(x + r)} ${f(yt)} H${f(x + w - r)} Q${f(x + w)} ${f(yt)} ${f(x + w)} ${f(yt + r)} V${f(yb)} Z`
+                    : `M${f(x)} ${f(yb + 0.3)} V${f(yt)} H${f(x + w)} V${f(yb + 0.3)} Z`;
+        return [d, p2pick(P2_LIFT, v)];
+      });
+      o.push(`<g filter="url(#sh${U})">${seg.map(([d, c]) => `<path d="${d}" fill="${c}"/>`).join('')}</g>` + seg.map(([d]) => `<path d="${d}" fill="url(#cyl${U})"/>`).join(''));
     }
     const hb = H(h);
     if (hb.base_ft && (hb.cu || 0) >= 0.15) {
