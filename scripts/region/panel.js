@@ -113,7 +113,7 @@ function panelSVG(data, di = 0) {
   o.push(`<path d="M${L} ${yB}H${W - R}" stroke="${GRID2}"/>`);
   cols.forEach((c, k) => o.push(`<path d="M${f(X(k))} ${yG}V${yB}" stroke="${GRID}" stroke-width=".8"/>`));
   o.push(`<path d="M${W - R} ${yG}V${yB}" stroke="${GRID}" stroke-width=".8"/>`);
-  const cloud = (cx, cy) => `<g transform="translate(${f(cx)} ${f(cy)})"><path d="M-10 6 H10 a5.2 5.2 0 0 0 .6-10.3 a7.2 7.2 0 0 0-13.6-2.4 a5.4 5.4 0 0 0-7.6 5 a3.9 3.9 0 0 0 0 7.7 z" fill="#fff" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/><path d="M0 3.5v-6m-2.4 2.4 2.4-2.4 2.4 2.4" fill="none" stroke="#111" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+  const cloud = (cx, cy) => `<g transform="translate(${f(cx)} ${f(cy)})"><path d="M-10 6 H10 a5.2 5.2 0 0 0 .6-10.3 a7.2 7.2 0 0 0-13.6-2.4 a5.4 5.4 0 0 0-7.6 5 a3.9 3.9 0 0 0 0 7.7 z" fill="#fff" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/></g>`;
   // rain: the clouds get a drop (two when it pours, a flash with thunderstorms); rain without cumulus: one cloud on top
   const drop = (cx, cy) => `<path d="M${f(cx)} ${f(cy - 3.6)} l-2.6 4.4 a2.9 2.9 0 1 0 5.2 0 z" fill="#2563eb" stroke="#fff" stroke-width=".7"/>`;
   const rainy = (c, cx, cy) => {
