@@ -3,7 +3,7 @@
 // panelSVG(data, dayIndex) -> SVG string; panelText(data, dayIndex) -> HTML. data = data/region/sd.json
 
 const PANEL_CLIMB = [[0, '#ffeedd'], [0.5, '#fdd0a2'], [1, '#fbb068'], [1.5, '#f89039'], [2, '#f1721b'], [2.5, '#e05a0c'], [3, '#c44608'], [3.5, '#a03606'], [4, '#782805'], [4.5, '#521b04']];   // the same orange as the detailed chart
-const PANEL_WIND = [[0, '#cfeaf6'], [5, '#9fdcec'], [10, '#93d9a6'], [15, '#f4dc45'], [20, '#f07f1f'], [25, '#df3f2a'], [30, '#a51d18']];   // 15 yellow, 20 deep orange
+const PANEL_WIND = [[0, '#eef1f4'], [4, '#a6e3b3'], [9.5, '#f9eb87'], [15.5, '#f7bb7a'], [19, '#f08486']];   // the detailed chart's wind colours, lighter
 const pick = (scale, v) => { let c = scale[0][1]; for (const [k, col] of scale) if (v >= k - 1e-9) c = col; return c; };
 const OKTA = ['#ffffff', '#ececec', '#e0e0e0', '#cdcdcd', '#bdbdbd', '#a3a3a3', '#8c8c8c', '#727272', '#5c5c5c'];
 
@@ -98,7 +98,7 @@ function panelSVG(data, di = 0) {
       const w = c.d[key];
       if (!w || w[1] == null) return;
       o.push(`<g><title>${name}: ${w[1]} mph${w[2] && w[2] > w[1] + 2 ? ' gusts ' + w[2] : ''} from ${w[0]}°</title><rect x="${f(X(k))}" y="${y}" width="${f(cw)}" height="${ch}" fill="${pick(PANEL_WIND, w[1])}" stroke="#fff" stroke-width="1.5"/>`);
-      if (w[0] != null && w[1] >= 1) o.push(`<g transform="translate(${f(X(k) + cw / 2)} ${f(y + ch / 2)}) rotate(${(w[0] + 180) % 360})"><path d="M0 -8.5 L5 7.5 L0 4.2 L-5 7.5 Z" fill="#fff" stroke="#4b5563" stroke-width=".9" stroke-linejoin="round"/></g>`);
+      if (w[0] != null && w[1] >= 1) o.push(`<g transform="translate(${f(X(k) + cw / 2)} ${f(y + ch / 2)}) rotate(${(w[0] + 180) % 360})"><path d="M0 -8.5 L5 7.5 L0 4.2 L-5 7.5 Z" fill="${w[1] < 4 ? '#9aa3ad' : '#fff'}" stroke="${w[1] < 4 ? '#9aa3ad' : '#4b5563'}" stroke-width=".9" stroke-linejoin="round"/></g>`);
       o.push('</g>');
     });
   });
