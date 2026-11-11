@@ -226,9 +226,11 @@ function panel2SVG(data, di = 0) {
   const stat = [best && best[0] > 0 ? `strongest climb ${best[0].toFixed(1)} m/s at ${hh(best[1])}` : 'no usable climbs', hi ? `highest top ${hi[0].toLocaleString()} ft at ${hh(hi[1])}` : ''].filter(Boolean).join('   ·   ');
   o.push(`<text x="${L}" y="${sy + (fs - 1) * 8}" font-size="${12.5 * fs}" fill="${MUTED}">${stat}</text>`);
   if (!data.compact) {
-    const key = P2_VERDICT.map(([, c, t]) => [c, t]);
-    let x = L;
-    for (const [c, t] of key) { o.push(`<rect x="${x}" y="${sy + 14}" width="18" height="10" fill="${c}"/><text x="${x + 24}" y="${sy + 23}" font-size="11.5" fill="${MUTED}">${t}</text>`); x += 34 + t.length * 6.4; }
+    // verdict colours sit with the strip at the top (right); inversion and cumulus stay down here
+    const key = P2_VERDICT.map(([, c, t]) => [c, t]), kw = ([, t]) => 33 + [...t].reduce((a, ch) => a + ('ilft '.includes(ch) ? 3.4 : /[A-Z]/.test(ch) ? 7.6 : 6.2), 0);   // rough text width
+    let vx = W - R - key.reduce((a, k) => a + kw(k), 0) + 6;
+    for (const k of key) { const [c, t] = k; o.push(`<rect x="${f(vx)}" y="${yS - 15}" width="16" height="9" rx="1.5" fill="${c}"/><text x="${f(vx + 21)}" y="${yS - 6.5}" font-size="11" fill="${MUTED}">${t}</text>`); vx += kw(k); }
+    const x = L - 8;
     o.push(`<rect x="${x + 8}" y="${sy + 14}" width="18" height="10" fill="#e58ac2" opacity=".5"/><text x="${x + 32}" y="${sy + 23}" font-size="11.5" fill="${MUTED}">inversion</text>`);
     o.push(`<rect x="${x + 112}" y="${sy + 12}" width="12" height="14" rx="5" fill="#cdd2d8"/><text x="${x + 130}" y="${sy + 23}" font-size="11.5" fill="${MUTED}">cumulus</text>`);
   }
