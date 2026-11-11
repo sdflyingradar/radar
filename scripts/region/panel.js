@@ -2,7 +2,7 @@
 // then a time x height grid of expected climb (m/s) in half-hour columns, cumulus as cloud icons.
 // panelSVG(data, dayIndex) -> SVG string; panelText(data, dayIndex) -> HTML. data = data/region/sd.json
 
-const PANEL_CLIMB = [[0, '#fde3bd'], [0.5, '#fff44f'], [1, '#14ef8f'], [1.5, '#62c9a4'], [2, '#16cbd3'], [2.5, '#6c98ec'], [3, '#1f3bff'], [3.5, '#0b1aa8']];
+const PANEL_CLIMB = [[0, '#ffeedd'], [0.5, '#fdd0a2'], [1, '#fbb068'], [1.5, '#f89039'], [2, '#f1721b'], [2.5, '#e05a0c'], [3, '#c44608'], [3.5, '#a03606'], [4, '#782805'], [4.5, '#521b04']];   // the same orange as the detailed chart
 const PANEL_WIND = [[0, '#cfeaf6'], [5, '#9fdcec'], [10, '#93d9a6'], [15, '#f4dc45'], [20, '#f07f1f'], [25, '#df3f2a'], [30, '#a51d18']];   // 15 yellow, 20 deep orange
 const pick = (scale, v) => { let c = scale[0][1]; for (const [k, col] of scale) if (v >= k - 1e-9) c = col; return c; };
 const OKTA = ['#ffffff', '#ececec', '#e0e0e0', '#cdcdcd', '#bdbdbd', '#a3a3a3', '#8c8c8c', '#727272', '#5c5c5c'];
@@ -139,7 +139,7 @@ function panelSVG(data, di = 0) {
       if (y < yG) return;
       if (v === 'c') { o.push(cloud(X(k) + cw / 2, y + rh / 2 + 1) + rainy(c, X(k) + cw / 2, y + rh / 2 + 1)); return; }
       o.push(`<rect x="${f(X(k) + 1)}" y="${y + 1}" width="${f(cw - 2)}" height="${rh - 2}" rx="1.5" fill="${pick(PANEL_CLIMB, v)}"/>`);
-      o.push(`<text x="${f(X(k) + cw / 2)}" y="${y + rh / 2 + 4.5}" text-anchor="middle" font-size="12.5" fill="${v >= 3 ? '#fff' : INK}">${v.toFixed(1)}</text>`);
+      o.push(`<text x="${f(X(k) + cw / 2)}" y="${y + rh / 2 + 4.5}" text-anchor="middle" font-size="12.5" fill="${v >= 2.5 ? '#fff' : INK}">${v.toFixed(1)}</text>`);
     });
   });
   // the site's flying window and glass-off (radar card): dashed outlines behind the grid; on short winter days
@@ -171,7 +171,7 @@ function panelSVG(data, di = 0) {
   o.push(`<text x="${f((L + W - R) / 2)}" y="${yB + 36}" text-anchor="middle" font-size="13" font-weight="700">Time (PT)</text>`);
   // small colour key, bottom right
   let kx = W - R - PANEL_CLIMB.length * 30;
-  PANEL_CLIMB.forEach(([v, c]) => { o.push(`<rect x="${kx}" y="${yB + 27}" width="29" height="12" rx="2" fill="${c}"/><text x="${kx + 14.5}" y="${yB + 37}" text-anchor="middle" font-size="9" fill="${v >= 3 ? '#fff' : INK}">${v}</text>`); kx += 30; });
+  PANEL_CLIMB.forEach(([v, c]) => { o.push(`<rect x="${kx}" y="${yB + 27}" width="29" height="12" rx="2" fill="${c}"/><text x="${kx + 14.5}" y="${yB + 37}" text-anchor="middle" font-size="9" fill="${v >= 2.5 ? '#fff' : INK}">${v}</text>`); kx += 30; });
   o.push(`<text x="${W - R - PANEL_CLIMB.length * 30 - 6}" y="${yB + 37}" text-anchor="end" font-size="10.5" fill="${MUTED}">climb m/s</text>`);
   // wind key, right above the wind rows
   let wx = W - R - PANEL_WIND.length * 30;

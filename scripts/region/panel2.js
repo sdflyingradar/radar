@@ -77,7 +77,7 @@ function panel2SVG(data, di = 0) {
   const H = (h) => day.hours[h] || {};
   const INK = '#1f2328', MUTED = '#6b7280', GRID = '#e6e8eb', GRID2 = '#c9ced4';
   const fs = data.compact ? 1.3 : 1;                 // bigger text when the chart is shown small (radar site card)
-  const W = 1000, L = 70, R = 14, cw = (W - L - R) / hrs.length;
+  const W = 1000, L = data.compact ? 96 : 78, R = 14, cw = (W - L - R) / hrs.length;
   const X = (k) => L + k * cw, CX = (k) => L + (k + 0.5) * cw;
   // heights: from just below the ground to well above the highest lift, cloud and marks
   // the ground: the lowest of the region's mean ground and its lowest thermal cell (valleys lift too)
@@ -89,10 +89,11 @@ function panel2SVG(data, di = 0) {
   const zmin = Math.max(0, Math.floor((Math.min(ground, data.floor_ft ?? ground) - 500) / 500) * 500);
   const zmax = Math.min(18000, Math.max(zmin + (data.compact ? 6000 : 8000), Math.ceil(((zs.length ? Math.max(...zs) : 6000) + 2500) / 1000) * 1000, ...marks.map(m => Math.ceil((m.ft + 1500) / 1000) * 1000)));
   const pxft = data.compact ? 0.05 : 0.055;
-  const yS = data.compact ? 40 : 66, yC = yS + 22, ch = 15, yI = yC + 3 * ch + 8, yG = yI + 34;
+  const yS = data.compact ? 34 : 62, yC = yS + 22, ch = 15, yI = yC + 3 * ch + 8, yG = yI + 34;
   const gh = (zmax - zmin) * pxft;
   const Y = (z) => yG + gh - (z - zmin) * pxft;
-  const Hh = yG + gh + (data.compact ? 44 : 70);
+  const yB = yG + gh, yA = yB + 40 * fs;              // the time axis and the climb legend sit under the chart
+  const Hh = yA + (data.compact ? 44 : 70);
   const f = (v) => v.toFixed(1);
   const o = [];
   o.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${Hh}" font-family="Inter, Roboto, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" fill="${INK}">`);
@@ -108,20 +109,18 @@ function panel2SVG(data, di = 0) {
     o.push(`<text x="${L}" y="28" font-size="22" font-weight="700">${data.title || data.region}</text>`);
     o.push(`<text x="${L}" y="50" font-size="14" fill="${MUTED}">${d.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })} · ${models}${run ? ' · run ' + run : ''}</text>`);
   }
-  // hour labels over the strip
-  hrs.forEach((h, k) => o.push(`<text x="${f(CX(k))}" y="${yS - 5}" text-anchor="middle" font-size="${11.5 * fs}" fill="${MUTED}">${h > 12 ? h - 12 : h}${h === 12 ? 'p' : h < 12 ? 'a' : 'p'}</text>`));
   // top strip: how good each hour is
   hrs.forEach((h, k) => o.push(`<rect x="${f(X(k) + 0.6)}" y="${yS}" width="${f(cw - 1.2)}" height="13" fill="${P2_RATE(H(h).score)}"/>`));
   // cloud layers: high, mid, low
   o.push(`<rect x="${L}" y="${yC}" width="${W - L - R}" height="${3 * ch}" fill="#eaf2fb"/>`);
   ['H', 'M', 'L'].forEach((lab, r) => {
-    o.push(`<text x="${L - 8}" y="${yC + r * ch + 11}" text-anchor="end" font-size="10.5" fill="${MUTED}">${lab}</text>`);
+    o.push(`<text x="${L - 8}" y="${yC + r * ch + 11}" text-anchor="end" font-size="${11 * fs}">${lab}</text>`);
     hrs.forEach((h, k) => {
       const n = (H(h).okta || [0, 0, 0])[2 - r];
       if (n > 0) o.push(`<rect x="${f(X(k) - 0.5)}" y="${yC + r * ch + 3}" width="${f(cw + 1)}" height="${ch - 6}" rx="4" fill="${P2_OKTA(n)}"/>`);
     });
   });
-  o.push(`<text transform="translate(16 ${yC + 1.5 * ch}) rotate(-90)" text-anchor="middle" font-size="10.5" fill="${MUTED}">clouds</text>`);
+  o.push(`<text transform="translate(${f(14 * fs)} ${yC + 1.5 * ch + 4}) rotate(-90)" text-anchor="middle" font-size="${12 * fs}" font-weight="700">Clouds</text>`);
   // weather symbols
   const pts = data.poly || [];
   const la = pts.length ? pts.reduce((a, q) => a + q[0], 0) / pts.length : 33, lo = pts.length ? pts.reduce((a, q) => a + q[1], 0) / pts.length : -117;
@@ -130,7 +129,7 @@ function panel2SVG(data, di = 0) {
   // main chart frame and height grid
   for (let z = Math.ceil(zmin / 1000) * 1000; z <= zmax; z += 1000) {
     o.push(`<line x1="${L}" x2="${W - R}" y1="${f(Y(z))}" y2="${f(Y(z))}" stroke="${z % 5000 ? GRID : GRID2}"/>`);
-    o.push(`<text x="${L - 8}" y="${f(Y(z) + 4)}" text-anchor="end" font-size="${11.5 * fs}" fill="${MUTED}">${z.toLocaleString()}</text>`);
+    o.push(`<text x="${L - 8}" y="${f(Y(z) + 4.5)}" text-anchor="end" font-size="${13 * fs}">${z.toLocaleString('en-US')}</text>`);
   }
   hrs.forEach((h, k) => o.push(`<line x1="${f(X(k))}" x2="${f(X(k))}" y1="${yG}" y2="${f(yG + gh)}" stroke="${GRID}"/>`));
   // ground
@@ -189,15 +188,15 @@ function panel2SVG(data, di = 0) {
       if (w) o.push(p2arrow(CX(k), Y(z), w, asz));
     }
   });
-  // lift legend (m/s)
-  const lx = L + 6, ly = yG + 6;
-  o.push(`<rect x="${lx}" y="${ly}" width="34" height="${P2_LIFT.length * 13 + 18}" rx="6" fill="#fff" stroke="#9aa3ad" opacity=".95"/>`);
-  o.push(`<text x="${lx + 17}" y="${ly + 12}" text-anchor="middle" font-size="9.5" fill="${MUTED}">m/s</text>`);
-  [...P2_LIFT].reverse().forEach(([v, c], r) => {
-    o.push(`<rect x="${lx + 4}" y="${ly + 16 + r * 13}" width="26" height="13" fill="${c}"/>`);
-    o.push(`<text x="${lx + 17}" y="${ly + 26 + r * 13}" text-anchor="middle" font-size="9" fill="${v >= 2.5 ? '#fff' : INK}">${v}</text>`);
-  });
-  o.push(`<text transform="translate(18 ${f(yG + gh / 2)}) rotate(-90)" text-anchor="middle" font-size="11" fill="${MUTED}">height (ft)</text>`);
+  o.push(`<text transform="translate(${f(14 * fs)} ${f(yG + gh / 2)}) rotate(-90)" text-anchor="middle" font-size="${13 * fs}" font-weight="700">Altitude (ft)</text>`);
+  // time axis under the chart (hours at the column edges), then the climb legend at the bottom right
+  o.push(`<line x1="${L}" x2="${W - R}" y1="${f(yB)}" y2="${f(yB)}" stroke="${GRID2}"/>`);
+  hrs.forEach((h, k) => { if (!data.compact || k % 2 === 0) o.push(`<text x="${f(X(k))}" y="${f(yB + 18 * fs)}" text-anchor="middle" font-size="${13 * fs}">${h > 12 ? h - 12 : h}:00</text>`); });
+  o.push(`<text x="${f((L + W - R) / 2)}" y="${f(yB + 36 * fs)}" text-anchor="middle" font-size="${13 * fs}" font-weight="700">Time (PT)</text>`);
+  const kw = (data.compact ? 34 : 29), lk = P2_LIFT.filter(([v]) => v % 1 === 0 || !data.compact);
+  let kx = W - R - lk.length * (kw + 1);
+  lk.forEach(([v, c]) => { o.push(`<rect x="${kx}" y="${f(yB + 27 * fs)}" width="${kw}" height="${f(12 * fs)}" rx="2" fill="${c}"/><text x="${kx + kw / 2}" y="${f(yB + 27 * fs + 9.5 * fs)}" text-anchor="middle" font-size="${9 * fs}" fill="${v >= 2.5 ? '#fff' : INK}">${v}</text>`); kx += kw + 1; });
+  o.push(`<text x="${W - R - lk.length * (kw + 1) - 6}" y="${f(yB + 37 * fs)}" text-anchor="end" font-size="${10.5 * fs}" fill="${MUTED}">climb m/s</text>`);
   // statistics
   let best = null, hi = null;
   hrs.forEach((h) => {
@@ -206,7 +205,7 @@ function panel2SVG(data, di = 0) {
     if (H(h).top_max_ft && (!hi || H(h).top_max_ft > hi[0])) hi = [H(h).top_max_ft, h];
   });
   const hh = (h) => `${h > 12 ? h - 12 : h} ${h >= 12 ? 'pm' : 'am'}`;
-  const sy = yG + gh + 22;
+  const sy = yA + 18;
   const stat = [best && best[0] > 0 ? `strongest climb ${best[0].toFixed(1)} m/s at ${hh(best[1])}` : 'no usable climbs', hi ? `highest top ${hi[0].toLocaleString()} ft at ${hh(hi[1])}` : ''].filter(Boolean).join('   ·   ');
   o.push(`<text x="${L}" y="${sy + (fs - 1) * 8}" font-size="${12.5 * fs}" fill="${MUTED}">${stat}</text>`);
   if (!data.compact) {
