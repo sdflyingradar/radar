@@ -25,10 +25,25 @@ function p2weather(h) {
   if (tot >= 3 || (h.cu || 0) >= 0.4) return 'part';
   return 'sun';
 }
-function p2icon(kind, x, y) {
+// local sunrise and sunset (decimal hours, Pacific time) for a date and place (NOAA approximation)
+function p2sun(date, lat, lon) {
+  const d = new Date(date + 'T12:00:00Z'), n = Math.round((d - Date.UTC(d.getUTCFullYear(), 0, 0)) / 864e5);
+  const g = 2 * Math.PI / 365 * (n - 1), r = Math.PI / 180;
+  const eot = 229.18 * (0.000075 + 0.001868 * Math.cos(g) - 0.032077 * Math.sin(g) - 0.014615 * Math.cos(2 * g) - 0.040849 * Math.sin(2 * g));
+  const decl = 0.006918 - 0.399912 * Math.cos(g) + 0.070257 * Math.sin(g) - 0.006758 * Math.cos(2 * g) + 0.000907 * Math.sin(2 * g) - 0.002697 * Math.cos(3 * g) + 0.00148 * Math.sin(3 * g);
+  const ch = Math.cos(90.833 * r) / (Math.cos(lat * r) * Math.cos(decl)) - Math.tan(lat * r) * Math.tan(decl);
+  const ha = Math.acos(Math.max(-1, Math.min(1, ch))) / r;
+  let off = -8;
+  try { const t = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', hour: 'numeric', hourCycle: 'h23' }).format(d); off = +t - 12; } catch (e) {}
+  return [(720 - 4 * (lon + ha) - eot) / 60 + off, (720 - 4 * (lon - ha) - eot) / 60 + off];
+}
+function p2icon(kind, x, y, night) {
   const sun = (cx, cy, r) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#f6b51e"/><g stroke="#f6b51e" stroke-width="1.6" stroke-linecap="round">${[0, 45, 90, 135, 180, 225, 270, 315].map(a => { const c = Math.cos(a * Math.PI / 180), s = Math.sin(a * Math.PI / 180); return `<line x1="${(cx + c * (r + 2.5)).toFixed(1)}" y1="${(cy + s * (r + 2.5)).toFixed(1)}" x2="${(cx + c * (r + 5)).toFixed(1)}" y2="${(cy + s * (r + 5)).toFixed(1)}"/>`; }).join('')}</g>`;
   const cloud = (cx, cy, col) => `<path d="M${cx - 10} ${cy + 5} h20 a5 5 0 0 0 0 -10 a7 7 0 0 0 -13 -2 a5 5 0 0 0 -7 12 z" fill="${col}" stroke="#9aa3ad" stroke-width=".8"/>`;
   const g = (inner) => `<g transform="translate(${x.toFixed(1)} ${y})">${inner}</g>`;
+  const moon = (cx, cy, r) => `<path d="M${cx + r * 0.35} ${cy - r} a${r} ${r} 0 1 0 ${r * 0.65} ${r * 1.55} a${r * 0.8} ${r * 0.8} 0 0 1 ${-r * 0.65} ${-r * 1.55} z" fill="#8f9bb3"/>`;
+  if (night && kind === 'sun') return g(moon(0, 0, 7));
+  if (night && kind === 'part') return g(moon(-4, -4, 6) + cloud(3, 3, '#fff'));
   if (kind === 'sun') return g(sun(0, 0, 6));
   if (kind === 'part') return g(sun(-4, -4, 5) + cloud(3, 3, '#fff'));
   if (kind === 'cloud') return g(cloud(0, 1, '#d5dae0'));
@@ -108,7 +123,10 @@ function panel2SVG(data, di = 0) {
   });
   o.push(`<text transform="translate(16 ${yC + 1.5 * ch}) rotate(-90)" text-anchor="middle" font-size="10.5" fill="${MUTED}">clouds</text>`);
   // weather symbols
-  hrs.forEach((h, k) => o.push(p2icon(p2weather(H(h)), CX(k), yI + 13)));
+  const pts = data.poly || [];
+  const la = pts.length ? pts.reduce((a, q) => a + q[0], 0) / pts.length : 33, lo = pts.length ? pts.reduce((a, q) => a + q[1], 0) / pts.length : -117;
+  const [rise, set] = p2sun(day.date, la, lo);
+  hrs.forEach((h, k) => o.push(p2icon(p2weather(H(h)), CX(k), yI + 13, h > set || h < rise)));
   // main chart frame and height grid
   for (let z = Math.ceil(zmin / 1000) * 1000; z <= zmax; z += 1000) {
     o.push(`<line x1="${L}" x2="${W - R}" y1="${f(Y(z))}" y2="${f(Y(z))}" stroke="${z % 5000 ? GRID : GRID2}"/>`);
@@ -214,7 +232,7 @@ function panel2LegendHTML() {
     ${P2_VERDICT.map(([, c, t]) => row(sw(c), t)).join('')}
     <h4>Sky</h4>
     ${row(sw('#d6dbe1', 'border-radius:6px') + sw('#8a929c', 'border-radius:6px'), 'cloud layers, high (H), middle (M) and low (L); darker grey = more of the sky covered')}
-    ${row('☀️', 'a symbol for each hour: sunny, some clouds, overcast, rain or thunderstorms')}
+    ${row('☀️', 'a symbol for each hour: sunny (a moon after sunset), some clouds, overcast, rain or thunderstorms')}
     <h4>Thermals</h4>
     <div class="p2r p2col"><span class="p2s">${P2_LIFT.map(([v, c]) => `<i style="background:${c};width:26px;color:${v >= 2 ? '#fff' : '#26303a'};font:600 9px/12px system-ui;text-align:center;font-style:normal">${v}</i>`).join('')}</span><span>climb rate in m/s, in 500 ft steps from the ground to the top of the lift: the darker, the stronger</span></div>
     ${row(sw('#cdd2d8', 'border-radius:8px;width:14px;height:20px'), 'grey bar: cumulus clouds from their base to their top; a wider, darker bar means more of them')}
