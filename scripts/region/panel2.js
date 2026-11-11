@@ -171,7 +171,9 @@ function panel2SVG(data, di = 0) {
     if (cells.length) {
       const z0 = Math.max(cells[0][0], zmin), z1 = Math.min(cells[cells.length - 1][0] + 500, zmax), yT = Y(z1), yBt = Y(z0), hh = yBt - yT, id = `lg${U}${k}`;
       const stops = cells.slice().reverse().map(([z, v]) => { const c = p2pick(P2_LIFT, v), a = (Y(Math.min(z + 500, z1)) - yT) / hh, b = (Y(Math.max(z, z0)) - yT) / hh; return `<stop offset="${Math.max(0, a).toFixed(3)}" stop-color="${c}"/><stop offset="${Math.min(1, b).toFixed(3)}" stop-color="${c}"/>`; }).join('');
-      const r = Math.min(bw / 2, 9), d = `M${f(x0)} ${f(yBt)} V${f(yT + r)} Q${f(x0)} ${f(yT)} ${f(x0 + r)} ${f(yT)} H${f(x0 + bw - r)} Q${f(x0 + bw)} ${f(yT)} ${f(x0 + bw)} ${f(yT + r)} V${f(yBt)} Z`;
+      // the column's width follows its best climb: full from 2 m/s, a bit slimmer at 1.5, slimmer at 1 and below
+      const vmax = Math.max(...cells.map(c => c[1])), cwid = bw * (vmax >= 2 ? 1 : vmax >= 1.5 ? 0.82 : 0.64), cx0 = CX(k) - cwid / 2;
+      const r = Math.min(cwid / 2, 9), d = `M${f(cx0)} ${f(yBt)} V${f(yT + r)} Q${f(cx0)} ${f(yT)} ${f(cx0 + r)} ${f(yT)} H${f(cx0 + cwid - r)} Q${f(cx0 + cwid)} ${f(yT)} ${f(cx0 + cwid)} ${f(yT + r)} V${f(yBt)} Z`;
       o.push(`<defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1">${stops}</linearGradient></defs><path d="${d}" fill="url(#${id})" filter="url(#sh${U})"/><path d="${d}" fill="url(#cyl${U})"/>`);
     }
     const hb = H(h);
