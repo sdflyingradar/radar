@@ -68,7 +68,9 @@ function p2windAt(wl, z) {
 function p2arrow(x, y, w, s) {
   const fill = p2pick(P2_WIND, w[1]), rim = p2pick(P2_WIND, Math.max(w[1], w[2]));
   const k = s / 10;
-  return `<path d="M0 -9 L6.5 8 L0 4.2 L-6.5 8 Z" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${((w[0] + 180) % 360).toFixed(0)}) scale(${k.toFixed(2)})" fill="${fill}" stroke="${rim === '#ffffff' ? '#9aa3ad' : rim}" stroke-width="${(2.1 / k).toFixed(2)}" stroke-linejoin="round"/>`;
+  const tr = `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${((w[0] + 180) % 360).toFixed(0)}) scale(${k.toFixed(2)})`;
+  return `<path d="M0 -9 L6.5 8 L0 4.2 L-6.5 8 Z" transform="${tr}" fill="none" stroke="#fff" stroke-width="${(4.2 / k).toFixed(2)}" stroke-linejoin="round" opacity=".55"/>`   // a light halo
+    + `<path d="M0 -9 L6.5 8 L0 4.2 L-6.5 8 Z" transform="${tr}" fill="${fill}" stroke="${rim === '#ffffff' ? '#9aa3ad' : rim}" stroke-width="${(2.1 / k).toFixed(2)}" stroke-linejoin="round"/>`;
 }
 
 // colour keys under a chart, both in whole-number steps: wind (bottom left) and climb (bottom right)
@@ -152,23 +154,29 @@ function panel2SVG(data, di = 0) {
     o.push(`<text x="${L - 8}" y="${f(Y(z) + 4.5)}" text-anchor="end" font-size="${13 * fs}">${z.toLocaleString('en-US')}</text>`);
   }
   hrs.forEach((h, k) => o.push(`<line x1="${f(X(k))}" x2="${f(X(k))}" y1="${yG}" y2="${f(yG + gh)}" stroke="${GRID}"/>`));
+  const U = Math.random().toString(36).slice(2, 7);   // ids unique to this chart (several charts share a page)
+  o.push(`<defs><filter id="sh${U}" x="-30%" y="-10%" width="160%" height="130%"><feDropShadow dx="1.4" dy="2" stdDeviation="1.6" flood-color="#5b2a12" flood-opacity=".28"/></filter>`
+    + `<linearGradient id="cyl${U}" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset=".32" stop-color="#fff" stop-opacity=".06"/><stop offset=".7" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".16"/></linearGradient>`
+    + `<linearGradient id="cu${U}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>`);
   // ground
   o.push(`<rect x="${L}" y="${f(Y(ground))}" width="${W - L - R}" height="${f(yG + gh - Y(ground))}" fill="#efe6d6"/>`);
   // thermal cells (500 ft) and cumulus columns
   const bw = cw * 0.72;
   hrs.forEach((h, k) => {
     const g = H(h).grid || {}, x0 = CX(k) - bw / 2;
-    for (const [zk, v] of Object.entries(g)) {
-      const z = +zk;
-      if (z + 500 <= zmin || z >= zmax) continue;
-      if (v === 'c') continue;
-      o.push(`<rect x="${f(x0)}" y="${f(Y(z + 500))}" width="${f(bw)}" height="${f(500 * pxft - 0.6)}" fill="${p2pick(P2_LIFT, v)}"/>`);
+    // lift: one rounded column per hour, the 500 ft steps as sharp colour bands, shaded like a cylinder
+    const cells = Object.entries(g).filter(([, v]) => typeof v === 'number').map(([zk, v]) => [+zk, v]).filter(([z]) => z + 500 > zmin && z < zmax).sort((a, b) => a[0] - b[0]);
+    if (cells.length) {
+      const z0 = Math.max(cells[0][0], zmin), z1 = Math.min(cells[cells.length - 1][0] + 500, zmax), yT = Y(z1), yBt = Y(z0), hh = yBt - yT, id = `lg${U}${k}`;
+      const stops = cells.slice().reverse().map(([z, v]) => { const c = p2pick(P2_LIFT, v), a = (Y(Math.min(z + 500, z1)) - yT) / hh, b = (Y(Math.max(z, z0)) - yT) / hh; return `<stop offset="${Math.max(0, a).toFixed(3)}" stop-color="${c}"/><stop offset="${Math.min(1, b).toFixed(3)}" stop-color="${c}"/>`; }).join('');
+      const r = Math.min(bw / 2, 9), d = `M${f(x0)} ${f(yBt)} V${f(yT + r)} Q${f(x0)} ${f(yT)} ${f(x0 + r)} ${f(yT)} H${f(x0 + bw - r)} Q${f(x0 + bw)} ${f(yT)} ${f(x0 + bw)} ${f(yT + r)} V${f(yBt)} Z`;
+      o.push(`<defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1">${stops}</linearGradient></defs><path d="${d}" fill="url(#${id})" filter="url(#sh${U})"/><path d="${d}" fill="url(#cyl${U})"/>`);
     }
     const hb = H(h);
     if (hb.base_ft && (hb.cu || 0) >= 0.15) {
       const top = Math.max(hb.base_ft + 600, hb.cu_top_ft || hb.base_ft + 1000), cw2 = bw * (0.35 + 0.65 * Math.min(1, hb.cu));
       const shade = hb.cu >= 0.7 ? '#b4bbc3' : hb.cu >= 0.4 ? '#cdd2d8' : '#e3e6ea';
-      o.push(`<rect x="${f(CX(k) - cw2 / 2)}" y="${f(Y(Math.min(top, zmax)))}" width="${f(cw2)}" height="${f(Math.max(4, (Math.min(top, zmax) - hb.base_ft) * pxft))}" rx="${f(Math.min(10, cw2 / 2))}" fill="${shade}" opacity=".92"/>`);
+      o.push(`<rect x="${f(CX(k) - cw2 / 2)}" y="${f(Y(Math.min(top, zmax)))}" width="${f(cw2)}" height="${f(Math.max(4, (Math.min(top, zmax) - hb.base_ft) * pxft))}" rx="${f(Math.min(10, cw2 / 2))}" fill="${shade}" opacity=".95" filter="url(#sh${U})"/><rect x="${f(CX(k) - cw2 / 2)}" y="${f(Y(Math.min(top, zmax)))}" width="${f(cw2)}" height="${f(Math.max(4, (Math.min(top, zmax) - hb.base_ft) * pxft))}" rx="${f(Math.min(10, cw2 / 2))}" fill="url(#cu${U})"/>`);
     }
   });
   // inversions (pink)
@@ -176,7 +184,7 @@ function panel2SVG(data, di = 0) {
     for (const [a, b] of H(h).inv || []) {
       if (b <= zmin || a >= zmax) continue;
       const lo = Math.max(a, zmin), hi = Math.min(b, zmax), hgt = Math.max(5, (hi - lo) * pxft);
-      o.push(`<rect x="${f(X(k) + 0.5)}" y="${f(Y(hi))}" width="${f(cw - 1)}" height="${f(hgt)}" fill="#e58ac2" opacity=".42"/>`);
+      o.push(`<rect x="${f(X(k) + 0.5)}" y="${f(Y(hi))}" width="${f(cw - 1)}" height="${f(hgt)}" fill="#e58ac2" opacity=".2"/><line x1="${f(X(k) + 0.5)}" x2="${f(X(k) + cw - 0.5)}" y1="${f(Y(hi))}" y2="${f(Y(hi))}" stroke="#d1589f" stroke-width="1.2" opacity=".6"/>`);
     }
   });
   // site heights
