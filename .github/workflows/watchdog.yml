@@ -1,0 +1,68 @@
+name: Watchdog
+
+# GitHub's scheduler can run a job an hour or more late, or drop it. Every 20 minutes this checks whether the
+# forecast and the thermal charts got their last scheduled update; if one is missing (20+ min after its time)
+# and nothing is running, it starts that run itself. The late scheduled run then does nothing (its gate sees
+# fresh data).
+on:
+  schedule:
+    - cron: "7,27,47 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          sparse-checkout: |
+            data/forecast.json
+            data/region/regions.json
+          sparse-checkout-cone-mode: false
+      - name: Start missing runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          python3 - <<'PY'
+          import json, subprocess, datetime as d
+          now = d.datetime.now(d.timezone.utc)
+          # (workflow, data file, UTC slots as (hour, minute), the light slot)
+          jobs = [("forecast.yml", "data/forecast.json",
+                   [(h, 30) for h in (13, 15, 16, 18, 20, 22, 0, 2, 6, 10)], (10, 30)),
+                  ("region.yml", "data/region/regions.json",
+                   [(h, 34) for h in (13, 15, 16, 20, 23, 2, 6, 10)], (10, 34))]
+          def gen(path):
+              try:
+                  g = json.load(open(path))["generated"].replace("Z", "+00:00")
+                  return d.datetime.fromisoformat(g if "+" in g[10:] else g + "+00:00")
+              except Exception:
+                  return d.datetime(2000, 1, 1, tzinfo=d.timezone.utc)
+          for wf, path, slots, light in jobs:
+              cands = []
+              for back in (0, 1):
+                  day = (now - d.timedelta(days=back)).date()
+                  for h, m in slots:
+                      t = d.datetime(day.year, day.month, day.day, h, m, tzinfo=d.timezone.utc)
+                      if t <= now - d.timedelta(minutes=20):
+                          cands.append((t, (h, m)))
+              last, hm = max(cands)
+              have = gen(path)
+              print(f"{wf}: last slot {last:%H:%M}Z, data from {have:%Y-%m-%d %H:%M}Z")
+              if have >= last - d.timedelta(minutes=10):
+                  continue
+              busy = subprocess.run(["gh", "run", "list", "-w", wf, "-L", "5", "--json", "status", "-q",
+                                     '[.[] | select(.status != "completed")] | length'],
+                                    capture_output=True, text=True).stdout.strip()
+              if busy not in ("", "0"):
+                  print(f"  missing, but a run is already going ({busy})")
+                  continue
+              args = ["gh", "workflow", "run", wf, "-f", f"light={'true' if hm == light else 'false'}"]
+              print("  missing: starting it", args)
+              subprocess.run(args, check=True)
+          PY
