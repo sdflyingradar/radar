@@ -179,6 +179,22 @@ function panel2SVG(data, di = 0) {
   hrs.forEach((h, k) => { if (h > set || h < rise) o.push(`<rect x="${f(X(k))}" y="${yG}" width="${f(cw)}" height="${f(gh)}" fill="#2b3445" opacity=".07"/>`); });
   // ground
   o.push(`<rect x="${L}" y="${f(Y(ground))}" width="${W - L - R}" height="${f(yG + gh - Y(ground))}" fill="url(#gnd${U})"/><line x1="${L}" x2="${W - R}" y1="${f(Y(ground))}" y2="${f(Y(ground))}" stroke="#c9b58e" stroke-width="1.2"/>`);
+  // glass-off (site cards): a smooth teal band around the glass-off launch's height over the glass-off hours,
+  // behind the columns; white streamlines for the smooth air
+  let glassLbl = '';
+  if (data.gwin && data.gwin.length === 2 && data.gft && data.gft > zmin && data.gft < zmax) {
+    const ks = hrs.map((h, k) => [h, k]).filter(([h]) => h >= data.gwin[0] && h <= data.gwin[1]).map(([, k]) => k);
+    if (ks.length) {
+      const x0 = X(ks[0]) + 2, x1 = X(ks[ks.length - 1]) + cw - 2, yt = Y(Math.min(zmax, data.gft + 700)), yb = Y(Math.max(ground, zmin, data.gft - 500));
+      o.push(`<rect x="${f(x0)}" y="${f(yt)}" width="${f(x1 - x0)}" height="${f(yb - yt)}" rx="${f(Math.min(14, (yb - yt) / 2))}" fill="#22a6b3" opacity=".42"/>`);
+      for (const t of [0.3, 0.55, 0.8]) {
+        const yy = yt + (yb - yt) * t, n = Math.max(2, Math.round((x1 - x0) / 40)), dx = (x1 - x0 - 16) / n;
+        let d = `M${f(x0 + 8)} ${f(yy)}`; for (let i = 0; i < n; i++) d += ` q${f(dx / 2)} ${i % 2 ? 3 : -3} ${f(dx)} 0`;
+        o.push(`<path d="${d}" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round" opacity=".75"/>`);
+      }
+      glassLbl = (`<text x="${f(x0 + 6)}" y="${f(yt - 4)}" font-size="${data.compact ? 12 : 11}" font-weight="600" fill="#178a95" paint-order="stroke" stroke="#fff" stroke-width="3">glass-off</text>`);
+    }
+  }
   // thermal cells (500 ft) and cumulus columns
   const bw = cw * 0.72;
   hrs.forEach((h, k) => {
@@ -235,6 +251,7 @@ function panel2SVG(data, di = 0) {
       o.push(`<rect x="${f(X(k) + 0.5)}" y="${f(Y(hi))}" width="${f(cw - 1)}" height="${f(hgt)}" fill="#e58ac2" opacity=".2"/><line x1="${f(X(k) + 0.5)}" x2="${f(X(k) + cw - 0.5)}" y1="${f(Y(hi))}" y2="${f(Y(hi))}" stroke="#d1589f" stroke-width="1.2" opacity=".6"/>`);
     }
   });
+  o.push(glassLbl);   // the glass-off label on top of the columns
   // site heights
   for (const m of marks) {
     if (m.ft < zmin || m.ft > zmax) continue;

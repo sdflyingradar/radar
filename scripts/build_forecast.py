@@ -1036,7 +1036,7 @@ def score_hour(site, hr, i, levels, elev_m):
         if over >= 0:
             wind_f = 1.0 if a_max is None or a_max <= site["aloft_max_kt"] - 3 else 0.8
             xc_s = (0.35 + 0.65 * clamp(over / site.get("xc_span_ft", 1500))) * wind_f * clamp(wstar / 2.0, 0.6, 1.0)
-    glass = (on is True and lw_mph is not None and 3 <= lw_mph <= 13 and cape < 500
+    glass = (on is True and lw_mph is not None and 5 <= lw_mph <= 13 and cape < 500
              and not bad_dir and (a_max is None or a_max <= site["aloft_max_kt"]))
     dbg = {"z0": round(z0 * FT), "t2": round(t2, 1), "td": round(td, 1) if td is not None else None,
            "sw": round(sw), "blh": round(blh * FT) if blh is not None else None,
@@ -1177,11 +1177,18 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         if sum(1 for _, s in hours[xk:xk + 4] if s["xc_s"] > 0) < 3:
             xc_day = 0.0
     # glass-off: the last 3 hours before sunset (in late October about 3 to 6 pm), outside the flying window
+    # Only at the launches marked glass_off (LB, Blossom, Soboba, Horse), and only after a strong afternoon: a deep,
+    # well-mixed day leaves the slopes warm and the air near neutral, so the evening breeze turns into smooth,
+    # widespread lift. Glass-off day: 2 hours in a row in that window with the breeze straight in, 5-13 mph, not too
+    # windy aloft, no storm and no rain, after a climb of 2 m/s (LB 1.5) or more between noon and 3 pm.
+    # No points: a pill on the card and the band in the SkyGram.
     gwin = [(h, s) for h, s in hours if h >= math.floor(sunset_h) - 2]
-    glass_hours = [h for h, s in gwin if s["glass"]]
-    glass_ok = len(glass_hours) >= 2
-    gw = [s["lw"] for h, s in gwin if h in glass_hours and s["lw"] is not None]
-    good_glass = glass_ok and len(gw) >= 2 and all(6 <= w <= 12 for w in gw)
+    glass_hours = [h for h, s in gwin if s["glass"] and (s.get("pr") or 0) < 0.2]
+    pm_climb = max((s["climb"] for h, s in hours if 12 <= h <= 14), default=0.0)
+    run = [h for h in glass_hours if h + 1 in glass_hours or h - 1 in glass_hours]
+    glass_ok = bool(site.get("glass_off")) and len(run) >= 2 and pm_climb >= site.get("glass_climb", 2.0)
+    glass_hours = run if glass_ok else []
+    good_glass = glass_ok
     early_rain = sum(s["pr"] for h, s in hours if h <= 11)
     window_rain = sum(s["pr"] for s in blk)
     cold = sum(1 for s in blk if s["cold"]) >= 2
@@ -1312,16 +1319,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
             best_h, _r, sc = ranked[0]
             peak = h4 if h4 is not None else sum(x[2]["peak_top"] for x in ranked) / len(ranked)
             xc_now = bool(site.get("xc_top_ft")) and rating >= 3.5
-        # convergence and switch sites have no glass-off, except a launch marked glass_off (Horse: a light W-SW
-        # evening breeze on its west face)
-        if style not in ("convergence", "switch") or site.get("glass_off"):
-            glass_r = 3.0 if good_glass else (2.4 if glass_ok else (1.8 if glass_hours else 1.0))
-            if glass_r > rating:
-                if base_parts is not None:
-                    base_parts["glass"] = glass_r - rating
-                rating = glass_r
-    glass_led = style not in ("ridge", "convergence", "switch") and glass_ok and rating <= 3.05 and rating >= 2.0 and (
-        not win or max(1.0 + (min(ceil_level(site, sc["peak_top"] * FT), 3.5) - 1.0) * clamp(sc["q"] / 0.6) for _, sc in win) < 2.8)
+    glass_led = False   # glass-off no longer names the day (a pill only)
     if style == "ridge":
         label = "Thermal day" if xc_now else ("Ridge soaring" if local >= 0.5 else ("Marginal" if rating >= 1.6 else "No go"))
     elif xc_now and rating >= 3.5:
@@ -1422,7 +1420,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "nw_share": (sum(1 for _, sc in win if sc.get("tw") and wrap_in(sc["tw"][0], 293, 15) and sc["tw"][1] * 1.15078 >= 5)
                      / len(win)) if win else 0.0, "xc_day": xc_day, "label": label, "codes": codes, "when": when,
         "postfrontal": postfrontal, "glass": glass_ok, "good_glass": good_glass, "glass_hours": glass_hours,
-        "gwin": [gwin[0][0], gwin[-1][0]] if gwin else None, "sunset": sunset_h, "base_parts": base_parts,
+        "gwin": [glass_hours[0], glass_hours[-1]] if glass_ok else None, "glass_ft": site.get("launch_ft"), "sunset": sunset_h, "base_parts": base_parts,
         "start": hours[k][0], "top": peak_show if peak_show is not None else med("usable_show", xblk), "base": med("base"), "wstar": med("wstar", xblk),
         "climb": med("climb", xblk), "lw": med("lw"), "ld": med("ld"),
         # the launch-wind bar: share of the whole window with a good launch (gusts, direction and speed in range)
@@ -2340,12 +2338,12 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             elif label in ("No go", "Thermal") and rating < 2.5:
                 label = "Marginal"
             elif label in ("Marginal", "No go") and rating >= 2.5:
-                label = "Ridge soaring" if ridge else ("Glass-off" if lead and lead["glass"] else "Thermal")
+                label = "Ridge soaring" if ridge else "Thermal"
             # site-card notes (shown as pills): Elsinore's switch, always; glass-off when a decent one is expected
             tags = []
             if lead and lead.get("switch_tag"):
                 tags.append(lead["switch_tag"])
-            if lead and lead["glass"] and label in ("Thermal", "Marginal", "XC") and not ridge and (lead.get("style") != "convergence" or s.get("glass_off")):
+            if lead and lead["glass"] and not ridge:
                 tags.append("glass-off")
             # a warning only (no points): windy through most of the window, whatever the direction (not Torrey,
             # which needs the wind)
@@ -2477,7 +2475,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 # every other site: launch wind hour by hour averaged across the models used for the day
                 # (third level of the card); [direction, mph, gust mph, number of models]
                 "hwind_avg": avg_hw([cell["all"][m].get("hw") for m in D if m in cell["all"]]) if not ridge else None,
-                "gwin": lead.get("gwin") if lead and lead.get("glass") and not ridge and (lead.get("style") not in ("convergence", "switch") or s.get("glass_off")) else None,
+                "gwin": lead.get("gwin") if lead and lead.get("glass") and not ridge else None,
+                "glass_ft": lead.get("glass_ft") if lead and lead.get("glass") and not ridge else None,
                 "note": note_for(s, lead_view, xc),
                 "p_fly": round(p_fly, 2), "p_xc": round(p_xc, 2),
                 "agree": factors[-1]["v"], "models": {k: round(v, 1) for k, v in det_r.items()},
@@ -2527,7 +2526,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
         for pid, cs in per_launch.items():
             g = next((x for x in cs if "glass-off" in (x.get("tags") or [])), None)
             if g and pid in merged and "glass-off" not in (merged[pid].get("tags") or []):
-                merged[pid] = dict(merged[pid], tags=list(merged[pid].get("tags") or []) + ["glass-off"], gwin=g.get("gwin"))
+                merged[pid] = dict(merged[pid], tags=list(merged[pid].get("tags") or []) + ["glass-off"], gwin=g.get("gwin"), glass_ft=g.get("glass_ft"))
         drow["sites"] = merged
         if drow["sites"]:
             main = [k for k in drow["sites"] if next(x for x in (parents or sites) if x["id"] == k).get("tier") == "main"] or list(drow["sites"])

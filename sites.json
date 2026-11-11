@@ -68,6 +68,7 @@
     },
     {
       "id": "lb",
+      "glass_off": true, "glass_climb": 1.5,
       "name": "Little Black",
       "short": "Little Black",
       "tier": "main",
@@ -188,6 +189,7 @@
     },
     {
       "id": "blossom",
+      "glass_off": true,
       "name": "Blossom Valley",
       "short": "Blossom",
       "tier": "main",
@@ -389,6 +391,7 @@
     },
     {
       "id": "soboba",
+      "glass_off": true,
       "offshore_nogo": {"from": [0, 90], "top_ft": 5500, "mph": 6},
       "name": "Soboba",
       "short": "Soboba",
