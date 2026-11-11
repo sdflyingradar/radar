@@ -1472,7 +1472,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "venturi": sum(1 for s in blk if "venturi" in s["codes"]) >= 2,
         "dbg": [[h, x["dbg"]] for h, x in hours if 9 <= h <= 16],
         # how good each hour is on the 1-5 scale (height level x conditions), for the hour strip on the site card
-        "hr": {h: round((1.0 + 2.0 * clamp(x["q"] / 0.7)) if style == "ridge"
+        "hr": {h: round((1.0 + 3.0 * clamp(x["q"] / 0.7)) if style == "ridge"   # same scale as the ridge day (up to 4)
                         else (1.0 + (ceil_level(site, x["peak_top"] * FT) - 1.0) * clamp(x["q"] / 0.6)), 2)
                for h, x in hours if 9 <= h <= 18},
         # launch wind each hour (direction, mph, gust mph), for the ridge site's hour strip
