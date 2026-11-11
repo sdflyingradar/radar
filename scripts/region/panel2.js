@@ -158,8 +158,6 @@ function panel2SVG(data, di = 0) {
     + `<linearGradient id="cyl${U}" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset=".32" stop-color="#fff" stop-opacity=".06"/><stop offset=".7" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".16"/></linearGradient>`
     + `<linearGradient id="cu${U}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>`
     + `<linearGradient id="gnd${U}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#e8dcc4"/><stop offset="1" stop-color="#d9c8a6"/></linearGradient></defs>`);
-  // night: a faint shade over the dark hours
-  hrs.forEach((h, k) => { if (h > set || h < rise) o.push(`<rect x="${f(X(k))}" y="${yG}" width="${f(cw)}" height="${f(gh)}" fill="#2b3445" opacity=".07"/>`); });
   // ground
   o.push(`<rect x="${L}" y="${f(Y(ground))}" width="${W - L - R}" height="${f(yG + gh - Y(ground))}" fill="url(#gnd${U})"/><line x1="${L}" x2="${W - R}" y1="${f(Y(ground))}" y2="${f(Y(ground))}" stroke="#c9b58e" stroke-width="1.2"/>`);
   // thermal cells (500 ft) and cumulus columns
@@ -196,11 +194,6 @@ function panel2SVG(data, di = 0) {
     if (m.ft < zmin || m.ft > zmax) continue;
     o.push(`<line x1="${L}" x2="${W - R}" y1="${f(Y(m.ft))}" y2="${f(Y(m.ft))}" stroke="#a16207" stroke-dasharray="5 4" stroke-width="1" opacity=".7"/>`);
     o.push(`<text x="${W - R - 4}" y="${f(Y(m.ft) - 4)}" text-anchor="end" font-size="11" fill="#a16207" paint-order="stroke" stroke="#fff" stroke-width="3">${m.name} ${m.ft.toLocaleString()}'</text>`);
-  }
-  // flying window
-  if (data.win && data.win.length === 2) {
-    const k0 = hrs.indexOf(data.win[0]), k1 = hrs.indexOf(data.win[1]);
-    if (k0 >= 0 && k1 >= 0) o.push(`<rect x="${f(X(k0))}" y="${yG}" width="${f(X(k1 + 1) - X(k0))}" height="${f(gh)}" fill="none" stroke="#c2410c" stroke-width="1.2" stroke-dasharray="3 3"/>`);
   }
   // wind arrows: one arrow per height, one column of arrows per hour, never two at the same height.
   // Every 1,000 ft; where a probe's ground lies within 500 ft of that height (landing fields, valleys, slopes),
