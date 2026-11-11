@@ -76,7 +76,7 @@ function chartKeys(o, { L, Rx, y, fs = 1, wind, lift, INK = '#1f2328', MUTED = '
   const f = (v) => v.toFixed(1), bh = 12 * fs, bw = 29 * fs, ty = y + bh - 2.6 * fs;
   o.push(`<text x="${L}" y="${f(ty)}" font-size="${10.5 * fs}" fill="${MUTED}">wind mph</text>`);
   let x = L + 54 * fs;
-  wind.forEach(([v, c]) => { o.push(`<rect x="${f(x)}" y="${f(y)}" width="${f(bw)}" height="${f(bh)}" rx="2" fill="${c}"/><text x="${f(x + bw / 2)}" y="${f(ty)}" text-anchor="middle" font-size="${9 * fs}" fill="${c === '#111111' ? '#fff' : INK}">${Math.round(v)}</text>`); x += bw + 1; });
+  wind.forEach(([v, c]) => { o.push(`<rect x="${f(x)}" y="${f(y)}" width="${f(bw)}" height="${f(bh)}" rx="2" fill="${c}"/><text x="${f(x + bw / 2)}" y="${f(ty)}" text-anchor="middle" font-size="${9 * fs}" fill="${c === '#111111' || c === '#3a3f45' ? '#fff' : INK}">${Math.round(v)}</text>`); x += bw + 1; });
   // climb: one box per whole m/s (the chart itself still shades in half steps)
   const lk = lift.filter(([v]) => v % 1 === 0), gx = Rx - lk.length * (bw + 1) + 1;
   lk.forEach(([v, c], i) => { const kx = gx + i * (bw + 1); o.push(`<rect x="${f(kx)}" y="${f(y)}" width="${f(bw)}" height="${f(bh)}" rx="2" fill="${c}"/><text x="${f(kx + bw / 2)}" y="${f(ty)}" text-anchor="middle" font-size="${9 * fs}" fill="${v >= 2.5 ? '#fff' : INK}">${v}</text>`); });
