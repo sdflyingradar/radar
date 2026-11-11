@@ -81,8 +81,24 @@ function chartKeys(o, { L, Rx, y, fs = 1, wind, lift, slim = false, INK = '#1f23
   wind.forEach(([v, c]) => { o.push(`<rect x="${f(x)}" y="${f(y)}" width="${f(bw)}" height="${f(bh)}" rx="2" fill="${c}"/><text x="${f(x + bw / 2)}" y="${f(ty)}" text-anchor="middle" font-size="${9 * fs}" fill="${c === '#111111' || c === '#3a3f45' ? '#fff' : INK}">${Math.round(v)}</text>`); x += bw + 1; });
   // climb: one box per whole m/s (the chart itself still shades in half steps)
   const lk = lift.filter(([v]) => v % 1 === 0), gx = Rx - lk.length * (bw + 1) + 1;
-  // (SkyGram: the boxes as wide as the columns, half at 1 m/s and below)
-  lk.forEach(([v, c], i) => { const kx = gx + i * (bw + 1), w = slim && v <= 1 ? bw * 0.5 : bw; o.push(`<rect x="${f(kx + (bw - w) / 2)}" y="${f(y)}" width="${f(w)}" height="${f(bh)}" rx="2" fill="${c}"/><text x="${f(kx + bw / 2)}" y="${f(ty)}" text-anchor="middle" font-size="${9 * fs}" fill="${v >= 2.5 ? '#fff' : INK}">${v}</text>`); });
+  if (slim) {
+    // SkyGram: the column laid on its side, slim at 0-1 m/s, a little wider at 1.5, full from 2, the colours blending along it
+    const len = lk.length * (bw + 1) - 1, X0 = gx, XV = (v) => X0 + bw / 2 + v * (bw + 1), cy = y + bh / 2, kh = bh * 1.15;
+    const ss = (t) => { t = Math.max(0, Math.min(1, t)); return t * t * (3 - 2 * t); };
+    const hw = (v) => kh / 2 * (v <= 1 ? 0.5 : v <= 1.5 ? 0.5 + 0.3 * ss((v - 1) / 0.5) : 0.8 + 0.2 * ss((v - 1.5) / 0.5));
+    const vs = [], v0 = (X0 - XV(0)) / (bw + 1), v1 = (X0 + len - XV(0)) / (bw + 1);
+    for (let v = v0; v < v1; v += 0.05) vs.push(v); vs.push(v1);
+    const top = vs.map((v) => `${f(XV(v))} ${f(cy - hw(v))}`), bot = vs.slice().reverse().map((v) => `${f(XV(v))} ${f(cy + hw(v))}`);
+    const id = `lk${Math.random().toString(36).slice(2, 8)}`;
+    const stops = lift.map(([v, c]) => `<stop offset="${((XV(v) - X0) / len).toFixed(3)}" stop-color="${c}"/>`).join('');
+    // same 3D look as the columns: a soft drop shadow and a cylinder light, here from the top
+    const d = `M${top.join(' L')} L${bot.join(' L')} Z`;
+    o.push(`<defs><linearGradient id="${id}" x1="0" x2="1">${stops}</linearGradient>`
+      + `<linearGradient id="${id}c" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset=".32" stop-color="#fff" stop-opacity=".06"/><stop offset=".7" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".16"/></linearGradient>`
+      + `<filter id="${id}s" x="-5%" y="-40%" width="110%" height="200%"><feDropShadow dx="0.8" dy="1.4" stdDeviation="1.1" flood-color="#5b2a12" flood-opacity=".28"/></filter></defs>`
+      + `<path d="${d}" fill="url(#${id})" filter="url(#${id}s)"/><path d="${d}" fill="url(#${id}c)"/>`);
+    lk.forEach(([v]) => o.push(`<text x="${f(XV(v))}" y="${f(ty)}" text-anchor="middle" font-size="${9 * fs}" fill="${v >= 2.5 ? '#fff' : INK}">${v}</text>`));
+  } else lk.forEach(([v, c], i) => { const kx = gx + i * (bw + 1); o.push(`<rect x="${f(kx)}" y="${f(y)}" width="${f(bw)}" height="${f(bh)}" rx="2" fill="${c}"/><text x="${f(kx + bw / 2)}" y="${f(ty)}" text-anchor="middle" font-size="${9 * fs}" fill="${v >= 2.5 ? '#fff' : INK}">${v}</text>`); });
   o.push(`<text x="${f(gx - 6)}" y="${f(ty)}" text-anchor="end" font-size="${10.5 * fs}" fill="${MUTED}">climb m/s</text>`);
 }
 
