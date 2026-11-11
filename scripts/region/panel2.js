@@ -253,7 +253,7 @@ function panel2LegendHTML() {
     ${row(sw('#d6dbe1', 'border-radius:6px') + sw('#8a929c', 'border-radius:6px'), 'cloud layers, high (H), middle (M) and low (L); darker grey = more of the sky covered')}
     ${row('☀️', 'a symbol for each hour: sunny (a moon after sunset), some clouds, overcast, rain or thunderstorms')}
     <h4>Thermals</h4>
-    <div class="p2r p2col"><span class="p2s">${P2_LIFT.map(([v, c]) => `<i style="background:${c};width:26px;color:${v >= 2 ? '#fff' : '#26303a'};font:600 9px/12px system-ui;text-align:center;font-style:normal">${v}</i>`).join('')}</span><span>climb rate in m/s, in 500 ft steps from the ground to the top of the lift: the darker, the stronger</span></div>
+    <div class="p2r p2col"><span class="p2s">${P2_LIFT.map(([v, c]) => `<i style="background:${c};width:26px;color:${v >= 2.5 ? '#fff' : '#26303a'};font:600 9px/12px system-ui;text-align:center;font-style:normal">${v}</i>`).join('')}</span><span>climb rate in m/s, in 500 ft steps from the ground to the top of the lift: orange up to 1.5, then coral, raspberry, magenta and purple for the really good climbs (2 to 4)</span></div>
     ${row(sw('#cdd2d8', 'border-radius:8px;width:14px;height:20px'), 'grey bar: cumulus clouds from their base to their top; a wider, darker bar means more of them')}
     ${row(sw('#e58ac2', 'opacity:.55'), 'pink: a warm, stable layer (inversion) that stops or weakens the thermals')}
     ${row(sw('#efe6d6'), 'the ground; dashed lines mark the launches, the dotted frame the site\'s best hours')}
