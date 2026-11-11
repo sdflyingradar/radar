@@ -1160,6 +1160,30 @@ def pick_window(site, hours, sunset_h):
 RIDGE_GOOD_MPH = 10      # Torrey: under this the ridge is flyable but weak (yellow at best)
 
 
+# glass-off judges the afternoon on the thermal chart the pilots see (the region's SkyGram: its strongest 500 ft cell)
+GLASS_REGION = {"lb": "north", "blossom": "east", "soboba": "inland_empire", "lagunahorse": "mountains"}
+_REGION_PM = None
+
+
+def region_pm_climb(site_id, date_s):
+    """Strongest climb in the site's region chart between noon and 3 pm on that date (None when not there)."""
+    global _REGION_PM
+    if _REGION_PM is None:
+        _REGION_PM = {}
+        try:
+            with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "region", "regions.json")) as fh:
+                for z in json.load(fh).get("regions", []):
+                    for d in z.get("days", []):
+                        v = [x for hh in ("12", "13", "14") for x in ((d.get("hours") or {}).get(hh, {}).get("grid") or {}).values()
+                             if isinstance(x, (int, float))]
+                        if v:
+                            _REGION_PM[(z["id"], d["date"])] = max(v)
+        except Exception:
+            pass
+    rid = GLASS_REGION.get(site_id)
+    return _REGION_PM.get((rid, date_s)) if rid else None
+
+
 def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     """Rate one day for one model run on the 1-5 scale (see 'style' in sites.json)."""
     late = [(h, i) for h, i in idxs if h + 0.5 > sunset_h and h <= 18]   # after sunset: only the wind, for the ridge table
@@ -1185,6 +1209,10 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     gwin = [(h, s) for h, s in hours if h >= math.floor(sunset_h) - 2]
     glass_hours = [h for h, s in gwin if s["glass"] and (s.get("pr") or 0) < 0.2]
     pm_climb = max((s["climb"] for h, s in hours if 12 <= h <= 14), default=0.0)
+    if site.get("glass_off") and hr.get("time") and idxs:
+        rc = region_pm_climb(site.get("parent", site["id"]), str(hr["time"][idxs[0][1]])[:10])
+        if rc is not None:
+            pm_climb = max(pm_climb, rc)
     run = [h for h in glass_hours if h + 1 in glass_hours or h - 1 in glass_hours]
     glass_ok = bool(site.get("glass_off")) and len(run) >= 2 and pm_climb >= site.get("glass_climb", 2.0)
     glass_hours = run if glass_ok else []
