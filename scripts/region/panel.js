@@ -2,7 +2,7 @@
 // then a time x height grid of expected climb (m/s) in half-hour columns, cumulus as cloud icons.
 // panelSVG(data, dayIndex) -> SVG string; panelText(data, dayIndex) -> HTML. data = data/region/sd.json
 
-const PANEL_CLIMB = [[0, '#ffeedd'], [0.5, '#fdd0a2'], [1, '#fbb068'], [1.5, '#f89039'], [2, '#f1721b'], [2.5, '#e05a0c'], [3, '#c44608'], [3.5, '#a03606'], [4, '#782805'], [4.5, '#521b04']];   // the same orange as the detailed chart
+const PANEL_CLIMB = [[0, '#ffeedd'], [0.5, '#fdd0a2'], [1, '#fbb068'], [1.5, '#f89039'], [2, '#f2683f'], [2.5, '#dc4658'], [3, '#b52f72'], [3.5, '#7a2081'], [4, '#3f1468']];   // the same lift colours as the SkyGram
 const PANEL_WIND = [[0, '#eef1f4'], [4, '#a6e3b3'], [9.5, '#f9eb87'], [15.5, '#f7bb7a'], [19, '#f08486'], [22.5, '#3a3f45']];   // over 36 km/h: dark (as the detailed chart's black, a touch softer)   // the detailed chart's wind colours, lighter
 const pick = (scale, v) => { let c = scale[0][1]; for (const [k, col] of scale) if (v >= k - 1e-9) c = col; return c; };
 const OKTA = ['#eef4fb', '#e3e7ec', '#d6dbe1', '#c6ccd3', '#b4bbc3', '#9fa7b0', '#8a929c', '#747c86', '#5f6670'];   // the same cloud shades as the detailed chart

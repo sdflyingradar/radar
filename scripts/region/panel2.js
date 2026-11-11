@@ -7,7 +7,7 @@
 //   statistics  strongest climb and highest top of the day, with their times
 // panel2SVG(data, dayIndex) -> SVG string; same data as panelSVG (data/region/regions.json, one region).
 
-const P2_LIFT = [[0, '#ffeedd'], [0.5, '#fdd0a2'], [1, '#fbb068'], [1.5, '#f89039'], [2, '#f1721b'], [2.5, '#e05a0c'], [3, '#c44608'], [3.5, '#a03606'], [4, '#782805'], [4.5, '#521b04']];
+const P2_LIFT = [[0, '#ffeedd'], [0.5, '#fdd0a2'], [1, '#fbb068'], [1.5, '#f89039'], [2, '#f2683f'], [2.5, '#dc4658'], [3, '#b52f72'], [3.5, '#7a2081'], [4, '#3f1468']];   // lift m/s: the familiar orange up to 1.5, then sunrise (coral, raspberry, magenta, purple) to 4
 // wind, mph (from the usual pilot scale in km/h: 0-6 calm, 7-14 fine, 15-24 noticeable, 25-30 strong, 31-36 stop, over 36 no-go)
 const P2_WIND = [[0, '#ffffff'], [4, '#3fc25a'], [9.5, '#f5d90a'], [15.5, '#f08a1c'], [19, '#e0262a'], [22.5, '#111111']];   // over 36 km/h: black (only in this chart; tiles and classic stop at red)
 // the radar's own verdicts and colours: 1 no-go (red), 2 marginal (orange), 3 site fly (yellow), 4 XC (green), 5 great XC (blue)
