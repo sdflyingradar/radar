@@ -74,14 +74,15 @@ function p2arrow(x, y, w, s) {
 }
 
 // colour keys under a chart, both in whole-number steps: wind (bottom left) and climb (bottom right)
-function chartKeys(o, { L, Rx, y, fs = 1, wind, lift, INK = '#1f2328', MUTED = '#6b7280' }) {
+function chartKeys(o, { L, Rx, y, fs = 1, wind, lift, slim = false, INK = '#1f2328', MUTED = '#6b7280' }) {
   const f = (v) => v.toFixed(1), bh = 12 * fs, bw = 29 * fs, ty = y + bh - 2.6 * fs;
   o.push(`<text x="${L}" y="${f(ty)}" font-size="${10.5 * fs}" fill="${MUTED}">wind mph</text>`);
   let x = L + 54 * fs;
   wind.forEach(([v, c]) => { o.push(`<rect x="${f(x)}" y="${f(y)}" width="${f(bw)}" height="${f(bh)}" rx="2" fill="${c}"/><text x="${f(x + bw / 2)}" y="${f(ty)}" text-anchor="middle" font-size="${9 * fs}" fill="${c === '#111111' || c === '#3a3f45' ? '#fff' : INK}">${Math.round(v)}</text>`); x += bw + 1; });
   // climb: one box per whole m/s (the chart itself still shades in half steps)
   const lk = lift.filter(([v]) => v % 1 === 0), gx = Rx - lk.length * (bw + 1) + 1;
-  lk.forEach(([v, c], i) => { const kx = gx + i * (bw + 1); o.push(`<rect x="${f(kx)}" y="${f(y)}" width="${f(bw)}" height="${f(bh)}" rx="2" fill="${c}"/><text x="${f(kx + bw / 2)}" y="${f(ty)}" text-anchor="middle" font-size="${9 * fs}" fill="${v >= 2.5 ? '#fff' : INK}">${v}</text>`); });
+  // (SkyGram: the boxes as wide as the columns, half at 1 m/s and below)
+  lk.forEach(([v, c], i) => { const kx = gx + i * (bw + 1), w = slim && v <= 1 ? bw * 0.5 : bw; o.push(`<rect x="${f(kx + (bw - w) / 2)}" y="${f(y)}" width="${f(w)}" height="${f(bh)}" rx="2" fill="${c}"/><text x="${f(kx + bw / 2)}" y="${f(ty)}" text-anchor="middle" font-size="${9 * fs}" fill="${v >= 2.5 ? '#fff' : INK}">${v}</text>`); });
   o.push(`<text x="${f(gx - 6)}" y="${f(ty)}" text-anchor="end" font-size="${10.5 * fs}" fill="${MUTED}">climb m/s</text>`);
 }
 
@@ -158,6 +159,8 @@ function panel2SVG(data, di = 0) {
     + `<linearGradient id="cyl${U}" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset=".32" stop-color="#fff" stop-opacity=".06"/><stop offset=".7" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".16"/></linearGradient>`
     + `<linearGradient id="cu${U}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>`
     + `<linearGradient id="gnd${U}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#e8dcc4"/><stop offset="1" stop-color="#d9c8a6"/></linearGradient></defs>`);
+  // night: a faint shade over the dark hours
+  hrs.forEach((h, k) => { if (h > set || h < rise) o.push(`<rect x="${f(X(k))}" y="${yG}" width="${f(cw)}" height="${f(gh)}" fill="#2b3445" opacity=".07"/>`); });
   // ground
   o.push(`<rect x="${L}" y="${f(Y(ground))}" width="${W - L - R}" height="${f(yG + gh - Y(ground))}" fill="url(#gnd${U})"/><line x1="${L}" x2="${W - R}" y1="${f(Y(ground))}" y2="${f(Y(ground))}" stroke="#c9b58e" stroke-width="1.2"/>`);
   // thermal cells (500 ft) and cumulus columns
@@ -167,16 +170,39 @@ function panel2SVG(data, di = 0) {
     // lift: one rounded column per hour, the 500 ft steps as sharp colour bands, shaded like a cylinder
     const cells = Object.entries(g).filter(([, v]) => typeof v === 'number').map(([zk, v]) => [+zk, v]).filter(([z]) => z + 500 > zmin && z < zmax).sort((a, b) => a[0] - b[0]);
     if (cells.length) {
-      // each 500 ft segment as wide as its climb: full from 2 m/s, a bit slimmer at 1.5, slimmer at 1 and below;
-      // the segments stack into one column (one shadow), the top one rounded, all shaded like a cylinder
-      const wv = (v) => bw * (v >= 2 ? 1 : v >= 1.5 ? 0.8 : 0.5), top = cells[cells.length - 1][0];
-      const seg = cells.map(([z, v]) => {
-        const w = wv(v), x = CX(k) - w / 2, yt = Y(Math.min(z + 500, zmax)), yb = Y(Math.max(z, zmin)), r = z === top ? Math.min(w / 2, 9, yb - yt) : 0;
-        const d = r ? `M${f(x)} ${f(yb)} V${f(yt + r)} Q${f(x)} ${f(yt)} ${f(x + r)} ${f(yt)} H${f(x + w - r)} Q${f(x + w)} ${f(yt)} ${f(x + w)} ${f(yt + r)} V${f(yb)} Z`
-                    : `M${f(x)} ${f(yb + 0.3)} V${f(yt)} H${f(x + w)} V${f(yb + 0.3)} Z`;
-        return [d, p2pick(P2_LIFT, v)];
-      });
-      o.push(`<g filter="url(#sh${U})">${seg.map(([d, c]) => `<path d="${d}" fill="${c}"/>`).join('')}</g>` + seg.map(([d]) => `<path d="${d}" fill="url(#cyl${U})"/>`).join(''));
+      // each 500 ft segment as wide as its climb: full from 2 m/s, slimmer at 1.5, half at 1 and below. The segments
+      // flow into one column: the outline curves from one width to the next and the colours blend a little at
+      // each step; rounded top, one soft shadow, shaded like a cylinder.
+      const wv = (v) => bw * (v >= 2 ? 1 : v >= 1.5 ? 0.8 : 0.5) / 2;
+      const segs = cells.map(([z, v]) => ({ yb: Y(Math.max(z, zmin)), yt: Y(Math.min(z + 500, zmax)), hw: wv(v), c: p2pick(P2_LIFT, v) }));
+      const cx = CX(k), yBot = segs[0].yb, yTop = segs[segs.length - 1].yt, H0 = yBot - yTop, sh = (yBot - yTop) / segs.length;
+      const tz = Math.min(sh * 0.5, 12);                       // how far each width change is spread
+      const edge = (sgn) => {                                  // one side, bottom to top
+        let d = `L${f(cx + sgn * segs[0].hw)} ${f(yBot)}`;
+        segs.forEach((sg, i) => {
+          const nx = segs[i + 1];
+          if (nx && nx.hw !== sg.hw) {
+            d += ` L${f(cx + sgn * sg.hw)} ${f(sg.yt + tz)} C${f(cx + sgn * sg.hw)} ${f(sg.yt)} ${f(cx + sgn * nx.hw)} ${f(sg.yt)} ${f(cx + sgn * nx.hw)} ${f(sg.yt - tz)}`;
+          }
+        });
+        return d;
+      };
+      const tw = segs[segs.length - 1].hw, r = Math.min(tw, 9, H0 / 2);
+      const right = edge(1), left = edge(-1);
+      // left side runs top to bottom: rebuild it reversed
+      const pts = [];
+      segs.forEach((sg, i) => { const nx = segs[i + 1]; if (nx && nx.hw !== sg.hw) pts.push(sg); });
+      let back = `L${f(cx - tw)} ${f(yTop + r)}`;
+      for (let i = pts.length - 1; i >= 0; i--) {
+        const sg = pts[i], nx = segs[segs.indexOf(sg) + 1];
+        back += ` L${f(cx - nx.hw)} ${f(sg.yt - tz)} C${f(cx - nx.hw)} ${f(sg.yt)} ${f(cx - sg.hw)} ${f(sg.yt)} ${f(cx - sg.hw)} ${f(sg.yt + tz)}`;
+      }
+      back += ` L${f(cx - segs[0].hw)} ${f(yBot)} Z`;
+      const d = `M${f(cx)} ${f(yBot)} ${right.slice(1) ? right : ''} L${f(cx + tw)} ${f(yTop + r)} Q${f(cx + tw)} ${f(yTop)} ${f(cx + tw - r)} ${f(yTop)} H${f(cx - tw + r)} Q${f(cx - tw)} ${f(yTop)} ${f(cx - tw)} ${f(yTop + r)} ${back}`;
+            // each colour solid in the middle of its segment, blending into the next
+      const stops = segs.slice().reverse().map((sg) => { const a2 = (sg.yt - yTop) / H0, b2 = (sg.yb - yTop) / H0; return `<stop offset="${Math.max(0, a2 + 0.3 * (b2 - a2)).toFixed(3)}" stop-color="${sg.c}"/><stop offset="${Math.min(1, b2 - 0.3 * (b2 - a2)).toFixed(3)}" stop-color="${sg.c}"/>`; }).join('');
+      const id = `lg${U}${k}`;
+      o.push(`<defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1">${stops}</linearGradient></defs><path d="${d}" fill="url(#${id})" filter="url(#sh${U})"/><path d="${d}" fill="url(#cyl${U})"/>`);
     }
     const hb = H(h);
     if (hb.base_ft && (hb.cu || 0) >= 0.15) {
@@ -222,7 +248,7 @@ function panel2SVG(data, di = 0) {
   o.push(`<line x1="${L}" x2="${W - R}" y1="${f(yB)}" y2="${f(yB)}" stroke="${GRID2}"/>`);
   hrs.forEach((h, k) => { if (!data.compact || k % 2 === 0) o.push(`<text x="${f(X(k))}" y="${f(yB + 18 * fs)}" text-anchor="middle" font-size="${13 * fs}">${h > 12 ? h - 12 : h}:00</text>`); });
   o.push(`<text x="${f((L + W - R) / 2)}" y="${f(yB + 36 * fs)}" text-anchor="middle" font-size="${13 * fs}" font-weight="700">Time (PT)</text>`);
-  chartKeys(o, { L, Rx: W - R, y: yB + 27 * fs, fs, wind: P2_WIND.map(([v, c]) => [v, v ? c : '#eef1f4']), lift: P2_LIFT, INK, MUTED });
+  chartKeys(o, { L, Rx: W - R, y: yB + 27 * fs, fs, wind: P2_WIND.map(([v, c]) => [v, v ? c : '#eef1f4']), lift: P2_LIFT, slim: true, INK, MUTED });
   // statistics
   let best = null, hi = null;
   hrs.forEach((h) => {
