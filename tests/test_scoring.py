@@ -284,22 +284,9 @@ class NwsText(unittest.TestCase):
     def test_parse_real_afd(self):
         text = (ROOT / "tests" / "fixtures" / "afd_sgx_2026-10-22.txt").read_text()
         afd = bf.parse_afd(text, "2026-10-22T11:49Z")
-        self.assertIn("Showers", afd["flags"])
-        self.assertIn("Thunderstorms", afd["flags"])
-        self.assertIn("Wind advisory", afd["flags"])
         self.assertTrue(afd["synopsis"].startswith("Showers and a slight chance"))
         self.assertTrue(any("upper low" in x.lower() for x in afd["systems"]), afd["systems"])
 
-
-
-class NwsNow(unittest.TestCase):
-    """Flags are about now: showers 'starting Friday' must not flag a Tuesday."""
-    def test_later_days_dont_flag(self):
-        tue = "2026-11-10T23:28:00+00:00"
-        self.assertTrue(bf._about_now("Above average conditions will continue through Wednesday.", tue))
-        self.assertFalse(bf._about_now("Periods of showers are expected starting Friday through next Tuesday.", tue))
-        self.assertFalse(bf._about_now("Showers return for the weekend.", tue))
-        self.assertTrue(bf._about_now("Showers tonight and Wednesday.", tue))
 
 
 class RainAndSun(unittest.TestCase):

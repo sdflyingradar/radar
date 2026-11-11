@@ -133,11 +133,9 @@ details.day > summary.hd .sum .sc .xcmark { font-size: .56rem; padding: 1px 4px;
 #story > .hd { grid-template-columns: auto minmax(0, 1fr); }
 #story > .hd .when { white-space: normal; }
 #story > .hd .when small { white-space: nowrap; }
-#story > .hd .flags { justify-self: end; display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; }
-@media (max-width: 640px) { #story > .hd { grid-template-columns: 1fr; } #story > .hd .flags { justify-self: start; justify-content: flex-start; } }
+@media (max-width: 640px) { #story > .hd { grid-template-columns: 1fr; } }
 .daynav a { border-radius: 4px; }
 @media (max-width: 640px) { .story .wrow, .story .wsec { padding-inline: 14px; } }
-.flags { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .tag { font-size: .72rem; border: 1px solid var(--line); border-radius: 3px; padding: 0 6px; color: var(--muted); white-space: nowrap; }
 .tag.ink { border-color: var(--ink); color: var(--ink); }
 details.fold > summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
@@ -1203,7 +1201,7 @@ function render(data) {
   const SNDQ = `<a class="sndq" href="sounding.html" title="Latest weather balloon (Miramar / Edwards)" onclick="event.stopPropagation()">Sounding →</a>`;
   $("#story").innerHTML = n ? `
     <summary class="hd"><span class="when">Weather Overview</span>
-      <span class="flags">${(n.flags || []).map((f) => `<span class="tag">${esc(f)}</span>`).join("")}</span><span class="exp" aria-hidden="true"><i class="chev"></i></span>${ov}</summary>
+      <span class="exp" aria-hidden="true"><i class="chev"></i></span>${ov}</summary>
     <div class="wlist">${sm ? lines("Pattern", sm.pattern) + lines("For flying", sm.flying) : lines("Outlook", bl)}</div>`
       + `<div class="wrow wlink"><span><a href="${esc(n.url)}" target="_blank" rel="noopener">Full NWS discussion</a> <span class="muted">· ${fmtWhen(n.issued)}</span></span></div>`
     : `<summary class="hd"><span class="when">Weather Overview</span>${ov}</summary>`;
@@ -1876,7 +1874,7 @@ $("#reload").addEventListener("click", load);
 </script>
 <script src="scripts/ui/facts.js?v=202611101410"></script>
 <script src="scripts/ui/sched.js?v=202611110656"></script>
-<script src="scripts/ui/grid.js?v=202611091300"></script>
+<script src="scripts/ui/grid.js?v=202611111241"></script>
 <script src="scripts/ui/first.js?v=202611082340"></script>
 <script>
 /* LAB bar */

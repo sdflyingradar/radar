@@ -444,14 +444,6 @@ def fetch_nws(log):
 
 
 # ---------------------------------------------------------------- NWS text
-FLAG_PATTERNS = [
-    ("Thunderstorms", r"thunderstorm|TSRA"),
-    ("Wind advisory", r"wind advisory|high wind"),
-    ("Offshore / Santa Ana", r"offshore|santa ana"),
-    ("Red flag", r"red flag"),
-    ("Showers", r"shower"),
-    ("Marine layer", r"marine layer|low clouds and fog"),
-]
 # sentences about the weather systems: lows, troughs, ridges, fronts, flow
 SYSTEM_PAT = re.compile(r"\b(upper[- ]level|upper low|low pressure|trough|ridge|high pressure|front\b|frontal|"
                         r"shortwave|short wave|closed low|offshore|onshore|santa ana|marine layer|"
@@ -584,28 +576,6 @@ def summarize_llm(text, log):
         return None
 
 
-WEEKDAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-
-
-def _about_now(sentence, issued):
-    """True unless the sentence is about a later day: it names a weekday after tomorrow (and not today or
-    tomorrow), or the weekend / next week (when that isn't now)."""
-    try:
-        t = datetime.fromisoformat(str(issued).replace("Z", "+00:00")) - timedelta(hours=8)
-        wd = t.weekday()
-    except Exception:
-        return True
-    low = sentence.lower()
-    soon = {WEEKDAYS[wd], WEEKDAYS[(wd + 1) % 7]}
-    later = {d for d in WEEKDAYS if re.search(r"\bnext " + d + r"\b", low)}       # "next Tuesday" is next week
-    named = {d for d in WEEKDAYS if re.search(r"(?<!next )\b" + d + r"\b", low)}
-    if (named or later) and not (named & soon):
-        return False
-    if re.search(r"next week|weekend", low) and wd < 4 and not (named & soon):
-        return False
-    return True
-
-
 def parse_afd(text, issued):
     synopsis = _section(text, "SYNOPSIS")
     aviation = _section(text, "AVIATION")
@@ -625,17 +595,11 @@ def parse_afd(text, issued):
         if b and b.lower() not in {x.lower() for x in bullets}:
             bullets.append(b)
     bullets = bullets[:5]
-    # flags describe the weather now: only synopsis sentences about today, tonight or tomorrow (a sentence
-    # naming a later day, the weekend or next week is about later), plus the aviation part (the next 24 h)
-    now = " ".join(x for x in _sentences(synopsis) if _about_now(x, issued))
-    flags = [label for label, pat in FLAG_PATTERNS if re.search(pat, now + " " + aviation, re.I)]
     adv = re.search(r"WATCHES/WARNINGS/ADVISORIES\.\.\.(.*?)\n\$\$", text, re.S)
     advisories = re.sub(r"\s+", " ", adv.group(1)).strip() if adv else ""
-    if re.search(r"wind advisory|high wind", advisories, re.I) and "Wind advisory" not in flags:
-        flags.append("Wind advisory")
     return {"issued": issued, "synopsis": synopsis, "systems": systems, "bullets": bullets, "summary": summary_rules(text),
             "aviation": aviation[:900],
-            "advisories": advisories, "flags": flags,
+            "advisories": advisories,
             "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"}
 
 
@@ -1193,6 +1157,9 @@ def pick_window(site, hours, sunset_h):
     return (best[1], best[1] + n - 1) if best else (f0, f0 + n - 1)
 
 
+RIDGE_GOOD_MPH = 10      # Torrey: under this the ridge is flyable but weak (yellow at best)
+
+
 def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     """Rate one day for one model run on the 1-5 scale (see 'style' in sites.json)."""
     late = [(h, i) for h, i in idxs if h + 0.5 > sunset_h and h <= 18]   # after sunset: only the wind, for the ridge table
@@ -1232,6 +1199,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     windy_share = 0.0
     switch_h, switch_tag = None, None
     ridge_great = False
+    ridge10 = None
     base_parts = None                     # thermal sites: the base as height level minus what each cause took
     if style == "ridge":
         # Torrey: a good ridge-soaring day is a 4, a light or cross one about 3; a straight WSW-W-WNW wind
@@ -1247,6 +1215,8 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         aft = [(h, sc) for h, sc in hours if 12 <= h <= min(16, math.floor(sunset_h) - 1)]
         day = [sc for h, sc in hours if 10 <= h <= min(17, math.floor(sunset_h) - 1)]
         windy_share = sum(1 for sc in day if "windy" in sc["codes"]) / len(day) if day else 0.0
+        # Torrey needs about 10 mph to be good: hours of 10+ mph through the day (flyable under that, but not green)
+        ridge10 = sum(1 for sc in day if (sc["lw"] or 0) >= RIDGE_GOOD_MPH)
         windy_aft = sum(1 for _, sc in aft if "windy" in sc["codes"])
         if (rating >= 2.5 and len(aft) >= 3 and windy_aft == 0 and sum(1 for _, sc in aft if strong_w(sc)) >= 0.75 * len(aft)
                 and max(sc["lw"] or 0 for _, sc in aft) >= peak_mph):
@@ -1433,7 +1403,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "tw13": h13["tw"] if h13 else None,
         "wind_1pm": wind_1pm, "win": [w0, w1],
         "wind_now": wind_now, "wind_later": wind_later,
-        "rating": rating, "local": local, "windy_share": windy_share,
+        "rating": rating, "local": local, "windy_share": windy_share, "ridge10": ridge10,
         # share of the window with wind at the top of lift from behind the launch (outside its directions and its
         # cross sectors) at 10 mph or more: "over the back aloft"
         "otb_aloft_share": (sum(1 for _, sc in win if sc.get("tw") and sc["tw"][1] * 1.15078 >= 10 and not dir_ok(site, sc["tw"][0])
@@ -1472,7 +1442,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "venturi": sum(1 for s in blk if "venturi" in s["codes"]) >= 2,
         "dbg": [[h, x["dbg"]] for h, x in hours if 9 <= h <= 16],
         # how good each hour is on the 1-5 scale (height level x conditions), for the hour strip on the site card
-        "hr": {h: round((1.0 + 3.0 * clamp(x["q"] / 0.7)) if style == "ridge"   # same scale as the ridge day (up to 4)
+        "hr": {h: round(min(1.0 + 3.0 * clamp(x["q"] / 0.7), 4.0 if (x["lw"] or 0) >= RIDGE_GOOD_MPH else 3.4) if style == "ridge"   # ridge: up to 4, a 3 under 10 mph
                         else (1.0 + (ceil_level(site, x["peak_top"] * FT) - 1.0) * clamp(x["q"] / 0.6)), 2)
                for h, x in hours if 9 <= h <= 18},
         # launch wind each hour (direction, mph, gust mph), for the ridge site's hour strip
@@ -2240,6 +2210,10 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 cap = 1.5 if ws >= 0.5 else 3.0 if ws >= 0.25 else None
                 if cap is not None:
                     caps.append((cap, f"blown out {round(ws * 100)}% of the day: {cap:g} at most"))
+                # flyable under 10 mph, but only good (green) with 3+ hours of 10 mph or more
+                r10 = blend({k: a.get("ridge10") or 0 for k, a in D.items()})
+                if not thermal_day and r10 < 3:
+                    caps.append((3.4, f"under {RIDGE_GOOD_MPH} mph most of the day: 3 at most"))
             off_season = bool(s.get("season_months")) and int(dstr[5:7]) not in s["season_months"]
             if off_season:
                 caps.append((2.0, "off season: 2 at most"))
@@ -2809,7 +2783,7 @@ def sample_nws():
                         "SAMPLE. A shortwave on its west side develops into a closed low over southern California late Friday.",
                         "SAMPLE. Offshore flow Saturday with north to northeast winds in the mornings; weakening Sunday."],
             "aviation": "SAMPLE. SCT SHRA and isolated TSRA decreasing after 15Z. Bases 3500-4500 ft MSL.",
-            "advisories": "CA...None.", "flags": ["Showers", "Thunderstorms", "Offshore / Santa Ana"],
+            "advisories": "CA...None.",
             "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"}
 
 
