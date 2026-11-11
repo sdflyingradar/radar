@@ -1,5 +1,5 @@
 # source: https://weather.uwyo.edu/wsgi/sounding?datetime=2026-11-11%2012:00:00&id=72293&type=TEXT:LIST&src=UNKNOWN
-# fetched: 2026-11-11T17:24Z
+# fetched: 2026-11-11T21:35Z
 72293 NKX San Diego Observations at 12Z 11 Nov 2026
 
 
