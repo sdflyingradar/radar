@@ -71,19 +71,15 @@ function p2arrow(x, y, w, s) {
   return `<path d="M0 -9 L6.5 8 L0 4.2 L-6.5 8 Z" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${((w[0] + 180) % 360).toFixed(0)}) scale(${k.toFixed(2)})" fill="${fill}" stroke="${rim === '#ffffff' ? '#9aa3ad' : rim}" stroke-width="${(2.1 / k).toFixed(2)}" stroke-linejoin="round"/>`;
 }
 
-// colour keys under a chart: wind steps (bottom left) and a smooth climb scale with whole numbers (bottom right)
+// colour keys under a chart, both in whole-number steps: wind (bottom left) and climb (bottom right)
 function chartKeys(o, { L, Rx, y, fs = 1, wind, lift, INK = '#1f2328', MUTED = '#6b7280' }) {
   const f = (v) => v.toFixed(1), bh = 12 * fs, bw = 29 * fs, ty = y + bh - 2.6 * fs;
   o.push(`<text x="${L}" y="${f(ty)}" font-size="${10.5 * fs}" fill="${MUTED}">wind mph</text>`);
   let x = L + 54 * fs;
-  wind.forEach(([v, c]) => { o.push(`<rect x="${f(x)}" y="${f(y)}" width="${f(bw)}" height="${f(bh)}" rx="2" fill="${c}"/><text x="${f(x + bw / 2)}" y="${f(ty)}" text-anchor="middle" font-size="${9 * fs}" fill="${INK}">${v}</text>`); x += bw + 1; });
-  const top = lift[lift.length - 1][0], gw = (lift.length * 21) * fs, gx = Rx - gw, id = 'lk' + Math.random().toString(36).slice(2, 8);
-  o.push(`<defs><linearGradient id="${id}">${lift.map(([v, c]) => `<stop offset="${(v / top * 100).toFixed(1)}%" stop-color="${c}"/>`).join('')}</linearGradient></defs>`);
-  o.push(`<rect x="${f(gx)}" y="${f(y)}" width="${f(gw)}" height="${f(bh)}" rx="2" fill="url(#${id})"/>`);
-  for (let v = 0; v <= top; v++) {
-    const vx = gx + Math.min(gw - 6 * fs, Math.max(6 * fs, v / top * gw));
-    o.push(`<text x="${f(vx)}" y="${f(ty)}" text-anchor="middle" font-size="${9 * fs}" fill="${v >= 2.5 ? '#fff' : INK}">${v}</text>`);
-  }
+  wind.forEach(([v, c]) => { o.push(`<rect x="${f(x)}" y="${f(y)}" width="${f(bw)}" height="${f(bh)}" rx="2" fill="${c}"/><text x="${f(x + bw / 2)}" y="${f(ty)}" text-anchor="middle" font-size="${9 * fs}" fill="${INK}">${Math.round(v)}</text>`); x += bw + 1; });
+  // climb: one box per whole m/s (the chart itself still shades in half steps)
+  const lk = lift.filter(([v]) => v % 1 === 0), gx = Rx - lk.length * (bw + 1) + 1;
+  lk.forEach(([v, c], i) => { const kx = gx + i * (bw + 1); o.push(`<rect x="${f(kx)}" y="${f(y)}" width="${f(bw)}" height="${f(bh)}" rx="2" fill="${c}"/><text x="${f(kx + bw / 2)}" y="${f(ty)}" text-anchor="middle" font-size="${9 * fs}" fill="${v >= 2.5 ? '#fff' : INK}">${v}</text>`); });
   o.push(`<text x="${f(gx - 6)}" y="${f(ty)}" text-anchor="end" font-size="${10.5 * fs}" fill="${MUTED}">climb m/s</text>`);
 }
 
