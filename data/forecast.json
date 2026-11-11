@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-11T23:46+00:00",
+ "generated": "2026-11-11T23:59+00:00",
  "sample": false,
  "calib": {
   "2026-11-11": {
@@ -33241,8 +33241,8 @@
  },
  "overview": "Upper low Thu \u00b7 rain Fri \u00b7 cooler Thu \u00b7 switch day now",
  "gradient": {
-  "now": -1.7,
-  "at": "2026-11-11T22:00Z",
+  "now": -1.8,
+  "at": "2026-11-11T23:00Z",
   "n": 72
  },
  "models": {
@@ -33267,15 +33267,15 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus), surface heat flux (6812 values)",
-  "HRRR trips: using the last good run, fetched 2.3 h ago",
+  "HRRR trips: using the last good run, fetched 2.6 h ago",
   "RRFS: ok (ncep_rrfs_conus), surface heat flux (8684 values)",
-  "RRFS trips: using the last good run, fetched 2.3 h ago",
-  "GFS: using the last good run, fetched 2.3 h ago",
-  "ECMWF: using the last good run, fetched 2.3 h ago",
-  "ICON: using the last good run, fetched 2.3 h ago",
-  "ens GFS ens: using the last good run, fetched 2.3 h ago",
-  "ens ECMWF ens: using the last good run, fetched 2.2 h ago",
-  "ens ICON ens: using the last good run, fetched 2.2 h ago",
+  "RRFS trips: using the last good run, fetched 2.5 h ago",
+  "GFS: using the last good run, fetched 2.5 h ago",
+  "ECMWF: using the last good run, fetched 2.5 h ago",
+  "ICON: using the last good run, fetched 2.5 h ago",
+  "ens GFS ens: using the last good run, fetched 2.5 h ago",
+  "ens ECMWF ens: using the last good run, fetched 2.4 h ago",
+  "ens ICON ens: using the last good run, fetched 2.4 h ago",
   "NWS AFD: ok",
   "gradient HRRR: bias +2.0 mb over 72 h",
   "gradient RRFS: bias +0.9 mb over 72 h",
@@ -33284,8 +33284,8 @@
   "gradient ICON: bias +0.0 mb over 72 h",
   "clouds HRRR: ok (ncep_hrrr_conus)",
   "clouds RRFS: ok (ncep_rrfs_conus)",
-  "clouds ECMWF: using the last good run, fetched 2.2 h ago",
-  "clouds ICON: using the last good run, fetched 2.2 h ago",
+  "clouds ECMWF: using the last good run, fetched 2.4 h ago",
+  "clouds ICON: using the last good run, fetched 2.4 h ago",
   "wind: GFS and ICON use ECMWF's winds where RRFS and ECMWF overlap"
  ],
  "sources": [
@@ -33295,8 +33295,8 @@
    "provider": "Open-Meteo",
    "id": "ncep_hrrr_conus",
    "status": "ok",
-   "run": "2026-11-11T21:00+00:00",
-   "fetched": "2026-11-11T23:44+00:00",
+   "run": "2026-11-11T22:00+00:00",
+   "fetched": "2026-11-11T23:57+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -33306,7 +33306,7 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": "2026-11-11T18:00+00:00",
-   "fetched": "2026-11-11T23:44+00:00",
+   "fetched": "2026-11-11T23:57+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -33318,7 +33318,7 @@
    "run": null,
    "fetched": "2026-11-11T21:26+00:00",
    "url": "https://open-meteo.com/en/docs",
-   "note": "cached, fetched 2 h ago"
+   "note": "cached, fetched 3 h ago"
   },
   {
    "name": "ECMWF",
@@ -33329,7 +33329,7 @@
    "run": "2026-11-11T12:00+00:00",
    "fetched": "2026-11-11T21:26+00:00",
    "url": "https://open-meteo.com/en/docs",
-   "note": "cached, fetched 2 h ago"
+   "note": "cached, fetched 3 h ago"
   },
   {
    "name": "ICON",
@@ -33382,7 +33382,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-11-11T20:01:00+00:00",
-   "fetched": "2026-11-11T23:46+00:00",
+   "fetched": "2026-11-11T23:59+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -33391,8 +33391,8 @@
    "provider": "NOAA / Open-Meteo",
    "id": "LAX-DAG",
    "status": "ok",
-   "run": "2026-11-11T22:00Z",
-   "fetched": "2026-11-11T23:46+00:00",
+   "run": "2026-11-11T23:00Z",
+   "fetched": "2026-11-11T23:59+00:00",
    "url": "https://www.weather.gov/lox/LAXGRDNEW"
   },
   {
@@ -33402,7 +33402,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-11T23:46+00:00",
+   "fetched": "2026-11-11T23:59+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
@@ -34081,10 +34081,12 @@
     "lb": {
      "rating": 2.0,
      "label": "Marginal",
-     "tags": [],
+     "tags": [
+      "glass-off"
+     ],
      "xc": false,
      "rain_p": 0.0,
-     "good_glass": false,
+     "good_glass": true,
      "base": 3.15,
      "adj": [
       [
@@ -34176,8 +34178,11 @@
        2
       ]
      },
-     "gwin": null,
-     "glass_ft": null,
+     "gwin": [
+      14,
+      16
+     ],
+     "glass_ft": 1050,
      "note": "gusty",
      "p_fly": 0.3,
      "p_xc": 0.29,
@@ -37608,10 +37613,12 @@
     "blossom": {
      "rating": 3.8,
      "label": "XC",
-     "tags": [],
+     "tags": [
+      "glass-off"
+     ],
      "xc": true,
      "rain_p": 0.0,
-     "good_glass": false,
+     "good_glass": true,
      "base": 3.8,
      "adj": [],
      "base_parts": {
@@ -37684,8 +37691,11 @@
        2
       ]
      },
-     "gwin": null,
-     "glass_ft": null,
+     "gwin": [
+      14,
+      16
+     ],
+     "glass_ft": 1500,
      "note": "",
      "p_fly": 1.0,
      "p_xc": 1.0,
@@ -40113,7 +40123,7 @@
       "w850": "SSE 9",
       "w700": "SSE 19",
       "rh": 69,
-      "grad": -2.8
+      "grad": -2.5
      },
      "RRFS": {
       "rain_mm": 0.0,
@@ -40509,7 +40519,7 @@
      ],
      "xc": false,
      "rain_p": 0.82,
-     "good_glass": false,
+     "good_glass": true,
      "base": 3.38,
      "adj": [
       [
@@ -40799,10 +40809,12 @@
     "blossom": {
      "rating": 1.65,
      "label": "Marginal",
-     "tags": [],
+     "tags": [
+      "glass-off"
+     ],
      "xc": false,
      "rain_p": 0.78,
-     "good_glass": false,
+     "good_glass": true,
      "base": 3.9,
      "adj": [
       [
@@ -40884,8 +40896,11 @@
        1
       ]
      },
-     "gwin": null,
-     "glass_ft": null,
+     "gwin": [
+      15,
+      16
+     ],
+     "glass_ft": 1500,
      "note": "showers around",
      "p_fly": 0.42,
      "p_xc": 0.4,
@@ -46699,10 +46714,12 @@
     "blossom": {
      "rating": 4.07,
      "label": "XC",
-     "tags": [],
+     "tags": [
+      "glass-off"
+     ],
      "xc": true,
      "rain_p": 0.05,
-     "good_glass": false,
+     "good_glass": true,
      "base": 4.07,
      "adj": [],
      "base_parts": {
@@ -46775,8 +46792,11 @@
        2
       ]
      },
-     "gwin": null,
-     "glass_ft": null,
+     "gwin": [
+      14,
+      15
+     ],
+     "glass_ft": 1500,
      "note": "",
      "p_fly": 1.0,
      "p_xc": 1.0,
@@ -47127,10 +47147,12 @@
     "soboba": {
      "rating": 4.16,
      "label": "XC",
-     "tags": [],
+     "tags": [
+      "glass-off"
+     ],
      "xc": true,
      "rain_p": 0.01,
-     "good_glass": false,
+     "good_glass": true,
      "base": 4.16,
      "adj": [],
      "base_parts": {
@@ -47203,8 +47225,11 @@
        2
       ]
      },
-     "gwin": null,
-     "glass_ft": null,
+     "gwin": [
+      14,
+      16
+     ],
+     "glass_ft": 2260,
      "note": "",
      "p_fly": 1.0,
      "p_xc": 1.0,
@@ -49582,7 +49607,7 @@
       {
        "k": "Wind 1 pm",
        "v": "SW 6g12",
-       "sub": "",
+       "sub": "over the back",
        "q": 0.0
       },
       {
@@ -52656,7 +52681,7 @@
       {
        "k": "Wind 1 pm",
        "v": "W 7g15",
-       "sub": "later W 8g21",
+       "sub": "later W 8g21 \u00b7 gusty",
        "q": 0.6
       },
       {
