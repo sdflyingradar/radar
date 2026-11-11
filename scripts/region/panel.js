@@ -25,7 +25,7 @@ function halfHours(day) {
       }
       const mid = (x, y) => (x == null ? y : y == null ? x : (x + y) / 2);
       const wmid = (x, y) => (x && y && x[1] != null && y[1] != null ? [x[0], Math.round((x[1] + y[1]) / 2), x[2]] : x || y);
-      cols.push({ t: h + 0.5, d: { grid: g, okta: (a.okta || [0, 0, 0]).map((v, i) => Math.round(mid(v, (b.okta || [])[i]))), rain_mm: mid(a.rain_mm, b.rain_mm), cape: mid(a.cape, b.cape), sfc: wmid(a.sfc, b.sfc), w5k: wmid(a.w5k, b.w5k) } });
+      cols.push({ t: h + 0.5, d: { grid: g, okta: (a.okta || [0, 0, 0]).map((v, i) => Math.round(mid(v, (b.okta || [])[i]))), rain_mm: mid(a.rain_mm, b.rain_mm), cu: mid(a.cu, b.cu), cape: mid(a.cape, b.cape), sfc: wmid(a.sfc, b.sfc), w5k: wmid(a.w5k, b.w5k) } });
     }
   });
   return cols;
@@ -113,7 +113,9 @@ function panelSVG(data, di = 0) {
   o.push(`<path d="M${L} ${yB}H${W - R}" stroke="${GRID2}"/>`);
   cols.forEach((c, k) => o.push(`<path d="M${f(X(k))} ${yG}V${yB}" stroke="${GRID}" stroke-width=".8"/>`));
   o.push(`<path d="M${W - R} ${yG}V${yB}" stroke="${GRID}" stroke-width=".8"/>`);
-  const cloud = (cx, cy) => `<g transform="translate(${f(cx)} ${f(cy)})"><path d="M-10 6 H10 a5.2 5.2 0 0 0 .6-10.3 a7.2 7.2 0 0 0-13.6-2.4 a5.4 5.4 0 0 0-7.6 5 a3.9 3.9 0 0 0 0 7.7 z" fill="#fff" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/></g>`;
+  // cumulus shaded like the detailed chart: the more of the sky they cover, the greyer
+  const cuShade = (c) => { const cu = c.d.cu || 0; return cu >= 0.7 ? '#b4bbc3' : cu >= 0.4 ? '#cdd2d8' : '#e3e6ea'; };
+  const cloud = (cx, cy, fill = '#e3e6ea') => `<g transform="translate(${f(cx)} ${f(cy)})"><path d="M-10 6 H10 a5.2 5.2 0 0 0 .6-10.3 a7.2 7.2 0 0 0-13.6-2.4 a5.4 5.4 0 0 0-7.6 5 a3.9 3.9 0 0 0 0 7.7 z" fill="${fill}" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/></g>`;
   // rain: the clouds get a drop (two when it pours, a flash with thunderstorms); rain without cumulus: one cloud on top
   const drop = (cx, cy) => `<path d="M${f(cx)} ${f(cy - 3.6)} l-2.6 4.4 a2.9 2.9 0 1 0 5.2 0 z" fill="#2563eb" stroke="#fff" stroke-width=".7"/>`;
   const rainy = (c, cx, cy) => {
@@ -130,14 +132,14 @@ function panelSVG(data, di = 0) {
       const ztop = tops.length ? Math.max(...tops) : Math.max(...cols.flatMap(cc => Object.entries(cc.d.grid || {}).filter(([, v]) => v === 'c').map(([z]) => +z)), -1e9) - 500;
       const r = rows.indexOf(ztop) - 1;
       const y = yG + (r - 1) * rh;
-      if (r >= 1) o.push(cloud(X(k) + cw / 2, y + rh / 2 + 1) + rainy(c, X(k) + cw / 2, y + rh / 2 + 1));
+      if (r >= 1) o.push(cloud(X(k) + cw / 2, y + rh / 2 + 1, OKTA[Math.max(3, Math.min(8, (c.d.okta || [0])[0] || 0))]) + rainy(c, X(k) + cw / 2, y + rh / 2 + 1));
     }
     rows.forEach((z, r) => {
       const v = g[String(z)];
       if (v == null) return;
       const y = yG + (r - 1) * rh;            // a cell sits between its height line and the one above
       if (y < yG) return;
-      if (v === 'c') { o.push(cloud(X(k) + cw / 2, y + rh / 2 + 1) + rainy(c, X(k) + cw / 2, y + rh / 2 + 1)); return; }
+      if (v === 'c') { o.push(cloud(X(k) + cw / 2, y + rh / 2 + 1, cuShade(c)) + rainy(c, X(k) + cw / 2, y + rh / 2 + 1)); return; }
       o.push(`<rect x="${f(X(k) + 1)}" y="${y + 1}" width="${f(cw - 2)}" height="${rh - 2}" rx="1.5" fill="${pick(PANEL_CLIMB, v)}"/>`);
       o.push(`<text x="${f(X(k) + cw / 2)}" y="${y + rh / 2 + 4.5}" text-anchor="middle" font-size="12.5" fill="${v >= 2.5 ? '#fff' : INK}">${v.toFixed(1)}</text>`);
     });
