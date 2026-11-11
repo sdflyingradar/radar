@@ -12,9 +12,9 @@
   "name": "Vandenberg",
   "lat": 34.75,
   "lon": -120.57,
-  "obs": "2026-11-10T12:00Z",
+  "obs": "2026-11-11T00:00Z",
   "file": "stations/VBG_latest.txt",
-  "levels": 134,
+  "levels": 1,
   "v": 2
  },
  "VEF": {
