@@ -41,7 +41,7 @@ function p2icon(kind, x, y, night) {
   const sun = (cx, cy, r) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#f6b51e"/><g stroke="#f6b51e" stroke-width="1.6" stroke-linecap="round">${[0, 45, 90, 135, 180, 225, 270, 315].map(a => { const c = Math.cos(a * Math.PI / 180), s = Math.sin(a * Math.PI / 180); return `<line x1="${(cx + c * (r + 2.5)).toFixed(1)}" y1="${(cy + s * (r + 2.5)).toFixed(1)}" x2="${(cx + c * (r + 5)).toFixed(1)}" y2="${(cy + s * (r + 5)).toFixed(1)}"/>`; }).join('')}</g>`;
   const cloud = (cx, cy, col) => `<path d="M${cx - 10} ${cy + 5} h20 a5 5 0 0 0 0 -10 a7 7 0 0 0 -13 -2 a5 5 0 0 0 -7 12 z" fill="${col}" stroke="#9aa3ad" stroke-width=".8"/>`;
   const g = (inner) => `<g transform="translate(${x.toFixed(1)} ${y})">${inner}</g>`;
-  const moon = (cx, cy, r) => `<path d="M${cx + r * 0.35} ${cy - r} a${r} ${r} 0 1 0 ${r * 0.65} ${r * 1.55} a${r * 0.8} ${r * 0.8} 0 0 1 ${-r * 0.65} ${-r * 1.55} z" fill="#8f9bb3"/>`;
+  const moon = (cx, cy, r) => `<path d="M${cx + r * 0.35} ${cy - r} a${r} ${r} 0 1 0 ${r * 0.65} ${r * 1.55} a${r * 0.8} ${r * 0.8} 0 0 1 ${-r * 0.65} ${-r * 1.55} z" fill="#f3f5f9"/>`;
   if (night && kind === 'sun') return g(moon(0, 0, 7));
   if (night && kind === 'part') return g(moon(-4, -4, 6) + cloud(3, 3, '#fff'));
   if (kind === 'sun') return g(sun(0, 0, 6));
@@ -71,6 +71,22 @@ function p2arrow(x, y, w, s) {
   return `<path d="M0 -9 L6.5 8 L0 4.2 L-6.5 8 Z" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${((w[0] + 180) % 360).toFixed(0)}) scale(${k.toFixed(2)})" fill="${fill}" stroke="${rim === '#ffffff' ? '#9aa3ad' : rim}" stroke-width="${(2.1 / k).toFixed(2)}" stroke-linejoin="round"/>`;
 }
 
+// colour keys under a chart: wind steps (bottom left) and a smooth climb scale with whole numbers (bottom right)
+function chartKeys(o, { L, Rx, y, fs = 1, wind, lift, INK = '#1f2328', MUTED = '#6b7280' }) {
+  const f = (v) => v.toFixed(1), bh = 12 * fs, bw = 29 * fs, ty = y + bh - 2.6 * fs;
+  o.push(`<text x="${L}" y="${f(ty)}" font-size="${10.5 * fs}" fill="${MUTED}">wind mph</text>`);
+  let x = L + 54 * fs;
+  wind.forEach(([v, c]) => { o.push(`<rect x="${f(x)}" y="${f(y)}" width="${f(bw)}" height="${f(bh)}" rx="2" fill="${c}"/><text x="${f(x + bw / 2)}" y="${f(ty)}" text-anchor="middle" font-size="${9 * fs}" fill="${INK}">${v}</text>`); x += bw + 1; });
+  const top = lift[lift.length - 1][0], gw = (lift.length * 21) * fs, gx = Rx - gw, id = 'lk' + Math.random().toString(36).slice(2, 8);
+  o.push(`<defs><linearGradient id="${id}">${lift.map(([v, c]) => `<stop offset="${(v / top * 100).toFixed(1)}%" stop-color="${c}"/>`).join('')}</linearGradient></defs>`);
+  o.push(`<rect x="${f(gx)}" y="${f(y)}" width="${f(gw)}" height="${f(bh)}" rx="2" fill="url(#${id})"/>`);
+  for (let v = 0; v <= top; v++) {
+    const vx = gx + Math.min(gw - 6 * fs, Math.max(6 * fs, v / top * gw));
+    o.push(`<text x="${f(vx)}" y="${f(ty)}" text-anchor="middle" font-size="${9 * fs}" fill="${v >= 2.5 ? '#fff' : INK}">${v}</text>`);
+  }
+  o.push(`<text x="${f(gx - 6)}" y="${f(ty)}" text-anchor="end" font-size="${10.5 * fs}" fill="${MUTED}">climb m/s</text>`);
+}
+
 function panel2SVG(data, di = 0) {
   const day = data.days[di];
   const hrs = Object.keys(day.hours).map(Number).sort((a, b) => a - b).filter(h => !data.compact || (h >= 8 && h <= 19));
@@ -89,7 +105,7 @@ function panel2SVG(data, di = 0) {
   const zmin = Math.max(0, Math.floor((Math.min(ground, data.floor_ft ?? ground) - 500) / 500) * 500);
   const zmax = Math.min(18000, Math.max(zmin + (data.compact ? 6000 : 8000), Math.ceil(((zs.length ? Math.max(...zs) : 6000) + 2500) / 1000) * 1000, ...marks.map(m => Math.ceil((m.ft + 1500) / 1000) * 1000)));
   const pxft = data.compact ? 0.05 : 0.055;
-  const yS = data.compact ? 34 : 62, yC = yS + 22, ch = 15, yI = yC + 3 * ch + 8, yG = yI + 34;
+  const yS = data.compact ? 34 : 62, yC = yS + 22, ch = data.compact ? 24 : 19, yI = yC + 3 * ch + 8, yG = yI + 34;
   const gh = (zmax - zmin) * pxft;
   const Y = (z) => yG + gh - (z - zmin) * pxft;
   const yB = yG + gh, yA = yB + 40 * fs;              // the time axis and the climb legend sit under the chart
@@ -114,10 +130,10 @@ function panel2SVG(data, di = 0) {
   // cloud layers: high, mid, low
   o.push(`<rect x="${L}" y="${yC}" width="${W - L - R}" height="${3 * ch}" fill="#eaf2fb"/>`);
   ['H', 'M', 'L'].forEach((lab, r) => {
-    o.push(`<text x="${L - 8}" y="${yC + r * ch + 11}" text-anchor="end" font-size="${11 * fs}">${lab}</text>`);
+    o.push(`<text x="${L - 8}" y="${f(yC + r * ch + ch / 2 + 4 * fs)}" text-anchor="end" font-size="${11 * fs}">${lab}</text>`);
     hrs.forEach((h, k) => {
       const n = (H(h).okta || [0, 0, 0])[2 - r];
-      if (n > 0) o.push(`<rect x="${f(X(k) - 0.5)}" y="${yC + r * ch + 3}" width="${f(cw + 1)}" height="${ch - 6}" rx="4" fill="${P2_OKTA(n)}"/>`);
+      if (n > 0) o.push(`<rect x="${f(X(k) + 0.8)}" y="${yC + r * ch + 1}" width="${f(cw - 1.6)}" height="${ch - 2}" rx="3" fill="${P2_OKTA(n)}"/><text x="${f(CX(k))}" y="${f(yC + r * ch + ch / 2 + 4 * fs)}" text-anchor="middle" font-size="${11 * fs}" fill="${n >= 6 ? '#fff' : INK}">${n}</text>`);
     });
   });
   o.push(`<text transform="translate(${f(14 * fs)} ${yC + 1.5 * ch + 4}) rotate(-90)" text-anchor="middle" font-size="${12 * fs}" font-weight="700">Clouds</text>`);
@@ -125,7 +141,11 @@ function panel2SVG(data, di = 0) {
   const pts = data.poly || [];
   const la = pts.length ? pts.reduce((a, q) => a + q[0], 0) / pts.length : 33, lo = pts.length ? pts.reduce((a, q) => a + q[1], 0) / pts.length : -117;
   const [rise, set] = p2sun(day.date, la, lo);
-  hrs.forEach((h, k) => o.push(p2icon(p2weather(H(h)), CX(k), yI + 13, h > set || h < rise)));
+  hrs.forEach((h, k) => {
+    const night = h > set || h < rise;
+    if (night) o.push(`<rect x="${f(X(k) + 0.8)}" y="${yI}" width="${f(cw - 1.6)}" height="26" rx="4" fill="#2b3445"/>`);   // dark hours
+    o.push(p2icon(p2weather(H(h)), CX(k), yI + 13, night));
+  });
   // main chart frame and height grid
   for (let z = Math.ceil(zmin / 1000) * 1000; z <= zmax; z += 1000) {
     o.push(`<line x1="${L}" x2="${W - R}" y1="${f(Y(z))}" y2="${f(Y(z))}" stroke="${z % 5000 ? GRID : GRID2}"/>`);
@@ -193,10 +213,7 @@ function panel2SVG(data, di = 0) {
   o.push(`<line x1="${L}" x2="${W - R}" y1="${f(yB)}" y2="${f(yB)}" stroke="${GRID2}"/>`);
   hrs.forEach((h, k) => { if (!data.compact || k % 2 === 0) o.push(`<text x="${f(X(k))}" y="${f(yB + 18 * fs)}" text-anchor="middle" font-size="${13 * fs}">${h > 12 ? h - 12 : h}:00</text>`); });
   o.push(`<text x="${f((L + W - R) / 2)}" y="${f(yB + 36 * fs)}" text-anchor="middle" font-size="${13 * fs}" font-weight="700">Time (PT)</text>`);
-  const kw = (data.compact ? 34 : 29), lk = P2_LIFT.filter(([v]) => v % 1 === 0 || !data.compact);
-  let kx = W - R - lk.length * (kw + 1);
-  lk.forEach(([v, c]) => { o.push(`<rect x="${kx}" y="${f(yB + 27 * fs)}" width="${kw}" height="${f(12 * fs)}" rx="2" fill="${c}"/><text x="${kx + kw / 2}" y="${f(yB + 27 * fs + 9.5 * fs)}" text-anchor="middle" font-size="${9 * fs}" fill="${v >= 2.5 ? '#fff' : INK}">${v}</text>`); kx += kw + 1; });
-  o.push(`<text x="${W - R - lk.length * (kw + 1) - 6}" y="${f(yB + 37 * fs)}" text-anchor="end" font-size="${10.5 * fs}" fill="${MUTED}">climb m/s</text>`);
+  chartKeys(o, { L, Rx: W - R, y: yB + 27 * fs, fs, wind: P2_WIND.map(([v, c]) => [v, v ? c : '#eef1f4']), lift: P2_LIFT, INK, MUTED });
   // statistics
   let best = null, hi = null;
   hrs.forEach((h) => {

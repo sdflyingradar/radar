@@ -169,14 +169,8 @@ function panelSVG(data, di = 0) {
   // time axis (labels on the grid lines, every hour)
   cols.forEach((c, k) => { if (c.t % 1 === 0) o.push(`<text x="${f(X(k))}" y="${yB + 18}" text-anchor="middle" font-size="13">${tlab(c.t)}${c.t === 12 ? '' : ''}</text>`); });
   o.push(`<text x="${f((L + W - R) / 2)}" y="${yB + 36}" text-anchor="middle" font-size="13" font-weight="700">Time (PT)</text>`);
-  // small colour key, bottom right
-  let kx = W - R - PANEL_CLIMB.length * 30;
-  PANEL_CLIMB.forEach(([v, c]) => { o.push(`<rect x="${kx}" y="${yB + 27}" width="29" height="12" rx="2" fill="${c}"/><text x="${kx + 14.5}" y="${yB + 37}" text-anchor="middle" font-size="9" fill="${v >= 2.5 ? '#fff' : INK}">${v}</text>`); kx += 30; });
-  o.push(`<text x="${W - R - PANEL_CLIMB.length * 30 - 6}" y="${yB + 37}" text-anchor="end" font-size="10.5" fill="${MUTED}">climb m/s</text>`);
-  // wind key, right above the wind rows
-  let wx = W - R - PANEL_WIND.length * 30;
-  o.push(`<text x="${wx - 6}" y="${yW - 5}" text-anchor="end" font-size="10.5" fill="${MUTED}">wind mph</text>`);
-  PANEL_WIND.forEach(([v, c]) => { o.push(`<rect x="${wx}" y="${yW - 15}" width="29" height="12" rx="2" fill="${c}"/><text x="${wx + 14.5}" y="${yW - 5}" text-anchor="middle" font-size="9" fill="${v >= 25 ? '#fff' : INK}">${v}</text>`); wx += 30; });
+  // colour keys: wind bottom left, climb bottom right (chartKeys lives in panel2.js; a plain row if it is missing)
+  if (typeof chartKeys === 'function') chartKeys(o, { L, Rx: W - R, y: yB + 27, wind: PANEL_WIND, lift: PANEL_CLIMB, INK, MUTED });
   o.push('</svg>');
   return o.join('\n');
 }
