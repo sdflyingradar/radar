@@ -89,7 +89,7 @@ function panel2SVG(data, di = 0) {
   const day = data.days[di];
   const hrs = Object.keys(day.hours).map(Number).sort((a, b) => a - b).filter(h => !data.compact || (h >= 8 && h <= 19));
   const H = (h) => day.hours[h] || {};
-  const INK = '#1f2328', MUTED = '#6b7280', GRID = '#e6e8eb', GRID2 = '#c9ced4';
+  const INK = '#1f2328', MUTED = '#6b7280', GRID = '#f0f2f5', GRID2 = '#dde1e6';
   const fs = data.compact ? 1.3 : 1;                 // bigger text when the chart is shown small (radar site card)
   const W = 1000, L = data.compact ? 96 : 78, R = 14, cw = (W - L - R) / hrs.length;
   const X = (k) => L + k * cw, CX = (k) => L + (k + 0.5) * cw;
@@ -153,13 +153,15 @@ function panel2SVG(data, di = 0) {
     o.push(`<line x1="${L}" x2="${W - R}" y1="${f(Y(z))}" y2="${f(Y(z))}" stroke="${z % 5000 ? GRID : GRID2}"/>`);
     o.push(`<text x="${L - 8}" y="${f(Y(z) + 4.5)}" text-anchor="end" font-size="${13 * fs}">${z.toLocaleString('en-US')}</text>`);
   }
-  hrs.forEach((h, k) => o.push(`<line x1="${f(X(k))}" x2="${f(X(k))}" y1="${yG}" y2="${f(yG + gh)}" stroke="${GRID}"/>`));
   const U = Math.random().toString(36).slice(2, 7);   // ids unique to this chart (several charts share a page)
   o.push(`<defs><filter id="sh${U}" x="-30%" y="-10%" width="160%" height="130%"><feDropShadow dx="1.4" dy="2" stdDeviation="1.6" flood-color="#5b2a12" flood-opacity=".28"/></filter>`
     + `<linearGradient id="cyl${U}" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset=".32" stop-color="#fff" stop-opacity=".06"/><stop offset=".7" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".16"/></linearGradient>`
-    + `<linearGradient id="cu${U}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>`);
+    + `<linearGradient id="cu${U}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>`
+    + `<linearGradient id="gnd${U}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#e8dcc4"/><stop offset="1" stop-color="#d9c8a6"/></linearGradient></defs>`);
+  // night: a faint shade over the dark hours
+  hrs.forEach((h, k) => { if (h > set || h < rise) o.push(`<rect x="${f(X(k))}" y="${yG}" width="${f(cw)}" height="${f(gh)}" fill="#2b3445" opacity=".07"/>`); });
   // ground
-  o.push(`<rect x="${L}" y="${f(Y(ground))}" width="${W - L - R}" height="${f(yG + gh - Y(ground))}" fill="#efe6d6"/>`);
+  o.push(`<rect x="${L}" y="${f(Y(ground))}" width="${W - L - R}" height="${f(yG + gh - Y(ground))}" fill="url(#gnd${U})"/><line x1="${L}" x2="${W - R}" y1="${f(Y(ground))}" y2="${f(Y(ground))}" stroke="#c9b58e" stroke-width="1.2"/>`);
   // thermal cells (500 ft) and cumulus columns
   const bw = cw * 0.72;
   hrs.forEach((h, k) => {
