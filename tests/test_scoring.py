@@ -292,6 +292,16 @@ class NwsText(unittest.TestCase):
 
 
 
+class NwsNow(unittest.TestCase):
+    """Flags are about now: showers 'starting Friday' must not flag a Tuesday."""
+    def test_later_days_dont_flag(self):
+        tue = "2026-11-10T23:28:00+00:00"
+        self.assertTrue(bf._about_now("Above average conditions will continue through Wednesday.", tue))
+        self.assertFalse(bf._about_now("Periods of showers are expected starting Friday through next Tuesday.", tue))
+        self.assertFalse(bf._about_now("Showers return for the weekend.", tue))
+        self.assertTrue(bf._about_now("Showers tonight and Wednesday.", tue))
+
+
 class RainAndSun(unittest.TestCase):
     """Wet, grey days (Fri Oct 30, Sat Oct 31 2026) should not show 3s inland."""
     def test_rain_steps(self):

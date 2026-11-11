@@ -584,6 +584,28 @@ def summarize_llm(text, log):
         return None
 
 
+WEEKDAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+
+
+def _about_now(sentence, issued):
+    """True unless the sentence is about a later day: it names a weekday after tomorrow (and not today or
+    tomorrow), or the weekend / next week (when that isn't now)."""
+    try:
+        t = datetime.fromisoformat(str(issued).replace("Z", "+00:00")) - timedelta(hours=8)
+        wd = t.weekday()
+    except Exception:
+        return True
+    low = sentence.lower()
+    soon = {WEEKDAYS[wd], WEEKDAYS[(wd + 1) % 7]}
+    later = {d for d in WEEKDAYS if re.search(r"\bnext " + d + r"\b", low)}       # "next Tuesday" is next week
+    named = {d for d in WEEKDAYS if re.search(r"(?<!next )\b" + d + r"\b", low)}
+    if (named or later) and not (named & soon):
+        return False
+    if re.search(r"next week|weekend", low) and wd < 4 and not (named & soon):
+        return False
+    return True
+
+
 def parse_afd(text, issued):
     synopsis = _section(text, "SYNOPSIS")
     aviation = _section(text, "AVIATION")
@@ -603,7 +625,10 @@ def parse_afd(text, issued):
         if b and b.lower() not in {x.lower() for x in bullets}:
             bullets.append(b)
     bullets = bullets[:5]
-    flags = [label for label, pat in FLAG_PATTERNS if re.search(pat, synopsis + " " + aviation, re.I)]
+    # flags describe the weather now: only synopsis sentences about today, tonight or tomorrow (a sentence
+    # naming a later day, the weekend or next week is about later), plus the aviation part (the next 24 h)
+    now = " ".join(x for x in _sentences(synopsis) if _about_now(x, issued))
+    flags = [label for label, pat in FLAG_PATTERNS if re.search(pat, now + " " + aviation, re.I)]
     adv = re.search(r"WATCHES/WARNINGS/ADVISORIES\.\.\.(.*?)\n\$\$", text, re.S)
     advisories = re.sub(r"\s+", " ", adv.group(1)).strip() if adv else ""
     if re.search(r"wind advisory|high wind", advisories, re.I) and "Wind advisory" not in flags:
