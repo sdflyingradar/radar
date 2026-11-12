@@ -254,3 +254,6 @@ html[data-lay] body details.day:not(#story) .list .srow .facts > span { display:
 #sched .sch-rows { display: flex; flex-wrap: wrap; gap: 2px 12px; font-size: .7rem; color: #475467; margin-top: 1px; }
 #sched .sch-rows i { font-style: normal; color: #98a2b3; }
 #sched svg { display: block; width: 100%; height: auto; }
+/* computer: the tile facts a bit larger too (still one row) */
+@media (min-width: 900px) { html[data-lay] body details.day:not(#story) .list .srow .tx .facts { font-size: .72rem !important; gap: 10px !important; } }
+@media (min-width: 1300px) { html[data-lay] body details.day:not(#story) .list .srow .tx .facts { font-size: .77rem !important; } }
