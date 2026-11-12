@@ -1451,10 +1451,12 @@ function sitePills(c) {
   const SHORT = [[/^crosswind, up to 20° outside/, "cross wind"], [/from behind, 20°\+ outside/, "wrong direction"],
     [/gusts over 18/, "too windy"], [/gusts over 12/, "gusty"], [/top of lift over \d+ mph: (no-go|too windy)/, "too windy aloft"],
     [/top of lift over/, "strong wind aloft"], [/blown out/, "blown out"], [/not calm/, "not calm"],
-    [/over the back aloft/, "over the back aloft"], [/off season/, "off season"], [/NW to N aloft/, "NW–N"], [/^offshore .*no-go/, "offshore flow aloft"], [/^offshore .*2 at most/, "offshore"], [/^offshore /, "light offshore"]];
+    [/over the back aloft/, "over the back aloft"], [/off season/, "off season"], [/NW to N aloft/, "NW–N"], [/^offshore .*no-go/, "offshore flow aloft"], [/^offshore .*2 at most/, "offshore"], [/^offshore /, "light offshore"],
+    [/^under \d+ mph most of the day/, "too light"], [/^below [\d,]+ ft/, "low tops"], [/not into launch/, "wind not into launch"]];
   const seen = new Set(out.map((x) => x.replace(/<i[^>]*>.*?<\/i>/g, "").replace(/<[^>]+>/g, "").trim().toLowerCase()));
   adj.filter(([t]) => !/edge of the launch window/.test(t)).filter(([t]) => !/rain|sun|4 at most$/.test(t) || /outside the launch window|blown|calm|season/.test(t)).forEach(([t]) => {
-    const s = (SHORT.find(([re]) => re.test(t)) || [null, t])[1];
+    // a chip says what's wrong, never how the score works (no ": 3 at most")
+    const s = (SHORT.find(([re]) => re.test(t)) || [null, t.replace(/: (\d at most|no-go|too windy)$/, "")])[1];
     if (seen.has(s.toLowerCase())) return;
     seen.add(s.toLowerCase());
     out.push(`<span class="rx">${ico(/gusty|windy|blown/.test(s) ? "windy" : "warn")}${esc(s)}</span>`);
@@ -1862,7 +1864,7 @@ $("#reload").addEventListener("click", load);
 </script>
 <script src="scripts/ui/facts.js?v=202611112005"></script>
 <script src="scripts/ui/sched.js?v=202611110656"></script>
-<script src="scripts/ui/grid.js?v=202611111241"></script>
+<script src="scripts/ui/grid.js?v=202611112009"></script>
 <script src="scripts/ui/first.js?v=202611082340"></script>
 </body>
 </html>

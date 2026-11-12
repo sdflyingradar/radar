@@ -93,7 +93,7 @@
     .replace(/^crosswind, up to 20° outside the launch window/, "crosswind").replace(/^wind from behind, 20°\+ outside the launch window/, "from behind").replace(/^wind at the edge of the launch window/, "edge of window")
     .replace(/^gusts over (\d+) mph/, "over $1 mph").replace(/^wind at top of lift over (\d+) mph/, "top of lift $1+ mph")
     .replace(/^little sun \(mid\/high cloud\)/, "less sun").replace(/^chance of rain.*/, "showers").replace(/^rain much of the window/, "much of the window")
-    .replace(/^off season/, "off season").replace(/^a 5 needs a clean day/, "a 5 needs a clean day").replace(/^NW to N aloft/, "NW–N")
+    .replace(/^under (\d+) mph most of the day/, "mostly under $1 mph").replace(/^off season/, "off season").replace(/^a 5 needs a clean day/, "a 5 needs a clean day").replace(/^NW to N aloft/, "NW–N")
     .replace(/: no-go$/, " · no-go").replace(/: (\d) at most$/, " · max $1").replace(/: too windy$/, " · too windy");
   const track = (v, col) => `<span class="lg-tr"><i style="width:${((Math.max(1, Math.min(5, v)) - 1) / 4 * 100).toFixed(1)}%;background:${col}"></i></span>`;
   const r1 = (v) => (Math.round(v * 10) / 10).toFixed(1);
