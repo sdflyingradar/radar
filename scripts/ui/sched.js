@@ -6,7 +6,7 @@
   const RUNS = {
     forecast: { label: "Forecast", col: "#26303a", log: "forecast", utc: ["13:30", "15:30", "16:30", "18:30", "20:30", "22:30", "00:30", "02:30", "06:30", "10:30"] },
     maps: { label: "Therm", col: "#2b7fd8", log: "region", utc: ["13:34", "15:34", "16:34", "20:34", "23:34", "02:34", "06:34", "10:34"] },
-    balloon: { label: "Balloon", col: "#e07a0c", log: "balloon", utc: ["13:47", "14:47", "15:47", "16:47", "01:47", "02:47"] },
+    balloon: { label: "Balloon", col: "#e07a0c", log: "balloon", utc: ["13:05", "13:45", "01:05", "01:45"] },
   };
   const TZ = "America/Los_Angeles";
   const dayKey = (d) => new Intl.DateTimeFormat("en-CA", { timeZone: TZ }).format(d);

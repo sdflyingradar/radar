@@ -2,8 +2,10 @@ name: Update sounding
 
 on:
   schedule:
-    - cron: "47 13,14,15,16 * * *" # mornings 5:47-8:47 am PST (6:47-9:47 PDT): 12Z sounding + today's forecast high, refreshed hourly
-    - cron: "47 1,2 * * *"         # evenings after the 00Z launch (~5:47 pm PST) for tomorrow
+    # right after the flights: the balloons go up about 11Z and 23Z (3 am / 3 pm PST), reach the top about 1.5-2 h later
+    # and are posted soon after. Fetch at 13:05 and 01:05 UTC, with a second try 40 min later for a late post.
+    - cron: "5,45 13 * * *"        # 5:05 / 5:45 am PST (6:05 / 6:45 PDT): the morning (12Z) balloon
+    - cron: "5,45 1 * * *"         # 5:05 / 5:45 pm PST (6:05 / 6:45 PDT): the evening (00Z) balloon
   workflow_dispatch: {}
 
 permissions:
