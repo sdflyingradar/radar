@@ -1,7 +1,7 @@
 /* Tile facts with meaning in colour.
    Lift icon: blue with climbs of 2 m/s+, or at great XC height, or 1.5 m/s+ at XC height; green XC height with 1 m/s+;
    yellow local height with 0.5 m/s+; orange anything less.
-   Launch dial: the launch's direction window as a bold dark arc on the rim with a light grey wedge, and the wind as an
+   Launch dial: the launch's direction window as a grey arc on the rim with a light grey wedge, and the wind as an
    arrow from outside the dial into its centre: green more than 20 deg inside the window, yellow its outer 20 deg,
    orange up to 20 deg outside (cross), red further out (from behind).
    Aloft icon: the detailed chart's speed colours; over the back or offshore from 5 mph one step worse, at least orange. */
@@ -25,7 +25,7 @@
     const col = offCol(o);
     const full = wins.some(([a, b]) => b - a >= 359);
     const wedges = full ? '<circle cx="10" cy="10" r="7" fill="#e9ecf0"/>' : wins.map(([a, b]) => `<path d="M10 10 L${pt(7, a).map((v) => v.toFixed(2)).join(" ")} ${arc(7, a, b).replace(/^M[^A]*/, "")} Z" fill="#e9ecf0"/>`).join("");
-    const arcs = full ? '<circle cx="10" cy="10" r="7.6" fill="none" stroke="#26303a" stroke-width="2.2"/>' : wins.map(([a, b]) => `<path d="${arc(7.6, a, b)}" fill="none" stroke="#26303a" stroke-width="2.2" stroke-linecap="round"/>`).join("");
+    const arcs = full ? '<circle cx="10" cy="10" r="7.6" fill="none" stroke="#9aa3ad" stroke-width="2.2"/>' : wins.map(([a, b]) => `<path d="${arc(7.6, a, b)}" fill="none" stroke="#9aa3ad" stroke-width="2.2" stroke-linecap="round"/>`).join("");
     /* arrow: from outside the dial (where the wind comes from) to the centre */
     const arrow = d == null ? "" : `<g transform="rotate(${d} 10 10)"><line x1="10" y1="0.6" x2="10" y2="7.4" stroke="${col}" stroke-width="2" stroke-linecap="round"/><path d="M10 10.6 L7.3 6.2 L12.7 6.2 Z" fill="${col}"/></g>`;
     const tip = o == null ? "launch window" : o <= -RIM ? "wind into the launch window" : o <= 0 ? "wind at the edge of the launch window" : o <= 20 ? `crosswind, ${Math.round(o)}° outside the launch window` : `wind from behind the launch (${Math.round(o)}° off)`;

@@ -1441,7 +1441,7 @@ function siteFacts(c, s) {
   const out = [h && h.v !== "–" ? `<span class="wa">${LIFT}<span class="hl">${esc(h.v)}</span><span class="hk">${esc(hk(h.v))}</span></span>` : "",
           a && a.v !== "–" ? `<span class="fi fa">${ALOFT_IC}${windHtml(a.v, "mph")}</span>` : "",
           w && w.v !== "–" ? `<span class="fi fl">${LAUNCH_IC}${windHtml(w.v, "mph")}</span>` : ""].filter(Boolean).join('<span class="sep">·</span>');
-  /* scripts/ui/facts.js colours the facts (window.siteFactsHook) */
+  /* scripts/ui/facts.js?v=202611112005 colours the facts (window.siteFactsHook) */
   return window.siteFactsHook ? window.siteFactsHook(out, c, s, { LIFT, LAUNCH_IC, ALOFT_IC }) : out;
 }
 function sitePills(c) {
@@ -1872,7 +1872,7 @@ $("#reload").addEventListener("click", load);
   window.addEventListener("scroll", () => (tip.hidden = true), { passive: true });
 })();
 </script>
-<script src="scripts/ui/facts.js?v=202611101410"></script>
+<script src="scripts/ui/facts.js?v=202611112005"></script>
 <script src="scripts/ui/sched.js?v=202611110656"></script>
 <script src="scripts/ui/grid.js?v=202611111241"></script>
 <script src="scripts/ui/first.js?v=202611082340"></script>
