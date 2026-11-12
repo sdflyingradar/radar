@@ -19,13 +19,17 @@ function foehnMapSVG(G) {
       <filter id="fblur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="9"/></filter>
       <filter id="fsh" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#000" flood-opacity=".18"/></filter>
       <linearGradient id="fpush" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".25"/><stop offset="1" stop-color="${col}" stop-opacity=".95"/></linearGradient>
+      <linearGradient id="fpushon" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="${col}" stop-opacity=".25"/><stop offset="1" stop-color="${col}" stop-opacity=".95"/></linearGradient>
       <marker id="fah" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="26" markerHeight="26" orient="auto"><path d="M0 1 L10 5 L0 9 z" fill="${col}"/></marker></defs>
     <g clip-path="url(#fmc)"><rect width="${W}" height="${H}" fill="${LAND}"/>${basemapTiles(F, W, H)}<rect width="${W}" height="${H}" fill="#fff" opacity=".12"/>`];
-  // the offshore push: a broad soft arrow from the desert over the mountains to the coast
-  if (g != null && g < 0) {
+  // the push: a broad soft arrow, offshore from the desert over the mountains to the coast, onshore the other way
+  // (at 0 it points onshore, the usual sea breeze); wider with a bigger difference
+  if (g != null) {
     const w = Math.min(16, 4 + Math.abs(g) * 2);
-    const x1 = X(dagLo) - 40, y1 = Y(dagLa) + 26, x2 = X(laxLo) + 22, y2 = Y(laxLa) - 44, cx = (x1 + x2) / 2 + 40, cy = (y1 + y2) / 2 - 20;
-    o.push(`<path d="M${f(x1)} ${f(y1)} Q${f(cx)} ${f(cy)} ${f(x2)} ${f(y2)}" fill="none" stroke="url(#fpush)" stroke-width="${f(w)}" stroke-linecap="round" marker-end="url(#fah)"/>`);
+    let x1 = X(dagLo) - 40, y1 = Y(dagLa) + 26, x2 = X(laxLo) + 22, y2 = Y(laxLa) - 44;
+    const cx = (x1 + x2) / 2 + 40, cy = (y1 + y2) / 2 - 20;
+    if (g >= 0) [x1, y1, x2, y2] = [x2, y2, x1, y1];
+    o.push(`<path d="M${f(x1)} ${f(y1)} Q${f(cx)} ${f(cy)} ${f(x2)} ${f(y2)}" fill="none" stroke="url(#${g < 0 ? 'fpush' : 'fpushon'})" stroke-width="${f(w)}" stroke-linecap="round" marker-end="url(#fah)"/>`);
   }
   // the two airports: dark pin with a white pressure badge
   const stn = (n, la, lo, p, left) => {
