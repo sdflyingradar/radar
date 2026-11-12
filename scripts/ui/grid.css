@@ -19,7 +19,7 @@ html[data-lay="grid"] body details.day:not(#story) .list .srow .nm, html[data-la
 html[data-lay="grid"] body details.day:not(#story) .list .srow .lab, html[data-lay="tiles"] body details.day:not(#story) .list .srow .lab { font-size: .7rem !important; }
 html[data-lay] body details.day:not(#story) .list .srow .dscore .dsl { display: none; }
 html[data-lay="grid"] body details.day:not(#story) .list .srow .tx { display: block; font-size: .7rem; line-height: 1.35; }
-html[data-lay="grid"] body details.day:not(#story) .list .srow .tx .facts { font-size: .7rem; }
+html[data-lay="grid"] body details.day:not(#story) .list .srow .tx .facts { font-size: .8rem; }
 html[data-lay="grid"] body details.day:not(#story) .list .srow .mstrip { max-width: none; margin-top: auto; padding-top: 10px; }
 html[data-lay="grid"] body details.day:not(#story) .list .srow .spills .rx:nth-child(n+3) { display: none; }
 html[data-lay="grid"] body details.day:not(#story) .list .srow .wtab { display: none; }
@@ -237,8 +237,8 @@ html body details.day .det > button.detx svg { width: 11px !important; height: 7
 @media (min-width: 900px) { #assets { margin: -22px 0 -2px !important; } }
 /* coloured tile facts (scripts/ui/facts.js): lift arrows, launch dial, aloft icon. Every icon sits in the same
    1.6em slot so the numbers line up (phone) and the gaps are even (computer) */
-html[data-lay] body details.day:not(#story) .list .srow .facts > span > svg:first-child { width: 1.6em !important; height: 1.2em !important; flex: none; margin: 0 5px 0 0 !important; vertical-align: -.25em; }
-html[data-lay] body details.day:not(#story) .list .srow .facts > span > svg.ldial:first-child { height: 1.5em !important; vertical-align: -.4em; }
+html[data-lay] body details.day:not(#story) .list .srow .facts > span > svg:first-child { width: 1.75em !important; height: 1.3em !important; flex: none; margin: 0 5px 0 0 !important; vertical-align: -.25em; }
+html[data-lay] body details.day:not(#story) .list .srow .facts > span > svg.ldial:first-child { height: 1.65em !important; vertical-align: -.4em; }
 html[data-lay] body details.day:not(#story) .list .srow .facts > span { display: inline-flex; align-items: center; }
 @media (max-width: 899px) { html[data-lay] body details.day:not(#story) .list .srow .facts { gap: 3px !important; } }
 @media (min-width: 900px) { html[data-lay] body details.day:not(#story) .list .srow .tx .facts { gap: 14px !important; } }
