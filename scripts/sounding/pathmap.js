@@ -113,52 +113,22 @@ function balloonPathSVG(track, stn, opts = {}) {
   const cla = (la0 + la1) / 2, clo = (lo0 + lo1) / 2;
   let hw = Math.max((lo1 - lo0) / 2 * 1.35, 0.4), hh = Math.max((la1 - la0) / 2 * 1.35, 0.27);
   if (hw * cl / hh > 1.5) hh = hw * cl / 1.5; else hw = hh * 1.5 / cl;
-  la0 = cla - hh; la1 = cla + hh; lo0 = clo - hw; lo1 = clo + hw;
-  const W = 600, H = 400, X = lo => (lo - lo0) / (lo1 - lo0) * W, Y = la => (la1 - la) / (la1 - la0) * H, f = v => v.toFixed(1);
+  lo0 = clo - hw; lo1 = clo + hw;
+  const W = 600, H = 400, f = v => v.toFixed(1);
+  // Esri World Topo underneath (scripts/ui/basemap.js), drawn in Web Mercator so it lines up
+  const F = basemapFrame(lo0, lo1, cla, W, H), X = F.X, Y = F.Y;
   const P = ([la, lo]) => `${f(X(lo))},${f(Y(la))}`;
   const o = [`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Balloon flight path">`,
     `<defs><clipPath id="pmc"><rect width="${W}" height="${H}" rx="10"/></clipPath></defs><g clip-path="url(#pmc)">`,
-    `<rect width="${W}" height="${H}" fill="${PM_LAND}"/>`];
-  // a quiet version of the pressure map's look: desert tint, soft blurred relief, water, freeways with a white casing.
-  // Everything stays pale so the balloon paths carry the picture.
-  const kmPx = W / ((lo1 - lo0) * 111.2 * cl);
-  o.push(`<polygon points="${PM_DESERT.map(P).join(' ')}" fill="${PM_SAND}"/>`);
-  const rr = Math.max(6, 7 * kmPx);
-  o.push(`<defs><filter id="pmblur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="${f(Math.max(4, rr * 0.6))}"/></filter></defs><g fill="#c4b79c" opacity=".32" filter="url(#pmblur)">`);
-  for (const sp of PM_RANGES) for (let i = 0; i < sp.length - 1; i++) for (let t = 0; t <= 1; t += 0.25) {
-    const la = sp[i][0] + (sp[i + 1][0] - sp[i][0]) * t, lo = sp[i][1] + (sp[i + 1][1] - sp[i][1]) * t, x = X(lo), y = Y(la);
-    if (x > -60 && x < W + 60 && y > -60 && y < H + 60) o.push(`<circle cx="${f(x)}" cy="${f(y)}" r="${f(rr)}"/>`);
-  }
-  o.push('</g>');
-  const WATER = '#dae7f2', SHORE = '#bccfdf';
-  if (typeof COAST !== 'undefined' && lo0 > -118.6) o.push(`<polygon points="${COAST.map(P).join(' ')} -2000,${H + 2000} -2000,-2000" fill="${WATER}" stroke="${SHORE}"/>`);
-  o.push(`<polygon points="${PM_COAST_CC.map(P).join(' ')} ${P([36.2, -121.9])} ${P([33.5, -121.9])} ${P([33.5, -119.5])} ${P([34.25, -119.3])}" fill="${WATER}"/><polyline points="${PM_COAST_CC.map(P).join(' ')}" fill="none" stroke="${SHORE}" stroke-linejoin="round"/>`);
-  for (const lk of PM_LAKES) o.push(`<polygon points="${lk.map(P).join(' ')}" fill="${WATER}" stroke="${SHORE}" stroke-linejoin="round"/>`);
-  o.push(`<polyline points="${PM_RIVER.map(P).join(' ')}" fill="none" stroke="${SHORE}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`);
-  o.push(`<polygon points="${PM_COAST_LA.map(P).join(' ')} ${P([33.2, -117.5])} ${P([33.2, -119.6])} ${P([34.2, -119.6])}" fill="${WATER}"/><polyline points="${PM_COAST_LA.map(P).join(' ')}" fill="none" stroke="${SHORE}" stroke-linejoin="round"/>`);
-  if (typeof BAY !== 'undefined') o.push(`<polygon points="${BAY.map(P).join(' ')}" fill="${WATER}"/>`);
-  for (const isl of PM_ISLANDS) o.push(`<polygon points="${isl.map(P).join(' ')}" fill="${PM_LAND}" stroke="${SHORE}" stroke-linejoin="round"/>`);
-  const roads = (typeof ROADS !== 'undefined' ? ROADS.map(r => [r[0], r[1]]) : []).concat(PM_ROADS);
-  for (const [, pts] of roads) {
-    const d = pts.map(P).join(' ');
-    o.push(`<polyline points="${d}" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" opacity=".8"/><polyline points="${d}" fill="none" stroke="#e6c995" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round"/>`);
-  }
+    `<rect width="${W}" height="${H}" fill="${PM_LAND}"/>`, basemapTiles(F, W, H),
+    `<rect width="${W}" height="${H}" fill="#fff" opacity=".18"/>`];   // a light veil so the paths carry the picture
   const ticks = [5000, 10000, 20000, 30000].filter(zt => zt <= top).map(zt => [zt, track.find(q => q.z_ft >= zt)]).filter(([, p]) => p)
     .map(([zt, p]) => [zt, X(p.lon), Y(p.lat)]).filter(([, x, y]) => Math.hypot(x - X(stn.lon), y - Y(stn.lat)) > 28);
-  const busy = [[X(stn.lon), Y(stn.lat)], ...ticks.map(([, x, y]) => [x, y])];
-  const towns = (typeof TOWNS !== 'undefined' ? TOWNS.map(t => [t[0], t[1], t[2]]) : []).concat(PM_TOWNS);
-  const seen = new Set();
-  for (const [n, la, lo] of towns) {
-    const x = X(lo), y = Y(la);
-    if (x < 8 || x > W - 70 || y < 14 || y > H - 8 || seen.has(n) || busy.some(([bx, by]) => Math.abs(bx - x) < 70 && Math.abs(by - y) < 18)) continue;
-    seen.add(n);
-    o.push(`<circle cx="${f(x)}" cy="${f(y)}" r="2" fill="#9aa3ae" stroke="#fff" stroke-width="1"/><text x="${f(x + 5)}" y="${f(y + 3.5)}" font-size="10.5" fill="#7b8490" paint-order="stroke" stroke="${PM_LAND}" stroke-width="3">${n}</text>`);
-  }
   // earlier flights: thin grey lines, each with a tiny date/time at its far end
   for (const p of past) {
     o.push(`<polyline points="${p.tr.map(q => P([q.lat, q.lon])).join(' ')}" fill="none" stroke="#8a929d" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>`);
     const e = p.tr[p.tr.length - 1], ex = X(e.lon), ey = Y(e.lat), left = ex > W - 60;
-    o.push(`<circle cx="${f(ex)}" cy="${f(ey)}" r="2" fill="#9ca3af"/><text x="${f(left ? ex - 4 : ex + 4)}" y="${f(ey + 3)}" text-anchor="${left ? 'end' : 'start'}" font-size="9" fill="#6b7280" paint-order="stroke" stroke="${PM_LAND}" stroke-width="2.5">${p.label}</text>`);
+    o.push(`<circle cx="${f(ex)}" cy="${f(ey)}" r="2" fill="#9ca3af"/><text x="${f(left ? ex - 4 : ex + 4)}" y="${f(ey + 3)}" text-anchor="${left ? 'end' : 'start'}" font-size="9" fill="#6b7280" paint-order="stroke" stroke="#fff" stroke-width="2.5">${p.label}</text>`);
   }
   // path, coloured low (warm) to high (blue), with height ticks
   const col = z => z < 5000 ? '#e07b24' : z < 10000 ? '#d4a017' : z < 20000 ? '#3aa457' : '#2f7fcf';
@@ -174,7 +144,7 @@ function balloonPathSVG(track, stn, opts = {}) {
   const mi10 = 16093 / (111200 * cl) / (lo1 - lo0) * W;
   o.push(`<path d="M${W - 20 - mi10} ${H - 16}h${f(mi10)}" stroke="#8a929d" stroke-width="1.6"/><text x="${f(W - 20 - mi10 / 2)}" y="${H - 22}" text-anchor="middle" font-size="10.5" fill="#7b8490">10 mi</text>`);
   o.push(`<text x="${W - 18}" y="22" text-anchor="middle" font-size="11" font-weight="700" fill="#7b8490">N</text><path d="M${W - 18} 26l-5 12 5-3 5 3z" fill="#8a929d"/>`);
-  o.push('</g></svg>');
+  o.push(basemapAttr(H), '</g></svg>');
   return o.join('');
 }
 
