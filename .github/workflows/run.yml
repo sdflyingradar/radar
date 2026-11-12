@@ -1,0 +1,43 @@
+name: "▶ Run an update"
+
+# One button for a manual update: Actions tab -> "▶ Run an update" -> Run workflow -> pick what to update.
+# It starts the chosen workflow(s); each then runs as usual and commits its data.
+on:
+  workflow_dispatch:
+    inputs:
+      what:
+        description: "What to update"
+        type: choice
+        default: "Everything"
+        options:
+          - "Everything"
+          - "Radar: all models"
+          - "Radar: hi-res models only (HRRR / RRFS)"
+          - "Thermal charts (SkyGram)"
+          - "Balloons"
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  start:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      WHAT: ${{ inputs.what }}
+    steps:
+      - run: |
+          case "$WHAT" in
+            "Everything")
+              gh workflow run forecast.yml -f light=false
+              gh workflow run region.yml -f light=false
+              gh workflow run sounding.yml ;;
+            "Radar: all models")      gh workflow run forecast.yml -f light=false ;;
+            "Radar: hi-res models only"*) gh workflow run forecast.yml -f light=true ;;
+            "Thermal charts"*)        gh workflow run region.yml -f light=false ;;
+            "Balloons")               gh workflow run sounding.yml ;;
+          esac
+          echo "started: $WHAT" >> "$GITHUB_STEP_SUMMARY"
