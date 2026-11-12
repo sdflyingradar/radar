@@ -8,12 +8,12 @@
   "cloudbase_ft_msl": 14600,
   "trigger_temp_f": 92,
   "forecast_high": {
-    "day": "2026-11-11",
-    "label": "today",
-    "median_f": 73.2,
-    "p10_f": 71.6,
-    "p90_f": 74.4,
-    "hrrr_f": 76.5,
+    "day": "2026-11-12",
+    "label": "tomorrow",
+    "median_f": 71.3,
+    "p10_f": 69.5,
+    "p90_f": 72.2,
+    "hrrr_f": 75.1,
     "members": 122,
     "models": [
       "GFS ens (31)",
@@ -24,14 +24,18 @@
     "lon": -115.18,
     "window": "10:00-17:00 local",
     "source": "https://open-meteo.com/en/docs/ensemble-api",
-    "fetched": "2026-11-11T21:37Z",
+    "fetched": "2026-11-12T04:57Z",
     "thermal_tops": {
-      "median_ft": 4000,
-      "low_ft": 3500,
-      "high_ft": 4400
+      "median_ft": 3400,
+      "low_ft": 3100,
+      "high_ft": 3700
     }
   },
   "thermal_tops_ft": [
+    {
+      "surface_f": 60,
+      "top_ft": 2400
+    },
     {
       "surface_f": 65,
       "top_ft": 2500

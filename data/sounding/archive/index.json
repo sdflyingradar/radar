@@ -1,6 +1,11 @@
 {
  "NKX": [
   {
+   "t": "2026-11-12T00Z",
+   "txt": "archive/NKX_20261112_00Z.txt",
+   "track": null
+  },
+  {
    "t": "2026-11-11T12Z",
    "txt": "archive/NKX_20261111_12Z.txt",
    "track": "archive/NKX_20261111_12Z_track.csv"
