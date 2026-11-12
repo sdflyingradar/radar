@@ -1204,10 +1204,12 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     # Only at the launches marked glass_off (LB, Blossom, Soboba, Horse), and only after a strong afternoon: a deep,
     # well-mixed day leaves the slopes warm and the air near neutral, so the evening breeze turns into smooth,
     # widespread lift. Glass-off day: 2 hours in a row in that window with the breeze straight in, 5-13 mph, not too
-    # windy aloft, no storm and no rain, after a climb of 2 m/s (LB 1.5) or more between noon and 3 pm.
+    # windy aloft, not gusty, no storm and no rain (and not a showery day), after a climb of 2 m/s (LB 1.5) or more between noon and 3 pm.
     # No points: a pill on the card and the band in the SkyGram.
     gwin = [(h, s) for h, s in hours if h >= math.floor(sunset_h) - 2]
-    glass_hours = [h for h, s in gwin if s["glass"] and (s.get("pr") or 0) < 0.2]
+    # smooth air: not gusty (gusts under 15 mph and within 6 mph of the wind)
+    glass_hours = [h for h, s in gwin if s["glass"] and (s.get("pr") or 0) < 0.2
+                   and (s.get("lg") is None or (s["lg"] < 15 and s["lg"] - (s["lw"] or 0) <= 6))]
     pm_climb = max((s["climb"] for h, s in hours if 12 <= h <= 14), default=0.0)
     if site.get("glass_off") and hr.get("time") and idxs:
         rc = region_pm_climb(site.get("parent", site["id"]), str(hr["time"][idxs[0][1]])[:10])
@@ -2373,7 +2375,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 tags.append(lead["switch_tag"])
             # glass-off when at least half the models used for the day see it (not just the lead model)
             gsrc = next((a for a in ([lead] if lead else []) + list(D.values()) if a and a.get("glass")), None)
-            glass_day = bool(not ridge and D and gsrc and sum(1 for a in D.values() if a.get("glass")) * 2 >= len(D))
+            glass_day = bool(not ridge and D and gsrc and sum(1 for a in D.values() if a.get("glass")) * 2 >= len(D)
+                             and shower_p < 0.5)          # not on a showery day
             if glass_day:
                 tags.append("glass-off")
             # a warning only (no points): windy through most of the window, whatever the direction (not Torrey,
