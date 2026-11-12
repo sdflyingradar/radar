@@ -797,6 +797,20 @@ html body details.day > summary.hd .sum .sgrp, html body details.day .list .sgrp
   font-size: .58rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #98a2b3; line-height: 1; margin: 2px 0 -1px; }
 html body details.day > summary.hd .sum .sgrp::after, html body details.day .list .sgrp::after { content: ""; flex: 1; height: 1px; background: #e4e7ec; }
 html body details.day .list .sgrp { margin: 4px 2px -2px; font-size: .62rem; }
+/* trips: a plain label on the phone; on a computer hidden behind a small button */
+.list .tripset { display: contents; }
+.list .tripbtn { display: none; }
+@media (min-width: 900px) {
+  html:not([data-trips="1"]) body details.day .list .tripset { display: none; }
+  html body details.day .list .sgrp.trips-h .trips-l { display: none; }
+  html body details.day .list .tripbtn { display: inline-flex; align-items: center; gap: 5px; font: inherit; letter-spacing: inherit; text-transform: inherit;
+    color: #667085; background: #f6f7f9; border: 1px solid #e4e7ec; border-radius: 999px; padding: 4px 9px 4px 10px; cursor: pointer; }
+  html body details.day .list .tripbtn:hover { background: #eef0f3; color: #344054; }
+  html body details.day .list .tripbtn i { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  html body details.day .list .tripbtn i:first-of-type { margin-left: 2px; }
+  html body details.day .list .tripbtn .tchev { font-size: .9rem; line-height: .6; transition: transform .15s; margin-left: 1px; }
+  html[data-trips="1"] body details.day .list .tripbtn .tchev { transform: rotate(90deg); }
+}
 
 /* first-layer site pills: skinnier */
 html body details.day:not(#story) > summary.hd .sum .sc.sc.sc, html body details.day:not(#story) > summary.hd .sum .sc.sc.sc.trip{min-height:21px!important;padding:0 8px!important;line-height:1.1}
@@ -1285,8 +1299,8 @@ function render(data) {
         ${listSites.mtn.map((s) => siteRow(d, s, i, "")).join("")}
         <div class="sgrp coast">Coast</div>
         ${listSites.coast.map((s) => siteRow(d, s, i, "")).join("")}
-        <div class="sgrp">Trips</div>
-        ${listSites.trips.map((s) => siteRow(d, s, i, "")).join("")}${watchSites.map((s) => siteRow(d, s, i, "")).join("")}
+        <div class="sgrp trips-h"><span class="trips-l">Trips</span><button type="button" class="tripbtn" aria-expanded="false" title="The trip areas: they never set the day's score">Trips ${listSites.trips.concat(watchSites).map((s) => d.sites[s.id] ? `<i style="background:${qv(d.sites[s.id].rating)}"></i>` : "").join("")}<b class="tchev">›</b></button></div>
+        <div class="tripset">${listSites.trips.map((s) => siteRow(d, s, i, "")).join("")}${watchSites.map((s) => siteRow(d, s, i, "")).join("")}</div>
       </div>
       <div class="det" id="det-${i}" hidden></div>
       ${mods ? `<span class="mods mods-b">${mods}</span>` : ""}
@@ -1836,6 +1850,17 @@ const seed = $("#seed").textContent.trim();
 if (seed) { render(JSON.parse(seed)); $("#reload").hidden = true; }
 else load();
 $("#reload").addEventListener("click", load);
+/* computer: the trips sit behind a small "Trips" button in each day (the day is rated on the San Diego sites);
+   open or closed is remembered for every day */
+try { if (localStorage.getItem("tripsOpen") === "1") document.documentElement.dataset.trips = "1"; } catch (e) {}
+document.addEventListener("click", (e) => {
+  const b = e.target.closest(".tripbtn"); if (!b) return;
+  e.preventDefault(); e.stopPropagation();
+  const on = document.documentElement.dataset.trips !== "1";
+  if (on) document.documentElement.dataset.trips = "1"; else delete document.documentElement.dataset.trips;
+  document.querySelectorAll(".tripbtn").forEach((x) => x.setAttribute("aria-expanded", on ? "true" : "false"));
+  try { localStorage.setItem("tripsOpen", on ? "1" : "0"); } catch (er) {}
+});
 
 })();
 
