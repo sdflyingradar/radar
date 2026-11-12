@@ -56,8 +56,10 @@ jobs:
               print(f"{wf}: last slot {last:%H:%M}Z, data from {have:%Y-%m-%d %H:%M}Z")
               if have >= last - d.timedelta(minutes=10):
                   continue
-              busy = subprocess.run(["gh", "run", "list", "-w", wf, "-L", "5", "--json", "status", "-q",
-                                     '[.[] | select(.status != "completed")] | length'],
+              # a run that has sat queued or running for over 90 min is stuck (GitHub sometimes never starts one): ignore it
+              cutoff = (now - d.timedelta(minutes=90)).strftime("%Y-%m-%dT%H:%M:%SZ")
+              busy = subprocess.run(["gh", "run", "list", "-w", wf, "-L", "5", "--json", "status,createdAt", "-q",
+                                     f'[.[] | select(.status != "completed" and .createdAt > "{cutoff}")] | length'],
                                     capture_output=True, text=True).stdout.strip()
               if busy not in ("", "0"):
                   print(f"  missing, but a run is already going ({busy})")

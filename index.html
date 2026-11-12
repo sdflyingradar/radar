@@ -998,8 +998,7 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
     <span id="foot"></span>
     <label class="dtsw" title="SkyGram: thermals, wind at every height, inversions and cumulus in one picture (off: the climb grid); stays on this device"><input type="checkbox" id="dtherm"><i></i>SkyGram</label>
     <button type="button" id="archBtn" hidden title="Every past day as the radar forecast it that day">Archive</button>
-    <a id="runNow" class="btnlink" href="#" target="_blank" rel="noopener" hidden title="Opens GitHub, where you press Run workflow">Start new forecast run</a>
-    <a id="runBalloon" class="btnlink" href="#" target="_blank" rel="noopener" hidden title="Opens GitHub, where you press Run workflow">Fetch balloons</a>
+    <a id="runNow" class="btnlink" href="#" target="_blank" rel="noopener" hidden title="Opens GitHub: press Run workflow and pick radar, therm charts, balloons or everything">Run an update</a>
   </footer>
 </div>
 
@@ -1807,8 +1806,7 @@ try {
 if (ADMIN) $("#archBtn").hidden = false;   // the archive is for the owner only
 if (ADMIN && location.hostname.endsWith(".github.io")) {
   const user = location.hostname.split(".")[0], repo = location.pathname.split("/").filter(Boolean)[0];
-  if (user && repo) { const a = $("#runNow"); a.href = `https://github.com/${user}/${repo}/actions/workflows/forecast.yml`; a.hidden = false;
-    const b = $("#runBalloon"); b.href = `https://github.com/${user}/${repo}/actions/workflows/sounding.yml`; b.hidden = false; }
+  if (user && repo) { const a = $("#runNow"); a.href = `https://github.com/${user}/${repo}/actions/workflows/run.yml`; a.hidden = false; }
 }
 let lastGen = null;
 function load() {

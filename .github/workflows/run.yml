@@ -13,7 +13,7 @@ on:
           - "Everything"
           - "Radar: all models"
           - "Radar: hi-res models only (HRRR / RRFS)"
-          - "Thermal charts (SkyGram)"
+          - "Therm charts (SkyGram)"
           - "Balloons"
 
 permissions:
@@ -37,7 +37,7 @@ jobs:
               gh workflow run sounding.yml ;;
             "Radar: all models")      gh workflow run forecast.yml -f light=false ;;
             "Radar: hi-res models only"*) gh workflow run forecast.yml -f light=true ;;
-            "Thermal charts"*)        gh workflow run region.yml -f light=false ;;
+            "Therm charts"*)        gh workflow run region.yml -f light=false ;;
             "Balloons")               gh workflow run sounding.yml ;;
           esac
           echo "started: $WHAT" >> "$GITHUB_STEP_SUMMARY"
