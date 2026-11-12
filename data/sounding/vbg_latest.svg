@@ -2,7 +2,7 @@
 <rect width="800" height="880" fill="#fff"/>
 <defs><clipPath id="c0"><rect x="52" y="84" width="548" height="742"/></clipPath></defs>
 <text x="52" y="24" font-size="16" font-weight="700" fill="#111827">VBG sounding<tspan dx="8" font-size="12.5" font-weight="500" fill="#6b7280">12Z (4 am PST) · 12 Nov 2026</tspan></text>
-<text x="790" y="24" text-anchor="end" font-size="13" font-weight="700" fill="#e07b00">Today: high 69°F <tspan font-weight="500">(68–72)</tspan> → thermals ~1,500 ft <tspan font-weight="500">(900–1,700)</tspan></text>
+<text x="790" y="24" text-anchor="end" font-size="13" font-weight="700" fill="#e07b00">Today: high 69°F <tspan font-weight="500">(68–73)</tspan> → thermals ~1,500 ft <tspan font-weight="500">(800–1,700)</tspan></text>
 <path d="M52 45h16" stroke="#ff0000" stroke-width="2.4" stroke-linecap="round"/><text x="74" y="49" fill="#111827">Temperature</text>
 <path d="M151.3 45h16" stroke="#00c400" stroke-width="2.4" stroke-linecap="round"/><text x="173.3" y="49" fill="#111827">Dew point</text>
 <path d="M238 45h16" stroke="#0000ff" stroke-width="2.4" stroke-linecap="round"/><text x="260" y="49" fill="#111827">Cloudbase</text>
@@ -50,7 +50,7 @@
 <text x="13" y="455.0" transform="rotate(-90 13 455.0)" text-anchor="middle">Altitude MSL (ft)</text>
 <rect x="52" y="788.3" width="548" height="14.3" fill="#3b6fd8" fill-opacity="0.12"/>
 <rect x="52" y="719.8" width="548" height="25.7" fill="#3b6fd8" fill-opacity="0.12"/>
-<polygon clip-path="url(#c0)" points="510.4,805.4 474.0,729.5 473.7,730.6 472.9,731.8 472.2,732.9 471.4,734.1 470.7,735.2 469.9,736.3 469.1,737.5 468.4,738.6 467.6,739.8 466.9,740.9 466.1,742.0 465.3,743.2 465.4,744.3 465.7,745.5 466.0,746.6 466.3,747.8 466.6,748.9 466.8,750.0 467.1,751.2 467.4,752.3 467.7,753.5 468.0,754.6 468.3,755.7 468.6,756.9 468.8,758.0 469.1,759.2 469.4,760.3 469.7,761.5 470.0,762.6 470.3,763.7 470.6,764.9 470.9,766.0 471.1,767.2 471.4,768.3 471.7,769.4 471.9,770.6 472.2,771.7 472.5,772.9 472.7,774.0 473.0,775.2 473.1,776.3 487.1,805.4" fill="#e07b00" fill-opacity="0.2"/>
+<polygon clip-path="url(#c0)" points="511.4,805.4 474.7,728.9 474.1,730.1 473.3,731.2 472.6,732.3 471.8,733.5 471.0,734.6 470.3,735.8 469.5,736.9 468.8,738.1 468.0,739.2 467.2,740.3 466.5,741.5 465.7,742.6 465.3,743.8 465.6,744.9 465.8,746.0 466.1,747.2 466.4,748.3 466.7,749.5 467.0,750.6 467.3,751.7 467.6,752.9 467.8,754.0 468.1,755.2 468.4,756.3 468.7,757.5 469.0,758.6 469.3,759.7 469.6,760.9 469.9,762.0 470.1,763.2 470.4,764.3 470.7,765.4 471.0,766.6 471.3,767.7 471.6,768.9 471.8,770.0 472.1,771.2 472.3,772.3 472.6,773.4 472.8,774.6 473.1,775.7 473.4,776.9 473.6,778.0 473.9,779.1 474.0,780.3 486.1,805.4" fill="#e07b00" fill-opacity="0.2"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="448.1,805.4 444.2,797.4"/>
 <circle cx="444.2" cy="797.4" r="2.8" fill="#ffa500"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="473.4,805.4 466.8,791.7"/>

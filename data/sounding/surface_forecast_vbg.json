@@ -2,9 +2,9 @@
   "day": "2026-11-12",
   "label": "today",
   "median_f": 69.3,
-  "p10_f": 67.7,
-  "p90_f": 72.3,
-  "hrrr_f": 70.2,
+  "p10_f": 67.5,
+  "p90_f": 72.5,
+  "hrrr_f": 68.4,
   "members": 122,
   "models": [
     "GFS ens (31)",
@@ -15,5 +15,5 @@
   "lon": -120.57,
   "window": "10:00-17:00 local",
   "source": "https://open-meteo.com/en/docs/ensemble-api",
-  "fetched": "2026-11-12T15:37Z"
+  "fetched": "2026-11-12T20:42Z"
 }
