@@ -1520,7 +1520,7 @@ const CHIP_TIPS = [
   [/^NW–N$/, "NW to N wind of 5 mph or more at the top of lift through most of the window: −0.3"],
   [/not calm/, "Owens needs almost no wind"],
   [/off season/, "Outside the site's season: 2 at most"],
-  [/glass-off/, "Glass-off: after a strong afternoon, a smooth evening breeze straight in before sunset (gold band in the SkyGram)"],
+  [/glass-off/, "Glass-off: after a strong afternoon, a smooth evening breeze straight in before sunset"],
   [/no switch/, "Elsinore: no west switch in the forecast"],
   [/late switch/, "Elsinore: the west switch comes late (after 4 pm)"],
   [/no launch window/, "Elsinore: no launchable wind before the switch"],
@@ -1654,7 +1654,7 @@ function thermPanel(d, s, c) {
     const lab = (k) => (has(k) ? dayLabel(DAYKEY[k].date).short : "");
     const nav = `<div class="tnav"><button type="button" class="tnb" data-jump="${i - 1}" data-sid="${s.id}"${has(i - 1) ? "" : " disabled"}>‹ ${esc(lab(i - 1))}</button><span class="tmid"><label class="dtsw sm" title="SkyGram: thermals, wind at every height, inversions and cumulus in one picture (off: the climb grid); stays on this device"><input type="checkbox" class="dtx"${PANEL !== panelSVG ? " checked" : ""}><i></i>SkyGram</label></span><button type="button" class="tnb" data-jump="${i + 1}" data-sid="${s.id}"${has(i + 1) ? "" : " disabled"}>${esc(lab(i + 1))} ›</button></div>`;
     const ttl = `<div class="tttl"><span class="tnd">${esc(dayLabel(d.date).short)} · ${esc(r.name)}</span></div>`;
-    return `<div class="therm">${ttl}${PANEL({ generated: REGIONS_D.generated, region: r.name, days: r.days, marks: r.marks, floor_ft: r.floor_ft, compact: true, win: c.style === "ridge" ? null : c.win, gwin: c.gwin, gft: c.glass_ft }, di)}${nav}</div>`;
+    return `<div class="therm">${ttl}${PANEL({ generated: REGIONS_D.generated, region: r.name, days: r.days, marks: r.marks, floor_ft: r.floor_ft, compact: true, win: c.style === "ridge" ? null : c.win, gwin: c.gwin }, di)   /* glass-off band off for now: add gft: c.glass_ft to show it */}${nav}</div>`;
   } catch (e) { return ""; }
 }
 
