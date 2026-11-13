@@ -94,13 +94,16 @@ def rating_models(names):
     return g or names
 
 
+RRFS_LEAD_W = 2.0   # like the radar: RRFS x2 on its days, only x1 (as much as the globals together) from 2 days out
+
+
 def model_weight(name, names):
     names = list(names)
     if "HRRR" in names:
         return HIRES_W.get(name, 1)
     if "RRFS" in names:
         n_glob = sum(1 for n in names if n in GLOBAL)
-        return 2.0 if name == "RRFS" else 1.0 / max(1, n_glob)
+        return RRFS_LEAD_W if name == "RRFS" else 1.0 / max(1, n_glob)
     return MODEL_WEIGHT.get(name, 1)
 
 
@@ -597,6 +600,7 @@ def build_days(data, idx, today, now_local, name, acc, gid=None, snd=None, terr=
 
 def blend_days(acc, sp=None):
     """Per day: the models that cover most of the flying day decide (like the radar), blended hour by hour."""
+    global RRFS_LEAD_W
     by_day = {}
     for d, hours in acc.items():
         counts = {}
@@ -607,6 +611,8 @@ def blend_days(acc, sp=None):
         used = rating_models(covering)
         day = {"date": d, "model": " + ".join(m for m in ("HRRR", "RRFS", "GFS", "ECMWF", "ICON") if m in used) if used else "-",
                "models": used, "hours": {}}
+        _today = dt.datetime.now(__import__("zoneinfo").ZoneInfo(TZ)).date()
+        RRFS_LEAD_W = 1.0 if (dt.date.fromisoformat(d) - _today).days >= 2 else 2.0
         for hh, hm in hours.items():
             rh = blend_hours({m: v for m, v in hm.items() if m in used})
             if rh:
