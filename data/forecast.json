@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-13T02:57+00:00",
+ "generated": "2026-11-13T03:08+00:00",
  "sample": false,
  "calib": {
   "2026-11-12": {
@@ -35731,9 +35731,9 @@
  },
  "overview": "Onshore now \u00b7 upper low Fri \u00b7 rain Fri \u00b7 pre-frontal now",
  "gradient": {
-  "now": 1.3,
-  "at": "2026-11-13T01:00Z",
-  "n": 70
+  "now": 1.0,
+  "at": "2026-11-13T02:00Z",
+  "n": 71
  },
  "models": {
   "HRRR": "ncep_hrrr_conus",
@@ -35757,30 +35757,26 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus), surface heat flux (7124 values)",
-  "HRRR: ok (ncep_hrrr_conus), surface heat flux (2466 values)",
+  "HRRR trips: using the last good run, fetched 0.2 h ago",
   "RRFS: ok (ncep_rrfs_conus), surface heat flux (8684 values)",
-  "RRFS: ncep_rrfs_conus rejected (429)",
-  "RRFS: ncep_rrfs_conus rejected (429)",
-  "RRFS: ok (ncep_rrfs_conus), surface heat flux (0 values)",
-  "GFS: ok (gfs_global), surface heat flux (13728 values)",
-  "GFS: ok (gfs_global), surface heat flux (4752 values)",
-  "ECMWF: ok (ecmwf_ifs025), surface heat flux (0 values)",
-  "ECMWF: ok (ecmwf_ifs025), surface heat flux (0 values)",
-  "ICON: ok (icon_global), surface heat flux (13364 values)",
-  "ICON: ok (icon_global), surface heat flux (4626 values)",
-  "ens GFS ens: using the last good run, fetched 11.4 h ago",
-  "ens ECMWF ens: using the last good run, fetched 11.4 h ago",
-  "ens ICON ens: using the last good run, fetched 11.4 h ago",
+  "RRFS trips: using the last good run, fetched 0.2 h ago",
+  "GFS: using the last good run, fetched 0.2 h ago",
+  "ECMWF: using the last good run, fetched 0.2 h ago",
+  "ICON: using the last good run, fetched 0.2 h ago",
+  "GFS ens: ok (gfs025)",
+  "ECMWF ens: ok (ecmwf_ifs025)",
+  "ICON ens: icon_global rejected (429)",
+  "ICON ens: ok (icon_global)",
   "NWS AFD: ok",
-  "gradient HRRR: bias +1.6 mb over 70 h",
-  "gradient RRFS: bias +0.9 mb over 70 h",
-  "gradient GFS: bias +1.5 mb over 70 h",
-  "gradient ECMWF: bias +0.5 mb over 70 h",
-  "gradient ICON: bias +0.0 mb over 70 h",
+  "gradient HRRR: bias +1.6 mb over 71 h",
+  "gradient RRFS: bias +0.9 mb over 71 h",
+  "gradient GFS: bias +1.5 mb over 71 h",
+  "gradient ECMWF: bias +0.5 mb over 71 h",
+  "gradient ICON: bias +0.0 mb over 71 h",
   "clouds HRRR: ok (ncep_hrrr_conus)",
   "clouds RRFS: ok (ncep_rrfs_conus)",
-  "clouds ECMWF: ok (ecmwf_ifs025)",
-  "clouds ICON: ok (icon_global)",
+  "clouds ECMWF: using the last good run, fetched 0.2 h ago",
+  "clouds ICON: using the last good run, fetched 0.2 h ago",
   "wind: GFS and ICON use ECMWF's winds where RRFS and ECMWF overlap"
  ],
  "sources": [
@@ -35791,7 +35787,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-11-13T01:00+00:00",
-   "fetched": "2026-11-13T02:49+00:00",
+   "fetched": "2026-11-13T03:03+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -35801,7 +35797,7 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": "2026-11-12T18:00+00:00",
-   "fetched": "2026-11-13T02:49+00:00",
+   "fetched": "2026-11-13T03:03+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -35812,7 +35808,8 @@
    "status": "ok",
    "run": null,
    "fetched": "2026-11-13T02:51+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "ECMWF",
@@ -35822,7 +35819,8 @@
    "status": "ok",
    "run": "2026-11-12T18:00+00:00",
    "fetched": "2026-11-13T02:53+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "ICON",
@@ -35832,7 +35830,8 @@
    "status": "ok",
    "run": null,
    "fetched": "2026-11-13T02:53+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "GFS ens",
@@ -35841,9 +35840,8 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-12T15:29+00:00",
-   "url": "https://open-meteo.com/en/docs/ensemble-api",
-   "note": "cached, fetched 11 h ago"
+   "fetched": "2026-11-13T03:04+00:00",
+   "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
    "name": "ECMWF ens",
@@ -35852,9 +35850,8 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-12T15:30+00:00",
-   "url": "https://open-meteo.com/en/docs/ensemble-api",
-   "note": "cached, fetched 11 h ago"
+   "fetched": "2026-11-13T03:05+00:00",
+   "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
    "name": "ICON ens",
@@ -35863,9 +35860,8 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-12T15:33+00:00",
-   "url": "https://open-meteo.com/en/docs/ensemble-api",
-   "note": "cached, fetched 11 h ago"
+   "fetched": "2026-11-13T03:08+00:00",
+   "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
    "name": "NWS San Diego forecast discussion",
@@ -35874,7 +35870,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-11-13T00:01:00+00:00",
-   "fetched": "2026-11-13T02:55+00:00",
+   "fetched": "2026-11-13T03:08+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -35883,8 +35879,8 @@
    "provider": "NOAA / Open-Meteo",
    "id": "LAX-DAG",
    "status": "ok",
-   "run": "2026-11-13T01:00Z",
-   "fetched": "2026-11-13T02:55+00:00",
+   "run": "2026-11-13T02:00Z",
+   "fetched": "2026-11-13T03:08+00:00",
    "url": "https://www.weather.gov/lox/LAXGRDNEW"
   },
   {
@@ -35894,7 +35890,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-13T02:57+00:00",
+   "fetched": "2026-11-13T03:08+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
@@ -36584,7 +36580,7 @@
       "glass-off"
      ],
      "xc": true,
-     "rain_p": 0.0,
+     "rain_p": 0.02,
      "good_glass": true,
      "base": 4.89,
      "adj": [
@@ -36711,7 +36707,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 1.0
+       "q": 0.98
       },
       {
        "k": "Model agreement",
@@ -37652,7 +37648,7 @@
      "label": "Marginal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.0,
+     "rain_p": 0.01,
      "good_glass": false,
      "base": 5.0,
      "adj": [
@@ -37780,7 +37776,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 1.0
+       "q": 0.99
       },
       {
        "k": "Model agreement",
@@ -38272,7 +38268,7 @@
      "glass_ft": 4540,
      "note": "Horse: thermals to 8,000 ft",
      "p_fly": 1.0,
-     "p_xc": 0.42,
+     "p_xc": 0.41,
      "agree": "split",
      "models": {
       "HRRR": 4.1,
@@ -39365,7 +39361,7 @@
    "best_main": "blossom",
    "headline": "XC at Blossom \u00b7 also Whale's V, Soboba, Little Black, Elsinore",
    "why": null,
-   "rain_p": 0.0,
+   "rain_p": 0.01,
    "cloud": {
     "okta": 2,
     "sun_loss": 0.0,
@@ -39382,7 +39378,7 @@
      "label": "Marginal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.95,
+     "rain_p": 0.89,
      "good_glass": false,
      "base": 3.71,
      "adj": [
@@ -39620,7 +39616,7 @@
      "gwin": null,
      "glass_ft": null,
      "note": "over the back",
-     "p_fly": 0.16,
+     "p_fly": 0.11,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
@@ -39644,7 +39640,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "95% of runs",
+       "v": "89% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -39803,7 +39799,7 @@
       "windy"
      ],
      "xc": false,
-     "rain_p": 0.95,
+     "rain_p": 0.93,
      "good_glass": false,
      "base": 3.66,
      "adj": [
@@ -39889,8 +39885,8 @@
      "gwin": null,
      "glass_ft": null,
      "note": "gusty",
-     "p_fly": 0.41,
-     "p_xc": 0.28,
+     "p_fly": 0.39,
+     "p_xc": 0.17,
      "agree": "agree",
      "models": {
       "HRRR": 3.6,
@@ -39929,7 +39925,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "95% of runs",
+       "v": "93% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -40082,7 +40078,7 @@
       "windy"
      ],
      "xc": false,
-     "rain_p": 0.89,
+     "rain_p": 0.85,
      "good_glass": false,
      "base": 3.71,
      "adj": [
@@ -40168,8 +40164,8 @@
      "gwin": null,
      "glass_ft": null,
      "note": "gusty",
-     "p_fly": 0.39,
-     "p_xc": 0.15,
+     "p_fly": 0.42,
+     "p_xc": 0.13,
      "agree": "agree",
      "models": {
       "HRRR": 3.5,
@@ -40208,7 +40204,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "89% of runs",
+       "v": "85% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -40362,7 +40358,7 @@
       "windy"
      ],
      "xc": false,
-     "rain_p": 0.86,
+     "rain_p": 0.83,
      "good_glass": false,
      "base": 1.0,
      "adj": [],
@@ -40436,7 +40432,7 @@
      "gwin": null,
      "glass_ft": null,
      "note": "rain or storms",
-     "p_fly": 0.02,
+     "p_fly": 0.05,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -40476,7 +40472,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "86% of runs",
+       "v": "83% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -40634,7 +40630,7 @@
       "windy"
      ],
      "xc": false,
-     "rain_p": 0.8,
+     "rain_p": 0.73,
      "good_glass": false,
      "base": 3.08,
      "adj": [
@@ -40734,8 +40730,8 @@
      "gwin": null,
      "glass_ft": null,
      "note": "gusty",
-     "p_fly": 0.4,
-     "p_xc": 0.23,
+     "p_fly": 0.37,
+     "p_xc": 0.11,
      "agree": "mixed",
      "models": {
       "HRRR": 3.5,
@@ -40774,7 +40770,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "80% of runs",
+       "v": "73% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -40925,7 +40921,7 @@
       "windy"
      ],
      "xc": false,
-     "rain_p": 0.94,
+     "rain_p": 0.88,
      "good_glass": false,
      "base": 2.62,
      "adj": [
@@ -41038,8 +41034,8 @@
      "gwin": null,
      "glass_ft": null,
      "note": "blown out",
-     "p_fly": 0.2,
-     "p_xc": 0.04,
+     "p_fly": 0.09,
+     "p_xc": 0.02,
      "agree": "agree",
      "models": {
       "HRRR": 2.4,
@@ -41078,7 +41074,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "94% of runs",
+       "v": "88% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -41235,7 +41231,7 @@
       "windy"
      ],
      "xc": false,
-     "rain_p": 0.94,
+     "rain_p": 0.89,
      "good_glass": false,
      "base": 3.82,
      "adj": [
@@ -41321,8 +41317,8 @@
      "gwin": null,
      "glass_ft": null,
      "note": "gusty",
-     "p_fly": 0.3,
-     "p_xc": 0.15,
+     "p_fly": 0.16,
+     "p_xc": 0.07,
      "agree": "agree",
      "models": {
       "HRRR": 3.8,
@@ -41361,7 +41357,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "94% of runs",
+       "v": "89% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -42737,7 +42733,7 @@
    "best_main": "lb",
    "headline": "Poor at home sites: gusty",
    "why": "Too windy",
-   "rain_p": 0.91,
+   "rain_p": 0.88,
    "cloud": {
     "okta": 1,
     "sun_loss": 0.34,
@@ -42750,19 +42746,14 @@
    "date": "2026-11-14",
    "sites": {
     "torrey": {
-     "rating": 1.31,
-     "label": "No go",
+     "rating": 2.81,
+     "label": "Ridge soaring",
      "tags": [],
      "xc": false,
-     "rain_p": 0.62,
+     "rain_p": 0.3,
      "good_glass": false,
      "base": 2.81,
-     "adj": [
-      [
-       "chance of rain",
-       -1.5
-      ]
-     ],
+     "adj": [],
      "base_parts": null,
      "hours": {
       "9": 2.0,
@@ -42971,9 +42962,9 @@
      "hwind_avg": null,
      "gwin": null,
      "glass_ft": null,
-     "note": "over the back",
-     "p_fly": 0.0,
-     "p_xc": 0.0,
+     "note": "NW 7 mph",
+     "p_fly": 0.87,
+     "p_xc": 0.3,
      "agree": "split",
      "models": {
       "HRRR": 1.7,
@@ -42996,9 +42987,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "62% of runs",
+       "v": "30% of runs",
        "sub": "",
-       "q": 0.13
+       "q": 0.59
       },
       {
        "k": "Model agreement",
@@ -43130,20 +43121,20 @@
       }
      },
      "was": 2.7,
-     "trend": -1.4
+     "trend": 0.1
     },
     "lb": {
-     "rating": 1.0,
-     "label": "No go",
+     "rating": 2.0,
+     "label": "Marginal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.66,
+     "rain_p": 0.43,
      "good_glass": false,
      "base": 4.0,
      "adj": [
       [
        "chance of rain + NWS",
-       -2.0
+       -1.0
       ],
       [
        "crosswind, up to 20\u00b0 outside the launch window",
@@ -43223,8 +43214,8 @@
      "gwin": null,
      "glass_ft": null,
      "note": "cross-N",
-     "p_fly": 0.39,
-     "p_xc": 0.39,
+     "p_fly": 0.42,
+     "p_xc": 0.42,
      "agree": "split",
      "models": {
       "HRRR": 3.5,
@@ -43263,9 +43254,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "66% of runs",
+       "v": "43% of runs",
        "sub": "",
-       "q": 0.08
+       "q": 0.4
       },
       {
        "k": "Model agreement",
@@ -43401,20 +43392,20 @@
       }
      },
      "was": 1.0,
-     "trend": 0.0
+     "trend": 1.0
     },
     "blossom": {
-     "rating": 1.76,
+     "rating": 2.26,
      "label": "Marginal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.77,
+     "rain_p": 0.59,
      "good_glass": false,
      "base": 3.76,
      "adj": [
       [
        "chance of rain + NWS",
-       -2.0
+       -1.5
       ]
      ],
      "base_parts": {
@@ -43490,8 +43481,8 @@
      "gwin": null,
      "glass_ft": null,
      "note": "not flyable",
-     "p_fly": 0.4,
-     "p_xc": 0.38,
+     "p_fly": 0.42,
+     "p_xc": 0.42,
      "agree": "mixed",
      "models": {
       "HRRR": 3.5,
@@ -43530,9 +43521,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "77% of runs",
+       "v": "59% of runs",
        "sub": "",
-       "q": 0.0
+       "q": 0.17
       },
       {
        "k": "Model agreement",
@@ -43664,19 +43655,24 @@
       }
      },
      "was": 1.2,
-     "trend": 0.6
+     "trend": 1.1
     },
     "elsinore": {
-     "rating": 2.39,
+     "rating": 2.19,
      "label": "Marginal",
      "tags": [
       "switch ~12pm"
      ],
      "xc": false,
-     "rain_p": 0.3,
+     "rain_p": 0.14,
      "good_glass": false,
      "base": 2.39,
-     "adj": [],
+     "adj": [
+      [
+       "chance of rain + NWS",
+       -0.2
+      ]
+     ],
      "base_parts": null,
      "hours": {
       "9": 2.5,
@@ -43747,8 +43743,8 @@
      "gwin": null,
      "glass_ft": null,
      "note": "strong wind aloft",
-     "p_fly": 0.39,
-     "p_xc": 0.27,
+     "p_fly": 0.38,
+     "p_xc": 0.16,
      "agree": "split",
      "models": {
       "HRRR": 3.1,
@@ -43787,9 +43783,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "30% of runs",
+       "v": "14% of runs",
        "sub": "",
-       "q": 0.59
+       "q": 0.8
       },
       {
        "k": "Model agreement",
@@ -43922,20 +43918,20 @@
       }
      },
      "was": 1.0,
-     "trend": 1.4
+     "trend": 1.2
     },
     "soboba": {
-     "rating": 2.35,
-     "label": "Marginal",
+     "rating": 3.65,
+     "label": "XC",
      "tags": [],
-     "xc": false,
-     "rain_p": 0.48,
+     "xc": true,
+     "rain_p": 0.27,
      "good_glass": false,
      "base": 3.85,
      "adj": [
       [
        "chance of rain + NWS",
-       -1.5
+       -0.2
       ]
      ],
      "base_parts": {
@@ -44010,16 +44006,16 @@
      },
      "gwin": null,
      "glass_ft": null,
-     "note": "not flyable",
-     "p_fly": 0.42,
-     "p_xc": 0.4,
+     "note": "",
+     "p_fly": 1.0,
+     "p_xc": 1.0,
      "agree": "agree",
      "models": {
       "HRRR": 3.9,
       "RRFS": 3.7
      },
      "n_members": 122,
-     "lead": "RRFS",
+     "lead": "HRRR",
      "top_ft": 4100.0,
      "base_ft": 4100.0,
      "wstar": 1.6,
@@ -44039,21 +44035,21 @@
       },
       {
        "k": "Wind 1 pm",
-       "v": "SSW 8g9",
-       "sub": "later S 8g10",
-       "q": 0.9
+       "v": "E 2g6",
+       "sub": "later SE 3g4",
+       "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "SSW 7 mph",
-       "sub": "at 4,000 ft \u00b7 ECMWF SW 7 mph",
+       "v": "WSW 6 mph",
+       "sub": "at 4,500 ft \u00b7 ECMWF SW 7 mph",
        "q": 1.0
       },
       {
        "k": "Rain & storms",
-       "v": "48% of runs",
+       "v": "27% of runs",
        "sub": "",
-       "q": 0.32
+       "q": 0.62
       },
       {
        "k": "Model agreement",
@@ -44183,20 +44179,20 @@
       }
      },
      "was": 1.2,
-     "trend": 1.2
+     "trend": 2.5
     },
     "otay": {
-     "rating": 1.44,
-     "label": "No go",
+     "rating": 1.94,
+     "label": "Marginal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.76,
+     "rain_p": 0.47,
      "good_glass": false,
      "base": 3.44,
      "adj": [
       [
        "chance of rain + NWS",
-       -2.0
+       -1.5
       ]
      ],
      "base_parts": {
@@ -44281,8 +44277,8 @@
      "gwin": null,
      "glass_ft": null,
      "note": "gusty",
-     "p_fly": 0.39,
-     "p_xc": 0.34,
+     "p_fly": 0.41,
+     "p_xc": 0.41,
      "agree": "mixed",
      "models": {
       "HRRR": 3.0,
@@ -44321,9 +44317,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "76% of runs",
+       "v": "47% of runs",
        "sub": "",
-       "q": 0.0
+       "q": 0.35
       },
       {
        "k": "Model agreement",
@@ -44463,24 +44459,28 @@
       }
      },
      "was": 1.6,
-     "trend": -0.2
+     "trend": 0.3
     },
     "whalesv": {
-     "rating": 1.0,
+     "rating": 1.2,
      "label": "No go",
      "tags": [],
      "xc": false,
-     "rain_p": 0.66,
+     "rain_p": 0.35,
      "good_glass": false,
      "base": 3.5,
      "adj": [
       [
        "chance of rain + NWS",
-       -2.0
+       -1.0
       ],
       [
        "gusts over 12 mph",
-       -0.5
+       -1.0
+      ],
+      [
+       "wind at the edge of the launch window",
+       -0.3
       ]
      ],
      "base_parts": {
@@ -44565,8 +44565,8 @@
      "gwin": null,
      "glass_ft": null,
      "note": "gusty",
-     "p_fly": 0.39,
-     "p_xc": 0.39,
+     "p_fly": 0.42,
+     "p_xc": 0.42,
      "agree": "mixed",
      "models": {
       "HRRR": 3.1,
@@ -44605,9 +44605,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "66% of runs",
+       "v": "35% of runs",
        "sub": "",
-       "q": 0.07
+       "q": 0.51
       },
       {
        "k": "Model agreement",
@@ -44750,7 +44750,7 @@
       }
      },
      "was": 1.6,
-     "trend": -0.6
+     "trend": -0.4
     },
     "lagunahorse": {
      "rating": 1.0,
@@ -44759,7 +44759,7 @@
       "windy"
      ],
      "xc": false,
-     "rain_p": 0.64,
+     "rain_p": 0.49,
      "good_glass": false,
      "base": 1.25,
      "adj": [
@@ -44878,9 +44878,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "64% of runs",
+       "v": "49% of runs",
        "sub": "",
-       "q": 0.1
+       "q": 0.31
       },
       {
        "k": "Model agreement",
@@ -45031,14 +45031,19 @@
      "trend": 0.0
     },
     "marshall": {
-     "rating": 2.53,
-     "label": "Thermal",
+     "rating": 2.33,
+     "label": "Marginal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.27,
+     "rain_p": 0.14,
      "good_glass": false,
      "base": 2.53,
-     "adj": [],
+     "adj": [
+      [
+       "chance of rain + NWS",
+       -0.2
+      ]
+     ],
      "base_parts": {
       "lv": 3.38,
       "steps": [
@@ -45129,8 +45134,8 @@
      },
      "gwin": null,
      "glass_ft": null,
-     "note": "thermals to 4,900 ft",
-     "p_fly": 1.0,
+     "note": "low lid, 4,900 ft",
+     "p_fly": 0.0,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -45170,9 +45175,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "27% of runs",
+       "v": "14% of runs",
        "sub": "",
-       "q": 0.62
+       "q": 0.8
       },
       {
        "k": "Model agreement",
@@ -45306,7 +45311,7 @@
       }
      },
      "was": 1.0,
-     "trend": 1.5
+     "trend": 1.3
     },
     "santabarbara": {
      "rating": 3.27,
@@ -45944,11 +45949,11 @@
     }
    },
    "nws_rain": true,
-   "best": "santabarbara",
-   "best_main": "elsinore",
-   "headline": "Poor at home sites: strong wind aloft",
+   "best": "soboba",
+   "best_main": "blossom",
+   "headline": "XC at Soboba",
    "why": "Too windy",
-   "rain_p": 0.59,
+   "rain_p": 0.36,
    "cloud": {
     "okta": 1,
     "sun_loss": 0.17,
@@ -45965,7 +45970,7 @@
      "label": "Ridge soaring",
      "tags": [],
      "xc": false,
-     "rain_p": 0.12,
+     "rain_p": 0.1,
      "good_glass": false,
      "base": 4.0,
      "adj": [
@@ -45976,9 +45981,9 @@
      ],
      "base_parts": null,
      "hours": {
-      "9": 1.1,
+      "9": 1.2,
       "10": 1.4,
-      "11": 2.1,
+      "11": 2.4,
       "12": 3.4,
       "13": 3.4,
       "14": 3.4,
@@ -46151,7 +46156,7 @@
      "gwin": null,
      "glass_ft": null,
      "note": "WNW 7 mph",
-     "p_fly": 0.88,
+     "p_fly": 0.93,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -46163,8 +46168,8 @@
      "n_members": 122,
      "lead": "RRFS",
      "top_ft": 1900.0,
-     "base_ft": 3400.0,
-     "wstar": 1.6,
+     "base_ft": 3500.0,
+     "wstar": 1.7,
      "sink": 1.1,
      "core": 1.4,
      "sunset": "4:49pm",
@@ -46177,9 +46182,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "12% of runs",
+       "v": "10% of runs",
        "sub": "",
-       "q": 0.83
+       "q": 0.86
       },
       {
        "k": "Model agreement",
@@ -46304,24 +46309,29 @@
      "trend": 0.0
     },
     "lb": {
-     "rating": 4.73,
+     "rating": 3.74,
      "label": "XC",
      "tags": [],
      "xc": true,
-     "rain_p": 0.09,
+     "rain_p": 0.06,
      "good_glass": true,
-     "base": 4.73,
-     "adj": [],
+     "base": 4.74,
+     "adj": [
+      [
+       "gusts over 12 mph",
+       -1.0
+      ]
+     ],
      "base_parts": {
-      "lv": 4.73,
+      "lv": 4.74,
       "steps": []
      },
      "hours": {
-      "9": 3.0,
-      "10": 3.7,
-      "11": 4.4,
+      "9": 2.8,
+      "10": 3.6,
+      "11": 4.5,
       "12": 4.6,
-      "13": 4.9,
+      "13": 4.8,
       "14": 4.8,
       "15": 4.0,
       "16": 2.7
@@ -46416,7 +46426,7 @@
        "k": "Wind 1 pm",
        "v": "W 2g6",
        "sub": "later W 6g7",
-       "q": 1.0
+       "q": 0.6
       },
       {
        "k": "Wind aloft",
@@ -46426,9 +46436,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "9% of runs",
+       "v": "6% of runs",
        "sub": "",
-       "q": 0.87
+       "q": 0.92
       },
       {
        "k": "Model agreement",
@@ -46544,30 +46554,30 @@
       }
      },
      "was": 5.0,
-     "trend": -0.3
+     "trend": -1.3
     },
     "blossom": {
-     "rating": 4.06,
+     "rating": 4.1,
      "label": "XC",
      "tags": [],
      "xc": true,
-     "rain_p": 0.09,
+     "rain_p": 0.08,
      "good_glass": true,
-     "base": 4.06,
+     "base": 4.1,
      "adj": [],
      "base_parts": {
-      "lv": 4.06,
+      "lv": 4.1,
       "steps": []
      },
      "hours": {
-      "9": 2.6,
+      "9": 2.5,
       "10": 3.5,
-      "11": 3.4,
+      "11": 3.2,
       "12": 4.0,
       "13": 4.2,
       "14": 4.2,
       "15": 3.9,
-      "16": 3.1
+      "16": 3.0
      },
      "win": [
       11,
@@ -46669,9 +46679,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "9% of runs",
+       "v": "8% of runs",
        "sub": "",
-       "q": 0.87
+       "q": 0.89
       },
       {
        "k": "Model agreement",
@@ -46787,29 +46797,29 @@
       }
      },
      "was": 4.1,
-     "trend": -0.0
+     "trend": 0.0
     },
     "elsinore": {
-     "rating": 3.11,
+     "rating": 3.07,
      "label": "Thermal",
      "tags": [
       "no switch"
      ],
      "xc": false,
-     "rain_p": 0.07,
+     "rain_p": 0.01,
      "good_glass": false,
-     "base": 3.11,
+     "base": 3.07,
      "adj": [],
      "base_parts": null,
      "hours": {
       "9": 1.4,
       "10": 2.4,
-      "11": 2.5,
-      "12": 2.5,
-      "13": 2.6,
+      "11": 2.1,
+      "12": 2.2,
+      "13": 2.2,
       "14": 1.0,
       "15": 1.0,
-      "16": 2.2
+      "16": 1.9
      },
      "win": [
       11,
@@ -46883,7 +46893,7 @@
      "lead": "RRFS",
      "top_ft": 4400.0,
      "base_ft": 5100.0,
-     "wstar": 1.5,
+     "wstar": 1.7,
      "sink": 1.1,
      "core": 1.4,
      "sunset": "4:48pm",
@@ -46911,9 +46921,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "7% of runs",
+       "v": "dry",
        "sub": "",
-       "q": 0.91
+       "q": 0.99
       },
       {
        "k": "Model agreement",
@@ -47031,16 +47041,16 @@
       }
      },
      "was": 3.1,
-     "trend": 0.0
+     "trend": -0.0
     },
     "soboba": {
-     "rating": 1.51,
-     "label": "No go",
+     "rating": 1.86,
+     "label": "Marginal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.02,
+     "rain_p": 0.01,
      "good_glass": false,
-     "base": 2.51,
+     "base": 2.86,
      "adj": [
       [
        "crosswind, up to 20\u00b0 outside the launch window",
@@ -47048,11 +47058,11 @@
       ]
      ],
      "base_parts": {
-      "lv": 3.45,
+      "lv": 3.56,
       "steps": [
        [
         "launch",
-        -0.74,
+        -0.55,
         [
          [
           "RRFS",
@@ -47065,23 +47075,23 @@
        ],
        [
         "lowlift",
-        -0.13
+        -0.09
        ],
        [
         "climb",
-        -0.07
+        -0.06
        ]
       ]
      },
      "hours": {
-      "9": 1.7,
+      "9": 2.0,
       "10": 1.3,
-      "11": 2.8,
-      "12": 2.0,
-      "13": 2.1,
-      "14": 2.0,
-      "15": 3.5,
-      "16": 1.2
+      "11": 3.1,
+      "12": 2.5,
+      "13": 2.6,
+      "14": 2.5,
+      "15": 3.6,
+      "16": 1.1
      },
      "win": [
       11,
@@ -47143,7 +47153,7 @@
      "glass_ft": null,
      "note": "over the back",
      "p_fly": 0.42,
-     "p_xc": 0.42,
+     "p_xc": 0.41,
      "agree": "split",
      "models": {
       "RRFS": 1.8,
@@ -47154,8 +47164,8 @@
      "n_members": 122,
      "lead": "RRFS",
      "top_ft": 3500.0,
-     "base_ft": 7100.0,
-     "wstar": 1.4,
+     "base_ft": 6500.0,
+     "wstar": 1.5,
      "sink": 1.1,
      "core": 1.4,
      "sunset": "4:46pm",
@@ -47185,7 +47195,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.97
+       "q": 0.99
       },
       {
        "k": "Model agreement",
@@ -47299,30 +47309,30 @@
       }
      },
      "was": 4.2,
-     "trend": -2.7
+     "trend": -2.3
     },
     "otay": {
-     "rating": 4.09,
+     "rating": 4.32,
      "label": "XC",
      "tags": [],
      "xc": true,
-     "rain_p": 0.11,
+     "rain_p": 0.07,
      "good_glass": false,
-     "base": 4.09,
+     "base": 4.32,
      "adj": [],
      "base_parts": {
-      "lv": 4.09,
+      "lv": 4.32,
       "steps": []
      },
      "hours": {
       "9": 1.0,
-      "10": 3.1,
-      "11": 3.9,
-      "12": 4.1,
-      "13": 3.5,
-      "14": 2.8,
-      "15": 2.5,
-      "16": 1.2
+      "10": 3.5,
+      "11": 4.1,
+      "12": 4.3,
+      "13": 3.4,
+      "14": 2.3,
+      "15": 2.1,
+      "16": 1.1
      },
      "win": [
       11,
@@ -47394,7 +47404,7 @@
      "n_members": 122,
      "lead": "RRFS",
      "top_ft": 3100.0,
-     "base_ft": 4400.0,
+     "base_ft": 4600.0,
      "wstar": 1.9,
      "sink": 1.1,
      "core": 1.4,
@@ -47423,9 +47433,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "11% of runs",
+       "v": "7% of runs",
        "sub": "",
-       "q": 0.85
+       "q": 0.91
       },
       {
        "k": "Model agreement",
@@ -47539,16 +47549,16 @@
       }
      },
      "was": 3.4,
-     "trend": 0.7
+     "trend": 0.9
     },
     "whalesv": {
-     "rating": 3.16,
+     "rating": 3.37,
      "label": "Thermal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.11,
+     "rain_p": 0.07,
      "good_glass": false,
-     "base": 4.16,
+     "base": 4.37,
      "adj": [
       [
        "crosswind, up to 20\u00b0 outside the launch window",
@@ -47556,18 +47566,18 @@
       ]
      ],
      "base_parts": {
-      "lv": 4.16,
+      "lv": 4.37,
       "steps": []
      },
      "hours": {
-      "9": 1.4,
-      "10": 3.0,
-      "11": 3.6,
-      "12": 4.1,
-      "13": 3.6,
-      "14": 3.1,
-      "15": 2.8,
-      "16": 1.3
+      "9": 1.5,
+      "10": 3.4,
+      "11": 4.0,
+      "12": 4.3,
+      "13": 3.5,
+      "14": 2.5,
+      "15": 2.4,
+      "16": 1.2
      },
      "win": [
       11,
@@ -47629,7 +47639,7 @@
      "glass_ft": null,
      "note": "thermals to 3,400 ft",
      "p_fly": 1.0,
-     "p_xc": 0.39,
+     "p_xc": 0.35,
      "agree": "mixed",
      "models": {
       "RRFS": 3.7,
@@ -47639,7 +47649,7 @@
      "n_members": 122,
      "lead": "RRFS",
      "top_ft": 3400.0,
-     "base_ft": 5400.0,
+     "base_ft": 5300.0,
      "wstar": 1.7,
      "sink": 1.1,
      "core": 1.4,
@@ -47668,9 +47678,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "11% of runs",
+       "v": "7% of runs",
        "sub": "",
-       "q": 0.85
+       "q": 0.91
       },
       {
        "k": "Model agreement",
@@ -47789,16 +47799,16 @@
       }
      },
      "was": 2.4,
-     "trend": 0.8
+     "trend": 1.0
     },
     "lagunahorse": {
-     "rating": 1.52,
+     "rating": 1.54,
      "label": "No go",
      "tags": [],
      "xc": false,
      "rain_p": 0.07,
      "good_glass": true,
-     "base": 1.52,
+     "base": 1.54,
      "adj": [],
      "base_parts": null,
      "hours": {
@@ -47806,10 +47816,10 @@
       "10": 1.0,
       "11": 1.0,
       "12": 1.0,
-      "13": 1.6,
+      "13": 1.9,
       "14": 2.7,
       "15": 2.3,
-      "16": 1.4
+      "16": 1.3
      },
      "win": [
       11,
@@ -48029,13 +48039,13 @@
      "trend": 0.3
     },
     "marshall": {
-     "rating": 1.0,
+     "rating": 1.4,
      "label": "No go",
      "tags": [],
      "xc": false,
      "rain_p": 0.02,
      "good_glass": false,
-     "base": 2.18,
+     "base": 2.77,
      "adj": [
       [
        "little sun (mid/high cloud)",
@@ -48043,22 +48053,22 @@
       ],
       [
        "gusts over 12 mph",
-       -0.8
+       -1.0
       ]
      ],
      "base_parts": {
-      "lv": 2.18,
+      "lv": 2.77,
       "steps": []
      },
      "hours": {
-      "9": 1.7,
-      "10": 2.1,
-      "11": 2.5,
-      "12": 2.4,
-      "13": 1.3,
-      "14": 1.3,
-      "15": 2.2,
-      "16": 1.3
+      "9": 2.1,
+      "10": 2.7,
+      "11": 3.0,
+      "12": 2.9,
+      "13": 1.2,
+      "14": 1.2,
+      "15": 2.6,
+      "16": 1.5
      },
      "win": [
       11,
@@ -48129,8 +48139,8 @@
      "n_members": 122,
      "lead": "RRFS",
      "top_ft": 4200.0,
-     "base_ft": 6800.0,
-     "wstar": 1.1,
+     "base_ft": 5900.0,
+     "wstar": 1.5,
      "sink": 1.1,
      "core": 1.4,
      "sunset": "4:46pm",
@@ -48160,7 +48170,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.97
+       "q": 0.98
       },
       {
        "k": "Model agreement",
@@ -48285,34 +48295,38 @@
       }
      },
      "was": 4.2,
-     "trend": -3.2
+     "trend": -2.8
     },
     "santabarbara": {
-     "rating": 3.3,
+     "rating": 2.53,
      "label": "Thermal",
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
      "good_glass": false,
-     "base": 3.67,
+     "base": 3.91,
      "adj": [
       [
        "little sun (mid/high cloud)",
        -0.4
+      ],
+      [
+       "gusts over 12 mph",
+       -1.0
       ]
      ],
      "base_parts": {
-      "lv": 3.67,
+      "lv": 3.91,
       "steps": []
      },
      "hours": {
-      "9": 1.9,
-      "10": 3.2,
-      "11": 3.5,
-      "12": 3.7,
-      "13": 3.7,
-      "14": 3.6,
-      "15": 3.3,
+      "9": 2.2,
+      "10": 3.4,
+      "11": 3.8,
+      "12": 4.0,
+      "13": 4.0,
+      "14": 3.9,
+      "15": 3.6,
       "16": 2.2
      },
      "win": [
@@ -48385,8 +48399,8 @@
      "n_members": 0,
      "lead": "RRFS",
      "top_ft": 4500.0,
-     "base_ft": 4800.0,
-     "wstar": 1.6,
+     "base_ft": 5600.0,
+     "wstar": 1.8,
      "sink": 1.1,
      "core": 1.4,
      "sunset": "4:55pm",
@@ -48404,7 +48418,7 @@
        "k": "Wind 1 pm",
        "v": "SSE 6g7",
        "sub": "later SW 3g4 \u00b7 venturi on the ridge",
-       "q": 0.95
+       "q": 0.6
       },
       {
        "k": "Wind aloft",
@@ -48539,7 +48553,7 @@
       }
      },
      "was": 4.2,
-     "trend": -0.9
+     "trend": -1.7
     },
     "owens": {
      "rating": 1.0,
@@ -48550,7 +48564,7 @@
      "xc": false,
      "rain_p": 0.0,
      "good_glass": false,
-     "base": 1.77,
+     "base": 1.93,
      "adj": [
       [
        "little sun (mid/high cloud)",
@@ -48558,15 +48572,15 @@
       ],
       [
        "gusts over 12 mph",
-       -0.4
+       -0.6
       ]
      ],
      "base_parts": {
-      "lv": 3.34,
+      "lv": 3.27,
       "steps": [
        [
         "lowlift",
-        -1.15,
+        -0.86,
         [
          [
           "RRFS",
@@ -48578,12 +48592,8 @@
         ]
        ],
        [
-        "launch",
-        -0.19
-       ],
-       [
         "gust",
-        -0.17,
+        -0.26,
         [
          [
           "ICON",
@@ -48595,8 +48605,12 @@
         ]
        ],
        [
+        "launch",
+        -0.15
+       ],
+       [
         "climb",
-        -0.05,
+        -0.08,
         [
          [
           "ECMWF",
@@ -48610,9 +48624,9 @@
       ]
      },
      "hours": {
-      "9": 1.6,
-      "10": 1.6,
-      "11": 1.7,
+      "9": 1.9,
+      "10": 2.0,
+      "11": 2.1,
       "12": 1.0,
       "13": 1.1,
       "14": 1.2,
@@ -48689,8 +48703,8 @@
      "n_members": 0,
      "lead": "RRFS",
      "top_ft": 11200.0,
-     "base_ft": 9400.0,
-     "wstar": 0.7,
+     "base_ft": 9100.0,
+     "wstar": 0.8,
      "sink": 1.1,
      "core": 1.4,
      "sunset": "4:45pm",
@@ -48901,11 +48915,11 @@
     }
    },
    "nws_rain": false,
-   "best": "lb",
-   "best_main": "lb",
-   "headline": "XC at Little Black \u00b7 also Otay, Blossom",
+   "best": "otay",
+   "best_main": "blossom",
+   "headline": "XC at Blossom \u00b7 also Otay, Little Black",
    "why": null,
-   "rain_p": 0.09,
+   "rain_p": 0.06,
    "cloud": {
     "okta": 2,
     "sun_loss": 0.02,
@@ -48922,7 +48936,7 @@
      "label": "Ridge soaring",
      "tags": [],
      "xc": false,
-     "rain_p": 0.76,
+     "rain_p": 0.67,
      "good_glass": false,
      "base": 4.0,
      "adj": [
@@ -49080,9 +49094,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "76% of runs",
+       "v": "67% of runs",
        "sub": "",
-       "q": 0.0
+       "q": 0.06
       },
       {
        "k": "Model agreement",
@@ -49191,7 +49205,7 @@
      "label": "Marginal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.7,
+     "rain_p": 0.61,
      "good_glass": false,
      "base": 4.59,
      "adj": [
@@ -49282,7 +49296,7 @@
      "glass_ft": null,
      "note": "gusty",
      "p_fly": 0.39,
-     "p_xc": 0.34,
+     "p_xc": 0.36,
      "agree": "mixed",
      "models": {
       "GFS": 5.0,
@@ -49317,9 +49331,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "70% of runs",
+       "v": "61% of runs",
        "sub": "",
-       "q": 0.01
+       "q": 0.15
       },
       {
        "k": "Model agreement",
@@ -49424,7 +49438,7 @@
      "label": "No go",
      "tags": [],
      "xc": false,
-     "rain_p": 0.74,
+     "rain_p": 0.66,
      "good_glass": false,
      "base": 4.09,
      "adj": [
@@ -49514,8 +49528,8 @@
      "gwin": null,
      "glass_ft": null,
      "note": "gusty",
-     "p_fly": 0.34,
-     "p_xc": 0.26,
+     "p_fly": 0.39,
+     "p_xc": 0.28,
      "agree": "agree",
      "models": {
       "GFS": 4.1,
@@ -49550,9 +49564,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "74% of runs",
+       "v": "66% of runs",
        "sub": "",
-       "q": 0.0
+       "q": 0.08
       },
       {
        "k": "Model agreement",
@@ -49659,7 +49673,7 @@
       "no switch"
      ],
      "xc": false,
-     "rain_p": 0.76,
+     "rain_p": 0.74,
      "good_glass": false,
      "base": 2.61,
      "adj": [
@@ -49742,7 +49756,7 @@
      "gwin": null,
      "glass_ft": null,
      "note": "over the back",
-     "p_fly": 0.11,
+     "p_fly": 0.16,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -49778,7 +49792,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "76% of runs",
+       "v": "74% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -49881,7 +49895,7 @@
      "label": "No go",
      "tags": [],
      "xc": false,
-     "rain_p": 0.68,
+     "rain_p": 0.63,
      "good_glass": false,
      "base": 3.86,
      "adj": [
@@ -49981,8 +49995,8 @@
      "gwin": null,
      "glass_ft": null,
      "note": "not flyable",
-     "p_fly": 0.32,
-     "p_xc": 0.27,
+     "p_fly": 0.37,
+     "p_xc": 0.3,
      "agree": "agree",
      "models": {
       "ECMWF": 3.9,
@@ -50017,9 +50031,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "68% of runs",
+       "v": "63% of runs",
        "sub": "",
-       "q": 0.05
+       "q": 0.12
       },
       {
        "k": "Model agreement",
@@ -50118,7 +50132,7 @@
       "windy"
      ],
      "xc": false,
-     "rain_p": 0.73,
+     "rain_p": 0.67,
      "good_glass": false,
      "base": 4.98,
      "adj": [
@@ -50208,8 +50222,8 @@
      "gwin": null,
      "glass_ft": null,
      "note": "gusty",
-     "p_fly": 0.23,
-     "p_xc": 0.09,
+     "p_fly": 0.22,
+     "p_xc": 0.12,
      "agree": "agree",
      "models": {
       "GFS": 5.0
@@ -50243,9 +50257,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "73% of runs",
+       "v": "67% of runs",
        "sub": "",
-       "q": 0.0
+       "q": 0.06
       },
       {
        "k": "Model agreement",
@@ -50355,7 +50369,7 @@
       "windy"
      ],
      "xc": false,
-     "rain_p": 0.73,
+     "rain_p": 0.66,
      "good_glass": false,
      "base": 5.0,
      "adj": [
@@ -50445,8 +50459,8 @@
      "gwin": null,
      "glass_ft": null,
      "note": "gusty",
-     "p_fly": 0.34,
-     "p_xc": 0.27,
+     "p_fly": 0.37,
+     "p_xc": 0.26,
      "agree": "agree",
      "models": {
       "GFS": 5.0
@@ -50469,7 +50483,7 @@
       {
        "k": "Wind 1 pm",
        "v": "SSW 10g16",
-       "sub": "later W 11g17 \u00b7 cross-S",
+       "sub": "later W 11g17",
        "q": 0.6
       },
       {
@@ -50480,9 +50494,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "73% of runs",
+       "v": "66% of runs",
        "sub": "",
-       "q": 0.0
+       "q": 0.07
       },
       {
        "k": "Model agreement",
@@ -50592,7 +50606,7 @@
      "label": "No go",
      "tags": [],
      "xc": false,
-     "rain_p": 0.57,
+     "rain_p": 0.56,
      "good_glass": false,
      "base": 1.55,
      "adj": [
@@ -50711,9 +50725,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "57% of runs",
+       "v": "56% of runs",
        "sub": "",
-       "q": 0.21
+       "q": 0.22
       },
       {
        "k": "Model agreement",
@@ -50816,17 +50830,17 @@
      "trend": 0.0
     },
     "marshall": {
-     "rating": 2.15,
-     "label": "Marginal",
+     "rating": 2.65,
+     "label": "Thermal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.68,
+     "rain_p": 0.58,
      "good_glass": false,
      "base": 4.65,
      "adj": [
       [
        "chance of rain",
-       -1.5
+       -1.0
       ],
       [
        "gusts over 12 mph",
@@ -50905,8 +50919,8 @@
      },
      "gwin": null,
      "glass_ft": null,
-     "note": "gusty",
-     "p_fly": 0.0,
+     "note": "thermals to 5,600 ft",
+     "p_fly": 1.0,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -50941,9 +50955,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "68% of runs",
+       "v": "58% of runs",
        "sub": "",
-       "q": 0.05
+       "q": 0.19
       },
       {
        "k": "Model agreement",
@@ -51041,7 +51055,7 @@
       }
      },
      "was": 1.0,
-     "trend": 1.1
+     "trend": 1.6
     },
     "santabarbara": {
      "rating": 3.05,
@@ -51558,7 +51572,7 @@
    "best_main": "lb",
    "headline": "Poor at home sites: gusty",
    "why": "Too windy",
-   "rain_p": 0.74,
+   "rain_p": 0.67,
    "cloud": {
     "okta": 5,
     "sun_loss": 0.33,
@@ -51571,17 +51585,21 @@
    "date": "2026-11-17",
    "sites": {
     "torrey": {
-     "rating": 4.0,
+     "rating": 4.24,
      "label": "Thermal day",
      "tags": [],
      "xc": true,
-     "rain_p": 0.55,
+     "rain_p": 0.42,
      "good_glass": false,
      "base": 5.0,
      "adj": [
       [
        "chance of rain",
-       -1.0
+       -0.5
+      ],
+      [
+       "a 5 needs a clean day: 4 at most",
+       -0.3
       ]
      ],
      "base_parts": null,
@@ -51709,8 +51727,8 @@
      "gwin": null,
      "glass_ft": null,
      "note": "thermals above the cliffs to about 3,000 ft",
-     "p_fly": 0.9,
-     "p_xc": 0.88,
+     "p_fly": 0.96,
+     "p_xc": 0.93,
      "agree": "agree",
      "models": {
       "GFS": 5.0,
@@ -51733,9 +51751,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "55% of runs",
+       "v": "42% of runs",
        "sub": "",
-       "q": 0.23
+       "q": 0.41
       },
       {
        "k": "Model agreement",
@@ -51831,7 +51849,7 @@
       }
      },
      "was": 3.9,
-     "trend": 0.1
+     "trend": 0.3
     },
     "lb": {
      "rating": 2.0,
@@ -51840,7 +51858,7 @@
       "windy"
      ],
      "xc": false,
-     "rain_p": 0.56,
+     "rain_p": 0.47,
      "good_glass": false,
      "base": 5.0,
      "adj": [
@@ -51931,7 +51949,7 @@
      "glass_ft": null,
      "note": "strong wind aloft",
      "p_fly": 0.39,
-     "p_xc": 0.38,
+     "p_xc": 0.37,
      "agree": "agree",
      "models": {
       "GFS": 5.0,
@@ -51966,9 +51984,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "56% of runs",
+       "v": "47% of runs",
        "sub": "",
-       "q": 0.22
+       "q": 0.35
       },
       {
        "k": "Model agreement",
@@ -52074,23 +52092,27 @@
      "trend": -1.0
     },
     "blossom": {
-     "rating": 1.2,
+     "rating": 1.4,
      "label": "No go",
      "tags": [
       "windy"
      ],
      "xc": false,
-     "rain_p": 0.61,
+     "rain_p": 0.51,
      "good_glass": false,
      "base": 3.7,
      "adj": [
       [
        "chance of rain",
-       -1.5
+       -1.0
       ],
       [
        "gusts over 12 mph",
        -1.0
+      ],
+      [
+       "wind at top of lift over 25 mph: too windy",
+       -0.3
       ]
      ],
      "base_parts": {
@@ -52175,8 +52197,8 @@
      "gwin": null,
      "glass_ft": null,
      "note": "strong wind aloft",
-     "p_fly": 0.37,
-     "p_xc": 0.3,
+     "p_fly": 0.38,
+     "p_xc": 0.34,
      "agree": "agree",
      "models": {
       "ECMWF": 3.7
@@ -52206,13 +52228,13 @@
        "k": "Wind aloft",
        "v": "W 27 mph",
        "sub": "at 4,600 ft",
-       "q": 1.0
+       "q": 0.2
       },
       {
        "k": "Rain & storms",
-       "v": "61% of runs",
+       "v": "51% of runs",
        "sub": "",
-       "q": 0.15
+       "q": 0.29
       },
       {
        "k": "Model agreement",
@@ -52316,7 +52338,7 @@
       }
      },
      "was": 2.6,
-     "trend": -1.4
+     "trend": -1.2
     },
     "elsinore": {
      "rating": 1.0,
@@ -52325,7 +52347,7 @@
       "no launch window"
      ],
      "xc": false,
-     "rain_p": 0.44,
+     "rain_p": 0.32,
      "good_glass": false,
      "base": 1.0,
      "adj": [],
@@ -52399,7 +52421,7 @@
      "gwin": null,
      "glass_ft": null,
      "note": "over the back",
-     "p_fly": 0.16,
+     "p_fly": 0.13,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -52435,9 +52457,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "44% of runs",
+       "v": "32% of runs",
        "sub": "",
-       "q": 0.38
+       "q": 0.55
       },
       {
        "k": "Model agreement",
@@ -52541,17 +52563,17 @@
      "trend": 0.0
     },
     "soboba": {
-     "rating": 2.58,
+     "rating": 3.08,
      "label": "Thermal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.48,
+     "rain_p": 0.37,
      "good_glass": false,
      "base": 4.58,
      "adj": [
       [
        "chance of rain",
-       -1.0
+       -0.5
       ],
       [
        "gusts over 12 mph",
@@ -52632,7 +52654,7 @@
      "glass_ft": null,
      "note": "thermals to 5,200 ft",
      "p_fly": 1.0,
-     "p_xc": 0.34,
+     "p_xc": 0.39,
      "agree": "agree",
      "models": {
       "ECMWF": 4.6,
@@ -52667,9 +52689,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "48% of runs",
+       "v": "37% of runs",
        "sub": "",
-       "q": 0.32
+       "q": 0.48
       },
       {
        "k": "Model agreement",
@@ -52760,7 +52782,7 @@
       }
      },
      "was": 2.2,
-     "trend": 0.4
+     "trend": 0.9
     },
     "otay": {
      "rating": 1.0,
@@ -52769,7 +52791,7 @@
       "windy"
      ],
      "xc": false,
-     "rain_p": 0.64,
+     "rain_p": 0.48,
      "good_glass": false,
      "base": 1.0,
      "adj": [],
@@ -52864,8 +52886,8 @@
      "gwin": null,
      "glass_ft": null,
      "note": "blown out",
-     "p_fly": 0.29,
-     "p_xc": 0.21,
+     "p_fly": 0.3,
+     "p_xc": 0.24,
      "agree": "agree",
      "models": {
       "GFS": 1.0,
@@ -52900,9 +52922,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "64% of runs",
+       "v": "48% of runs",
        "sub": "",
-       "q": 0.1
+       "q": 0.33
       },
       {
        "k": "Model agreement",
@@ -53015,7 +53037,7 @@
       "windy"
      ],
      "xc": false,
-     "rain_p": 0.6,
+     "rain_p": 0.44,
      "good_glass": false,
      "base": 1.0,
      "adj": [],
@@ -53110,8 +53132,8 @@
      "gwin": null,
      "glass_ft": null,
      "note": "blown out",
-     "p_fly": 0.34,
-     "p_xc": 0.29,
+     "p_fly": 0.32,
+     "p_xc": 0.31,
      "agree": "agree",
      "models": {
       "GFS": 1.0,
@@ -53146,9 +53168,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "60% of runs",
+       "v": "44% of runs",
        "sub": "",
-       "q": 0.16
+       "q": 0.38
       },
       {
        "k": "Model agreement",
@@ -53261,7 +53283,7 @@
       "windy"
      ],
      "xc": false,
-     "rain_p": 0.57,
+     "rain_p": 0.43,
      "good_glass": false,
      "base": 1.0,
      "adj": [],
@@ -53371,9 +53393,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "57% of runs",
+       "v": "43% of runs",
        "sub": "",
-       "q": 0.2
+       "q": 0.4
       },
       {
        "k": "Model agreement",
@@ -53484,7 +53506,7 @@
      "label": "XC",
      "tags": [],
      "xc": true,
-     "rain_p": 0.43,
+     "rain_p": 0.36,
      "good_glass": false,
      "base": 5.0,
      "adj": [
@@ -53605,9 +53627,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "43% of runs",
+       "v": "36% of runs",
        "sub": "",
-       "q": 0.4
+       "q": 0.5
       },
       {
        "k": "Model agreement",
@@ -54216,11 +54238,11 @@
     }
    },
    "nws_rain": false,
-   "best": "marshall",
+   "best": "torrey",
    "best_main": "lb",
    "headline": "XC at Marshall \u00b7 Torrey thermal day",
    "why": "Too windy",
-   "rain_p": 0.54,
+   "rain_p": 0.43,
    "cloud": {
     "okta": 1,
     "sun_loss": 0.04,
@@ -54237,7 +54259,7 @@
      "label": "Thermal day",
      "tags": [],
      "xc": true,
-     "rain_p": 0.14,
+     "rain_p": 0.1,
      "good_glass": false,
      "base": 4.99,
      "adj": [],
@@ -54366,8 +54388,8 @@
      "gwin": null,
      "glass_ft": null,
      "note": "thermals above the cliffs to about 2,600 ft",
-     "p_fly": 0.98,
-     "p_xc": 0.8,
+     "p_fly": 1.0,
+     "p_xc": 0.88,
      "agree": "agree",
      "models": {
       "GFS": 5.0,
@@ -54390,9 +54412,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "14% of runs",
+       "v": "10% of runs",
        "sub": "",
-       "q": 0.8
+       "q": 0.86
       },
       {
        "k": "Model agreement",
@@ -54491,7 +54513,7 @@
       "glass-off"
      ],
      "xc": true,
-     "rain_p": 0.13,
+     "rain_p": 0.08,
      "good_glass": false,
      "base": 5.0,
      "adj": [
@@ -54616,9 +54638,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "13% of runs",
+       "v": "8% of runs",
        "sub": "",
-       "q": 0.82
+       "q": 0.89
       },
       {
        "k": "Model agreement",
@@ -54717,7 +54739,7 @@
      "label": "Thermal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.2,
+     "rain_p": 0.09,
      "good_glass": false,
      "base": 4.29,
      "adj": [
@@ -54800,7 +54822,7 @@
      "glass_ft": null,
      "note": "thermals to 4,300 ft",
      "p_fly": 1.0,
-     "p_xc": 0.4,
+     "p_xc": 0.42,
      "agree": "agree",
      "models": {
       "ICON": 4.4,
@@ -54835,9 +54857,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "20% of runs",
+       "v": "9% of runs",
        "sub": "",
-       "q": 0.72
+       "q": 0.87
       },
       {
        "k": "Model agreement",
@@ -54938,7 +54960,7 @@
       "no switch"
      ],
      "xc": false,
-     "rain_p": 0.11,
+     "rain_p": 0.07,
      "good_glass": false,
      "base": 2.75,
      "adj": [
@@ -55018,7 +55040,7 @@
      "glass_ft": null,
      "note": "thermals to 4,000 ft",
      "p_fly": 1.0,
-     "p_xc": 0.09,
+     "p_xc": 0.13,
      "agree": "agree",
      "models": {
       "GFS": 2.9,
@@ -55053,9 +55075,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "11% of runs",
+       "v": "7% of runs",
        "sub": "",
-       "q": 0.84
+       "q": 0.91
       },
       {
        "k": "Model agreement",
@@ -55156,7 +55178,7 @@
      "label": "XC",
      "tags": [],
      "xc": true,
-     "rain_p": 0.09,
+     "rain_p": 0.07,
      "good_glass": false,
      "base": 4.05,
      "adj": [
@@ -55274,9 +55296,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "9% of runs",
+       "v": "7% of runs",
        "sub": "",
-       "q": 0.87
+       "q": 0.91
       },
       {
        "k": "Model agreement",
@@ -55371,7 +55393,7 @@
      "label": "XC",
      "tags": [],
      "xc": true,
-     "rain_p": 0.22,
+     "rain_p": 0.11,
      "good_glass": false,
      "base": 4.65,
      "adj": [
@@ -55489,9 +55511,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "22% of runs",
+       "v": "11% of runs",
        "sub": "",
-       "q": 0.69
+       "q": 0.85
       },
       {
        "k": "Model agreement",
@@ -55586,7 +55608,7 @@
      "label": "XC",
      "tags": [],
      "xc": true,
-     "rain_p": 0.2,
+     "rain_p": 0.11,
      "good_glass": false,
      "base": 4.78,
      "adj": [
@@ -55704,9 +55726,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "20% of runs",
+       "v": "11% of runs",
        "sub": "",
-       "q": 0.72
+       "q": 0.85
       },
       {
        "k": "Model agreement",
@@ -55801,7 +55823,7 @@
      "label": "No go",
      "tags": [],
      "xc": false,
-     "rain_p": 0.2,
+     "rain_p": 0.06,
      "good_glass": false,
      "base": 1.37,
      "adj": [],
@@ -55911,9 +55933,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "20% of runs",
+       "v": "6% of runs",
        "sub": "",
-       "q": 0.71
+       "q": 0.92
       },
       {
        "k": "Model agreement",
@@ -56019,7 +56041,7 @@
      "label": "Thermal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.09,
+     "rain_p": 0.06,
      "good_glass": false,
      "base": 4.3,
      "adj": [
@@ -56137,9 +56159,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "9% of runs",
+       "v": "6% of runs",
        "sub": "",
-       "q": 0.87
+       "q": 0.92
       },
       {
        "k": "Model agreement",
@@ -56749,7 +56771,7 @@
    "best_main": "lb",
    "headline": "XC at Little Black \u00b7 also Whale's V, Otay, Soboba \u00b7 Torrey thermal day",
    "why": null,
-   "rain_p": 0.15,
+   "rain_p": 0.09,
    "cloud": {
     "okta": 4,
     "sun_loss": 0.15,
