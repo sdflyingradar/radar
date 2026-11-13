@@ -3,27 +3,27 @@
   "name": "San Diego / Miramar",
   "lat": 32.85,
   "lon": -117.12,
-  "obs": "2026-11-12T12:00Z",
+  "obs": "2026-11-13T12:00Z",
   "file": "stations/NKX_latest.txt",
-  "levels": 3622,
+  "levels": 3749,
   "v": 2
  },
  "VBG": {
   "name": "Vandenberg",
   "lat": 34.75,
   "lon": -120.57,
-  "obs": "2026-11-12T12:00Z",
+  "obs": "2026-11-13T12:00Z",
   "file": "stations/VBG_latest.txt",
-  "levels": 177,
+  "levels": 178,
   "v": 2
  },
  "VEF": {
   "name": "Las Vegas",
   "lat": 36.05,
   "lon": -115.18,
-  "obs": "2026-11-12T12:00Z",
+  "obs": "2026-11-13T12:00Z",
   "file": "stations/VEF_latest.txt",
-  "levels": 6776,
+  "levels": 6993,
   "v": 2
  }
 }
