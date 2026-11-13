@@ -78,7 +78,9 @@ RAIN_P = 0.6                       # (display) share of runs with any rain, for 
 # one comes): the chance of rain and the NWS each cost a bit, together never more than RAIN_MAX_STEP
 RAIN_PROB_STEP = [(0.6, 1.5), (0.45, 1.0), (0.3, 0.5)]   # share of runs with rain at the site
 NWS_STEP, NWS_MIN_P = 0.5, 0.3              # NWS names showers/rain that day, and the models show 30%+
-RAIN_MAX_STEP = 2.0
+RAIN_MAX_STEP = 2.0                         # real rain: half the runs with 2 mm+ in the flying hours
+SHOWER_MAX_STEP = 1.0                       # showers (a chance of a few sprinkles): 1 at most
+REAL_RAIN_MM, REAL_RAIN_P = 2.0, 0.4
 # a grey day (10 am to sunset, see cloud_day) costs at thermal sites by how much sunshine is lost at the
 # ground, not by cloud cover alone (thin cirrus lets most of it through); the ridge (Torrey) is left alone
 # mid/high cloud over the site (okta, eighths of the sky) costs points: 6/8 about 0.75, 8/8 about 1.75;
@@ -2061,7 +2063,7 @@ def nws_rain_days(nws, dates):
             out |= {sat.isoformat(), (sat + timedelta(days=1)).isoformat()}
     return out & set(dates)
 
-def weather_steps(rating, shower_p, nws_rain, cloud, rain_ok=False, ridge=False):
+def weather_steps(rating, shower_p, nws_rain, cloud, rain_ok=False, ridge=False, heavy_p=0.0):
     """The rating after the rain chance, the NWS and a sunless sky have had their say.
     shower_p: share of runs with rain at the site; cloud: (cover 0-1, sun lost 0-1) or None.
     rain_ok sites (Torrey: you land when a cell comes) and ridge sites skip the cloud, the NWS and a mere
@@ -2074,7 +2076,8 @@ def weather_steps(rating, shower_p, nws_rain, cloud, rain_ok=False, ridge=False)
         step += NWS_STEP
     elif nws_rain and shower_p >= 0.1:           # ... a little when they barely do
         step += 0.2
-    step = min(step, RAIN_MAX_STEP)
+    # real rain (40%+ of runs with 2 mm or more in the flying hours) up to 2; mere showers 1 at most
+    step = min(step, RAIN_MAX_STEP if heavy_p >= REAL_RAIN_P else SHOWER_MAX_STEP)
     cstep = 0.0
     if cloud:
         okta = round(cloud[0] * 8)
@@ -2223,6 +2226,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             runs_all = cell["ens"] or list(D.values())
             # (only rain in the flying hours, 11 am-4 pm: morning showers behind a front don't spoil the afternoon)
             shower_p = sum(1 for a in runs_all if a.get("pr_fly", a["pr"]) >= 0.2) / len(runs_all)
+            heavy_p = sum(1 for a in runs_all if a.get("pr_fly", a["pr"]) >= REAL_RAIN_MM) / len(runs_all)
             # the rating only counts rain that lasts through the flying window, weighted like the rating
             wet_by = {k: v.get("wet_f", 0.0) for k, v in D.items()}
             wet_f = blend(wet_by) if wet_by else (median([a.get("wet_f", 0.0) for a in cell["ens"]]) if cell["ens"] else 0.0)
@@ -2242,13 +2246,13 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 r0 = rating
                 rating, cstep = weather_steps(rating, shower_p, dstr in nws_days, cl,
                                               rain_ok=s.get("rain") == "true" and not thermal_day,
-                                              ridge=ridge_site and not thermal_day)
+                                              ridge=ridge_site and not thermal_day, heavy_p=heavy_p)
                 # split the drop that really happened (it stops at 1) between rain and cloud, in proportion
                 drop = r0 - rating
                 if drop >= 0.05:
                     planned_rain = max(0.0, min(WEATHER_MAX_STEP, (r0 - weather_steps(r0, shower_p, dstr in nws_days, None,
                                                                                      rain_ok=s.get("rain") == "true" and not thermal_day,
-                                                                                     ridge=ridge_site and not thermal_day)[0])))
+                                                                                     ridge=ridge_site and not thermal_day, heavy_p=heavy_p)[0])))
                     planned = planned_rain + cstep
                     rain_part = drop * planned_rain / planned if planned else 0.0
                     if rain_part >= 0.05:
