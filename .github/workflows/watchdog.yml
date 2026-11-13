@@ -1,7 +1,7 @@
 name: Watchdog
 
 # GitHub's scheduler can run a job an hour or more late, or drop it. Every 20 minutes this checks whether the
-# forecast and the thermal charts got their last scheduled update; if one is missing (20+ min after its time)
+# forecast, the thermal charts and the balloons got their last scheduled update; if one is missing (20+ min after its time)
 # and nothing is running, it starts that run itself. The late scheduled run then does nothing (its gate sees
 # fresh data).
 on:
@@ -23,6 +23,7 @@ jobs:
           sparse-checkout: |
             data/forecast.json
             data/region/regions.json
+            data/sounding/nkx_latest.json
           sparse-checkout-cone-mode: false
       - name: Start missing runs
         env:
@@ -36,10 +37,12 @@ jobs:
           jobs = [("forecast.yml", "data/forecast.json",
                    [(h, 30) for h in (13, 15, 16, 18, 20, 22, 0, 2, 6, 10)], (10, 30)),
                   ("region.yml", "data/region/regions.json",
-                   [(h, 34) for h in (13, 15, 16, 20, 23, 2, 6, 10)], (10, 34))]
+                   [(h, 34) for h in (13, 15, 16, 20, 23, 2, 6, 10)], (10, 34)),
+                  ("sounding.yml", "data/sounding/nkx_latest.json", [(13, 5), (1, 5)], None)]
           def gen(path):
               try:
-                  g = json.load(open(path))["generated"].replace("Z", "+00:00")
+                  j = json.load(open(path))
+                  g = (j.get("generated") or j["fetched"]).replace("Z", "+00:00")
                   return d.datetime.fromisoformat(g if "+" in g[10:] else g + "+00:00")
               except Exception:
                   return d.datetime(2000, 1, 1, tzinfo=d.timezone.utc)
@@ -64,7 +67,7 @@ jobs:
               if busy not in ("", "0"):
                   print(f"  missing, but a run is already going ({busy})")
                   continue
-              args = ["gh", "workflow", "run", wf, "-f", f"light={'true' if hm == light else 'false'}"]
+              args = ["gh", "workflow", "run", wf] + ([] if light is None else ["-f", f"light={'true' if hm == light else 'false'}"])
               print("  missing: starting it", args)
               subprocess.run(args, check=True)
           PY
