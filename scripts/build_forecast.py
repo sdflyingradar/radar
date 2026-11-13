@@ -81,6 +81,7 @@ NWS_STEP, NWS_MIN_P = 0.5, 0.3              # NWS names showers/rain that day, a
 RAIN_MAX_STEP = 2.0                         # real rain: half the runs with 2 mm+ in the flying hours
 SHOWER_MAX_STEP = 1.0                       # showers (a chance of a few sprinkles): 1 at most
 REAL_RAIN_MM, REAL_RAIN_P = 2.0, 0.4
+SHOWER_MM = 0.5                             # a run with less than this in the flying hours is dry
 # a grey day (10 am to sunset, see cloud_day) costs at thermal sites by how much sunshine is lost at the
 # ground, not by cloud cover alone (thin cirrus lets most of it through); the ridge (Torrey) is left alone
 # mid/high cloud over the site (okta, eighths of the sky) costs points: 6/8 about 0.75, 8/8 about 1.75;
@@ -2225,7 +2226,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             # scattered showers rarely hit one grid point, so use the share of runs with rain here
             runs_all = cell["ens"] or list(D.values())
             # (only rain in the flying hours, 11 am-4 pm: morning showers behind a front don't spoil the afternoon)
-            shower_p = sum(1 for a in runs_all if a.get("pr_fly", a["pr"]) >= 0.2) / len(runs_all)
+            # (a run counts as showery from 0.5 mm: a trace is a sprinkle you wait out)
+            shower_p = sum(1 for a in runs_all if a.get("pr_fly", a["pr"]) >= SHOWER_MM) / len(runs_all)
             heavy_p = sum(1 for a in runs_all if a.get("pr_fly", a["pr"]) >= REAL_RAIN_MM) / len(runs_all)
             # the rating only counts rain that lasts through the flying window, weighted like the rating
             wet_by = {k: v.get("wet_f", 0.0) for k, v in D.items()}
