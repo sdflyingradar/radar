@@ -120,6 +120,11 @@ def rating_models(names):
     return g or names
 
 
+# RRFS counts double on its own days, but at the far end of its range (2+ days out) only as much as the global
+# models together, so it can't veto a day they all see dry (set per day in the main loop)
+RRFS_LEAD_W = 2.0
+
+
 def rrfs_led(names):
     names = set(names)
     return "RRFS" in names and "HRRR" not in names
@@ -132,7 +137,7 @@ def model_weight(name, names):
         return HIRES_W.get(name, 1)
     if rrfs_led(names):
         n_glob = sum(1 for n in names if n in GLOBAL)
-        return 2.0 if name == "RRFS" else 1.0 / max(1, n_glob)
+        return RRFS_LEAD_W if name == "RRFS" else 1.0 / max(1, n_glob)
     return MODEL_WEIGHT.get(name, 1)
 
 
@@ -1478,7 +1483,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
                    round(x["lg"]) if x["lg"] is not None else None]
                for h, x in hours + [(h, x) for h, x in late_w if x is not None] if 9 <= h <= 18},
         "xc_block": sum(1 for h, s in win if s["xc_block"]) >= max(1, len(win) // 2) if win else False,
-        "pr": sum(s["pr"] for _, s in hours), "pr_win": window_rain,
+        "pr": sum(s["pr"] for _, s in hours), "pr_win": window_rain, "pr_fly": sum(s["pr"] for h, s in hours if 11 <= h <= 16),
         "wet_f": (sum(1 for _, s in win if s["pr"] >= WET_MM) / len(win)) if win else 0.0, "cape": max(s["cape"] for _, s in hours),
     }
 
@@ -2053,8 +2058,10 @@ def weather_steps(rating, shower_p, nws_rain, cloud, rain_ok=False, ridge=False)
         step = next((st for p0, st in RAIN_PROB_STEP if shower_p >= p0 and p0 >= 0.45), 0.0)
         return max(1.0, rating - step), 0.0
     step = next((st for p0, st in RAIN_PROB_STEP if shower_p >= p0), 0.0)
-    if nws_rain and shower_p >= NWS_MIN_P:
+    if nws_rain and shower_p >= NWS_MIN_P:       # the NWS counts in full when the models also rain in the flying hours
         step += NWS_STEP
+    elif nws_rain and shower_p >= 0.1:           # ... a little when they barely do
+        step += 0.2
     step = min(step, RAIN_MAX_STEP)
     cstep = 0.0
     if cloud:
@@ -2117,6 +2124,7 @@ def ecmwf_wind_for_globals(det, log):
 
 
 def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, cdata=None):
+    global RRFS_LEAD_W
     days = {}
     det = ecmwf_wind_for_globals(det, log)
 
@@ -2170,6 +2178,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
     today = utcnow().astimezone(_tz()).date().isoformat()
     out_days = []
     for dstr in [d for d in sorted(days) if d >= today][:DAYS]:
+        RRFS_LEAD_W = 1.0 if (date.fromisoformat(dstr) - date.fromisoformat(today)).days >= 2 else 2.0
         drow = {"date": dstr, "sites": {}, "regime": regimes.get(dstr),
                 "nws_rain": dstr in nws_days}
         for s in sites:
@@ -2200,7 +2209,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                     adj.append([label, round(rating - before, 1)])
             # scattered showers rarely hit one grid point, so use the share of runs with rain here
             runs_all = cell["ens"] or list(D.values())
-            shower_p = sum(1 for a in runs_all if a["pr"] >= 0.2) / len(runs_all)
+            # (only rain in the flying hours, 11 am-4 pm: morning showers behind a front don't spoil the afternoon)
+            shower_p = sum(1 for a in runs_all if a.get("pr_fly", a["pr"]) >= 0.2) / len(runs_all)
             # the rating only counts rain that lasts through the flying window, weighted like the rating
             wet_by = {k: v.get("wet_f", 0.0) for k, v in D.items()}
             wet_f = blend(wet_by) if wet_by else (median([a.get("wet_f", 0.0) for a in cell["ens"]]) if cell["ens"] else 0.0)
