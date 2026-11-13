@@ -907,7 +907,7 @@ def score_hour(site, hr, i, levels, elev_m):
     off_mph = (sector_max(pts, launch_m, max(onog.get("top_ft", 4000) / FT, usable_show), *onog["from"]) * 1.15078
                if onog else None)
 
-    codes, q = [], 1.0
+    codes, q, cf = [], 1.0, 1.0                  # cf: the climb, its own multiplier on the score (below)
     qp = {}                                      # what took q down, by cause (multipliers), for the score breakdown
     def qx(cat, m):
         nonlocal q
@@ -1015,12 +1015,11 @@ def score_hour(site, hr, i, levels, elev_m):
     if site["kind"] != "ridge":
         ok_agl = max(300.0, (site.get("ok_ft", site["launch_ft"] + 2000) - site["launch_ft"]) / FT)
         lift = clamp((agl - 100) / (ok_agl - 100))
-        # thermal strength from the climb rate, linear: 0 m/s none, 1 m/s half, 2 m/s and more full
-        strength = clamp((CORE * wstar - SINK) / 2.0)
-        both = 0.15 + 0.85 * lift * (0.4 + 0.6 * strength)
-        lift_only = 0.15 + 0.85 * lift              # split: the lift share (height above launch), then the climb share
+        lift_only = 0.15 + 0.85 * lift              # the lift share (height above launch)
         qx("lowlift", lift_only)
-        qx("climb", both / lift_only if lift_only > 0 else 1.0)
+        # the climb is its own multiplier on the score, outside q's cushion: a 1 m/s day with high tops is not a
+        # 2 m/s day. 0 m/s 0.35, 0.5 m/s 0.5, 1 m/s 0.7, 1.5 m/s 0.85, 2 m/s and more 1
+        cf = climb_factor(CORE * wstar - SINK)
         if agl < 200:
             codes.append("lid")
         elif wstar < 1.0:
@@ -1056,7 +1055,7 @@ def score_hour(site, hr, i, levels, elev_m):
             "launch_pts": launch_pts if launch_pts is not None else (1.0 if good_launch else 0.0),
             "dbg": [top_parcel, blh, base, z0],              # height ingredients, for calibration only
             "usable": usable, "usable_show": usable_show, "peak_top": peak_top, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, CORE * wstar - SINK),
-            "gcat": gcat, "qp": qp,
+            "gcat": gcat, "qp": qp, "cf": cf,
             "into": bool(on and lw_mph is not None and lw_mph >= max(3.0, lo)),   # blowing into the launch, not just light
             "off": (off_window(site, ld) if site_face(site) is not None and ld is not None
                     and lw_mph is not None and not light and (site["kind"] != "ridge" or lw_mph > 4) else None),
@@ -1065,7 +1064,18 @@ def score_hour(site, hr, i, levels, elev_m):
             "offshore": off_mph}
 
 
-def score_parts(lv_raw, lv, q, qp):
+def climb_factor(climb):
+    """The climb's multiplier on a thermal score (m/s -> 0.35..1)."""
+    pts = [(0.0, 0.35), (0.5, 0.5), (1.0, 0.7), (1.5, 0.85), (2.0, 1.0)]
+    if climb >= 2.0:
+        return 1.0
+    for (a, fa), (b, fb) in zip(pts, pts[1:]):
+        if climb <= b:
+            return fa + (fb - fa) * (max(climb, a) - a) / (b - a)
+    return 1.0
+
+
+def score_parts(lv_raw, lv, q, qp, cf=1.0):
     """One hour's rating 1 + (lv - 1) * clamp(q / 0.6), told as steps: the height level (lv_raw), a cap when the
     lift is above the XC height but the climb is under 1 m/s (weakclimb), then what each cause in q took. The points
     a cause takes are its share of the shortfall on a log scale (q = product of the causes), so they add up."""
@@ -1073,6 +1083,8 @@ def score_parts(lv_raw, lv, q, qp):
     if lv_raw - lv > 1e-6:
         loss["weakclimb"] = lv_raw - lv
     short = (lv - 1.0) * (1 - clamp(q / 0.6))
+    if cf < 0.999:
+        loss["climb"] = (lv - 1.0) * clamp(q / 0.6) * (1 - cf)
     if short > 1e-6:
         cuts = {c: m for c, m in qp.items() if m < 0.999}
         zeros = [c for c, m in cuts.items() if m <= 1e-6]
@@ -1279,7 +1291,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
             # drift aloft stays out of the score, so XC itself is a verdict read off the finished score.)
             if sc["climb"] < XC_MIN_CLIMB and sc["peak_top"] * FT >= (site.get("xc_top_ft") or 1e9):
                 lv = min(lv, 3.4)
-            return 1.0 + (lv - 1.0) * clamp(sc["q"] / 0.6)
+            return 1.0 + (lv - 1.0) * clamp(sc["q"] / 0.6) * sc.get("cf", 1.0)
         if style == "convergence":
             conv = [(h, sc) for h, sc in win if sc["xc_s"] > 0]
             if conv:
@@ -1318,7 +1330,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
                 best_h, sc = max(launchable + during, key=lambda x: x[1]["peak_top"])
                 h4 = best4_height(launchable + during, site.get("_bias_m", 0.0))
                 peak = h4 if h4 is not None else sc["peak_top"]
-                lv = 1.0 + (ceil_level(site, peak * FT) - 1.0) * clamp(max(x["q"] for _, x in launchable) / 0.6)
+                lv = 1.0 + (ceil_level(site, peak * FT) - 1.0) * max(clamp(x["q"] / 0.6) * x.get("cf", 1.0) for _, x in launchable)
                 if switch_h is None or switch_h > 16:
                     rating = min(lv, 3.2)
                     switch_tag = "late switch" if switch_h else "no switch"
@@ -1348,7 +1360,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
                 top_ft_ = (h4 if h4 is not None else _sc["peak_top"]) * FT
                 lv_raw = ceil_level(site, top_ft_)
                 lv = lv_raw if (_sc["climb"] >= XC_MIN_CLIMB or top_ft_ < (site.get("xc_top_ft") or 1e9)) else min(lv_raw, 3.4)
-                parts.append(score_parts(lv_raw, lv, _sc["q"], _sc.get("qp") or {}))
+                parts.append(score_parts(lv_raw, lv, _sc["q"], _sc.get("qp") or {}, _sc.get("cf", 1.0)))
             base_parts = {"lv": sum(x["lv"] for x in parts) / len(parts),
                           "loss": {c_: sum(x["loss"].get(c_, 0.0) for x in parts) / len(parts) for c_ in {c for x in parts for c in x["loss"]}}}
             best_h, _r, sc = ranked[0]
@@ -1476,7 +1488,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "dbg": [[h, x["dbg"]] for h, x in hours if 9 <= h <= 16],
         # how good each hour is on the 1-5 scale (height level x conditions), for the hour strip on the site card
         "hr": {h: round(min(1.0 + 3.0 * clamp(x["q"] / 0.7), 4.0 if (x["lw"] or 0) >= RIDGE_GOOD_MPH else 3.4) if style == "ridge"   # ridge: up to 4, a 3 under 10 mph
-                        else (1.0 + (ceil_level(site, x["peak_top"] * FT) - 1.0) * clamp(x["q"] / 0.6)), 2)
+                        else (1.0 + (ceil_level(site, x["peak_top"] * FT) - 1.0) * clamp(x["q"] / 0.6) * x.get("cf", 1.0)), 2)
                for h, x in hours if 9 <= h <= 18},
         # launch wind each hour (direction, mph, gust mph), for the ridge site's hour strip
         "hw": {h: [round(x["ld"]) if x["ld"] is not None else None, round(x["lw"]) if x["lw"] is not None else None,
