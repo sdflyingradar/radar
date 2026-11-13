@@ -294,7 +294,8 @@ class RainAndSun(unittest.TestCase):
     def test_rain_steps(self):
         self.assertAlmostEqual(bf.weather_steps(4.0, 0.32, False, None)[0], 3.5)
         self.assertAlmostEqual(bf.weather_steps(4.0, 0.50, False, None)[0], 3.0)
-        self.assertAlmostEqual(bf.weather_steps(4.0, 0.65, True, None)[0], 2.0)
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.65, True, None)[0], 3.0)                # showers: 1 at most
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.65, True, None, heavy_p=0.5)[0], 2.0)   # real rain: up to 2
 
     def test_grey_wet_saturday_below_3(self):
         self.assertLess(bf.weather_steps(3.83, 0.45, True, (1.0, 0.41))[0], 2.5)   # Little Black
