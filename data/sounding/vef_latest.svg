@@ -2,7 +2,7 @@
 <rect width="800" height="880" fill="#fff"/>
 <defs><clipPath id="c0"><rect x="52" y="84" width="548" height="742"/></clipPath></defs>
 <text x="52" y="24" font-size="16" font-weight="700" fill="#111827">VEF sounding<tspan dx="8" font-size="12.5" font-weight="500" fill="#6b7280">12Z (4 am PST) · 13 Nov 2026</tspan></text>
-<text x="790" y="24" text-anchor="end" font-size="13" font-weight="700" fill="#e07b00">Today: high 70°F <tspan font-weight="500">(68–72)</tspan> → thermals ~3,500 ft <tspan font-weight="500">(3,200–4,700)</tspan></text>
+<text x="790" y="24" text-anchor="end" font-size="13" font-weight="700" fill="#e07b00">Tomorrow: high 67°F <tspan font-weight="500">(64–68)</tspan> → thermals ~2,900 ft <tspan font-weight="500">(2,600–3,200)</tspan></text>
 <path d="M52 45h16" stroke="#ff0000" stroke-width="2.4" stroke-linecap="round"/><text x="74" y="49" fill="#111827">Temperature</text>
 <path d="M151.3 45h16" stroke="#00c400" stroke-width="2.4" stroke-linecap="round"/><text x="173.3" y="49" fill="#111827">Dew point</text>
 <path d="M238 45h16" stroke="#0000ff" stroke-width="2.4" stroke-linecap="round"/><text x="260" y="49" fill="#111827">Cloudbase</text>
@@ -10,134 +10,106 @@
 <path d="M405.1 45h16" stroke="#e07b00" stroke-width="3.2" stroke-linecap="round"/><text x="427.1" y="49" fill="#111827">Forecast high</text>
 <rect x="517" y="40" width="16" height="10" rx="2" fill="#e07b00" fill-opacity="0.22"/><text x="539" y="49" fill="#111827">Likely range</text>
 <rect x="621" y="40" width="16" height="10" rx="2" fill="#3b6fd8" fill-opacity="0.16"/><text x="643" y="49" fill="#111827">Inversion</text>
-<text x="52" y="70" fill="#111827"><tspan fill="#0000ff" font-weight="600">Cloudbase 10,100 ft</tspan> (trigger 74°F)<tspan fill="#9ca3af" dx="10">·</tspan><tspan dx="10"></tspan><tspan fill="#3b6fd8" font-weight="600">Inversion 2,300–2,700 ft</tspan> (+6°F)<tspan fill="#9ca3af" dx="10">·</tspan><tspan dx="10"></tspan><tspan fill="#3b6fd8" font-weight="600">Inversion 13,300–13,900 ft</tspan> (+8°F)</text>
+<text x="52" y="70" fill="#111827"><tspan fill="#0000ff" font-weight="600">Cloudbase 10,100 ft</tspan> (trigger 74°F)<tspan fill="#9ca3af" dx="10">·</tspan><tspan dx="10"></tspan><tspan fill="#3b6fd8" font-weight="600">Inversion 2,300–2,700 ft</tspan> (+6°F)</text>
 <rect x="52" y="84" width="548" height="742" rx="6" fill="#fafbfc" stroke="#d1d5db"/>
-<path d="M52 738.7H600" stroke="#e5e7eb"/>
-<path d="M52 651.4H600" stroke="#e5e7eb"/>
-<path d="M52 564.1H600" stroke="#e5e7eb"/>
-<path d="M52 476.8H600" stroke="#e5e7eb"/>
-<path d="M52 389.5H600" stroke="#e5e7eb"/>
-<path d="M52 302.2H600" stroke="#e5e7eb"/>
-<path d="M52 214.9H600" stroke="#e5e7eb"/>
-<path d="M52 127.6H600" stroke="#e5e7eb"/>
-<path d="M57.8 84V826" stroke="#e5e7eb"/>
-<path d="M96.6 84V826" stroke="#e5e7eb"/>
-<path d="M135.3 84V826" stroke="#e5e7eb"/>
-<path d="M174.0 84V826" stroke="#e5e7eb"/>
-<path d="M212.7 84V826" stroke="#e5e7eb"/>
-<path d="M251.5 84V826" stroke="#e5e7eb"/>
-<path d="M290.2 84V826" stroke="#e5e7eb"/>
-<path d="M328.9 84V826" stroke="#e5e7eb"/>
-<path d="M367.6 84V826" stroke="#e5e7eb"/>
-<path d="M406.4 84V826" stroke="#e5e7eb"/>
-<path d="M445.1 84V826" stroke="#e5e7eb"/>
-<path d="M483.8 84V826" stroke="#e5e7eb"/>
-<path d="M522.5 84V826" stroke="#e5e7eb"/>
-<path d="M561.3 84V826" stroke="#e5e7eb"/>
-<text x="57.8" y="856" text-anchor="middle">-50</text>
-<text x="96.6" y="856" text-anchor="middle">-40</text>
-<text x="135.3" y="856" text-anchor="middle">-30</text>
-<text x="174.0" y="856" text-anchor="middle">-20</text>
-<text x="212.7" y="856" text-anchor="middle">-10</text>
-<text x="251.5" y="856" text-anchor="middle">0</text>
-<text x="290.2" y="856" text-anchor="middle">10</text>
-<text x="328.9" y="856" text-anchor="middle">20</text>
-<text x="367.6" y="856" text-anchor="middle">30</text>
-<text x="406.4" y="856" text-anchor="middle">40</text>
-<text x="445.1" y="856" text-anchor="middle">50</text>
-<text x="483.8" y="856" text-anchor="middle">60</text>
-<text x="522.5" y="856" text-anchor="middle">70</text>
-<text x="561.3" y="856" text-anchor="middle">80</text>
-<text x="600.0" y="856" text-anchor="middle">90</text>
+<path d="M52 711.8H600" stroke="#e5e7eb"/>
+<path d="M52 597.7H600" stroke="#e5e7eb"/>
+<path d="M52 483.5H600" stroke="#e5e7eb"/>
+<path d="M52 369.4H600" stroke="#e5e7eb"/>
+<path d="M52 255.2H600" stroke="#e5e7eb"/>
+<path d="M52 141.1H600" stroke="#e5e7eb"/>
+<path d="M93.6 84V826" stroke="#e5e7eb"/>
+<path d="M144.2 84V826" stroke="#e5e7eb"/>
+<path d="M194.9 84V826" stroke="#e5e7eb"/>
+<path d="M245.5 84V826" stroke="#e5e7eb"/>
+<path d="M296.1 84V826" stroke="#e5e7eb"/>
+<path d="M346.8 84V826" stroke="#e5e7eb"/>
+<path d="M397.4 84V826" stroke="#e5e7eb"/>
+<path d="M448.1 84V826" stroke="#e5e7eb"/>
+<path d="M498.7 84V826" stroke="#e5e7eb"/>
+<path d="M549.4 84V826" stroke="#e5e7eb"/>
+<text x="93.6" y="856" text-anchor="middle">-20</text>
+<text x="144.2" y="856" text-anchor="middle">-10</text>
+<text x="194.9" y="856" text-anchor="middle">0</text>
+<text x="245.5" y="856" text-anchor="middle">10</text>
+<text x="296.1" y="856" text-anchor="middle">20</text>
+<text x="346.8" y="856" text-anchor="middle">30</text>
+<text x="397.4" y="856" text-anchor="middle">40</text>
+<text x="448.1" y="856" text-anchor="middle">50</text>
+<text x="498.7" y="856" text-anchor="middle">60</text>
+<text x="549.4" y="856" text-anchor="middle">70</text>
+<text x="600.0" y="856" text-anchor="middle">80</text>
 <text x="44" y="830.0" text-anchor="end">0</text>
-<text x="44" y="742.7" text-anchor="end">2k</text>
-<text x="44" y="655.4" text-anchor="end">4k</text>
-<text x="44" y="568.1" text-anchor="end">6k</text>
-<text x="44" y="480.8" text-anchor="end">8k</text>
-<text x="44" y="393.5" text-anchor="end">10k</text>
-<text x="44" y="306.2" text-anchor="end">12k</text>
-<text x="44" y="218.9" text-anchor="end">14k</text>
-<text x="44" y="131.6" text-anchor="end">16k</text>
+<text x="44" y="715.8" text-anchor="end">2k</text>
+<text x="44" y="601.7" text-anchor="end">4k</text>
+<text x="44" y="487.5" text-anchor="end">6k</text>
+<text x="44" y="373.4" text-anchor="end">8k</text>
+<text x="44" y="259.2" text-anchor="end">10k</text>
+<text x="44" y="145.1" text-anchor="end">12k</text>
 <text x="326.0" y="873" text-anchor="middle">Temperature (°F)</text>
 <text x="13" y="455.0" transform="rotate(-90 13 455.0)" text-anchor="middle">Altitude MSL (ft)</text>
-<rect x="52" y="706.4" width="548" height="19.6" fill="#3b6fd8" fill-opacity="0.12"/>
-<rect x="52" y="219.7" width="548" height="24.0" fill="#3b6fd8" fill-opacity="0.12"/>
-<polygon clip-path="url(#c0)" points="531.5,726.0 480.8,620.4 480.9,621.3 481.5,622.2 481.6,623.0 482.0,623.9 482.3,624.8 482.5,625.7 483.0,626.5 483.2,627.4 483.7,628.3 483.7,629.2 484.4,630.0 484.4,630.9 485.1,631.8 485.1,632.6 485.2,633.5 485.8,634.4 485.9,635.3 486.5,636.1 486.7,637.0 487.2,637.9 487.2,638.8 487.6,639.6 487.8,640.5 488.1,641.4 488.5,642.2 488.5,643.1 488.5,644.0 489.2,644.9 489.2,645.7 489.3,646.6 489.9,647.5 489.9,648.4 490.6,649.2 490.6,650.1 490.6,651.0 491.3,651.8 491.3,652.7 491.3,653.6 491.6,654.5 492.0,655.3 492.0,656.2 492.0,657.1 492.1,658.0 492.7,658.8 492.7,659.7 493.4,660.6 493.4,661.4 494.1,662.3 494.1,663.2 494.8,664.1 494.8,664.9 495.5,665.8 495.5,666.7 496.2,667.6 496.6,668.4 496.9,669.3 496.9,670.2 497.6,671.1 497.6,671.9 498.3,672.8 498.3,673.7 498.3,674.5 498.3,675.4 498.3,676.3 497.8,677.2 497.6,678.0 497.6,678.9 497.6,679.8 497.6,680.7 497.6,681.5 497.4,682.4 496.9,683.3 496.9,684.1 496.7,685.0 496.2,685.9 496.2,686.8 495.4,687.2 514.0,726.0" fill="#e07b00" fill-opacity="0.2"/>
-<polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="483.8,726.0 482.6,723.4"/>
-<circle cx="482.6" cy="723.4" r="2.8" fill="#ffa500"/>
-<polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="503.2,726.0 494.6,708.2"/>
-<circle cx="494.6" cy="708.2" r="2.8" fill="#ffa500"/>
-<polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="541.9,726.0 404.1,438.4"/>
-<circle cx="404.1" cy="438.4" r="2.8" fill="#ffa500"/>
-<polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="561.3,726.0 324.5,232.0"/>
-<circle cx="324.5" cy="232.0" r="2.8" fill="#ffa500"/>
-<polyline clip-path="url(#c0)" fill="none" stroke="#0000ff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" points="401.2,726.0 373.1,383.6"/>
-<polyline clip-path="url(#c0)" fill="none" stroke="#0000ff" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="7 5" points="52.0,383.6 600.0,383.6"/>
-<circle cx="373.1" cy="383.6" r="3.6" fill="#fff" stroke="#0000ff" stroke-width="1.8"/>
-<polyline clip-path="url(#c0)" fill="none" stroke="#00c400" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="401.2,726.0 413.0,722.8 414.4,717.3 410.9,711.4 410.2,697.1 406.1,688.2 402.6,624.8 396.3,604.3 394.2,581.1 375.4,484.2 375.4,470.7 351.7,436.9 339.1,372.6 335.0,361.7 335.0,344.0 330.8,322.9 316.1,267.8 313.3,261.4 304.3,254.2 238.1,242.6 214.4,234.0 187.2,218.3 176.7,207.7 168.4,192.5 157.9,147.0 157.9,144.4 169.7,142.9 162.1,125.3 150.2,110.1 148.8,102.8 164.9,71.9 155.1,40.6"/>
-<polyline clip-path="url(#c0)" fill="none" stroke="#ff0000" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="466.0,726.0 480.6,722.8 486.9,716.9 492.5,672.3 473.7,616.4 421.4,499.9 399.8,441.5 332.9,298.6 323.1,269.7 307.1,245.2 311.3,236.3 325.9,228.1 336.3,218.3 324.5,185.2 302.2,135.5 300.8,112.3 277.8,40.6"/>
-<polyline clip-path="url(#c0)" fill="none" stroke="#e07b00" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round" points="523.7,726.0 498.2,672.8"/>
-<circle cx="498.2" cy="672.8" r="4.6" fill="#e07b00" stroke="#fff" stroke-width="1.8"/>
-<text x="523.7" y="840" text-anchor="middle" font-size="12" font-weight="800" fill="#e07b00">70</text>
-<text x="483.8" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">60</text>
-<text x="503.2" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">65</text>
-<text x="561.3" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">80</text>
-<path d="M600 231.7L605 231.7" stroke="#3b6fd8" stroke-width="1.2"/>
-<rect x="605" y="224.2" width="29.2" height="15" rx="3.5" fill="#3b6fd8"/>
-<text x="619.6" y="235.5" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">INV</text>
-<path d="M600 383.6L605 383.6" stroke="#0000ff" stroke-width="1.2"/>
-<rect x="605" y="376.1" width="61.2" height="15" rx="3.5" fill="#0000ff"/>
-<text x="635.6" y="387.4" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">CB 10.1k</text>
-<path d="M600 672.8L605 672.8" stroke="#e07b00" stroke-width="1.2"/>
-<rect x="605" y="665.3" width="61.2" height="15" rx="3.5" fill="#e07b00"/>
-<text x="635.6" y="676.6" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Top 3.5k</text>
-<path d="M600 716.2L605 716.2" stroke="#3b6fd8" stroke-width="1.2"/>
-<rect x="605" y="708.7" width="29.2" height="15" rx="3.5" fill="#3b6fd8"/>
-<text x="619.6" y="720.0" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">INV</text>
+<rect x="52" y="669.6" width="548" height="25.7" fill="#3b6fd8" fill-opacity="0.12"/>
+<polygon clip-path="url(#c0)" points="539.2,695.3 514.6,643.9 514.0,645.1 514.0,646.2 514.0,647.3 514.0,648.5 514.0,649.6 514.0,650.8 514.0,651.9 514.0,653.1 514.0,654.2 514.0,655.3 514.0,656.5 514.0,657.6 514.0,658.8 514.0,659.9 514.0,661.0 514.0,662.2 514.0,663.3 514.0,664.5 514.0,665.6 514.0,666.8 514.0,667.9 514.0,669.0 514.0,670.2 513.6,671.3 513.1,672.5 513.1,673.6 513.1,674.7 512.2,675.9 512.0,676.5 521.0,695.3" fill="#e07b00" fill-opacity="0.2"/>
+<polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="473.4,695.3 472.0,692.4"/>
+<circle cx="472.0" cy="692.4" r="2.8" fill="#ffa500"/>
+<polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="498.7,695.3 497.1,691.9"/>
+<circle cx="497.1" cy="691.9" r="2.8" fill="#ffa500"/>
+<polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="549.4,695.3 517.6,629.1"/>
+<circle cx="517.6" cy="629.1" r="2.8" fill="#ffa500"/>
+<polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="574.7,695.3 394.5,319.2"/>
+<circle cx="394.5" cy="319.2" r="2.8" fill="#ffa500"/>
+<polyline clip-path="url(#c0)" fill="none" stroke="#0000ff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" points="390.6,695.3 354.0,247.5"/>
+<polyline clip-path="url(#c0)" fill="none" stroke="#0000ff" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="7 5" points="52.0,247.5 600.0,247.5"/>
+<circle cx="354.0" cy="247.5" r="3.6" fill="#fff" stroke="#0000ff" stroke-width="1.8"/>
+<polyline clip-path="url(#c0)" fill="none" stroke="#00c400" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="390.6,695.3 406.1,691.0 408.0,683.9 403.4,676.2 402.5,657.5 397.0,645.9 397.9,626.0 393.4,608.6 392.5,562.9 384.3,536.1 381.5,505.8 356.9,379.0 356.9,361.4 352.4,351.5 334.1,331.6 325.9,317.2 313.2,261.4 309.5,233.1 304.0,218.9 304.0,195.7 300.4,185.8 298.6,168.2 279.4,96.1 275.8,87.6 263.9,78.3 177.3,63.1 146.3,51.9 106.2,27.1"/>
+<polyline clip-path="url(#c0)" fill="none" stroke="#ff0000" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="475.4,695.3 494.6,691.0 502.8,683.3 506.4,670.9 506.4,644.9 510.1,625.1 501.9,606.2 497.3,585.2 485.4,551.9 457.2,484.4 417.1,399.6 388.8,323.2 301.3,136.3 288.5,98.5 267.6,66.5 273.1,54.9 305.9,33.5 304.0,27.1"/>
+<polyline clip-path="url(#c0)" fill="none" stroke="#e07b00" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round" points="531.6,695.3 513.9,658.2"/>
+<circle cx="513.9" cy="658.2" r="4.6" fill="#e07b00" stroke="#fff" stroke-width="1.8"/>
+<text x="531.6" y="840" text-anchor="middle" font-size="12" font-weight="800" fill="#e07b00">67</text>
+<text x="473.4" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">55</text>
+<text x="498.7" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">60</text>
+<text x="574.7" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">75</text>
+<path d="M600 247.5L605 247.5" stroke="#0000ff" stroke-width="1.2"/>
+<rect x="605" y="240.0" width="61.2" height="15" rx="3.5" fill="#0000ff"/>
+<text x="635.6" y="251.3" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">CB 10.1k</text>
+<path d="M600 658.2L605 658.2" stroke="#e07b00" stroke-width="1.2"/>
+<rect x="605" y="650.7" width="61.2" height="15" rx="3.5" fill="#e07b00"/>
+<text x="635.6" y="662.0" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Top 2.9k</text>
+<path d="M600 682.5L605 682.5" stroke="#3b6fd8" stroke-width="1.2"/>
+<rect x="605" y="675.0" width="29.2" height="15" rx="3.5" fill="#3b6fd8"/>
+<text x="619.6" y="686.3" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">INV</text>
 <text x="690" y="75" font-size="12.5" font-weight="600" fill="#111827">Wind</text>
-<path d="M682 726.0h4" stroke="#d1d5db"/>
-<g transform="translate(696 726.0) rotate(41)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#111827" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="730.0" font-size="11.5" font-weight="650" fill="#111827">3<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">221°</tspan></text>
-<path d="M682 682.2h4" stroke="#d1d5db"/>
-<g transform="translate(696 682.2) rotate(27)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#111827" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="686.2" font-size="11.5" font-weight="650" fill="#111827">0<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">207°</tspan></text>
-<path d="M682 638.4h4" stroke="#d1d5db"/>
-<g transform="translate(696 638.4) rotate(330)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#111827" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="642.4" font-size="11.5" font-weight="650" fill="#111827">11<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">150°</tspan></text>
-<path d="M682 594.4h4" stroke="#d1d5db"/>
-<g transform="translate(696 594.4) rotate(346)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#111827" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="598.4" font-size="11.5" font-weight="650" fill="#111827">16<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">166°</tspan></text>
-<path d="M682 550.5h4" stroke="#d1d5db"/>
-<g transform="translate(696 550.5) rotate(10)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#ea580c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="554.5" font-size="11.5" font-weight="650" fill="#ea580c">21<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">190°</tspan></text>
-<path d="M682 506.5h4" stroke="#d1d5db"/>
-<g transform="translate(696 506.5) rotate(17)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#ea580c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="510.5" font-size="11.5" font-weight="650" fill="#ea580c">22<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">197°</tspan></text>
-<path d="M682 462.6h4" stroke="#d1d5db"/>
-<g transform="translate(696 462.6) rotate(1)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="466.6" font-size="11.5" font-weight="650" fill="#dc2626">23<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">181°</tspan></text>
-<path d="M682 418.7h4" stroke="#d1d5db"/>
-<g transform="translate(696 418.7) rotate(350)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="422.7" font-size="11.5" font-weight="650" fill="#dc2626">27<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">170°</tspan></text>
-<path d="M682 375.1h4" stroke="#d1d5db"/>
-<g transform="translate(696 375.1) rotate(347)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="379.1" font-size="11.5" font-weight="650" fill="#dc2626">30<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">167°</tspan></text>
-<path d="M682 331.2h4" stroke="#d1d5db"/>
-<g transform="translate(696 331.2) rotate(354)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="335.2" font-size="11.5" font-weight="650" fill="#dc2626">26<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">174°</tspan></text>
-<path d="M682 287.6h4" stroke="#d1d5db"/>
-<g transform="translate(696 287.6) rotate(355)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="291.6" font-size="11.5" font-weight="650" fill="#dc2626">30<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">175°</tspan></text>
-<path d="M682 243.9h4" stroke="#d1d5db"/>
-<g transform="translate(696 243.9) rotate(356)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="247.9" font-size="11.5" font-weight="650" fill="#dc2626">27<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">176°</tspan></text>
-<path d="M682 199.8h4" stroke="#d1d5db"/>
-<g transform="translate(696 199.8) rotate(1)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="203.8" font-size="11.5" font-weight="650" fill="#dc2626">30<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">181°</tspan></text>
-<path d="M682 156.0h4" stroke="#d1d5db"/>
-<g transform="translate(696 156.0) rotate(359)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="160.0" font-size="11.5" font-weight="650" fill="#dc2626">31<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">179°</tspan></text>
-<path d="M682 112.3h4" stroke="#d1d5db"/>
-<g transform="translate(696 112.3) rotate(354)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="116.3" font-size="11.5" font-weight="650" fill="#dc2626">31<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">174°</tspan></text>
+<path d="M682 695.3h4" stroke="#d1d5db"/>
+<g transform="translate(696 695.3) rotate(41)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#111827" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text x="706" y="699.3" font-size="11.5" font-weight="650" fill="#111827">3<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">221°</tspan></text>
+<path d="M682 638.0h4" stroke="#d1d5db"/>
+<g transform="translate(696 638.0) rotate(27)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#111827" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text x="706" y="642.0" font-size="11.5" font-weight="650" fill="#111827">0<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">207°</tspan></text>
+<path d="M682 580.7h4" stroke="#d1d5db"/>
+<g transform="translate(696 580.7) rotate(330)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#111827" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text x="706" y="584.7" font-size="11.5" font-weight="650" fill="#111827">11<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">150°</tspan></text>
+<path d="M682 523.2h4" stroke="#d1d5db"/>
+<g transform="translate(696 523.2) rotate(346)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#111827" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text x="706" y="527.2" font-size="11.5" font-weight="650" fill="#111827">16<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">166°</tspan></text>
+<path d="M682 465.7h4" stroke="#d1d5db"/>
+<g transform="translate(696 465.7) rotate(10)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#ea580c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text x="706" y="469.7" font-size="11.5" font-weight="650" fill="#ea580c">21<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">190°</tspan></text>
+<path d="M682 408.2h4" stroke="#d1d5db"/>
+<g transform="translate(696 408.2) rotate(17)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#ea580c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text x="706" y="412.2" font-size="11.5" font-weight="650" fill="#ea580c">22<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">197°</tspan></text>
+<path d="M682 350.7h4" stroke="#d1d5db"/>
+<g transform="translate(696 350.7) rotate(1)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text x="706" y="354.7" font-size="11.5" font-weight="650" fill="#dc2626">23<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">181°</tspan></text>
+<path d="M682 293.4h4" stroke="#d1d5db"/>
+<g transform="translate(696 293.4) rotate(350)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text x="706" y="297.4" font-size="11.5" font-weight="650" fill="#dc2626">27<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">170°</tspan></text>
+<path d="M682 236.3h4" stroke="#d1d5db"/>
+<g transform="translate(696 236.3) rotate(347)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text x="706" y="240.3" font-size="11.5" font-weight="650" fill="#dc2626">30<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">167°</tspan></text>
+<path d="M682 179.0h4" stroke="#d1d5db"/>
+<g transform="translate(696 179.0) rotate(354)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text x="706" y="183.0" font-size="11.5" font-weight="650" fill="#dc2626">26<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">174°</tspan></text>
+<path d="M682 121.9h4" stroke="#d1d5db"/>
+<g transform="translate(696 121.9) rotate(355)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text x="706" y="125.9" font-size="11.5" font-weight="650" fill="#dc2626">30<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">175°</tspan></text>
 </svg>
