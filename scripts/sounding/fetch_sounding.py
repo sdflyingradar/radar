@@ -82,8 +82,10 @@ def main():
                     f.write(header + text)
             print(f"saved {c:%Y-%m-%d %HZ} from {fn.__name__}")
             return 0
-    print("no sounding found")
-    return 1
+    # no new San Diego balloon (sometimes one isn't flown or posted): keep the last one and carry on, so the
+    # nearby balloons and the forecast high still update
+    print("no new sounding found: keeping the last one")
+    return 0
 
 
 # ---------- forecast surface high (for the highlighted thermal + confidence band) ----------
