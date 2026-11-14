@@ -14,7 +14,13 @@
   const fmt = (m) => { const h = Math.floor(m / 60) % 24, mm = String(m % 60).padStart(2, "0"); return `${h % 12 || 12}:${mm} ${h < 12 ? "am" : "pm"}`; };
   const runsLocal = (utc) => utc.map((t) => { const [h, m] = t.split(":").map(Number); const d = new Date(); d.setUTCHours(h, m, 0, 0); return localMin(d); }).sort((a, b) => a - b);
   const done = {};                                   // lane -> [Date] of updates that landed
+  let flight = null;                                 // the San Diego balloon the chart shows (Date of its 00Z/12Z time)
   async function load() {
+    try {
+      const j = await (await fetch(`data/sounding/nkx_latest.json?t=${Date.now()}`, { cache: "no-store" })).json();
+      const m = /(\d\d)00Z_(\d+)_([A-Za-z]{3})_(\d{4})/.exec(j.title || "");
+      if (m) flight = new Date(`${m[3]} ${m[2]} ${m[4]} ${m[1]}:00:00 UTC`);
+    } catch (e) { flight = null; }
     await Promise.all(Object.values(RUNS).map(async (r) => {
       try { const j = await (await fetch(`data/runs/${r.log}.json?t=${Date.now()}`, { cache: "no-store" })).json(); done[r.log] = j.map((t) => new Date(t.replace("Z", ":00Z"))); }
       catch (e) { done[r.log] = []; }
@@ -46,7 +52,11 @@
       const last = all.length ? all[all.length - 1] : null;
       const n = ts.find((m) => m > now) ?? ts[0];
       const lastTxt = last ? (dayKey(last) === today ? fmt(localMin(last)) : "yesterday " + fmt(localMin(last))) : "–";
-      rows.push(`<span><b style="color:${r.col}">${r.label}</b> ${lastTxt} <i>· next ${fmt(n)}</i></span>`);
+      // the balloon: which flight the chart shows, not when we last looked
+      const txt = r.log === "balloon" && flight && !isNaN(flight)
+        ? `chart shows ${fmt(localMin(flight)).replace(":00", "")} ${new Intl.DateTimeFormat("en-US", { timeZone: TZ, month: "short", day: "numeric" }).format(flight)}`
+        : lastTxt;
+      rows.push(`<span><b style="color:${r.col}">${r.label}</b> ${txt} <i>· next ${fmt(n)}</i></span>`);
     });
     o.push(`<line x1="${X(now).toFixed(1)}" x2="${X(now).toFixed(1)}" y1="1" y2="42" stroke="#d64545" stroke-width="1.5"/><circle cx="${X(now).toFixed(1)}" cy="2" r="2.2" fill="#d64545"/>`);
     o.push("</svg>");
