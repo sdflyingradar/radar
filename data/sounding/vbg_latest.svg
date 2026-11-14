@@ -2,7 +2,7 @@
 <rect width="800" height="880" fill="#fff"/>
 <defs><clipPath id="c0"><rect x="52" y="84" width="548" height="742"/></clipPath></defs>
 <text x="52" y="24" font-size="16" font-weight="700" fill="#111827">VBG sounding<tspan dx="8" font-size="12.5" font-weight="500" fill="#6b7280">12Z (4 am PST) · 14 Nov 2026</tspan></text>
-<text x="790" y="24" text-anchor="end" font-size="13" font-weight="700" fill="#e07b00">Today: high 66°F <tspan font-weight="500">(65–67)</tspan> → thermals ~4,900 ft <tspan font-weight="500">(4,200–5,200)</tspan></text>
+<text x="790" y="24" text-anchor="end" font-size="13" font-weight="700" fill="#e07b00">Today: high 66°F <tspan font-weight="500">(65–66)</tspan> → thermals ~4,800 ft <tspan font-weight="500">(4,000–5,100)</tspan></text>
 <path d="M52 45h16" stroke="#ff0000" stroke-width="2.4" stroke-linecap="round"/><text x="74" y="49" fill="#111827">Temperature</text>
 <path d="M151.3 45h16" stroke="#00c400" stroke-width="2.4" stroke-linecap="round"/><text x="173.3" y="49" fill="#111827">Dew point</text>
 <path d="M238 45h16" stroke="#0000ff" stroke-width="2.4" stroke-linecap="round"/><text x="260" y="49" fill="#111827">Cloudbase</text>
@@ -57,7 +57,7 @@
 <text x="13" y="455.0" transform="rotate(-90 13 455.0)" text-anchor="middle">Altitude MSL (ft)</text>
 <rect x="52" y="768.9" width="548" height="27.0" fill="#3b6fd8" fill-opacity="0.12"/>
 <rect x="52" y="222.5" width="548" height="94.4" fill="#3b6fd8" fill-opacity="0.12"/>
-<polygon clip-path="url(#c0)" points="519.8,799.2 364.3,474.8 364.7,476.1 365.0,477.5 365.2,478.8 365.5,480.2 365.8,481.5 366.0,482.9 366.3,484.2 366.5,485.6 366.8,486.9 366.9,488.3 367.3,489.6 367.7,491.0 368.2,492.3 368.7,493.7 369.2,495.0 369.7,496.4 370.1,497.7 370.6,499.0 371.1,500.4 371.6,501.7 372.1,503.1 372.5,504.4 373.0,505.8 373.5,507.1 374.0,508.5 374.5,509.8 375.0,511.2 375.5,512.5 376.0,513.9 376.5,515.2 377.0,516.6 377.5,517.9 378.0,519.3 378.5,520.6 379.0,522.0 379.5,523.3 380.0,524.7 380.5,526.0 381.0,527.4 381.5,528.7 382.0,530.1 382.5,531.4 383.0,532.8 383.5,534.1 384.0,535.5 384.5,536.8 385.0,538.2 385.5,539.5 386.0,540.9 386.5,542.2 509.6,799.2" fill="#e07b00" fill-opacity="0.2"/>
+<polygon clip-path="url(#c0)" points="518.6,799.2 365.1,478.8 365.5,480.2 365.8,481.5 366.0,482.9 366.3,484.2 366.5,485.6 366.8,486.9 366.9,488.3 367.3,489.6 367.7,491.0 368.2,492.3 368.7,493.7 369.2,495.0 369.7,496.4 370.1,497.7 370.6,499.0 371.1,500.4 371.6,501.7 372.1,503.1 372.5,504.4 373.0,505.8 373.5,507.1 374.0,508.5 374.5,509.8 375.0,511.2 375.5,512.5 376.0,513.9 376.5,515.2 377.0,516.6 377.5,517.9 378.0,519.3 378.5,520.6 379.0,522.0 379.5,523.3 380.0,524.7 380.5,526.0 381.0,527.4 381.5,528.7 382.0,530.1 382.5,531.4 383.0,532.8 383.5,534.1 384.0,535.5 384.5,536.8 385.0,538.2 385.5,539.5 386.0,540.9 386.5,542.2 387.0,543.6 387.5,544.9 388.0,546.3 388.5,547.6 389.0,549.0 389.5,550.3 390.0,551.7 390.5,553.0 391.0,554.4 391.5,555.7 392.0,557.1 392.6,558.4 392.8,559.1 507.8,799.2" fill="#e07b00" fill-opacity="0.2"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="450.4,799.2 447.8,793.8"/>
 <circle cx="447.8" cy="793.8" r="2.8" fill="#ffa500"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="480.3,799.2 468.7,774.9"/>
@@ -71,9 +71,9 @@
 <circle cx="423.2" cy="662.8" r="3.6" fill="#fff" stroke="#0000ff" stroke-width="1.8"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#00c400" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="435.5,799.2 418.3,795.7 401.1,770.2 400.0,758.5 391.4,691.0 387.1,661.3 378.4,623.7 362.3,556.2 350.4,506.9 349.3,488.7 349.3,487.6 310.6,421.2 270.7,353.7 248.1,315.4 107.0,286.5 -88.0,246.2 -8.3,223.8 7.8,219.0 24.0,213.9 62.8,157.9 61.7,151.5 54.2,84.0"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#ff0000" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="452.8,799.2 437.7,795.7 465.7,770.2 461.4,758.5 434.5,691.0 422.6,661.3 408.6,623.7 382.7,556.2 364.4,506.9 358.0,488.7 358.0,487.6 345.0,421.2 331.0,353.7 323.5,315.4 345.0,286.5 375.2,246.2 379.5,223.8 379.5,219.0 379.5,213.9 364.4,157.9 362.3,151.5 344.0,84.0"/>
-<polyline clip-path="url(#c0)" fill="none" stroke="#e07b00" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round" points="515.0,799.2 368.9,494.3"/>
-<circle cx="368.9" cy="494.3" r="4.6" fill="#e07b00" stroke="#fff" stroke-width="1.8"/>
-<text x="515.0" y="840" text-anchor="middle" font-size="12" font-weight="800" fill="#e07b00">66</text>
+<polyline clip-path="url(#c0)" fill="none" stroke="#e07b00" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round" points="513.8,799.2 372.3,503.8"/>
+<circle cx="372.3" cy="503.8" r="4.6" fill="#e07b00" stroke="#fff" stroke-width="1.8"/>
+<text x="513.8" y="840" text-anchor="middle" font-size="12" font-weight="800" fill="#e07b00">66</text>
 <text x="450.4" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">55</text>
 <text x="480.3" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">60</text>
 <text x="540.1" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">70</text>
@@ -81,9 +81,9 @@
 <path d="M600 269.7L605 269.7" stroke="#3b6fd8" stroke-width="1.2"/>
 <rect x="605" y="262.2" width="29.2" height="15" rx="3.5" fill="#3b6fd8"/>
 <text x="619.6" y="273.5" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">INV</text>
-<path d="M600 494.3L605 494.3" stroke="#e07b00" stroke-width="1.2"/>
-<rect x="605" y="486.8" width="61.2" height="15" rx="3.5" fill="#e07b00"/>
-<text x="635.6" y="498.1" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Top 4.9k</text>
+<path d="M600 503.8L605 503.8" stroke="#e07b00" stroke-width="1.2"/>
+<rect x="605" y="496.3" width="61.2" height="15" rx="3.5" fill="#e07b00"/>
+<text x="635.6" y="507.6" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Top 4.8k</text>
 <path d="M600 662.8L605 662.8" stroke="#0000ff" stroke-width="1.2"/>
 <rect x="605" y="655.3" width="54.8" height="15" rx="3.5" fill="#0000ff"/>
 <text x="632.4" y="666.6" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">CB 2.4k</text>
