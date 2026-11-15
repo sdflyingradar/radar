@@ -9,11 +9,11 @@
   "trigger_temp_f": 73,
   "forecast_high": {
     "day": "2026-11-15",
-    "label": "tomorrow",
+    "label": "today",
     "median_f": 70.7,
     "p10_f": 69.5,
     "p90_f": 72.2,
-    "hrrr_f": 71.8,
+    "hrrr_f": 71.9,
     "members": 122,
     "models": [
       "GFS ens (31)",
@@ -24,7 +24,7 @@
     "lon": -117.12,
     "window": "10:00-17:00 local",
     "source": "https://open-meteo.com/en/docs/ensemble-api",
-    "fetched": "2026-11-15T07:47Z",
+    "fetched": "2026-11-15T10:41Z",
     "thermal_tops": {
       "median_ft": 2200,
       "low_ft": 1200,
