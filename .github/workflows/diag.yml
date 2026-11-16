@@ -1,0 +1,19 @@
+name: diag balloon sources (temporary)
+on: workflow_dispatch
+jobs:
+  d:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          t() { echo "== $1"; curl -s -m 30 -A "Mozilla/5.0 sdflyingradar" -w "\nHTTP %{http_code} bytes %{size_download}\n" "$1" | head -c 600 | tr -s '\n' | head -12; echo; }
+          for c in "2026-11-14%2012:00:00" "2026-11-15%2012:00:00" "2026-11-16%2000:00:00"; do t "https://weather.uwyo.edu/wsgi/sounding?datetime=$c&id=72293&type=TEXT:LIST&src=UNKNOWN"; done
+          t "https://weather.uwyo.edu/wsgi/sounding?datetime=2026-11-15%2012:00:00&id=72293&type=TEXT:LIST&src=BUFR"
+          t "https://weather.uwyo.edu/wsgi/sounding?datetime=2026-11-15%2012:00:00&id=72293&type=TEXT:LIST&src=TEMP"
+          for s in KNKX NKX; do t "https://mesonet.agron.iastate.edu/cgi-bin/request/raob.py?station=$s&sts=2026-11-14T00:00Z&ets=2026-11-16T03:00Z"; done
+          t "https://mesonet.agron.iastate.edu/json/raob.py?station=KNKX&ts=202611151200"
+          t "https://mesonet.agron.iastate.edu/json/raob.py?station=KNKX&ts=202611131200"
+          t "https://www.spc.noaa.gov/exper/soundings/26111512_OBS/NKX.txt"
+          t "https://www.spc.noaa.gov/exper/soundings/26111600_OBS/NKX.txt"
+          t "https://www.spc.noaa.gov/exper/soundings/26111600_OBS/"
+          t "https://www.spc.noaa.gov/exper/soundings/26111600_OBS/VBG.txt"
+          t "https://rucsoundings.noaa.gov/get_raobs.cgi?data_source=RAOB&latest=latest&start_year=2026&start_month_name=Nov&start_mday=15&start_hour=12&start_min=0&n_hrs=24&fcst_len=shortest&airport=NKX&text=Ascii%20text%20%28GSL%20format%29&hydrometeors=false&start=latest"
