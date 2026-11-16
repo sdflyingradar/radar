@@ -1495,6 +1495,9 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         else sum(s.get("launch_pts", 1.0 if s["good_launch"] else 0.0) for s in blk) / len(blk),
         "into": sum(1 for s in blk if s.get("into")) / len(blk),
         "gust12": sum(1 for s in blk if s.get("gcat", 0) >= 1) / len(blk),
+        "gust10": sum(1 for s in blk if (s.get("lg") or 0) > 10) / len(blk),
+        "gust15": sum(1 for s in blk if (s.get("lg") or 0) > 15) / len(blk),
+        "strong": sum(1 for s in blk if (s.get("lw") or 0) >= 10 and (s.get("lg") or 0) >= 15) / len(blk),
         "top_wind": (lambda v: sorted(v)[len(v) // 2] if v else None)([s["tw"][1] * 1.15078 for s in blk if s.get("tw")]),
         "gust18": sum(1 for s in blk if s.get("gcat", 0) >= 2) / len(blk),
         "offcat": (lambda offs: sum(0 if o <= 0 else 1 if o <= 20 else 2 for o in offs) / len(offs) if offs else 0.0)(   # off = outside the window
@@ -2302,15 +2305,21 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 into = sum(model_weight(k, D) * a.get("into", 0) for k, a in D.items()) / (sum(model_weight(k, D) for k in D) or 1)
                 if into < 0.5:
                     caps.append((4.24, "wind not into launch: 4 at most"))
-            # gusts through the window: over 12 mph for most of it costs half a point, over 18 mph is too windy
+            # gusts through most of the window (thermal sites): over 10 mph windy -0.5, over 12 gusty -1,
+            # over 15 strong -1.5, over 18 too windy. A mean of 10+ with gusts 15+ is 2.5 at most (strong day).
             if s.get("kind") != "ridge" and D:
                 tw = sum(model_weight(k, D) for k in D) or 1
-                g18 = sum(model_weight(k, D) * a.get("gust18", 0) for k, a in D.items()) / tw
-                g12 = sum(model_weight(k, D) * a.get("gust12", 0) for k, a in D.items()) / tw
-                if g18 >= 0.5:
+                gf = lambda key: sum(model_weight(k, D) * a.get(key, 0) for k, a in D.items()) / tw
+                if gf("gust18") >= 0.5:
                     caps.append((1.4, "gusts over 18 mph: too windy"))
-                elif g12 >= 0.5:
-                    r0 = rating; rating = max(1.0, rating - 1.0); note_adj("gusts over 12 mph", r0)
+                else:
+                    for key, cut, lab in (("gust15", 1.5, "gusts over 15 mph"), ("gust12", 1.0, "gusts over 12 mph"),
+                                          ("gust10", 0.5, "gusts over 10 mph")):
+                        if gf(key) >= 0.5:
+                            r0 = rating; rating = max(1.0, rating - cut); note_adj(lab, r0)
+                            break
+                    if gf("strong") >= 0.5:
+                        caps.append((2.5, "strong wind: 2.5 at most"))
             # wind at the top of lift: over 15 mph costs half a point, over 20 mph a full point, over 25 mph
             # is too windy
             tws = [(a["top_wind"], model_weight(k, D)) for k, a in D.items() if a.get("top_wind") is not None]
