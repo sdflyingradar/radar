@@ -1,11 +1,11 @@
-/* A tiny timeline of the day's update runs at the bottom of the radar: forecast, therm charts (the region run) and the
+/* A tiny timeline of the day's update runs at the bottom of the radar: forecast, SkyGram charts (the region run) and the
    balloon, each in its own thin lane. Filled dots: when an update actually landed today (data/runs/*.json, written by
    each run). Open dots: the runs still to come. A faint dot: a scheduled time that brought nothing (late or skipped;
    the watchdog starts it within ~20 min). Underneath, per lane: the last update and the next one. */
 (function () {
   const RUNS = {
     forecast: { label: "Forecast", col: "#26303a", log: "forecast", utc: ["13:30", "15:30", "16:30", "18:30", "20:30", "22:30", "00:30", "02:30", "06:30", "10:30"] },
-    maps: { label: "Therm", col: "#2b7fd8", log: "region", utc: ["13:34", "15:34", "16:34", "20:34", "23:34", "02:34", "06:34", "10:34"] },
+    maps: { label: "SkyGram", col: "#2b7fd8", log: "region", utc: ["13:34", "15:34", "16:34", "20:34", "23:34", "02:34", "06:34", "10:34"] },
     balloon: { label: "Balloon", col: "#e07a0c", log: "balloon", utc: ["13:05", "13:45", "01:05", "01:45"] },
   };
   const TZ = "America/Los_Angeles";
