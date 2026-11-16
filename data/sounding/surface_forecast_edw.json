@@ -4,7 +4,7 @@
   "median_f": 64.1,
   "p10_f": 62.0,
   "p90_f": 66.0,
-  "hrrr_f": 62.8,
+  "hrrr_f": 64.4,
   "members": 122,
   "models": [
     "GFS ens (31)",
@@ -15,5 +15,5 @@
   "lon": -117.92,
   "window": "10:00-17:00 local",
   "source": "https://open-meteo.com/en/docs/ensemble-api",
-  "fetched": "2026-11-16T19:30Z"
+  "fetched": "2026-11-16T20:26Z"
 }
