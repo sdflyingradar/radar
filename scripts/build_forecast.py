@@ -910,7 +910,7 @@ def score_hour(site, hr, i, levels, elev_m):
     off_mph = (sector_max(pts, launch_m, max(onog.get("top_ft", 4000) / FT, usable_show), *onog["from"]) * 1.15078
                if onog else None)
 
-    codes, q, cf = [], 1.0, 1.0                  # cf: the climb, its own multiplier on the score (below)
+    codes, q, cf, climb_ms = [], 1.0, 1.0, None                  # cf: the climb, its own multiplier on the score (below)
     qp = {}                                      # what took q down, by cause (multipliers), for the score breakdown
     def qx(cat, m):
         nonlocal q
@@ -1022,7 +1022,13 @@ def score_hour(site, hr, i, levels, elev_m):
         qx("lowlift", lift_only)
         # the climb is its own multiplier on the score, outside q's cushion: a 1 m/s day with high tops is not a
         # 2 m/s day. 0 m/s 0.35, 0.5 m/s 0.5, 1 m/s 0.7, 1.5 m/s 0.85, 2 m/s and more 1
-        cf = climb_factor(CORE * wstar - SINK)
+        climb_ms = CORE * wstar - SINK
+        if hr.get("time"):            # ... or the SkyGram's strongest cell that hour, if higher (what pilots read)
+            ts = str(hr["time"][i])
+            rc = region_climb(site.get("parent", site["id"]), ts[:10], int(ts[11:13]))
+            if rc is not None:
+                climb_ms = max(climb_ms, rc)
+        cf = climb_factor(climb_ms)
         if agl < 200:
             codes.append("lid")
         elif wstar < 1.0:
@@ -1057,7 +1063,7 @@ def score_hour(site, hr, i, levels, elev_m):
     return {"q": q, "xc_s": xc_s, "xc_block": xc_block, "dbg": dbg, "glass": glass, "cold": cold_aloft, "good_launch": bool(good_launch), "launch": launch,
             "launch_pts": launch_pts if launch_pts is not None else (1.0 if good_launch else 0.0),
             "dbg": [top_parcel, blh, base, z0],              # height ingredients, for calibration only
-            "usable": usable, "usable_show": usable_show, "peak_top": peak_top, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, CORE * wstar - SINK),
+            "usable": usable, "usable_show": usable_show, "peak_top": peak_top, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, climb_ms if climb_ms is not None else CORE * wstar - SINK),
             "gcat": gcat, "qp": qp, "cf": cf,
             "into": bool(on and lw_mph is not None and lw_mph >= max(3.0, lo)),   # blowing into the launch, not just light
             "off": (off_window(site, ld) if site_face(site) is not None and ld is not None
@@ -1181,27 +1187,38 @@ RIDGE_GOOD_MPH = 10      # Torrey: under this the ridge is flyable but weak (yel
 
 
 # glass-off judges the afternoon on the thermal chart the pilots see (the region's SkyGram: its strongest 500 ft cell)
-GLASS_REGION = {"lb": "north", "blossom": "east", "soboba": "inland_empire", "lagunahorse": "mountains"}
-_REGION_PM = None
+# The SkyGram (region chart) each site sits in: its climb, the strongest 500 ft cell of the hour, is what pilots see,
+# so the climb factor and glass-off read it too
+SITE_REGION = {"lb": "north", "blossom": "east", "otay": "south", "whalesv": "south", "lagunahorse": "mountains",
+               "soboba": "inland_empire", "elsinore": "inland_empire", "marshall": "marshall",
+               "santabarbara": "santabarbara", "owens": "owens"}
+GLASS_REGION = SITE_REGION
+_REGION_HR = None
 
 
-def region_pm_climb(site_id, date_s):
-    """Strongest climb in the site's region chart between noon and 3 pm on that date (None when not there)."""
-    global _REGION_PM
-    if _REGION_PM is None:
-        _REGION_PM = {}
+def region_climb(site_id, date_s, hour):
+    """Strongest climb (m/s) in the site's region chart at that hour (None when not there)."""
+    global _REGION_HR
+    if _REGION_HR is None:
+        _REGION_HR = {}
         try:
             with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "region", "regions.json")) as fh:
                 for z in json.load(fh).get("regions", []):
                     for d in z.get("days", []):
-                        v = [x for hh in ("12", "13", "14") for x in ((d.get("hours") or {}).get(hh, {}).get("grid") or {}).values()
-                             if isinstance(x, (int, float))]
-                        if v:
-                            _REGION_PM[(z["id"], d["date"])] = max(v)
+                        for hh, h in (d.get("hours") or {}).items():
+                            v = [x for x in (h.get("grid") or {}).values() if isinstance(x, (int, float))]
+                            if v:
+                                _REGION_HR[(z["id"], d["date"], int(hh))] = max(v)
         except Exception:
             pass
-    rid = GLASS_REGION.get(site_id)
-    return _REGION_PM.get((rid, date_s)) if rid else None
+    rid = SITE_REGION.get(site_id)
+    return _REGION_HR.get((rid, date_s, int(hour))) if rid else None
+
+
+def region_pm_climb(site_id, date_s):
+    """Strongest climb in the site's region chart between noon and 3 pm on that date (None when not there)."""
+    v = [c for c in (region_climb(site_id, date_s, h) for h in (12, 13, 14)) if c is not None]
+    return max(v) if v else None
 
 
 def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
