@@ -257,3 +257,8 @@ html[data-lay] body details.day:not(#story) .list .srow .facts > span { display:
 /* computer: the tile facts a bit larger too (still one row) */
 @media (min-width: 900px) { html[data-lay] body details.day:not(#story) .list .srow .tx .facts { font-size: .72rem !important; gap: 10px !important; } }
 @media (min-width: 1300px) { html[data-lay] body details.day:not(#story) .list .srow .tx .facts { font-size: .77rem !important; } }
+/* computer: white site tiles with a thin frame in the site's colour, so the symbols carry the picture */
+@media (min-width: 900px) {
+  html[data-lay] body details.day:not(#story) .list .srow.srow { background: #fff !important; border: 1.5px solid var(--rc) !important; box-shadow: none !important; }
+  html[data-lay] body details.day:not(#story) .list .srow.srow:hover { background: color-mix(in srgb, var(--rc) 6%, #fff) !important; }
+}
