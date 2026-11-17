@@ -278,7 +278,7 @@ function renderSVG(snd, opts = {}) {
   if (FC) {
     const tm = A.topFor(FC.median_f), tl = A.topFor(lo);
     A.forecastTops = { median_ft: Math.round(tm * 10) * 100, low_ft: Math.round(tl * 10) * 100, high_ft: Math.round(tHiTop * 10) * 100 };
-    o.push(`<text x="${WC.x1}" y="24" text-anchor="end" font-size="13" font-weight="700" fill="${FCOL}">${FC.label === 'today' ? 'Today' : 'Tomorrow'}: high ${Math.round(FC.median_f)}°F <tspan font-weight="500">(${Math.round(lo)}–${Math.round(hi)})</tspan> → thermals ~${r100(tm)} ft <tspan font-weight="500">(${r100(tl)}–${r100(tHiTop)})</tspan></text>`);
+    o.push(`<text x="${WC.x1}" y="24" text-anchor="end" font-size="13" font-weight="700" fill="${FCOL}">${FC.label === 'today' ? 'Today' : FC.label === 'tomorrow' ? 'Tomorrow' : FC.label}: high ${Math.round(FC.median_f)}°F <tspan font-weight="500">(${Math.round(lo)}–${Math.round(hi)})</tspan> → thermals ~${r100(tm)} ft <tspan font-weight="500">(${r100(tl)}–${r100(tHiTop)})</tspan></text>`);
   }
   const lg = [['Temperature', C.temp, 2.4], ['Dew point', C.dew, 2.4], ['Cloudbase', C.cloud, 2.4], ['Thermals', C.thermal, 1.6]]
     .concat(FC ? [['Forecast high', FCOL, 3.2]] : []);

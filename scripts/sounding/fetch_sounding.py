@@ -97,7 +97,7 @@ DET = {"HRRR": ["ncep_hrrr_conus", "gfs_hrrr"]}
 
 def om(base, model, lat=None, lon=None):
     return (f"{base}?latitude={lat or LAT}&longitude={lon or LON}&hourly=temperature_2m&models={model}"
-            f"&temperature_unit=fahrenheit&timezone={TZ.replace('/', '%2F')}&forecast_days=3")
+            f"&temperature_unit=fahrenheit&timezone={TZ.replace('/', '%2F')}&forecast_days=3&past_days=7")
 
 
 def day_max(hourly, day):
@@ -121,9 +121,23 @@ def pct(xs, q):
     return xs[lo] + (xs[hi] - xs[lo]) * (i - lo)
 
 
-def fetch_surface_forecast(lat=LAT, lon=LON, fname="surface_forecast.json"):
+def flight_day(stn):
+    """The afternoon a balloon speaks for: a morning flight (12Z) its own day, an evening one (00Z) the next.
+    None when the flight can't be read."""
+    try:
+        with open(os.path.join(OUT, f"{stn}_latest.json")) as f:
+            m = re.search(r"(\d\d)00Z_(\d+)_([A-Za-z]{3})_(\d{4})", json.load(f).get("title", ""))
+        t = dt.datetime.strptime(f"{m[2]} {m[3]} {m[4]} {m[1]}", "%d %b %Y %H").replace(tzinfo=dt.timezone.utc)
+        loc = t.astimezone(ZoneInfo(TZ))
+        return loc.date() + dt.timedelta(days=1) if loc.hour >= 12 else loc.date()
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def fetch_surface_forecast(lat=LAT, lon=LON, fname="surface_forecast.json", stn="nkx"):
+    # the high for the day of the balloon shown (an old balloon gets its own day's high, not today's)
     now = dt.datetime.now(ZoneInfo(TZ))
-    day = now.date() if now.hour < 14 else now.date() + dt.timedelta(days=1)
+    day = flight_day(stn) or (now.date() if now.hour < 14 else now.date() + dt.timedelta(days=1))
     d = day.isoformat()
     members, models, hrrr = [], [], None
     for name, ids in ENS.items():
@@ -157,7 +171,8 @@ def fetch_surface_forecast(lat=LAT, lon=LON, fname="surface_forecast.json"):
         except Exception:  # noqa: BLE001
             pass
         return 1
-    out = {"day": d, "label": "today" if day == now.date() else "tomorrow",
+    out = {"day": d, "label": "today" if day == now.date() else "tomorrow" if day == now.date() + dt.timedelta(days=1)
+           else day.strftime("%b %-d"),
            "median_f": round(pct(members, 0.5), 1), "p10_f": round(pct(members, 0.1), 1),
            "p90_f": round(pct(members, 0.9), 1), "hrrr_f": hrrr, "members": len(members),
            "models": models, "lat": lat, "lon": lon, "window": "10:00-17:00 local",
@@ -173,10 +188,10 @@ if __name__ == "__main__":
     rc = main()
     try:
         fetch_surface_forecast()
-        for la, lo, fn in ((34.90, -117.92, "surface_forecast_edw.json"), (34.75, -120.57, "surface_forecast_vbg.json"),
-                           (32.87, -114.33, "surface_forecast_yum.json"), (36.05, -115.18, "surface_forecast_vef.json")):
+        for la, lo, fn, st in ((34.90, -117.92, "surface_forecast_edw.json", "edw"), (34.75, -120.57, "surface_forecast_vbg.json", "vbg"),
+                               (32.87, -114.33, "surface_forecast_yum.json", "yum"), (36.05, -115.18, "surface_forecast_vef.json", "vef")):
             try:
-                fetch_surface_forecast(la, lo, fn)          # the other balloon pages
+                fetch_surface_forecast(la, lo, fn, st)      # the other balloon pages
             except Exception as e:  # noqa: BLE001
                 print(fn, "failed:", e)
     except Exception as e:  # noqa: BLE001  (forecast is optional)
