@@ -2,7 +2,7 @@
 <rect width="800" height="880" fill="#fff"/>
 <defs><clipPath id="c0"><rect x="52" y="84" width="548" height="742"/></clipPath></defs>
 <text x="52" y="24" font-size="16" font-weight="700" fill="#111827">VBG sounding<tspan dx="8" font-size="12.5" font-weight="500" fill="#6b7280">12Z (4 am PST) · 18 Nov 2026</tspan></text>
-<text x="790" y="24" text-anchor="end" font-size="13" font-weight="700" fill="#e07b00">Nov 16: high 58°F <tspan font-weight="500">(57–60)</tspan> → thermals ~700 ft <tspan font-weight="500">(700–1,900)</tspan></text>
+<text x="790" y="24" text-anchor="end" font-size="13" font-weight="700" fill="#e07b00">Today: high 63°F <tspan font-weight="500">(62–64)</tspan> → thermals ~3,900 ft <tspan font-weight="500">(3,500–4,300)</tspan></text>
 <path d="M52 45h16" stroke="#ff0000" stroke-width="2.4" stroke-linecap="round"/><text x="74" y="49" fill="#111827">Temperature</text>
 <path d="M151.3 45h16" stroke="#00c400" stroke-width="2.4" stroke-linecap="round"/><text x="173.3" y="49" fill="#111827">Dew point</text>
 <path d="M238 45h16" stroke="#0000ff" stroke-width="2.4" stroke-linecap="round"/><text x="260" y="49" fill="#111827">Cloudbase</text>
@@ -57,15 +57,11 @@
 <text x="13" y="455.0" transform="rotate(-90 13 455.0)" text-anchor="middle">Altitude MSL (ft)</text>
 <rect x="52" y="772.2" width="548" height="27.0" fill="#3b6fd8" fill-opacity="0.12"/>
 <rect x="52" y="509.2" width="548" height="20.2" fill="#3b6fd8" fill-opacity="0.12"/>
-<polygon clip-path="url(#c0)" points="480.9,799.2 431.8,696.7 432.4,698.0 432.9,699.4 433.5,700.7 434.1,702.1 434.6,703.4 435.2,704.8 435.7,706.1 436.3,707.5 436.9,708.8 437.4,710.2 438.0,711.5 438.6,712.9 439.1,714.2 439.7,715.6 440.3,716.9 440.8,718.3 441.4,719.6 442.0,721.0 442.5,722.3 443.1,723.7 443.6,725.0 444.2,726.4 444.8,727.7 445.3,729.1 445.9,730.4 446.5,731.8 447.0,733.1 447.6,734.5 448.2,735.8 448.7,737.2 449.3,738.5 449.8,739.9 450.4,741.2 451.0,742.6 451.2,743.9 451.5,745.3 451.8,746.6 452.1,748.0 452.3,749.3 452.6,750.7 452.9,752.0 453.2,753.4 453.4,754.7 453.7,756.1 454.0,757.4 454.3,758.7 454.5,760.1 454.8,761.4 455.1,762.8 455.3,764.1 455.6,765.5 455.9,766.8 456.1,768.2 456.4,769.5 456.7,770.9 457.0,772.2 457.2,773.6 457.1,774.9 455.8,776.3 454.4,777.6 453.0,779.0 451.6,780.3 450.6,781.0 459.4,799.2" fill="#e07b00" fill-opacity="0.2"/>
-<polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="420.4,799.2 418.8,795.8"/>
-<circle cx="418.8" cy="795.8" r="2.8" fill="#ffa500"/>
+<polygon clip-path="url(#c0)" points="505.4,799.2 379.1,535.5 379.5,536.8 379.8,538.2 380.1,539.5 380.4,540.9 380.8,542.2 381.1,543.6 381.4,544.9 381.8,546.3 382.1,547.6 382.4,549.0 382.7,550.3 383.1,551.7 383.4,553.0 383.7,554.4 384.1,555.7 384.4,557.1 384.8,558.4 385.1,559.8 385.5,561.1 385.9,562.5 386.2,563.8 386.6,565.2 387.0,566.5 387.3,567.9 387.7,569.2 388.1,570.6 388.4,571.9 388.8,573.2 389.2,574.6 389.5,575.9 389.9,577.3 390.3,578.6 390.6,580.0 391.0,581.3 391.4,582.7 391.7,584.0 392.1,585.4 392.5,586.7 392.8,588.1 393.2,589.4 393.6,590.8 393.9,592.1 394.0,592.8 492.9,799.2" fill="#e07b00" fill-opacity="0.2"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="450.4,799.2 444.6,787.1"/>
 <circle cx="444.6" cy="787.1" r="2.8" fill="#ffa500"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="480.3,799.2 436.0,706.8"/>
 <circle cx="436.0" cy="706.8" r="2.8" fill="#ffa500"/>
-<polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="510.2,799.2 379.7,526.7"/>
-<circle cx="379.7" cy="526.7" r="2.8" fill="#ffa500"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="540.1,799.2 385.3,476.1"/>
 <circle cx="385.3" cy="476.1" r="2.8" fill="#ffa500"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#0000ff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" points="375.2,799.2 329.4,260.7"/>
@@ -73,11 +69,11 @@
 <circle cx="329.4" cy="260.7" r="3.6" fill="#fff" stroke="#0000ff" stroke-width="1.8"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#00c400" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="375.2,799.2 355.8,791.5 373.0,774.7 375.2,758.5 377.4,742.6 368.7,691.0 361.2,647.4 354.7,629.5 348.3,623.7 278.2,556.2 250.2,529.7 138.2,508.6 131.7,493.8 125.3,488.7 36.9,421.2 8.9,400.0 -23.4,354.8 -23.4,353.7 -28.8,286.5 -35.3,219.0 -39.6,166.7 174.8,151.5 208.2,149.0 208.2,146.6 219.0,84.0 229.8,27.1"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#ff0000" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="398.9,799.2 431.2,791.5 448.5,774.7 445.2,758.5 442.0,742.6 420.4,691.0 403.2,647.4 394.6,629.5 393.5,623.7 375.2,556.2 368.7,529.7 386.0,508.6 379.5,493.8 378.4,488.7 367.7,421.2 364.4,400.0 353.7,354.8 353.7,353.7 336.4,286.5 318.1,219.0 305.2,166.7 305.2,151.5 305.2,149.0 305.2,146.6 285.8,84.0 268.5,27.1"/>
-<polyline clip-path="url(#c0)" fill="none" stroke="#e07b00" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round" points="467.7,799.2 456.4,775.6"/>
-<circle cx="456.4" cy="775.6" r="4.6" fill="#e07b00" stroke="#fff" stroke-width="1.8"/>
-<text x="467.7" y="840" text-anchor="middle" font-size="12" font-weight="800" fill="#e07b00">58</text>
-<text x="420.4" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">50</text>
-<text x="510.2" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">65</text>
+<polyline clip-path="url(#c0)" fill="none" stroke="#e07b00" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round" points="499.5,799.2 385.4,561.1"/>
+<circle cx="385.4" cy="561.1" r="4.6" fill="#e07b00" stroke="#fff" stroke-width="1.8"/>
+<text x="499.5" y="840" text-anchor="middle" font-size="12" font-weight="800" fill="#e07b00">63</text>
+<text x="450.4" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">55</text>
+<text x="480.3" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">60</text>
 <text x="540.1" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">70</text>
 <path d="M600 260.7L605 260.7" stroke="#0000ff" stroke-width="1.2"/>
 <rect x="605" y="253.2" width="54.8" height="15" rx="3.5" fill="#0000ff"/>
@@ -85,12 +81,12 @@
 <path d="M600 519.3L605 519.3" stroke="#3b6fd8" stroke-width="1.2"/>
 <rect x="605" y="511.8" width="29.2" height="15" rx="3.5" fill="#3b6fd8"/>
 <text x="619.6" y="523.1" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">INV</text>
-<path d="M600 775.6L605 775.6" stroke="#e07b00" stroke-width="1.2"/>
-<rect x="605" y="768.1" width="61.2" height="15" rx="3.5" fill="#e07b00"/>
-<text x="635.6" y="779.4" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Top 0.7k</text>
-<path d="M600 785.7L605 792.6" stroke="#3b6fd8" stroke-width="1.2"/>
-<rect x="605" y="785.1" width="29.2" height="15" rx="3.5" fill="#3b6fd8"/>
-<text x="619.6" y="796.4" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">INV</text>
+<path d="M600 561.1L605 561.1" stroke="#e07b00" stroke-width="1.2"/>
+<rect x="605" y="553.6" width="61.2" height="15" rx="3.5" fill="#e07b00"/>
+<text x="635.6" y="564.9" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Top 3.9k</text>
+<path d="M600 785.7L605 785.7" stroke="#3b6fd8" stroke-width="1.2"/>
+<rect x="605" y="778.2" width="29.2" height="15" rx="3.5" fill="#3b6fd8"/>
+<text x="619.6" y="789.5" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">INV</text>
 <text x="690" y="75" font-size="12.5" font-weight="600" fill="#111827">Wind</text>
 <path d="M682 799.2h4" stroke="#d1d5db"/>
 <g transform="translate(696 799.2) rotate(280)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#111827" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
