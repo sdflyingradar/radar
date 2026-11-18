@@ -24,7 +24,7 @@
     "lon": -115.18,
     "window": "10:00-17:00 local",
     "source": "https://open-meteo.com/en/docs/ensemble-api",
-    "fetched": "2026-11-18T08:29Z",
+    "fetched": "2026-11-18T10:25Z",
     "thermal_tops": {
       "median_ft": 3900,
       "low_ft": 2300,
