@@ -56,7 +56,20 @@ def main():
             t = api("/stats/total", **rng(days))
             out[key] = {"visits": t.get("total", 0), "events": t.get("total_events", 0)}
             if key == "month":
-                daily = [{"day": s.get("day"), "n": s.get("daily", 0)} for s in t.get("stats", [])]
+                # GoatCounter's days are UTC: re-bucket its hourly counts into Pacific days (midnight to midnight here)
+                from zoneinfo import ZoneInfo
+                pac = {}
+                for st in t.get("stats", []):
+                    for hh, n in enumerate(st.get("hourly") or []):
+                        if n:
+                            loc = (dt.datetime.fromisoformat(st["day"]).replace(tzinfo=dt.timezone.utc)
+                                   + dt.timedelta(hours=hh)).astimezone(ZoneInfo("America/Los_Angeles")).date()
+                            pac[loc] = pac.get(loc, 0) + n
+                today_pt = dt.datetime.now(ZoneInfo("America/Los_Angeles")).date()
+                daily = [{"day": str(today_pt - dt.timedelta(days=k)), "n": pac.get(today_pt - dt.timedelta(days=k), 0)}
+                         for k in range(29, -1, -1)]
+                if not pac:      # no hourly detail: GoatCounter's own (UTC) days
+                    daily = [{"day": s.get("day"), "n": s.get("daily", 0)} for s in t.get("stats", [])]
                 while len(daily) > 7 and not daily[0]["n"]:      # from the first counted day (at least a week)
                     daily.pop(0)
                 out["daily"] = daily

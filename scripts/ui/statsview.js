@@ -18,20 +18,20 @@
     let d = document.getElementById("statsDlg");
     if (!d) { d = document.createElement("dialog"); d.id = "statsDlg"; document.body.appendChild(d); d.addEventListener("click", (e) => { if (e.target === d) d.close(); }); }
     const full = `<a href="https://sdflyingradar.goatcounter.com" target="_blank" rel="noopener">Full stats on GoatCounter ›</a>`;
-    if (!S) d.innerHTML = `<div class="stw"><h3>Visitors</h3><p>No numbers yet: the stats update runs every 3 hours once the GoatCounter key is set up.</p>${full}<button class="stx" autofocus>Close</button></div>`;
+    if (!S) d.innerHTML = `<div class="stw"><h3>Visits</h3><p>No numbers yet: the stats update runs every 3 hours once the GoatCounter key is set up.</p>${full}<button class="stx" autofocus>Close</button></div>`;
     else {
       const merge = (arr) => { const m = new Map(); arr.forEach((p) => m.set(nm(p), (m.get(nm(p)) || 0) + p.count)); return [...m].map(([n, c]) => ({ n, c })).sort((a, b) => b.c - a.c); };
       const pages = merge((S.pages || []).filter((p) => !p.event)), evs = merge((S.pages || []).filter((p) => p.event));
       const k = (o) => (o ? o.visits : "–");
-      d.innerHTML = `<div class="stw"><h3>Visitors</h3>
-        <div class="stk"><div><b>${k(S.today)}</b><small>today</small></div><div><b>${k(S.week)}</b><small>7 days</small></div><div><b>${k(S.month)}</b><small>30 days</small></div></div>
+      d.innerHTML = `<div class="stw"><h3>Visits</h3>
+        <div class="stk"><div><b>${k(S.today)}</b><small>today (since midnight)</small></div><div><b>${k(S.week)}</b><small>7 days</small></div><div><b>${k(S.month)}</b><small>30 days</small></div></div>
         ${bars(S.daily)}
         ${list("Pages (30 days)", pages.slice(0, 8).map((p) => [p.n, p.c]))}
         ${list("App", evs.map((p) => [p.n, p.c]))}
         ${list("From", (S.refs || []).slice(0, 6).map((r) => [r.name, r.count]))}
         ${list("Screens", (S.sizes || []).map((r) => [r.name, r.count]))}
         ${list("Where", (S.locations || []).slice(0, 6).map((r) => [r.name, r.count]))}
-        <p class="stf">Updated ${esc((S.generated || "").replace("T", " ").replace("Z", " UTC"))} · ${full}</p><button class="stx" autofocus>Close</button></div>`;
+        <p class="stf">A visit: someone opening a page (once per page in 8 hours). Updated ${esc((S.generated || "").replace("T", " ").replace("Z", " UTC"))} · ${full}</p><button class="stx" autofocus>Close</button></div>`;
     }
     d.querySelector(".stx").onclick = () => d.close();
     d.showModal();
