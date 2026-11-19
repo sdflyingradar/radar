@@ -954,7 +954,7 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
 @media (max-width: 640px) { .tnav { gap: 6px; } .tnav .tnb { min-width: 58px; padding: 5px 10px; } .tnav .tmid { gap: 8px; } }
 .dtsw input:focus-visible + i { outline: 2px solid #c26a24; outline-offset: 2px; }
 </style>
-<link rel="stylesheet" href="scripts/ui/grid.css?v=202611162042">
+<link rel="stylesheet" href="scripts/ui/grid.css?v=202611182038">
 <link rel="stylesheet" href="scripts/ui/first.css?v=202611161220">
 <style>
 /* ===== LAB bar ===== */
@@ -1455,7 +1455,7 @@ function siteFacts(c, s) {
   const out = [h && h.v !== "–" ? `<span class="wa">${LIFT}<span class="hl">${esc(h.v)}</span><span class="hk">${esc(hk(h.v))}</span></span>` : "",
           a && a.v !== "–" ? `<span class="fi fa">${ALOFT_IC}${windHtml(a.v, "mph")}</span>` : "",
           w && w.v !== "–" ? `<span class="fi fl">${LAUNCH_IC}${windHtml(w.v, "mph")}</span>` : ""].filter(Boolean).join('<span class="sep">·</span>');
-  /* scripts/ui/facts.js?v=202611112005 colours the facts (window.siteFactsHook) */
+  /* scripts/ui/facts.js?v=202611182038 colours the facts (window.siteFactsHook) */
   return window.siteFactsHook ? window.siteFactsHook(out, c, s, { LIFT, LAUNCH_IC, ALOFT_IC }) : out;
 }
 function sitePills(c) {
@@ -1899,7 +1899,7 @@ document.addEventListener("click", (e) => {
   window.addEventListener("scroll", () => (tip.hidden = true), { passive: true });
 })();
 </script>
-<script src="scripts/ui/facts.js?v=202611112005"></script>
+<script src="scripts/ui/facts.js?v=202611182038"></script>
 <script src="scripts/ui/sched.js?v=202611152000"></script>
 <script src="scripts/ui/grid.js?v=202611112009"></script>
 <script src="scripts/ui/first.js?v=202611082340"></script>

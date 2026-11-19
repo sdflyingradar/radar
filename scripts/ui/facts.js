@@ -4,7 +4,7 @@
    Launch dial: the launch's direction window as a grey arc on the rim with a light grey wedge, and the wind as an
    arrow from outside the dial into its centre: green more than 20 deg inside the window, yellow its outer 20 deg,
    orange up to 20 deg outside (cross), red further out (from behind).
-   Aloft icon: the detailed chart's speed colours; over the back or offshore from 5 mph one step worse, at least orange. */
+   Aloft: a streak arrow pointing where the wind blows, in the detailed chart's speed colours; over the back or offshore from 5 mph one step worse, at least orange. */
 (function () {
   const DIR16 = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
   const deg = (v) => { const m = String(v || "").match(/\b(N|NNE|NE|ENE|E|ESE|SE|SSE|S|SSW|SW|WSW|W|WNW|NW|NNW)\b/); return m ? DIR16.indexOf(m[1]) * 22.5 : null; };
@@ -63,7 +63,14 @@
       if (m && m[2] && band(+m[2]) - b >= 2) b += 1;
       if (a.q != null && a.q <= 0.2 && m && +m[1] >= 5) b = Math.min(5, Math.max(b + 1, 3));   // over the back / offshore: one step worse, at least orange (light air: no change)
       const col = ["#2f9e57", "#2f9e57", "#d4a90c", "#ef8a17", "#d64545", "#d64545"][b];
-      out = out.replace(ALOFT_IC, ALOFT_IC.replace('class="wic"', `class="wic" style="color:${col}"`));
+      /* one streak arrow (moving air) pointing where the wind blows, in the speed colour, in place of the icon
+         and the small arrow: then just "7 mph" */
+      const d = deg(a.v);
+      if (d != null) {
+        const tip = `wind at the top of lift from ${String(a.v).split(" ")[0]}`;
+        const ic = `<svg class="wic sarr" viewBox="-12 -12 24 24" aria-hidden="true"><title>${tip}</title><g transform="rotate(${(d - 270 + 360) % 360})" stroke="${col}" stroke-linecap="round" fill="none"><path d="M-10 -4 H3 M-10 4 H3" stroke-width="2.2"/><path d="M-6 0 H6" stroke-width="2.4"/><path d="M3 -5.5 L10 0 L3 5.5" stroke-width="2.6" stroke-linejoin="round"/></g></svg>`;
+        out = out.replace(new RegExp(ALOFT_IC.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + '(<span class="wa"[^>]*>)<svg[^>]*>.*?</svg>'), (m, sp) => ic + sp);
+      } else out = out.replace(ALOFT_IC, ALOFT_IC.replace('class="wic"', `class="wic" style="color:${col}"`));
     }
     return out;
   };

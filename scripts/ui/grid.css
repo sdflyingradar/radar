@@ -262,3 +262,4 @@ html[data-lay] body details.day:not(#story) .list .srow .facts > span { display:
   html[data-lay] body details.day:not(#story) .list .srow.srow { background: #fff !important; border: 1.5px solid var(--rc) !important; box-shadow: none !important; }
   html[data-lay] body details.day:not(#story) .list .srow.srow:hover { background: color-mix(in srgb, var(--rc) 6%, #fff) !important; }
 }
+html body .facts svg.wic.sarr, html[data-lay] body details.day:not(#story) .list .srow .facts > span > svg.wic.sarr { width: 1.45em !important; height: 1.45em !important; vertical-align: -.35em; margin-right: 1px; }
