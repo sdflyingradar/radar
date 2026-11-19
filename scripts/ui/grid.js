@@ -124,7 +124,9 @@
     if (w && w.v !== "–" && !touched.has("Launch wind") && !touched.has("Gusts") && (bp || w.q >= 0.4)) fine.push(`launch ${w.v}`);
     if (a && a.v !== "–" && !touched.has("Wind aloft") && !touched.has("Offshore") && a.q >= 0.4) fine.push(`aloft ${a.v}`);
     if (c.rain_p != null && c.rain_p < 0.3 && !touched.has("Rain")) fine.push(c.rain_p < 0.05 ? "dry" : `${Math.round(c.rain_p * 100)}% rain`);
-    if (c.cloud && !touched.has("Cloud")) fine.push(c.cloud.okta ? `cloud ${c.cloud.okta}/8` : "sunny");
+    /* cloud only counts at thermal sites; "sunny" only when the ground really gets the sun (low cloud included) */
+    if (c.cloud && c.style !== "ridge" && !touched.has("Cloud"))
+      fine.push(c.cloud.okta ? `cloud ${c.cloud.okta}/8` : (c.cloud.sun_loss || 0) < 0.25 ? "sunny" : "low cloud");
     const out = [];
     if (bp) out.push(row("lg-base", "", "Height", h ? h.v : "", "", `<b>${r1(bp.lv)}</b>`));
     else {
