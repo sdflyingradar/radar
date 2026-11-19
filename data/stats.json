@@ -1,12 +1,12 @@
 {
- "generated": "2026-11-19T17:13Z",
+ "generated": "2026-11-19T17:44Z",
  "week": {
-  "visits": 52,
-  "events": 8
+  "visits": 60,
+  "events": 9
  },
  "month": {
-  "visits": 52,
-  "events": 8
+  "visits": 60,
+  "events": 9
  },
  "daily": [
   {
@@ -31,21 +31,27 @@
   },
   {
    "day": "2026-11-18",
-   "n": 21
+   "n": 0
   },
   {
    "day": "2026-11-19",
-   "n": 31
+   "n": 60
   }
  ],
  "today": {
-  "visits": 31
+  "visits": 60
  },
  "pages": [
   {
    "path": "/radar",
    "title": "SD Flying Radar",
-   "count": 32,
+   "count": 38,
+   "event": false
+  },
+  {
+   "path": "/radar/index.html",
+   "title": "SD Flying Radar",
+   "count": 7,
    "event": false
   },
   {
@@ -61,22 +67,16 @@
    "event": false
   },
   {
-   "path": "/radar/index.html",
-   "title": "SD Flying Radar",
-   "count": 6,
-   "event": false
-  },
-  {
    "path": "install",
    "title": "Added to home screen",
-   "count": 1,
+   "count": 2,
    "event": true
   }
  ],
  "refs": [
   {
    "name": "(direct)",
-   "count": 46
+   "count": 54
   },
   {
    "name": "sdflyingradar.github.io/radar",
@@ -86,7 +86,7 @@
  "sizes": [
   {
    "name": "Phone",
-   "count": 47
+   "count": 55
   },
   {
    "name": "Computer",
@@ -96,11 +96,11 @@
  "systems": [
   {
    "name": "iOS",
-   "count": 28
+   "count": 32
   },
   {
    "name": "Android",
-   "count": 19
+   "count": 23
   },
   {
    "name": "macOS",
@@ -110,7 +110,7 @@
  "locations": [
   {
    "name": "United States",
-   "count": 51
+   "count": 59
   },
   {
    "name": "Austria",
