@@ -9,9 +9,9 @@
   "trigger_temp_f": 78,
   "forecast_high": {
     "day": "2026-11-18",
-    "label": "today",
+    "label": "Nov 18",
     "median_f": 63.3,
-    "p10_f": 62.1,
+    "p10_f": 61.8,
     "p90_f": 64.3,
     "hrrr_f": 65.4,
     "members": 122,
@@ -24,10 +24,10 @@
     "lon": -120.57,
     "window": "10:00-17:00 local",
     "source": "https://open-meteo.com/en/docs/ensemble-api",
-    "fetched": "2026-11-19T01:05Z",
+    "fetched": "2026-11-19T08:42Z",
     "thermal_tops": {
       "median_ft": 4000,
-      "low_ft": 3500,
+      "low_ft": 3300,
       "high_ft": 4300
     }
   },
