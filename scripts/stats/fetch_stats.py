@@ -6,6 +6,7 @@ import os
 import pathlib
 import sys
 import urllib.parse
+import urllib.error
 import urllib.request
 
 SITE = "https://sdflyingradar.goatcounter.com/api/v0"
@@ -16,8 +17,11 @@ def api(path, **q):
     url = f"{SITE}{path}?" + urllib.parse.urlencode(q)
     req = urllib.request.Request(url, headers={"Authorization": f"Bearer {os.environ['GOATCOUNTER_TOKEN'].strip()}",
                                                "Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return json.load(r)
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return json.load(r)
+    except urllib.error.HTTPError as e:
+        raise RuntimeError(f"{e.code}: {e.read()[:200].decode('utf-8', 'replace')}") from None
 
 
 def rng(days):
