@@ -1,0 +1,225 @@
+{
+ "generated": "2026-11-19T17:09Z",
+ "week": {
+  "visits": 52,
+  "events": 8
+ },
+ "month": {
+  "visits": 52,
+  "events": 8
+ },
+ "daily": [
+  {
+   "day": "2026-10-20",
+   "n": 0
+  },
+  {
+   "day": "2026-10-21",
+   "n": 0
+  },
+  {
+   "day": "2026-10-22",
+   "n": 0
+  },
+  {
+   "day": "2026-10-23",
+   "n": 0
+  },
+  {
+   "day": "2026-10-24",
+   "n": 0
+  },
+  {
+   "day": "2026-10-25",
+   "n": 0
+  },
+  {
+   "day": "2026-10-26",
+   "n": 0
+  },
+  {
+   "day": "2026-10-27",
+   "n": 0
+  },
+  {
+   "day": "2026-10-28",
+   "n": 0
+  },
+  {
+   "day": "2026-10-29",
+   "n": 0
+  },
+  {
+   "day": "2026-10-30",
+   "n": 0
+  },
+  {
+   "day": "2026-10-31",
+   "n": 0
+  },
+  {
+   "day": "2026-11-01",
+   "n": 0
+  },
+  {
+   "day": "2026-11-02",
+   "n": 0
+  },
+  {
+   "day": "2026-11-03",
+   "n": 0
+  },
+  {
+   "day": "2026-11-04",
+   "n": 0
+  },
+  {
+   "day": "2026-11-05",
+   "n": 0
+  },
+  {
+   "day": "2026-11-06",
+   "n": 0
+  },
+  {
+   "day": "2026-11-07",
+   "n": 0
+  },
+  {
+   "day": "2026-11-08",
+   "n": 0
+  },
+  {
+   "day": "2026-11-09",
+   "n": 0
+  },
+  {
+   "day": "2026-11-10",
+   "n": 0
+  },
+  {
+   "day": "2026-11-11",
+   "n": 0
+  },
+  {
+   "day": "2026-11-12",
+   "n": 0
+  },
+  {
+   "day": "2026-11-13",
+   "n": 0
+  },
+  {
+   "day": "2026-11-14",
+   "n": 0
+  },
+  {
+   "day": "2026-11-15",
+   "n": 0
+  },
+  {
+   "day": "2026-11-16",
+   "n": 0
+  },
+  {
+   "day": "2026-11-17",
+   "n": 0
+  },
+  {
+   "day": "2026-11-18",
+   "n": 0
+  },
+  {
+   "day": "2026-11-19",
+   "n": 52
+  }
+ ],
+ "pages": [
+  {
+   "path": "/radar",
+   "title": "SD Flying Radar",
+   "count": 32,
+   "event": false
+  },
+  {
+   "path": "app-open",
+   "title": "Opened from home screen",
+   "count": 7,
+   "event": true
+  },
+  {
+   "path": "/radar/how.html",
+   "title": "How SD Flying Radar Works",
+   "count": 6,
+   "event": false
+  },
+  {
+   "path": "/radar/index.html",
+   "title": "SD Flying Radar",
+   "count": 6,
+   "event": false
+  },
+  {
+   "path": "install",
+   "title": "Added to home screen",
+   "count": 1,
+   "event": true
+  }
+ ],
+ "refs": [
+  {
+   "name": "(direct)",
+   "count": 46
+  },
+  {
+   "name": "sdflyingradar.github.io/radar",
+   "count": 6
+  }
+ ],
+ "sizes": [
+  {
+   "name": "(direct)",
+   "count": 47
+  },
+  {
+   "name": "(direct)",
+   "count": 0
+  },
+  {
+   "name": "(direct)",
+   "count": 5
+  },
+  {
+   "name": "(direct)",
+   "count": 0
+  },
+  {
+   "name": "(direct)",
+   "count": 0
+  }
+ ],
+ "systems": [
+  {
+   "name": "iOS",
+   "count": 28
+  },
+  {
+   "name": "Android",
+   "count": 19
+  },
+  {
+   "name": "macOS",
+   "count": 5
+  }
+ ],
+ "locations": [
+  {
+   "name": "United States",
+   "count": 51
+  },
+  {
+   "name": "Austria",
+   "count": 1
+  }
+ ]
+}
