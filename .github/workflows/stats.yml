@@ -1,0 +1,29 @@
+name: Visitor stats
+
+# Pulls GoatCounter's visitor numbers into data/stats.json for the radar's admin view, a few times a day.
+on:
+  schedule:
+    - cron: "41 */3 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  stats:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - name: Fetch
+        env:
+          GOATCOUNTER_TOKEN: ${{ secrets.GOATCOUNTER_TOKEN }}
+        run: python3 scripts/stats/fetch_stats.py
+      - name: Commit
+        run: |
+          git config user.name "radar-bot"
+          git config user.email "radar-bot@users.noreply.github.com"
+          git add data/stats.json 2>/dev/null || exit 0
+          git diff --cached --quiet && exit 0
+          git commit -q -m "Visitor stats"
+          for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done
