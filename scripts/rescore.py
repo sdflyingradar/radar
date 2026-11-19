@@ -53,6 +53,18 @@ def main(argv=None):
     ap.add_argument("--all-sites", action="store_true")
     args = ap.parse_args(argv)
     folder = ROOT / "data" / "archive" / "raw"
+    # older days live on the 'archive' branch (moved there weekly): pull them in from git if it's been fetched
+    import subprocess
+    try:
+        subprocess.run(["git", "fetch", "-q", "origin", "archive"], cwd=ROOT, check=False, capture_output=True, timeout=60)
+        names = subprocess.run(["git", "ls-tree", "--name-only", "FETCH_HEAD", "data/archive/raw/"], cwd=ROOT,
+                               capture_output=True, text=True).stdout.split()
+        for n in names:
+            dst = ROOT / n
+            if not dst.exists():
+                dst.write_bytes(subprocess.run(["git", "show", f"FETCH_HEAD:{n}"], cwd=ROOT, capture_output=True).stdout)
+    except Exception:  # noqa: BLE001
+        pass
     files = sorted(folder.glob("*.json.gz"))
     if args.dates:
         files = [f for f in files if f.name[:10] in args.dates]
