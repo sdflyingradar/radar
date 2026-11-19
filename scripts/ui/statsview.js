@@ -5,7 +5,7 @@
   const RADAR = ["/radar", "/radar/", "/radar/index.html"];
   const PAGES = { "/radar/how.html": "Read “What this is”", "/radar/sounding.html": "Opened the sounding", "/radar/lax-dag.html": "Opened the pressure map", "/radar/regions.html": "Opened the SkyGram page" };
   const DEEP = [["do-site", "Opened a site"], ["do-skygram", "Used the SkyGram"], ["do-day", "Looked at another day"], ["do-trips", "Opened trips"]];
-  const STAY = [["stay-30s", "30 s+"], ["stay-2m", "2 min+"], ["stay-5m", "5 min+"]];
+  const STAY = [["stay-15s", "15 s+"], ["stay-30s", "30 s+"], ["stay-1m", "1 min+"], ["stay-3m", "over 3 min"]];
   const WD = "SMTWTFS";
 
   function timeline(daily, app) {
