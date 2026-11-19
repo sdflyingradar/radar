@@ -8,7 +8,7 @@
     if (!daily || !daily.length) return "";
     const W = 320, H = 70, n = daily.length, mx = Math.max(1, ...daily.map((d) => d.n)), bw = W / n;
     return `<svg viewBox="0 0 ${W} ${H + 14}" class="stb">${daily.map((d, i) => { const h = Math.round(d.n / mx * H); return `<rect x="${(i * bw + 1).toFixed(1)}" y="${H - h}" width="${(bw - 2).toFixed(1)}" height="${h}" rx="1.5" fill="#2b7fd8"><title>${esc(d.day)}: ${d.n}</title></rect>`; }).join("")}
-      <text x="0" y="${H + 12}" font-size="9" fill="#98a2b3">${esc((daily[0].day || "").slice(5))}</text><text x="${W}" y="${H + 12}" font-size="9" fill="#98a2b3" text-anchor="end">today</text><text x="${W}" y="9" font-size="9" fill="#98a2b3" text-anchor="end">max ${mx}/day</text></svg>`;
+      <text x="0" y="${H + 12}" font-size="9" fill="#98a2b3">${esc((daily[0].day || "").slice(5))}</text><text x="${W}" y="${H + 12}" font-size="9" fill="#98a2b3" text-anchor="end">today</text><text x="0" y="9" font-size="9" fill="#98a2b3">max ${mx}/day</text></svg>`;
   }
   const list = (title, rows) => rows && rows.length ? `<h4>${title}</h4><table>${rows.map((r) => `<tr><td>${esc(r[0])}</td><td>${r[1]}</td></tr>`).join("")}</table>` : "";
   async function open(ev) {
