@@ -14,7 +14,7 @@ OUT = pathlib.Path(__file__).resolve().parents[2] / "data" / "stats.json"
 
 def api(path, **q):
     url = f"{SITE}{path}?" + urllib.parse.urlencode(q)
-    req = urllib.request.Request(url, headers={"Authorization": f"Bearer {os.environ['GOATCOUNTER_TOKEN']}",
+    req = urllib.request.Request(url, headers={"Authorization": f"Bearer {os.environ['GOATCOUNTER_TOKEN'].strip()}",
                                                "Content-Type": "application/json"})
     with urllib.request.urlopen(req, timeout=30) as r:
         return json.load(r)
@@ -58,6 +58,9 @@ def main():
     out["sizes"] = names("sizes")
     out["systems"] = names("systems")
     out["locations"] = names("locations")
+    if not any(k in out for k in ("today", "week", "month")):
+        print("no numbers came back (check the GoatCounter key): stats.json left as it was")
+        return 1
     OUT.write_text(json.dumps(out, indent=1))
     print("wrote", OUT, {k: out.get(k) for k in ("today", "week", "month")})
     return 0
