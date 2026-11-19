@@ -955,6 +955,7 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
 </style>
 <link rel="stylesheet" href="scripts/ui/grid.css?v=202611182038">
 <link rel="stylesheet" href="scripts/ui/first.css?v=202611161220">
+<script src="scripts/ui/stats.js?v=202611190644" defer></script>
 </head>
 <body>
 <div class="wrap">
@@ -1013,6 +1014,7 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
     <label class="dtsw" title="SkyGram: thermals, wind at every height, inversions and cumulus in one picture (off: the climb grid); stays on this device"><input type="checkbox" id="dtherm"><i></i>SkyGram</label>
     <button type="button" id="archBtn" hidden title="Every past day as the radar forecast it that day">Archive</button>
     <a id="runNow" class="btnlink" href="#" target="_blank" rel="noopener" hidden title="Opens GitHub: press Run workflow and pick radar, therm charts, balloons or everything">Run an update</a>
+    <a id="statsLink" class="btnlink" href="https://sdflyingradar.goatcounter.com" target="_blank" rel="noopener" hidden>Visitor stats</a>
   </footer>
 </div>
 
@@ -1820,7 +1822,8 @@ try {
 if (ADMIN) $("#archBtn").hidden = false;   // the archive is for the owner only
 if (ADMIN && location.hostname.endsWith(".github.io")) {
   const user = location.hostname.split(".")[0], repo = location.pathname.split("/").filter(Boolean)[0];
-  if (user && repo) { const a = $("#runNow"); a.href = `https://github.com/${user}/${repo}/actions/workflows/run.yml`; a.hidden = false; }
+  if (user && repo) { const a = $("#runNow"); a.href = `https://github.com/${user}/${repo}/actions/workflows/run.yml`; a.hidden = false;
+    const st = $("#statsLink"); if (st) st.hidden = false; }
 }
 let lastGen = null;
 function load() {
