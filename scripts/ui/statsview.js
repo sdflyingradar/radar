@@ -1,49 +1,86 @@
-/* Admin: the visitor numbers (data/stats.json, pulled from GoatCounter by the stats workflow) in a sheet. */
+/* Admin: the visitor numbers (data/stats.json, pulled from GoatCounter by the stats workflow) in a compact sheet:
+   key figures, visits per day, how long people stay and how far they go into the radar. */
 (function () {
   const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const NAMES = { "/radar": "Radar", "/radar/": "Radar", "/radar/index.html": "Radar", "/radar/how.html": "What this is", "/radar/regions.html": "SkyGram",
-    "/radar/sounding.html": "Sounding", "/radar/lax-dag.html": "Pressure map", "install": "Added to home screen", "app-open": "Opened from home screen" };
-  const nm = (p) => NAMES[p.path] || p.title || p.path;
-  function bars(daily) {
+  const RADAR = ["/radar", "/radar/", "/radar/index.html"];
+  const PAGES = { "/radar/how.html": "Read “What this is”", "/radar/sounding.html": "Opened the sounding", "/radar/lax-dag.html": "Opened the pressure map", "/radar/regions.html": "Opened the SkyGram page" };
+  const DEEP = [["do-site", "Opened a site"], ["do-skygram", "Used the SkyGram"], ["do-day", "Looked at another day"], ["do-trips", "Opened trips"]];
+  const STAY = [["stay-30s", "30 s+"], ["stay-2m", "2 min+"], ["stay-5m", "5 min+"]];
+  const WD = "SMTWTFS";
+
+  function timeline(daily, app) {
     if (!daily || !daily.length) return "";
-    const W = 320, H = 70, n = daily.length, mx = Math.max(1, ...daily.map((d) => d.n)), bw = W / n;
-    return `<svg viewBox="0 0 ${W} ${H + 14}" class="stb">${daily.map((d, i) => { const h = Math.round(d.n / mx * H); return `<rect x="${(i * bw + 1).toFixed(1)}" y="${H - h}" width="${(bw - 2).toFixed(1)}" height="${h}" rx="1.5" fill="#2b7fd8"><title>${esc(d.day)}: ${d.n}</title></rect>`; }).join("")}
-      <text x="0" y="${H + 12}" font-size="9" fill="#98a2b3">${esc((daily[0].day || "").slice(5))}</text><text x="${W}" y="${H + 12}" font-size="9" fill="#98a2b3" text-anchor="end">today</text><text x="0" y="9" font-size="9" fill="#98a2b3">max ${mx}/day</text></svg>`;
+    const n = daily.length, W = 340, H = 64, top = 12, bw = W / n, mx = Math.max(1, ...daily.map((d) => d.n));
+    const lab = n <= 14, f = (v) => v.toFixed(1);
+    const bars = daily.map((d, i) => {
+      const x = i * bw + bw * 0.14, w = bw * 0.72, h = d.n / mx * H, a = Math.min(d.n, app[d.day] || 0) / mx * H;
+      const wd = new Date(d.day + "T12:00").getDay(), last = i === n - 1;
+      return `<g><title>${esc(d.day)}: ${d.n} visits${app[d.day] ? `, ${app[d.day]} from the home screen` : ""}</title>
+        <rect x="${f(x)}" y="${f(top + H - Math.max(h, d.n ? 2 : 1))}" width="${f(w)}" height="${f(Math.max(h, d.n ? 2 : 1))}" rx="3" fill="${d.n ? (last ? "#2b7fd8" : "#9cc3ee") : "#eef0f3"}"/>
+        ${a ? `<rect x="${f(x)}" y="${f(top + H - a)}" width="${f(w)}" height="${f(a)}" rx="3" fill="#174f8f"/>` : ""}
+        ${lab && d.n ? `<text x="${f(x + w / 2)}" y="${f(top + H - h - 3)}" text-anchor="middle" class="stv">${d.n}</text>` : ""}
+        ${lab || wd === 1 ? `<text x="${f(x + w / 2)}" y="${top + H + 12}" text-anchor="middle" class="sta${last ? " now" : ""}">${lab ? WD[wd] : esc(d.day.slice(5).replace("-", "/"))}</text>` : ""}</g>`;
+    }).join("");
+    return `<svg viewBox="0 0 ${W} ${top + H + 16}" class="stb">${bars}</svg>
+      <div class="stl"><span><i style="background:#9cc3ee"></i>visits</span><span><i style="background:#174f8f"></i>from the home screen</span></div>`;
   }
-  const list = (title, rows) => rows && rows.length ? `<h4>${title}</h4><table>${rows.map((r) => `<tr><td>${esc(r[0])}</td><td>${r[1]}</td></tr>`).join("")}</table>` : "";
+
+  /* a row with a thin bar: label, share of radar visitors, count */
+  const meter = (label, c, base) => {
+    const p = base ? Math.min(100, Math.round(c / base * 100)) : 0;
+    return `<div class="stm"><span>${esc(label)}</span><span class="stmb"><i style="width:${p}%"></i></span><b>${base ? p + "%" : c}</b></div>`;
+  };
+  const chips = (title, rows) => rows && rows.length ? `<div class="stc"><span>${title}</span>${rows.map((r) => `<em>${esc(r.name)} <b>${r.count}</b></em>`).join("")}</div>` : "";
+
   async function open(ev) {
     ev.preventDefault();
     let S = null;
     try { S = await (await fetch(`data/stats.json?t=${Date.now()}`, { cache: "no-store" })).json(); } catch (e) {}
     let d = document.getElementById("statsDlg");
     if (!d) { d = document.createElement("dialog"); d.id = "statsDlg"; document.body.appendChild(d); d.addEventListener("click", (e) => { if (e.target === d) d.close(); }); }
-    const full = `<a href="https://sdflyingradar.goatcounter.com" target="_blank" rel="noopener">Full stats on GoatCounter ›</a>`;
-    if (!S) d.innerHTML = `<div class="stw"><h3>Visits</h3><p>No numbers yet: the stats update runs every 3 hours once the GoatCounter key is set up.</p>${full}<button class="stx" autofocus>Close</button></div>`;
+    const full = `<a href="https://sdflyingradar.goatcounter.com" target="_blank" rel="noopener">GoatCounter ›</a>`;
+    const close = `<button class="stx" aria-label="Close" autofocus>✕</button>`;
+    if (!S) d.innerHTML = `<div class="stw"><div class="sth"><h3>Visits</h3>${close}</div><p>No numbers yet: the stats update runs every 3 hours.</p>${full}</div>`;
     else {
-      const merge = (arr) => { const m = new Map(); arr.forEach((p) => m.set(nm(p), (m.get(nm(p)) || 0) + p.count)); return [...m].map(([n, c]) => ({ n, c })).sort((a, b) => b.c - a.c); };
-      const pages = merge((S.pages || []).filter((p) => !p.event)), evs = merge((S.pages || []).filter((p) => p.event));
-      const k = (o) => (o ? o.visits : "–");
-      d.innerHTML = `<div class="stw"><h3>Visits</h3>
-        <div class="stk"><div><b>${k(S.today)}</b><small>today (since midnight)</small></div><div><b>${k(S.week)}</b><small>7 days</small></div><div><b>${k(S.month)}</b><small>30 days</small></div></div>
-        ${bars(S.daily)}
-        ${list("Pages (30 days)", pages.slice(0, 8).map((p) => [p.n, p.c]))}
-        ${list("App", evs.map((p) => [p.n, p.c]))}
-        ${list("From", (S.refs || []).slice(0, 6).map((r) => [r.name, r.count]))}
-        ${list("Screens", (S.sizes || []).map((r) => [r.name, r.count]))}
-        ${list("Where", (S.locations || []).slice(0, 6).map((r) => [r.name, r.count]))}
-        <p class="stf">A visit: someone opening a page (once per page in 8 hours). Updated ${esc((S.generated || "").replace("T", " ").replace("Z", " UTC"))} · ${full}</p><button class="stx" autofocus>Close</button></div>`;
+      const P = S.pages || [], by = (path) => P.filter((p) => p.path === path).reduce((a, p) => a + p.count, 0);
+      const app = (P.find((p) => p.path === "app-open") || {}).days || {};
+      const radar = RADAR.reduce((a, p) => a + by(p), 0);
+      const stays = STAY.filter(([p]) => by(p)), deep = [...DEEP.map(([p, l]) => [l, by(p)]), ...Object.entries(PAGES).map(([p, l]) => [l, by(p)])].filter((r) => r[1]).sort((a, b) => b[1] - a[1]);
+      const k = (o) => (o ? o.visits : "–"), upd = (S.generated || "").slice(11, 16);
+      const updLocal = S.generated ? new Date(S.generated.replace("Z", ":00Z")).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : upd;
+      const installs = by("install"), opens = by("app-open");
+      d.innerHTML = `<div class="stw">
+        <div class="sth"><h3>Visits</h3><small>updated ${esc(updLocal)}</small>${close}</div>
+        <div class="stk"><div><b>${k(S.today)}</b>today</div><div><b>${k(S.week)}</b>7 days</div><div><b>${k(S.month)}</b>30 days</div>${installs || opens ? `<div><b>${installs}</b>installs</div>` : ""}</div>
+        ${timeline(S.daily, app)}
+        <h4>How long they stay <small>of ${radar} radar visitors</small></h4>
+        ${stays.length ? STAY.map(([p, l]) => meter(l, by(p), radar)).join("") : `<p class="stn">Counting since Nov 19: shows up with the next update.</p>`}
+        <h4>How far they go</h4>
+        ${deep.length ? deep.map(([l, c]) => meter(l, c, radar)).join("") : `<p class="stn">Counting since Nov 19: shows up with the next update.</p>`}
+        ${chips("From", (S.refs || []).filter((r) => !/sdflyingradar/.test(r.name)).slice(0, 5))}${chips("Screens", S.sizes || [])}${chips("Where", (S.locations || []).slice(0, 5))}
+        <p class="stf">Last 30 days. A visit: a person opening a page, once in 8 hours; % of radar visitors. ${full}</p></div>`;
     }
     d.querySelector(".stx").onclick = () => d.close();
     d.showModal();
   }
   document.addEventListener("click", (e) => { const a = e.target.closest("#statsLink"); if (a) open(e); });
   const css = document.createElement("style");
-  css.textContent = `#statsDlg{border:none;border-radius:14px;padding:0;max-width:min(420px,94vw);width:100%;box-shadow:0 10px 40px rgba(0,0,0,.25)}
-  #statsDlg::backdrop{background:rgba(16,24,40,.35)} .stw{padding:16px 18px;font-size:.9rem;color:#1f2328}
-  .stw{font-family:inherit} .stw h3{margin:0 0 10px;font-size:1.05rem;font-family:inherit} .stw a:focus{outline:none} .stw h4{margin:14px 0 4px;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:#667085}
-  .stk{display:flex;gap:8px;margin-bottom:10px} .stk div{flex:1;background:#f6f7f9;border-radius:10px;padding:8px;text-align:center}
-  .stk b{display:block;font-size:1.5rem} .stk small{color:#667085} .stb{width:100%;height:auto;display:block}
-  .stw table{width:100%;border-collapse:collapse} .stw td{padding:3px 0;border-bottom:1px solid #eef0f3} .stw td:last-child{text-align:right;font-variant-numeric:tabular-nums;color:#344054}
-  .stf{color:#667085;font-size:.78rem;margin:12px 0 8px} .stx{border:1px solid #d0d5dd;background:#fff;border-radius:8px;padding:6px 14px;font:inherit;cursor:pointer}`;
+  css.textContent = `#statsDlg{border:none;border-radius:16px;padding:0;max-width:min(400px,94vw);width:100%;max-height:88vh;box-shadow:0 12px 40px rgba(16,24,40,.22)}
+  #statsDlg::backdrop{background:rgba(16,24,40,.35);backdrop-filter:blur(2px)}
+  .stw{padding:14px 16px 12px;font:inherit;font-size:.86rem;color:#1f2328}
+  .sth{display:flex;align-items:baseline;gap:8px;margin-bottom:10px} .sth h3{margin:0;font-size:1.05rem;font-family:inherit} .sth small{color:#98a2b3;flex:1}
+  .stx{border:0;background:#f2f4f7;border-radius:50%;width:28px;height:28px;font-size:.85rem;cursor:pointer;color:#475467;align-self:center} .stx:focus{outline:none}
+  .stk{display:flex;gap:6px;margin-bottom:8px} .stk div{flex:1;background:#f6f8fb;border-radius:10px;padding:6px 4px;text-align:center;color:#667085;font-size:.72rem;line-height:1.15}
+  .stk b{display:block;font-size:1.25rem;color:#1f2328;font-variant-numeric:tabular-nums}
+  .stb{width:100%;height:auto;display:block} .stv{font-size:9px;fill:#475467;font-variant-numeric:tabular-nums} .sta{font-size:9px;fill:#98a2b3} .sta.now{fill:#2b7fd8;font-weight:600}
+  .stl{display:flex;gap:12px;font-size:.7rem;color:#98a2b3;margin:2px 0 4px} .stl i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px;vertical-align:0}
+  .stw h4{margin:12px 0 4px;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:#667085} .stw h4 small{text-transform:none;letter-spacing:0;color:#98a2b3;font-weight:400}
+  .stm{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 2.6em;gap:8px;align-items:center;padding:2px 0}
+  .stmb{height:6px;background:#eef0f3;border-radius:3px;overflow:hidden} .stmb i{display:block;height:100%;background:#2b7fd8;border-radius:3px}
+  .stm b{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:#344054}
+  .stn{color:#98a2b3;margin:2px 0;font-size:.8rem}
+  .stc{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-top:8px} .stc span{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:#667085;margin-right:2px}
+  .stc em{font-style:normal;background:#f6f8fb;border-radius:999px;padding:2px 8px;font-size:.78rem;color:#344054} .stc em b{font-weight:600}
+  .stf{color:#98a2b3;font-size:.72rem;margin:12px 0 0} .stw a{color:#2b7fd8;text-decoration:none} .stw a:focus{outline:none}`;
   document.head.appendChild(css);
 })();

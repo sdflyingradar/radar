@@ -70,9 +70,12 @@ def main():
         except Exception as e:  # noqa: BLE001
             print("total", key, "failed:", e)
     try:
-        hits = api("/stats/hits", limit=30, **rng(29)).get("hits", [])
+        hits = api("/stats/hits", limit=50, **rng(29)).get("hits", [])
         out["pages"] = [{"path": h.get("path"), "title": h.get("title") or "", "count": h.get("count", 0),
-                         "event": bool(h.get("event"))} for h in hits]
+                         "event": bool(h.get("event")),
+                         # per day (account time zone) for the timeline: home-screen opens, time on the page
+                         "days": {s.get("day"): s.get("daily", 0) for s in (h.get("stats") or []) if s.get("daily")}}
+                        for h in hits]
     except Exception as e:  # noqa: BLE001
         print("hits failed:", e)
     out["refs"] = names("toprefs")
