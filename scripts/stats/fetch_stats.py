@@ -33,7 +33,14 @@ def rng(days):
 def names(page, days=30, limit=8):
     try:
         j = api(f"/stats/{page}", limit=limit, **rng(days))
-        return [{"name": s.get("name") or "(direct)", "count": s.get("count", 0)} for s in j.get("stats", [])]
+        SIZE = {"phone": "Phone", "largephone": "Large phone", "tablet": "Tablet", "desktop": "Computer",
+                "desktophd": "Large computer screen", "unknown": "Unknown"}
+        rows = []
+        for s in j.get("stats", []):
+            n = s.get("name") or (SIZE.get(s.get("id"), s.get("id")) if page == "sizes" else None) or "(direct)"
+            if s.get("count", 0):
+                rows.append({"name": n, "count": s.get("count", 0)})
+        return rows
     except Exception as e:  # noqa: BLE001
         print(page, "failed:", e)
         return []
@@ -44,12 +51,17 @@ def main():
         print("no GOATCOUNTER_TOKEN: skipped")
         return 0
     out = {"generated": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ")}
-    for key, days in (("today", 0), ("week", 6), ("month", 29)):
+    for key, days in (("week", 6), ("month", 29)):
         try:
             t = api("/stats/total", **rng(days))
             out[key] = {"visits": t.get("total", 0), "events": t.get("total_events", 0)}
             if key == "month":
-                out["daily"] = [{"day": s.get("day"), "n": s.get("daily", 0)} for s in t.get("stats", [])]
+                daily = [{"day": s.get("day"), "n": s.get("daily", 0)} for s in t.get("stats", [])]
+                while len(daily) > 7 and not daily[0]["n"]:      # from the first counted day (at least a week)
+                    daily.pop(0)
+                out["daily"] = daily
+                if daily:
+                    out["today"] = {"visits": daily[-1]["n"]}
         except Exception as e:  # noqa: BLE001
             print("total", key, "failed:", e)
     try:
