@@ -1,12 +1,12 @@
 {
- "generated": "2026-11-19T17:44Z",
+ "generated": "2026-11-19T22:22Z",
  "week": {
-  "visits": 60,
-  "events": 9
+  "visits": 104,
+  "events": 11
  },
  "month": {
-  "visits": 60,
-  "events": 9
+  "visits": 104,
+  "events": 11
  },
  "daily": [
   {
@@ -35,85 +35,112 @@
   },
   {
    "day": "2026-11-19",
-   "n": 60
+   "n": 104
   }
  ],
  "today": {
-  "visits": 60
+  "visits": 104
  },
  "pages": [
   {
    "path": "/radar",
    "title": "SD Flying Radar",
-   "count": 38,
-   "event": false
+   "count": 74,
+   "event": false,
+   "days": {
+    "2026-11-19": 74
+   }
+  },
+  {
+   "path": "/radar/how.html",
+   "title": "How SD Flying Radar Works",
+   "count": 12,
+   "event": false,
+   "days": {
+    "2026-11-19": 12
+   }
+  },
+  {
+   "path": "app-open",
+   "title": "Opened from home screen",
+   "count": 9,
+   "event": true,
+   "days": {
+    "2026-11-19": 9
+   }
   },
   {
    "path": "/radar/index.html",
    "title": "SD Flying Radar",
    "count": 7,
-   "event": false
-  },
-  {
-   "path": "app-open",
-   "title": "Opened from home screen",
-   "count": 7,
-   "event": true
-  },
-  {
-   "path": "/radar/how.html",
-   "title": "How SD Flying Radar Works",
-   "count": 6,
-   "event": false
+   "event": false,
+   "days": {
+    "2026-11-19": 7
+   }
   },
   {
    "path": "install",
    "title": "Added to home screen",
    "count": 2,
-   "event": true
+   "event": true,
+   "days": {
+    "2026-11-19": 2
+   }
   }
  ],
  "refs": [
   {
    "name": "(direct)",
-   "count": 54
+   "count": 92
   },
   {
    "name": "sdflyingradar.github.io/radar",
-   "count": 6
+   "count": 12
+  },
+  {
+   "name": "sdflyingradar.github.io/radar/how.html",
+   "count": 2
   }
  ],
  "sizes": [
   {
    "name": "Phone",
-   "count": 55
+   "count": 95
   },
   {
    "name": "Computer",
-   "count": 5
+   "count": 10
+  },
+  {
+   "name": "Large computer screen",
+   "count": 1
   }
  ],
  "systems": [
   {
    "name": "iOS",
-   "count": 32
+   "count": 63
   },
   {
    "name": "Android",
-   "count": 23
+   "count": 32
   },
   {
    "name": "macOS",
-   "count": 5
+   "count": 11
   }
  ],
  "locations": [
   {
    "name": "United States",
-   "count": 59
+   "count": 103
   },
   {
    "name": "Austria",
+   "count": 2
+  },
+  {
+   "name": "Fiji",
    "count": 1
   }
  ]
