@@ -31,7 +31,9 @@
     const tip = o == null ? "launch window" : o <= -RIM ? "wind into the launch window" : o <= 0 ? "wind at the edge of the launch window" : o <= 20 ? `crosswind, ${Math.round(o)}° outside the launch window` : `wind from behind the launch (${Math.round(o)}° off)`;
     return `<svg class="ldial" viewBox="0 0 20 20" aria-hidden="true"><title>${tip}</title><circle cx="10" cy="10" r="7.6" fill="#fff" stroke="#d5dbe2" stroke-width="1"/>${wedges}${arcs}${arrow}</svg>`;
   };
-  window.factsIcons = { dial, liftIc };            // the how-it-works page draws its examples with these
+  /* the wind at the top of lift: a streak arrow pointing where the wind blows (d = from, degrees) */
+  const streak = (d, col, tip) => `<svg class="wic sarr" viewBox="-12 -12 24 24" aria-hidden="true"><title>${tip || "wind at the top of lift"}</title><g transform="rotate(${(d - 270 + 360) % 360})" stroke="${col}" stroke-linecap="round" fill="none"><path d="M-10 -4 H3 M-10 4 H3" stroke-width="2.2"/><path d="M-6 0 H6" stroke-width="2.4"/><path d="M3 -5.5 L10 0 L3 5.5" stroke-width="2.6" stroke-linejoin="round"/></g></svg>`;
+  window.factsIcons = { dial, liftIc, streak };            // the how-it-works page draws its examples with these
   window.siteFactsHook = function (html, c, s, { LIFT, LAUNCH_IC, ALOFT_IC }) {
     if (!s) return html;
     const f = (k) => (c.factors || []).find((x) => x.k === k);
@@ -68,7 +70,7 @@
       const d = deg(a.v);
       if (d != null) {
         const tip = `wind at the top of lift from ${String(a.v).split(" ")[0]}`;
-        const ic = `<svg class="wic sarr" viewBox="-12 -12 24 24" aria-hidden="true"><title>${tip}</title><g transform="rotate(${(d - 270 + 360) % 360})" stroke="${col}" stroke-linecap="round" fill="none"><path d="M-10 -4 H3 M-10 4 H3" stroke-width="2.2"/><path d="M-6 0 H6" stroke-width="2.4"/><path d="M3 -5.5 L10 0 L3 5.5" stroke-width="2.6" stroke-linejoin="round"/></g></svg>`;
+        const ic = streak(d, col, tip);
         out = out.replace(new RegExp(ALOFT_IC.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + '(<span class="wa"[^>]*>)<svg[^>]*>.*?</svg>'), (m, sp) => ic + sp);
       } else out = out.replace(ALOFT_IC, ALOFT_IC.replace('class="wic"', `class="wic" style="color:${col}"`));
     }
