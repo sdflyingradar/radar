@@ -1,12 +1,12 @@
 {
- "generated": "2026-11-19T22:22Z",
+ "generated": "2026-11-19T22:45Z",
  "week": {
-  "visits": 104,
-  "events": 11
+  "visits": 108,
+  "events": 13
  },
  "month": {
-  "visits": 104,
-  "events": 11
+  "visits": 108,
+  "events": 13
  },
  "daily": [
   {
@@ -35,29 +35,29 @@
   },
   {
    "day": "2026-11-19",
-   "n": 104
+   "n": 108
   }
  ],
  "today": {
-  "visits": 104
+  "visits": 108
  },
  "pages": [
   {
    "path": "/radar",
    "title": "SD Flying Radar",
-   "count": 74,
+   "count": 75,
    "event": false,
    "days": {
-    "2026-11-19": 74
+    "2026-11-19": 75
    }
   },
   {
    "path": "/radar/how.html",
    "title": "How SD Flying Radar Works",
-   "count": 12,
+   "count": 13,
    "event": false,
    "days": {
-    "2026-11-19": 12
+    "2026-11-19": 13
    }
   },
   {
@@ -86,12 +86,30 @@
    "days": {
     "2026-11-19": 2
    }
+  },
+  {
+   "path": "stay-30s",
+   "title": "Stayed 30 s+",
+   "count": 1,
+   "event": true,
+   "days": {
+    "2026-11-19": 1
+   }
+  },
+  {
+   "path": "stay-15s",
+   "title": "Stayed 15 s+",
+   "count": 1,
+   "event": true,
+   "days": {
+    "2026-11-19": 1
+   }
   }
  ],
  "refs": [
   {
    "name": "(direct)",
-   "count": 92
+   "count": 94
   },
   {
    "name": "sdflyingradar.github.io/radar",
@@ -105,7 +123,7 @@
  "sizes": [
   {
    "name": "Phone",
-   "count": 95
+   "count": 97
   },
   {
    "name": "Computer",
@@ -123,7 +141,7 @@
   },
   {
    "name": "Android",
-   "count": 32
+   "count": 34
   },
   {
    "name": "macOS",
@@ -133,7 +151,7 @@
  "locations": [
   {
    "name": "United States",
-   "count": 103
+   "count": 105
   },
   {
    "name": "Austria",
