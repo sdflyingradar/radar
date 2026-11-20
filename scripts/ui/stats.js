@@ -17,8 +17,9 @@
   const sent = new Set(), once = (p, t) => { if (!sent.has(p)) { sent.add(p); ev(p, t); } };
   let seen = 0, t0 = document.visibilityState === "visible" ? Date.now() : 0;
   document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") t0 = Date.now(); else if (t0) { seen += Date.now() - t0; t0 = 0; }
+    if (document.visibilityState === "visible") { t0 = Date.now(); once("stay-start", "Timed visit"); } else if (t0) { seen += Date.now() - t0; t0 = 0; }
   });
+  if (t0) once("stay-start", "Timed visit");   // the visits whose time is measured: the base for the stay shares
   const STAY = [[15, "stay-15s", "Stayed 15 s+"], [30, "stay-30s", "Stayed 30 s+"], [60, "stay-1m", "Stayed 1 min+"], [180, "stay-3m", "Stayed 3 min+"]];
   const tick = setInterval(() => {
     const s = (seen + (t0 ? Date.now() - t0 : 0)) / 1000;

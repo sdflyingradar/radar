@@ -45,6 +45,7 @@
       const P = S.pages || [], by = (path) => P.filter((p) => p.path === path).reduce((a, p) => a + p.count, 0);
       const app = (P.find((p) => p.path === "app-open") || {}).days || {};
       const radar = RADAR.reduce((a, p) => a + by(p), 0);
+      const timed = by("stay-start");   // visits where the time on the page was measured
       const stays = STAY.filter(([p]) => by(p)), deep = [...DEEP.map(([p, l]) => [l, by(p)]), ...Object.entries(PAGES).map(([p, l]) => [l, by(p)])].filter((r) => r[1]).sort((a, b) => b[1] - a[1]);
       const k = (o) => (o ? o.visits : "–"), upd = (S.generated || "").slice(11, 16);
       const updLocal = S.generated ? new Date(S.generated.replace("Z", ":00Z")).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : upd;
@@ -53,12 +54,12 @@
         <div class="sth"><h3>Visits</h3><small>updated ${esc(updLocal)}</small>${close}</div>
         <div class="stk"><div><b>${k(S.today)}</b>today</div><div><b>${k(S.week)}</b>7 days</div><div><b>${k(S.month)}</b>30 days</div>${installs || opens ? `<div><b>${installs}</b>installs</div>` : ""}</div>
         ${timeline(S.daily, app)}
-        <h4>How long they stay <small>of ${radar} radar visitors</small></h4>
-        ${stays.length ? STAY.map(([p, l]) => meter(l, by(p), radar)).join("") : `<p class="stn">Counting since Nov 19: shows up with the next update.</p>`}
+        <h4>How long they stay <small>of ${timed} timed visits</small></h4>
+        ${stays.length && timed ? STAY.map(([p, l]) => meter(l, by(p), timed)).join("") : `<p class="stn">Counting since Nov 19: shows up with the next update.</p>`}
         <h4>How far they go</h4>
         ${deep.length ? deep.map(([l, c]) => meter(l, c, radar)).join("") : `<p class="stn">Counting since Nov 19: shows up with the next update.</p>`}
         ${chips("From", (S.refs || []).filter((r) => !/sdflyingradar/.test(r.name)).slice(0, 5))}${chips("Screens", S.sizes || [])}${chips("Where", (S.locations || []).slice(0, 5))}
-        <p class="stf">Last 30 days. A visit: a person opening a page, once in 8 hours; % of radar visitors. ${full}</p></div>`;
+        <p class="stf">Last 30 days. A visit: a person opening a page, once in 8 hours; stay shares: of timed visits; other shares: of radar visitors. ${full}</p></div>`;
     }
     d.querySelector(".stx").onclick = () => d.close();
     d.showModal();
