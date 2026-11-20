@@ -40,7 +40,7 @@
     if (!d) { d = document.createElement("dialog"); d.id = "statsDlg"; document.body.appendChild(d); d.addEventListener("click", (e) => { if (e.target === d) d.close(); }); }
     const full = `<a href="https://sdflyingradar.goatcounter.com" target="_blank" rel="noopener">GoatCounter ›</a>`;
     const close = `<button class="stx" aria-label="Close" autofocus>✕</button>`;
-    if (!S) d.innerHTML = `<div class="stw"><div class="sth"><h3>Visits</h3>${close}</div><p>No numbers yet: the stats update runs every 3 hours.</p>${full}</div>`;
+    if (!S) d.innerHTML = `<div class="stw"><div class="sth"><h3>Visits</h3>${close}</div><p>No numbers yet: the stats update runs every hour.</p>${full}</div>`;
     else {
       const P = S.pages || [], by = (path) => P.filter((p) => p.path === path).reduce((a, p) => a + p.count, 0);
       const app = (P.find((p) => p.path === "app-open") || {}).days || {};

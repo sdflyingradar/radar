@@ -1,9 +1,9 @@
 name: Visitor stats
 
-# Pulls GoatCounter's visitor numbers into data/stats.json for the radar's admin view, a few times a day.
+# Pulls GoatCounter's visitor numbers into data/stats.json for the radar's admin view, every hour (and with every forecast run, since GitHub skips many scheduled runs).
 on:
   schedule:
-    - cron: "41 */3 * * *"
+    - cron: "41 * * * *"
   workflow_dispatch: {}
 
 permissions:

@@ -68,6 +68,11 @@ jobs:
           python -u scripts/build_forecast.py
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}   # optional: Claude summary of the NWS discussion
+      - name: Visitor stats (rides along; GitHub drops many of the stats workflow's own runs)
+        continue-on-error: true
+        env:
+          GOATCOUNTER_TOKEN: ${{ secrets.GOATCOUNTER_TOKEN }}
+        run: python3 scripts/stats/fetch_stats.py
       - name: Keep model runs for next time
         if: always()
         uses: actions/cache/save@v4
@@ -79,6 +84,7 @@ jobs:
           git config user.name "forecast-bot"
           git config user.email "forecast-bot@users.noreply.github.com"
           git add data/forecast.json data/history data/trend.json data/archive data/modellog data/gradient.json data/gradient_obs.json data/dayscore.json
+          git add data/stats.json 2>/dev/null || true
           git diff --cached --quiet && exit 0
           python3 scripts/runlog.py forecast && git add data/runs   # when this update landed, for the timeline
           git commit -m "Forecast update $(date -u +%Y-%m-%dT%H:%MZ)"
