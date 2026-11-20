@@ -45,11 +45,9 @@
 <text x="13" y="455.0" transform="rotate(-90 13 455.0)" text-anchor="middle">Altitude MSL (ft)</text>
 <rect x="52" y="775.3" width="548" height="13.9" fill="#3b6fd8" fill-opacity="0.12"/>
 <rect x="52" y="311.5" width="548" height="55.6" fill="#3b6fd8" fill-opacity="0.12"/>
-<polygon clip-path="url(#c0)" points="460.1,789.2 453.9,776.2 451.1,778.0 446.7,779.9 440.1,781.8 443.6,789.2" fill="#e07b00" fill-opacity="0.2"/>
+<polygon clip-path="url(#c0)" points="458.5,789.2 452.7,777.1 448.9,779.0 444.5,780.8 438.1,782.7 441.2,789.2" fill="#e07b00" fill-opacity="0.2"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="394.3,789.2 392.0,784.5"/>
 <circle cx="392.0" cy="784.5" r="2.8" fill="#ffa500"/>
-<polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="435.4,789.2 433.2,784.5"/>
-<circle cx="433.2" cy="784.5" r="2.8" fill="#ffa500"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="476.6,789.2 328.6,480.3"/>
 <circle cx="328.6" cy="480.3" r="2.8" fill="#ffa500"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="517.7,789.2 301.7,338.4"/>
@@ -59,9 +57,9 @@
 <circle cx="358.0" cy="595.1" r="3.6" fill="#fff" stroke="#0000ff" stroke-width="1.8"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#00c400" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="375.3,789.2 373.9,776.7 369.4,733.2 359.0,640.4 354.6,597.5 338.3,550.6 336.8,547.9 308.7,455.1 287.9,385.1 285.0,367.4 286.5,362.2 293.9,310.5 280.5,269.4 249.4,176.6 218.3,84.1 187.2,-8.7"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#ff0000" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="412.4,789.2 442.0,776.7 421.3,733.2 378.3,640.4 359.0,597.5 338.3,550.6 336.8,547.9 308.7,455.1 287.9,385.1 285.0,367.4 286.5,362.2 293.9,310.5 280.5,269.4 252.4,176.6 222.8,84.1 194.6,-8.7"/>
-<polyline clip-path="url(#c0)" fill="none" stroke="#e07b00" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round" points="451.9,789.2 447.0,779.0"/>
-<circle cx="447.0" cy="779.0" r="4.6" fill="#e07b00" stroke="#fff" stroke-width="1.8"/>
-<text x="451.9" y="840" text-anchor="middle" font-size="12" font-weight="800" fill="#e07b00">62</text>
+<polyline clip-path="url(#c0)" fill="none" stroke="#e07b00" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round" points="451.0,789.2 446.6,779.9"/>
+<circle cx="446.6" cy="779.9" r="4.6" fill="#e07b00" stroke="#fff" stroke-width="1.8"/>
+<text x="451.0" y="840" text-anchor="middle" font-size="12" font-weight="800" fill="#e07b00">62</text>
 <text x="394.3" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">55</text>
 <text x="476.6" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">65</text>
 <text x="517.7" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">70</text>
@@ -71,12 +69,12 @@
 <path d="M600 595.1L605 595.1" stroke="#0000ff" stroke-width="1.2"/>
 <rect x="605" y="587.6" width="54.8" height="15" rx="3.5" fill="#0000ff"/>
 <text x="632.4" y="598.9" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">CB 2.5k</text>
-<path d="M600 779.0L605 779.0" stroke="#e07b00" stroke-width="1.2"/>
-<rect x="605" y="771.5" width="61.2" height="15" rx="3.5" fill="#e07b00"/>
-<text x="635.6" y="782.8" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Top 0.5k</text>
-<path d="M600 782.2L605 796.0" stroke="#3b6fd8" stroke-width="1.2"/>
-<rect x="605" y="788.5" width="29.2" height="15" rx="3.5" fill="#3b6fd8"/>
-<text x="619.6" y="799.8" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">INV</text>
+<path d="M600 779.9L605 779.9" stroke="#e07b00" stroke-width="1.2"/>
+<rect x="605" y="772.4" width="61.2" height="15" rx="3.5" fill="#e07b00"/>
+<text x="635.6" y="783.7" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Top 0.5k</text>
+<path d="M600 782.2L605 796.9" stroke="#3b6fd8" stroke-width="1.2"/>
+<rect x="605" y="789.4" width="29.2" height="15" rx="3.5" fill="#3b6fd8"/>
+<text x="619.6" y="800.7" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">INV</text>
 <text x="690" y="75" font-size="12.5" font-weight="600" fill="#111827">Wind</text>
 <path d="M682 789.2h4" stroke="#d1d5db"/>
 <g transform="translate(696 789.2) rotate(30)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#111827" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
