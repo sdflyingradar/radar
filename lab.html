@@ -1277,7 +1277,7 @@ function render(data) {
     DAYKEY[i] = d;
     const L = dayLabel(d.date);
     /* the day's score is the best San Diego site; the trips (Soboba, Marshall, Santa Barbara, Owens) never set it */
-    /* the day colour: the average of the three best San Diego sites (Torrey and the mountain sites; the trips
+    /* the day colour: the average of the three best San Diego mountain sites and Elsinore (Torrey and the trips
        never count), so one standout site alone does not make the day green */
     const sdCells = Object.entries(d.sites || {}).filter(([k, c]) => DAY_SITES.has(k) && c && c.rating != null).map(([, c]) => c);
     const top3 = sdCells.map((c) => c.rating).sort((a, b) => b - a).slice(0, 3);
@@ -1291,7 +1291,7 @@ function render(data) {
     const mods = dayModels(d) ? `${dayModels(d)}${runAt ? `<br>${esc(fmtTime(runAt).toLowerCase())}${d.frozen_at ? " final" : ""}` : ""}` : "";
     return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol};--dc:${bm ? qv(bm.rating) : "var(--muted)"}"${open ? " open" : ""}>
       <summary class="hd"><span class="band">
-        <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${bm ? `<span class="dword" style="--dc:${qv(bm.rating)}" title="average of the three best San Diego sites">${DAY_WORD[dayLvl]}</span>` : ""}</span>
+        <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${bm ? `<span class="dword" style="--dc:${qv(bm.rating)}" title="average of the three best San Diego mountain sites">${DAY_WORD[dayLvl]}</span>` : ""}</span>
         ${mods ? `<span class="mods">${mods}</span>` : ""}
         <span class="exp" aria-hidden="true"><i class="chev"></i></span></span>
         <span class="notes">${dayBoxes(d)}${regimeHtml(d.regime)}${((d.regime && d.regime.also) || []).map((a) => regimeHtml({ type: a.type, agree: a.agree, weak: true })).join("")}</span>
@@ -1389,7 +1389,7 @@ const siteName = (s) => (s.id === "lb" ? "Little Black" : s.short);
 /* what a closed day shows: the home sites and Torrey with their number, then any other XC site */
 const SD_SITES = new Set(["torrey", "lb", "blossom", "otay", "lagunahorse", "elsinore"]);   // San Diego sites + Elsinore (a home site): always listed
 const DAY_COLOUR = true;    // the day colour shows as a stripe on the left edge; the cards stay silver
-const DAY_SITES = new Set(["torrey", "lb", "blossom", "elsinore", "lagunahorse", "otay", "whalesv"]);   // all San Diego sites, no trips
+const DAY_SITES = new Set(["lb", "blossom", "elsinore", "lagunahorse", "otay", "whalesv"]);   // the San Diego mountain sites and Elsinore: no Torrey, no trips
 const DAY_WORD = { 1: "No-go", 2: "Marginal", 3: "Site fly", 4: "XC", 5: "Great XC" };
 const DAY_LT = new Set([2, 3]);   // light chip colours (orange, yellow) take dark text   // the sites that set a day's colour
 const TRIP_IDS = new Set(["soboba", "marshall", "santabarbara", "owens"]);
