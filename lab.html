@@ -1282,16 +1282,16 @@ function render(data) {
     const sdCells = Object.entries(d.sites || {}).filter(([k, c]) => DAY_SITES.has(k) && c && c.rating != null).map(([, c]) => c);
     const top2 = sdCells.map((c) => c.rating).sort((a, b) => b - a).slice(0, 2);
     const bm = top2.length ? { rating: top2.reduce((a, b) => a + b, 0) / top2.length } : null;
-    /* day colour: the same half-step scale as the site tiles (3.5 a yellowish green); the word stays one of five */
+    /* day colour: one of five (red, orange, yellow, green, blue), matching the word */
     const dayLvl = bm ? Math.max(1, Math.min(5, Math.round(bm.rating))) : 0;
     const cardCol = !DAY_COLOUR ? "#e4e7eb" : bm ? `var(${QSTOP[Math.max(1, Math.min(5, Math.round(bm.rating)))]})` : "var(--line)";
     const open = openDays.has(d.date);
     /* which models and which run: today's final run once frozen, otherwise the latest run */
     const runAt = d.frozen_at || data.generated;
     const mods = dayModels(d) ? `${dayModels(d)}${runAt ? `<br>${esc(fmtTime(runAt).toLowerCase())}${d.frozen_at ? " final" : ""}` : ""}` : "";
-    return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol};--dc:${bm ? qv(bm.rating) : "var(--muted)"}"${open ? " open" : ""}>
+    return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol};--dc:var(${QSTOP[dayLvl] || "--muted"})"${open ? " open" : ""}>
       <summary class="hd"><span class="band">
-        <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${bm ? `<span class="dword" style="--dc:${qv(bm.rating)}" title="average of the two best San Diego mountain sites">${DAY_WORD[dayLvl]}</span>` : ""}</span>
+        <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${bm ? `<span class="dword" style="--dc:var(${QSTOP[dayLvl]})" title="average of the two best San Diego mountain sites">${DAY_WORD[dayLvl]}</span>` : ""}</span>
         ${mods ? `<span class="mods">${mods}</span>` : ""}
         <span class="exp" aria-hidden="true"><i class="chev"></i></span></span>
         <span class="notes">${dayBoxes(d)}${regimeHtml(d.regime)}${((d.regime && d.regime.also) || []).map((a) => regimeHtml({ type: a.type, agree: a.agree, weak: true })).join("")}</span>
