@@ -45,7 +45,7 @@
 <text x="13" y="455.0" transform="rotate(-90 13 455.0)" text-anchor="middle">Altitude MSL (ft)</text>
 <rect x="52" y="775.3" width="548" height="13.9" fill="#3b6fd8" fill-opacity="0.12"/>
 <rect x="52" y="311.5" width="548" height="55.6" fill="#3b6fd8" fill-opacity="0.12"/>
-<polygon clip-path="url(#c0)" points="457.6,789.2 451.9,777.1 448.9,779.0 444.5,780.8 438.1,782.7 441.2,789.2" fill="#e07b00" fill-opacity="0.2"/>
+<polygon clip-path="url(#c0)" points="458.5,789.2 452.7,777.1 448.9,779.0 444.5,780.8 438.1,782.7 441.2,789.2" fill="#e07b00" fill-opacity="0.2"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="394.3,789.2 392.0,784.5"/>
 <circle cx="392.0" cy="784.5" r="2.8" fill="#ffa500"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#ffa500" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" points="476.6,789.2 328.6,480.3"/>
