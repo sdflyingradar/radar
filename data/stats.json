@@ -1,18 +1,10 @@
 {
- "generated": "2026-11-20T07:46Z",
- "week": {
-  "visits": 281,
-  "events": 151
- },
+ "generated": "2026-11-20T17:52Z",
  "month": {
-  "visits": 281,
-  "events": 151
+  "visits": 421,
+  "events": 264
  },
  "daily": [
-  {
-   "day": "2026-11-13",
-   "n": 0
-  },
   {
    "day": "2026-11-14",
    "n": 0
@@ -36,55 +28,94 @@
   {
    "day": "2026-11-19",
    "n": 281
+  },
+  {
+   "day": "2026-11-20",
+   "n": 140
   }
  ],
  "today": {
-  "visits": 281
+  "visits": 140
  },
  "pages": [
   {
    "path": "/radar",
    "title": "SD Flying Radar",
-   "count": 104,
+   "count": 128,
    "event": false,
    "days": {
-    "2026-11-19": 104
+    "2026-11-19": 104,
+    "2026-11-20": 24
    }
   },
   {
    "path": "stay-15s",
    "title": "Stayed 15 s+",
-   "count": 31,
+   "count": 52,
    "event": true,
    "days": {
-    "2026-11-19": 31
-   }
-  },
-  {
-   "path": "stay-30s",
-   "title": "Stayed 30 s+",
-   "count": 25,
-   "event": true,
-   "days": {
-    "2026-11-19": 25
+    "2026-11-19": 31,
+    "2026-11-20": 21
    }
   },
   {
    "path": "stay-start",
    "title": "Timed visit",
-   "count": 23,
+   "count": 47,
    "event": true,
    "days": {
-    "2026-11-19": 23
+    "2026-11-19": 23,
+    "2026-11-20": 24
+   }
+  },
+  {
+   "path": "stay-30s",
+   "title": "Stayed 30 s+",
+   "count": 41,
+   "event": true,
+   "days": {
+    "2026-11-19": 25,
+    "2026-11-20": 16
    }
   },
   {
    "path": "stay-1m",
    "title": "Stayed 1 min+",
+   "count": 29,
+   "event": true,
+   "days": {
+    "2026-11-19": 18,
+    "2026-11-20": 11
+   }
+  },
+  {
+   "path": "do-site",
+   "title": "Opened a site",
+   "count": 27,
+   "event": true,
+   "days": {
+    "2026-11-19": 12,
+    "2026-11-20": 15
+   }
+  },
+  {
+   "path": "do-day",
+   "title": "Looked at another day",
+   "count": 23,
+   "event": true,
+   "days": {
+    "2026-11-19": 11,
+    "2026-11-20": 12
+   }
+  },
+  {
+   "path": "app-open",
+   "title": "Opened from home screen",
    "count": 18,
    "event": true,
    "days": {
-    "2026-11-19": 18
+    "2026-11-19": 13,
+    "2026-11-20": 5
    }
   },
   {
@@ -97,57 +128,43 @@
    }
   },
   {
-   "path": "app-open",
-   "title": "Opened from home screen",
-   "count": 13,
+   "path": "stay-3m",
+   "title": "Stayed 3 min+",
+   "count": 14,
    "event": true,
    "days": {
-    "2026-11-19": 13
-   }
-  },
-  {
-   "path": "do-site",
-   "title": "Opened a site",
-   "count": 12,
-   "event": true,
-   "days": {
-    "2026-11-19": 12
-   }
-  },
-  {
-   "path": "do-day",
-   "title": "Looked at another day",
-   "count": 11,
-   "event": true,
-   "days": {
-    "2026-11-19": 11
+    "2026-11-19": 9,
+    "2026-11-20": 5
    }
   },
   {
    "path": "/radar/index.html",
    "title": "SD Flying Radar",
-   "count": 10,
+   "count": 13,
    "event": false,
    "days": {
-    "2026-11-19": 10
-   }
-  },
-  {
-   "path": "stay-3m",
-   "title": "Stayed 3 min+",
-   "count": 9,
-   "event": true,
-   "days": {
-    "2026-11-19": 9
+    "2026-11-19": 10,
+    "2026-11-20": 3
    }
   },
   {
    "path": "do-skygram",
    "title": "Used the SkyGram",
-   "count": 5,
+   "count": 7,
    "event": true,
    "days": {
-    "2026-11-19": 5
+    "2026-11-19": 5,
+    "2026-11-20": 2
+   }
+  },
+  {
+   "path": "install",
+   "title": "Added to home screen",
+   "count": 4,
+   "event": true,
+   "days": {
+    "2026-11-19": 2,
+    "2026-11-20": 2
    }
   },
   {
@@ -158,25 +175,16 @@
    "days": {
     "2026-11-19": 2
    }
-  },
-  {
-   "path": "install",
-   "title": "Added to home screen",
-   "count": 2,
-   "event": true,
-   "days": {
-    "2026-11-19": 2
-   }
   }
  ],
  "refs": [
   {
    "name": "(direct)",
-   "count": 236
+   "count": 368
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
-   "count": 30
+   "count": 38
   },
   {
    "name": "sdflyingradar.github.io/radar",
@@ -186,11 +194,11 @@
  "sizes": [
   {
    "name": "Phone",
-   "count": 108
+   "count": 372
   },
   {
    "name": "Computer",
-   "count": 16
+   "count": 48
   },
   {
    "name": "Large computer screen",
@@ -200,21 +208,29 @@
  "systems": [
   {
    "name": "iOS",
-   "count": 74
+   "count": 230
   },
   {
    "name": "Android",
-   "count": 34
+   "count": 142
   },
   {
    "name": "macOS",
-   "count": 17
+   "count": 43
+  },
+  {
+   "name": "Windows",
+   "count": 6
   }
  ],
  "locations": [
   {
    "name": "United States",
-   "count": 122
+   "count": 396
+  },
+  {
+   "name": "Germany",
+   "count": 22
   },
   {
    "name": "Austria",
