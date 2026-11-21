@@ -1,13 +1,12 @@
 /* "Install app": a button in the footer (hidden once the radar runs as an installed app) that opens a short sheet
-   with the steps for this phone. Where the browser can install by itself (Chrome / Edge on Android and computers)
-   the sheet has a one-tap Install button, so it still works after someone dismissed the browser's own pop-up. */
+   with the steps for this phone (phones only). Where Android's browser can install by itself, a small link under
+   the steps does it in one tap, so it still works after someone dismissed the browser's own pop-up. */
 (function () {
   const standalone = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
   const ua = navigator.userAgent;
   const iOS = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   const android = /Android/.test(ua);
   const inApp = /FBAN|FBAV|Instagram|Line\/|WhatsApp|GSA\/|; wv\)/.test(ua);   // link opened inside another app
-  const mac = /Macintosh/.test(ua) && !iOS, safari = /Safari/.test(ua) && !/Chrome|CriOS|Edg|FxiOS|Firefox/.test(ua);
   let deferred = null;
   window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferred = e; });
   window.addEventListener("appinstalled", () => { deferred = null; const b = document.getElementById("installBtn"); if (b) b.hidden = true; });
@@ -27,12 +26,9 @@
       `Open this page in <b>Chrome</b> (Samsung Internet and Firefox work too).`,
       `Tap the menu ${DOTS} at the top right (Samsung: ☰ at the bottom).`,
       `Tap <b>Add to Home screen</b> or <b>Install app</b>, then <b>Install</b>.`,
-      `The radar is now on your home screen and in your app list.`]],
-    desktop: ["Computer", [
-      mac && safari ? `In Safari: <b>File › Add to Dock</b>.` : `In Chrome or Edge: click the install icon at the right end of the address bar, or menu ${DOTS} › <b>Cast, save and share › Install page as app</b>.`,
-      `Firefox can't install apps: add a bookmark instead.`]],
+      `The radar is now on your home screen and in your app list.`]]
   };
-  const mine = iOS ? "ios" : android ? "android" : "desktop";
+  const mine = android ? "android" : "ios";   // phones only; a computer sees both lists (for showing someone else)
 
   function open() {
     let d = document.getElementById("installDlg");
@@ -43,7 +39,7 @@
       <div class="inh"><img src="icon-192.png" alt="" width="40" height="40"><div><h3>Put the radar on your home screen</h3><small>Opens full screen like an app, one tap away. Free, nothing to download from a store.</small></div><button class="inx" aria-label="Close">✕</button></div>
       ${inApp ? `<p class="inn">You opened the link inside another app. Open it in ${iOS ? "Safari" : "Chrome"} first: tap ${iOS ? "the compass or ⋯" : DOTS} and choose <b>Open in ${iOS ? "Safari" : "browser"}</b>.</p>` : ""}
       <h4>${STEPS[mine][0]}</h4>${list(mine)}
-      ${deferred ? `<p class="inq">Or let the browser do it: <button class="ingo" id="installGo">install now ›</button></p>` : ""}
+      ${deferred && android ? `<p class="inq">Or let the browser do it: <button class="ingo" id="installGo">install now ›</button></p>` : ""}
       ${others.map((k) => `<details class="ino"><summary>${STEPS[k][0]}</summary>${list(k)}</details>`).join("")}
     </div>`;
     d.querySelector(".inx").onclick = () => d.close();
@@ -53,7 +49,7 @@
   }
 
   function add() {
-    if (standalone()) return;
+    if (standalone() || !(iOS || android)) return;   // the footer button only on phones
     const foot = document.querySelector("footer");
     if (!foot || document.getElementById("installBtn")) return;
     const b = document.createElement("button");
