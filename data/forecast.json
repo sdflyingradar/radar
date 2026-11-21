@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-21T10:58+00:00",
+ "generated": "2026-11-21T10:59+00:00",
  "sample": false,
  "calib": {
   "2026-11-21": {
@@ -33267,16 +33267,13 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus), surface heat flux (6188 values)",
-  "HRRR: ok (ncep_hrrr_conus), surface heat flux (2142 values)",
+  "HRRR trips: using the last good run, fetched 0.1 h ago",
   "RRFS: ok (ncep_rrfs_conus), surface heat flux (7748 values)",
-  "RRFS: ok (ncep_rrfs_conus), surface heat flux (2682 values)",
-  "GFS: ok (gfs_global), surface heat flux (13728 values)",
-  "GFS: ok (gfs_global), surface heat flux (4752 values)",
-  "ECMWF: ok (ecmwf_ifs025), surface heat flux (0 values)",
-  "ECMWF: ok (ecmwf_ifs025), surface heat flux (0 values)",
-  "ICON: ok (icon_global), surface heat flux (12740 values)",
-  "ICON: ok (icon_global), surface heat flux (4410 values)",
-  "GFS ens: ok (gfs025)",
+  "RRFS trips: using the last good run, fetched 0.1 h ago",
+  "GFS: using the last good run, fetched 0.1 h ago",
+  "ECMWF: using the last good run, fetched 0.1 h ago",
+  "ICON: using the last good run, fetched 0.1 h ago",
+  "ens GFS ens: using the last good run, fetched 0.0 h ago",
   "ens ECMWF ens: using the last good run, fetched 3.5 h ago",
   "ens ICON ens: using the last good run, fetched 7.5 h ago",
   "NWS AFD: ok",
@@ -33287,8 +33284,8 @@
   "gradient ICON: bias -0.4 mb over 45 h",
   "clouds HRRR: ok (ncep_hrrr_conus)",
   "clouds RRFS: ok (ncep_rrfs_conus)",
-  "clouds ECMWF: ok (ecmwf_ifs025)",
-  "clouds ICON: ok (icon_global)",
+  "clouds ECMWF: using the last good run, fetched 0.0 h ago",
+  "clouds ICON: using the last good run, fetched 0.0 h ago",
   "wind: GFS and ICON use ECMWF's winds where RRFS and ECMWF overlap"
  ],
  "sources": [
@@ -33299,7 +33296,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-11-21T09:00+00:00",
-   "fetched": "2026-11-21T10:51+00:00",
+   "fetched": "2026-11-21T10:59+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -33308,8 +33305,8 @@
    "provider": "Open-Meteo",
    "id": "ncep_rrfs_conus",
    "status": "ok",
-   "run": null,
-   "fetched": "2026-11-21T10:53+00:00",
+   "run": "2026-11-21T00:00+00:00",
+   "fetched": "2026-11-21T10:59+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -33320,7 +33317,8 @@
    "status": "ok",
    "run": null,
    "fetched": "2026-11-21T10:53+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "ECMWF",
@@ -33330,7 +33328,8 @@
    "status": "ok",
    "run": "2026-11-21T00:00+00:00",
    "fetched": "2026-11-21T10:55+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "ICON",
@@ -33340,7 +33339,8 @@
    "status": "ok",
    "run": null,
    "fetched": "2026-11-21T10:56+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "GFS ens",
@@ -33350,7 +33350,8 @@
    "status": "ok",
    "run": null,
    "fetched": "2026-11-21T10:58+00:00",
-   "url": "https://open-meteo.com/en/docs/ensemble-api"
+   "url": "https://open-meteo.com/en/docs/ensemble-api",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "ECMWF ens",
@@ -33381,7 +33382,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-11-21T09:17:00+00:00",
-   "fetched": "2026-11-21T10:58+00:00",
+   "fetched": "2026-11-21T10:59+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -33391,7 +33392,7 @@
    "id": "LAX-DAG",
    "status": "ok",
    "run": "2026-11-21T10:00Z",
-   "fetched": "2026-11-21T10:58+00:00",
+   "fetched": "2026-11-21T10:59+00:00",
    "url": "https://www.weather.gov/lox/LAXGRDNEW"
   },
   {
@@ -33401,7 +33402,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-21T10:58+00:00",
+   "fetched": "2026-11-21T10:59+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
@@ -34404,7 +34405,7 @@
       "12": 3.4,
       "13": 3.6,
       "14": 3.7,
-      "15": 2.5,
+      "15": 3.1,
       "16": 1.7
      },
      "win": [
@@ -37542,7 +37543,7 @@
       {
        "k": "Wind 1 pm",
        "v": "WSW 5g6",
-       "sub": "later SW 3g4 \u00b7 cross-S",
+       "sub": "later SW 3g4",
        "q": 1.0
       },
       {
