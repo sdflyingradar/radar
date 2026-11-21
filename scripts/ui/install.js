@@ -42,8 +42,8 @@
     d.innerHTML = `<div class="inw">
       <div class="inh"><img src="icon-192.png" alt="" width="40" height="40"><div><h3>Put the radar on your home screen</h3><small>Opens full screen like an app, one tap away. Free, nothing to download from a store.</small></div><button class="inx" aria-label="Close">✕</button></div>
       ${inApp ? `<p class="inn">You opened the link inside another app. Open it in ${iOS ? "Safari" : "Chrome"} first: tap ${iOS ? "the compass or ⋯" : DOTS} and choose <b>Open in ${iOS ? "Safari" : "browser"}</b>.</p>` : ""}
-      ${deferred ? `<button class="ingo" id="installGo">Install</button>` : ""}
-      <h4>${deferred ? "Or by hand" : STEPS[mine][0]}</h4>${list(mine)}
+      <h4>${STEPS[mine][0]}</h4>${list(mine)}
+      ${deferred ? `<p class="inq">Or let the browser do it: <button class="ingo" id="installGo">install now ›</button></p>` : ""}
       ${others.map((k) => `<details class="ino"><summary>${STEPS[k][0]}</summary>${list(k)}</details>`).join("")}
     </div>`;
     d.querySelector(".inx").onclick = () => d.close();
@@ -71,7 +71,7 @@
   .inw{padding:14px 16px 14px;font-size:.88rem;color:#1f2328;line-height:1.4}
   .inh{display:flex;gap:10px;align-items:flex-start} .inh img{border-radius:9px;flex:none} .inh div{flex:1} .inh h3{margin:0 0 2px;font-size:1rem;font-family:inherit;font-weight:650} .inh small{color:#667085}
   .inx{border:0;background:#f2f4f7;border-radius:50%;width:28px;height:28px;flex:none;cursor:pointer;color:#475467} .inx:focus{outline:none}
-  .ingo{display:block;width:100%;margin:12px 0 2px;border:0;border-radius:10px;background:#2b7fd8;color:#fff;font:inherit;font-weight:600;padding:10px;cursor:pointer}
+  .inq{margin:8px 0 0;color:#667085;font-size:.84rem} .ingo{border:0;background:none;padding:0;font:inherit;color:#2b7fd8;font-weight:600;cursor:pointer}
   .inw h4{margin:12px 0 4px;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:#667085}
   .ins{margin:0;padding-left:1.3em} .ins li{margin:4px 0}
   .ini{width:1.15em;height:1.15em;vertical-align:-.22em;color:#2b7fd8}
