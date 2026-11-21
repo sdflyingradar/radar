@@ -886,7 +886,7 @@
           "why": "the channel"
         }
       ],
-      "note": "Experimental trip area: the Santa Barbara front range (Skyport, EJ Bowl) and Ojai (Chief's Peak), with points along the crest between them. South-facing front range above Santa Barbara; launch sits above the marine layer, so thermals are measured from the slopes at launch height. Sundowners and other real north winds are over the back. The range and a capping inversion near ridge height squeeze onshore S-SE flow (venturi: stronger and gustier at the ridgeline than the models show) but block a north wind aloft when the lapse rate is strong.",
+      "note": "Experimental trip area: the Santa Barbara front range (Skyport, EJ Bowl) and Ojai (Chief's Peak, the Nuthouse), with points along the crest between them. South-facing front range above Santa Barbara; launch sits above the marine layer, so thermals are measured from the slopes at launch height. Sundowners and other real north winds are over the back. The range and a capping inversion near ridge height squeeze onshore S-SE flow (venturi: stronger and gustier at the ridgeline than the models show) but block a north wind aloft when the lapse rate is strong.",
       "ok_ft": 4000,
       "gust_mph": 15,
       "style": "thermal",
@@ -895,6 +895,9 @@
         15
       ],
       "otb_mph": 6,
+      "light_mph": 6,
+      "light_gust_mph": 10,
+      "otb_thermal": {"mph": 8, "wstar": 1.4},
       "cross": [
         [
           80,
@@ -935,6 +938,11 @@
           "name": "Ojai (Chief's Peak)",
           "lat": 34.5023,
           "lon": -119.169
+        },
+        {
+          "name": "Nuthouse",
+          "lat": 34.4855,
+          "lon": -119.2909
         },
         {
           "name": "La Cumbre Peak",
@@ -988,6 +996,18 @@
           "dir": [
             135,
             225
+          ]
+        },
+        {
+          "name": "Nuthouse",
+          "lat": 34.4855,
+          "lon": -119.2909,
+          "launch_ft": 1850,
+          "lz_ft": 800,
+          "model_ground_ft": 1850,
+          "dir": [
+            90,
+            250
           ]
         }
       ],

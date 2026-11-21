@@ -584,6 +584,8 @@ details.day > summary.hd .sum .sc.sc.trip { font-size: .76rem; min-height: 26px;
 .srow .nmw .spills { display: contents; }
 .srow .nmw { column-gap: 6px; }
 .srow .nmw .lab { margin-right: 2px; }
+.srow .nmw .lnch { flex: 0 0 auto; font-size: .74rem; color: var(--muted, #8a94a3); font-weight: 500; }
+.srow .nmw .lnch::before { content: "from "; }
 .srow .nmw .nm, .srow .nmw .lab, .srow .nmw .xcmark { flex: 0 0 auto; overflow: visible; text-overflow: clip; }
 
 /* top right: the way in to "what this is and how it works" — quiet but easy to find */
@@ -1375,6 +1377,17 @@ const bar = (r, thin) => `<span class="bar${thin ? " thin" : ""}"><i style="widt
 /* in the rows, altitudes wait for a tap: keep XC directions and reasons, drop "thermals to 3,000 ft" */
 const rowNote = (c) => (!c.note || /\d,?\d{3} ft|thermals/i.test(c.note) ? (c.launch_name && c.note && c.note.startsWith(c.launch_name) ? c.launch_name : "") : c.note);
 const siteName = (s) => (s.id === "lb" ? "Little Black" : s.short);
+/* sites with several launches: the launches about as good as the best (within half a point), so the page doesn't
+   pretend to know which one pilots pick; nothing on a no-go day ("Ojai (Chief's Peak)" -> "Chief's Peak") */
+const launchOf = (c) => {
+  if (!c || c.rating < 2) return "";
+  const nm = (n) => String(n).replace(/^.*\((.*)\)$/, "$1");
+  if (Array.isArray(c.launches) && c.launches.length) {
+    const best = Math.max(...c.launches.map((l) => l.r));
+    return c.launches.filter((l) => l.r >= best - 0.5).sort((a, b) => b.r - a.r).map((l) => nm(l.name)).join(", ");
+  }
+  return c.launch_name ? nm(c.launch_name) : "";
+};
 /* what a closed day shows: the home sites and Torrey with their number, then any other XC site */
 const SD_SITES = new Set(["torrey", "lb", "blossom", "otay", "lagunahorse", "elsinore"]);   // San Diego sites + Elsinore (a home site): always listed
 const DAY_COLOUR = true;    // the day colour shows as a stripe on the left edge; the cards stay silver
@@ -1620,7 +1633,7 @@ function siteRow(d, s, i, kind) {
   if (!c) return `<div class="srow ${kind}"><span class="nm">${esc(name)}</span><span class="muted">no data</span></div>`;
   const pills = sitePills(c);
   return `<button type="button" class="srow ${kind}" style="--rc:${qv(c.rating)}" data-site="${s.id}" data-day="${i}" aria-expanded="false">
-    <span class="nmrow"><span class="nmw"><span class="nm">${esc(name)}</span>${styleLab(c) ? `<span class="lab" style="color:${labCol(c)}">${esc(styleLab(c))}</span>` : ""}</span><span class="dscore sm" style="--rc:${qv(c.rating)}"><span class="dsl">Score:</span><b>${(Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2))).toFixed(1).replace(".0", "")}</b><small>/5</small></span></span>
+    <span class="nmrow"><span class="nmw"><span class="nm">${esc(name)}</span>${styleLab(c) ? `<span class="lab" style="color:${labCol(c)}">${esc(styleLab(c))}</span>` : ""}${launchOf(c) ? `<span class="lnch" title="the launch the score is for">${esc(launchOf(c))}</span>` : ""}</span><span class="dscore sm" style="--rc:${qv(c.rating)}"><span class="dsl">Score:</span><b>${(Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2))).toFixed(1).replace(".0", "")}</b><small>/5</small></span></span>
     ${pills ? `<span class="spills">${pills}</span>` : ""}<span class="tx"><span class="facts">${siteFacts(c, s)}</span></span>${c.hwind_m && Object.keys(c.hwind_m).length ? `<span class="wtab">${windTable(c)}</span>` : miniStrip(c)}
     <span class="exp sm" aria-hidden="true"><span class="chev"></span></span>
   </button>`;

@@ -932,7 +932,15 @@ def score_hour(site, hr, i, levels, elev_m):
     if lw_mph is not None and ld is not None:
         on = dir_ok(site, ld)
         # too light to matter at a thermal site: 4g8 or less; anything stronger from behind is over the back
-        light = site["kind"] != "ridge" and lw_mph <= LIGHT_MPH and (lg_mph is None or lg_mph <= LIGHT_GUST_MPH)
+        # (some sites set their own: Santa Barbara 6g10, where the thermals take over from light wind)
+        light = (site["kind"] != "ridge" and lw_mph <= site.get("light_mph", LIGHT_MPH)
+                 and (lg_mph is None or lg_mph <= site.get("light_gust_mph", LIGHT_GUST_MPH)))
+        # a strong-thermal hour turns light wind from behind into thermal wind (Santa Barbara: under 8 mph with
+        # a climb of 1.4 m/s or more)
+        ot = site.get("otb_thermal")
+        if (ot and not light and site["kind"] != "ridge" and lw_mph <= ot.get("mph", 8)
+                and (lg_mph is None or lg_mph <= ot.get("mph", 8) + 4) and (wstar or 0) >= ot.get("wstar", 1.4)):
+            light = True
         # degrees outside the launch window (inside: minus how deep in), like the day rule and the tile's dial
         off_h = off_window(site, ld) if site_face(site) is not None and not light and lw_mph > 4 else None
         inwin = on if off_h is None else off_h <= 0
@@ -2603,6 +2611,10 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             per_launch.setdefault(pid, []).append(c)
             if pid not in merged or c["rating"] > merged[pid]["rating"]:
                 merged[pid] = c
+        # every launch's score, so the page can name all the launches that are about as good as the best
+        for pid, cs in per_launch.items():
+            if len(cs) > 1 and pid in merged:
+                merged[pid] = dict(merged[pid], launches=[{"name": x.get("launch_name"), "r": round(x["rating"], 2)} for x in cs])
         # a site with launches facing different ways (Laguna / Horse) is never "over the back" as a whole:
         # that warning only stays when the wind is behind every one of its launches
         for pid, cs in per_launch.items():
