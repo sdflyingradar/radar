@@ -1,12 +1,12 @@
 {
- "generated": "2026-11-20T21:35Z",
+ "generated": "2026-11-21T00:13Z",
  "week": {
-  "visits": 448,
-  "events": 285
+  "visits": 452,
+  "events": 286
  },
  "month": {
-  "visits": 448,
-  "events": 285
+  "visits": 452,
+  "events": 286
  },
  "daily": [
   {
@@ -35,21 +35,21 @@
   },
   {
    "day": "2026-11-20",
-   "n": 167
+   "n": 171
   }
  ],
  "today": {
-  "visits": 167
+  "visits": 171
  },
  "pages": [
   {
    "path": "/radar",
    "title": "SD Flying Radar",
-   "count": 133,
+   "count": 136,
    "event": false,
    "days": {
     "2026-11-19": 104,
-    "2026-11-20": 29
+    "2026-11-20": 32
    }
   },
   {
@@ -65,11 +65,11 @@
   {
    "path": "stay-start",
    "title": "Timed visit",
-   "count": 53,
+   "count": 54,
    "event": true,
    "days": {
     "2026-11-19": 23,
-    "2026-11-20": 30
+    "2026-11-20": 31
    }
   },
   {
@@ -184,7 +184,7 @@
  "refs": [
   {
    "name": "(direct)",
-   "count": 395
+   "count": 399
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
@@ -198,11 +198,11 @@
  "sizes": [
   {
    "name": "Phone",
-   "count": 386
+   "count": 389
   },
   {
    "name": "Computer",
-   "count": 61
+   "count": 62
   },
   {
    "name": "Large computer screen",
@@ -212,7 +212,7 @@
  "systems": [
   {
    "name": "iOS",
-   "count": 244
+   "count": 247
   },
   {
    "name": "Android",
@@ -220,7 +220,7 @@
   },
   {
    "name": "macOS",
-   "count": 52
+   "count": 53
   },
   {
    "name": "Windows",
@@ -230,7 +230,7 @@
  "locations": [
   {
    "name": "United States",
-   "count": 423
+   "count": 427
   },
   {
    "name": "Germany",
