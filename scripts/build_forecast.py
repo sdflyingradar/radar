@@ -86,7 +86,9 @@ SHOWER_MM = 0.5                             # a run with less than this in the f
 # ground, not by cloud cover alone (thin cirrus lets most of it through); the ridge (Torrey) is left alone
 # mid/high cloud over the site (okta, eighths of the sky) costs points: 6/8 about 0.75, 8/8 about 1.75;
 # see-through cirrus that takes less than a fifth of the sun costs half of that
-CLOUD_STEP = [(8, 1.75), (7, 1.25), (6, 0.75), (5, 0.25)]
+# cloud costs by the sunshine lost in the flying window, at most 1: thermals still work under thin or broken
+# cloud; it is the rain that kills a day
+SUN_STEP = [(0.6, 1.0), (0.45, 0.7), (0.3, 0.5), (0.2, 0.3)]
 WEATHER_MAX_STEP = 2.5                      # rain and cloud together never cost more than this
 CROSS_FREE_MPH, CROSS_FULL_MPH = 3.5, 6.0   # a cross wind that shows as 3 mph or less costs nothing
 CALIB_SITES = ("lb", "blossom", "elsinore", "owens")
@@ -2109,16 +2111,18 @@ def weather_steps(rating, shower_p, nws_rain, cloud, rain_ok=False, ridge=False,
     step = min(step, RAIN_MAX_STEP if heavy_p >= REAL_RAIN_P else SHOWER_MAX_STEP)
     cstep = 0.0
     if cloud:
-        okta = round(cloud[0] * 8)
-        cstep = next((st for o0, st in CLOUD_STEP if okta >= o0), 0.0) * (0.5 if cloud[1] < 0.2 else 1.0)
+        # only when mid/high cloud covers half the sky or more: sun lost to low cloud (the marine layer) is
+        # already in the hi-res models' thermals, so it doesn't count twice
+        cstep = next((st for l0, st in SUN_STEP if cloud[1] >= l0), 0.0) if cloud[0] >= 0.5 else 0.0
     return max(1.0, rating - min(step + cstep, WEATHER_MAX_STEP)), cstep
 
 
-def cloud_mix(site, cdata, dstr):
-    """Mid/high cover and sun lost at a site and day, weighted like the cloud pill (None without data)."""
+def cloud_mix(site, cdata, dstr, hrs=None):
+    """Mid/high cover and sun lost at a site and day (in the hours hrs = [first, last] when given), weighted like
+    the cloud pill (None without data)."""
     if not cdata:
         return None
-    per = {m: cloud_day(site, cdata.get(m, {}).get(site["id"]), dstr) for m in CLOUD_MODELS}
+    per = {m: cloud_day(site, cdata.get(m, {}).get(site["id"]), dstr, hrs) for m in CLOUD_MODELS}
     per = {m: v for m, v in per.items() if v}
     if not per:
         return None
@@ -2268,7 +2272,10 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 if wet_f >= WET_FRAC[1]:                 # wet much of the window
                     r0 = rating; rating = max(1.0, rating - 1.0); note_adj("rain much of the window", r0)
                 psite = next((x for x in (parents or []) if x["id"] == s.get("parent", s["id"])), s)
-                cl = cloud_mix(psite, cdata, dstr)
+                # the sun that counts is the sun in the flying window (cloud building from noon matters, a grey
+                # late afternoon doesn't)
+                wins = [tuple(a["win"]) for a in D.values() if a.get("win")]
+                cl = cloud_mix(psite, cdata, dstr, max(set(wins), key=wins.count) if wins else s.get("window"))
                 # ridge soaring shrugs off showers and cloud (land when a cell comes), but a thermal day at a
                 # ridge site needs sun and dry air like anywhere else, so then the full weather steps apply
                 ridge_site = s.get("kind") == "ridge" or s.get("style") == "ridge"
@@ -2974,15 +2981,17 @@ def fetch_clouds(parents, log):
     return out
 
 
-def cloud_day(site, ring, dstr):
-    """(cover 0-1, sun loss 0-1) from 10 am to about sunset, averaged over the ring; None without data."""
+def cloud_day(site, ring, dstr, hrs=None):
+    """(cover 0-1, sun loss 0-1) from 10 am to about sunset (or in the hours hrs = [first, last]), averaged over
+    the ring; None without data."""
     if not ring:
         return None
     off = ring[0].get("_utc_offset_h", -7)
     end = int(sunset_hour(date.fromisoformat(dstr), cloud_points(site)[0][0], cloud_points(site)[0][1], off))
     covs, sw_sum, clear_sum = [], 0.0, 0.0
     for i, ts in enumerate(ring[0].get("time", [])):
-        if ts[:10] != dstr or not (CLOUD_FROM_H <= int(ts[11:13]) < end):
+        hh = int(ts[11:13])
+        if ts[:10] != dstr or not ((hrs[0] <= hh <= hrs[1]) if hrs else (CLOUD_FROM_H <= hh < end)):
             continue
         hc = []
         for hr in ring:

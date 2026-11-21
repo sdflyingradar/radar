@@ -301,11 +301,15 @@ class RainAndSun(unittest.TestCase):
         self.assertLess(bf.weather_steps(3.83, 0.45, True, (1.0, 0.41))[0], 2.5)   # Little Black
         self.assertLess(bf.weather_steps(3.97, 0.40, True, (1.0, 0.38))[0], 3.0)   # Blossom
 
-    def test_cloud_steps_by_okta(self):
-        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (0.75, 0.40))[0], 3.25)   # 6/8
-        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.40))[0], 2.25)    # 8/8
-        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (0.5, 0.30))[0], 4.0)     # 4/8: nothing
-        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.10))[0], 3.125)   # thin cirrus: half
+    def test_cloud_steps_by_sun_lost(self):
+        # by the sunshine lost in the window, never more than 1: cover alone (thin cirrus) costs nothing
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.10))[0], 4.0)
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.25))[0], 3.7)
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.40))[0], 3.5)
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.50))[0], 3.3)
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.90))[0], 3.0)
+        # sun lost under a sky with little mid/high cloud (marine layer) doesn't count here
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (0.2, 0.45))[0], 4.0)
 
     def test_ridge_and_rain_ok_sites(self):
         # cloud, the NWS and a mere chance of showers don't count on a ridge ...
