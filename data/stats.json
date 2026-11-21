@@ -1,12 +1,12 @@
 {
- "generated": "2026-11-21T16:23Z",
+ "generated": "2026-11-21T16:56Z",
  "week": {
-  "visits": 604,
-  "events": 407
+  "visits": 610,
+  "events": 411
  },
  "month": {
-  "visits": 604,
-  "events": 407
+  "visits": 610,
+  "events": 411
  },
  "daily": [
   {
@@ -35,55 +35,66 @@
   },
   {
    "day": "2026-11-21",
-   "n": 70
+   "n": 76
   }
  ],
  "today": {
-  "visits": 70
+  "visits": 76
  },
  "pages": [
   {
    "path": "/radar",
    "title": "SD Flying Radar",
-   "count": 159,
+   "count": 161,
    "event": false,
    "days": {
     "2026-11-19": 104,
-    "2026-11-20": 46,
-    "2026-11-21": 9
-   }
-  },
-  {
-   "path": "stay-start",
-   "title": "Timed visit",
-   "count": 80,
-   "event": true,
-   "days": {
-    "2026-11-19": 23,
     "2026-11-20": 46,
     "2026-11-21": 11
    }
   },
   {
+   "path": "stay-start",
+   "title": "Timed visit",
+   "count": 81,
+   "event": true,
+   "days": {
+    "2026-11-19": 23,
+    "2026-11-20": 46,
+    "2026-11-21": 12
+   }
+  },
+  {
    "path": "stay-15s",
    "title": "Stayed 15 s+",
-   "count": 77,
+   "count": 78,
    "event": true,
    "days": {
     "2026-11-19": 31,
     "2026-11-20": 37,
-    "2026-11-21": 9
+    "2026-11-21": 10
    }
   },
   {
    "path": "stay-30s",
    "title": "Stayed 30 s+",
-   "count": 63,
+   "count": 64,
    "event": true,
    "days": {
     "2026-11-19": 25,
     "2026-11-20": 29,
-    "2026-11-21": 9
+    "2026-11-21": 10
+   }
+  },
+  {
+   "path": "stay-1m",
+   "title": "Stayed 1 min+",
+   "count": 45,
+   "event": true,
+   "days": {
+    "2026-11-19": 18,
+    "2026-11-20": 20,
+    "2026-11-21": 7
    }
   },
   {
@@ -94,17 +105,6 @@
    "days": {
     "2026-11-19": 12,
     "2026-11-20": 27,
-    "2026-11-21": 6
-   }
-  },
-  {
-   "path": "stay-1m",
-   "title": "Stayed 1 min+",
-   "count": 44,
-   "event": true,
-   "days": {
-    "2026-11-19": 18,
-    "2026-11-20": 20,
     "2026-11-21": 6
    }
   },
@@ -198,7 +198,7 @@
  "refs": [
   {
    "name": "(direct)",
-   "count": 525
+   "count": 531
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
@@ -212,7 +212,7 @@
  "sizes": [
   {
    "name": "Phone",
-   "count": 508
+   "count": 514
   },
   {
    "name": "Computer",
@@ -226,7 +226,7 @@
  "systems": [
   {
    "name": "iOS",
-   "count": 303
+   "count": 309
   },
   {
    "name": "Android",
@@ -244,7 +244,7 @@
  "locations": [
   {
    "name": "United States",
-   "count": 560
+   "count": 565
   },
   {
    "name": "Germany",
@@ -256,7 +256,7 @@
   },
   {
    "name": "Fiji",
-   "count": 1
+   "count": 2
   }
  ]
 }
