@@ -1335,6 +1335,10 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
                 if win:
                     best_h, sc = max(win, key=lambda x: x[1]["q"])
                     peak = sc["peak_top"]
+                    # no convergence line: some launches still make a good thermal day for site flying (Horse in
+                    # a west breeze), rated like a thermal site over the window but no more than a site-fly day
+                    if site.get("thermal_site_max"):
+                        rating = max(rating, min(site["thermal_site_max"], sum(hour_r(s2, False) for _, s2 in win) / len(win)))
         elif style == "switch":
             # Elsinore: launch in the light pre-switch air, then the west wind (the switch) builds the
             # convergence inland. Height over the range decides; the inland check happens in build().

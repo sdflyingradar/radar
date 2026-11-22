@@ -690,6 +690,7 @@
         {
           "name": "Horse",
           "glass_off": true,
+          "thermal_site_max": 3.0,
           "lat": 32.7747,
           "lon": -116.477,
           "launch_ft": 4540,
@@ -945,20 +946,19 @@
           "lon": -119.2909
         },
         {
-          "name": "La Cumbre Peak",
-          "lat": 34.4944,
-          "lon": -119.7125
-        },
-        {
           "name": "Montecito crest",
           "lat": 34.4812,
           "lon": -119.5758
         },
         {
-          "name": "Peak 4864",
-          "lat": 34.4797,
-          "lon": -119.4319,
-          "label": "below"
+          "name": "Old Man Mountain",
+          "lat": 34.5172,
+          "lon": -119.4535
+        },
+        {
+          "name": "Topatopa Bluff",
+          "lat": 34.4987,
+          "lon": -119.1072
         }
       ],
       "launches": [

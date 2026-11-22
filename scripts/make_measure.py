@@ -43,7 +43,7 @@ def wedge(X, Y, r, a0, a1, cls):
 
 SHORT = {"Hemet / toward Soboba": "Hemet", "Monument Peak (Mt Laguna)": "Monument Pk", "El Cajon Mountain peak": "El Cajon Mtn",
          "between Laguna and Horse": "middle", "Black Eagle (Inyos)": "Black Eagle", "Mazourka (Inyos)": "Mazourka",
-         "Montecito crest": "Montecito", "La Cumbre Peak": "La Cumbre", "Ojai (Chief's Peak)": "Ojai", "Santiago Peak": "Santiago Pk", "Stonewall Peak": "Stonewall"}
+         "Montecito crest": "Montecito", "La Cumbre Peak": "La Cumbre", "Ojai (Chief's Peak)": "Ojai", "Topatopa Bluff": "Topatopa", "Old Man Mountain": "Old Man Mtn", "Santiago Peak": "Santiago Pk", "Stonewall Peak": "Stonewall"}
 
 
 def short_label(n):
