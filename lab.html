@@ -1030,6 +1030,7 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
     <button type="button" id="archBtn" hidden title="Every past day as the radar forecast it that day">Archive</button>
     <a id="runNow" class="btnlink" href="#" target="_blank" rel="noopener" hidden title="Opens GitHub: press Run workflow and pick radar, therm charts, balloons or everything">Run an update</a>
     <a id="statsLink" class="btnlink" href="https://sdflyingradar.goatcounter.com" target="_blank" rel="noopener" hidden>Visitor stats</a>
+    <a id="scoreLink" class="btnlink" href="scoring.html" hidden>Scoring sheet</a>
   </footer>
 </div>
 
@@ -1847,7 +1848,7 @@ try {
   if (q != null) localStorage.setItem("radarAdmin", q === "0" ? "0" : "1");
   ADMIN = localStorage.getItem("radarAdmin") === "1";
 } catch (e) { /* no storage: no button */ }
-if (ADMIN) $("#archBtn").hidden = false;   // the archive is for the owner only
+if (ADMIN) { $("#archBtn").hidden = false; const sl = $("#scoreLink"); if (sl) sl.hidden = false; }   // the archive and the scoring sheet are for the owner only
 if (ADMIN && location.hostname.endsWith(".github.io")) {
   const user = location.hostname.split(".")[0], repo = location.pathname.split("/").filter(Boolean)[0];
   if (user && repo) { const a = $("#runNow"); a.href = `https://github.com/${user}/${repo}/actions/workflows/run.yml`; a.hidden = false;
