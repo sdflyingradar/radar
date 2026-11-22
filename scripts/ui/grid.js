@@ -145,7 +145,11 @@
       out.push(row(v < 0 ? "lg-bad" : "lg-plus", v < 0 ? "−" : "+", n, val, why, pts(v)));
     }
     else if (!bp && w && w.q < 0.4) out.push(row("lg-soft", "−", c.style === "ridge" ? "Wind" : "Launch wind", "", "light or cross (already in the start)", ""));
-    for (const [t, v] of adj) out.push(row("lg-bad", "−", nameOf(t), "", short(t), pts(v)));
+    /* a cap ("…: 4 at most") shows where it caps the score, not the points it happened to take off */
+    for (const [t, v] of adj) {
+      const cap = String(t).match(/: (\d) at most$/);
+      out.push(row("lg-bad", "−", nameOf(t), "", cap ? short(t.replace(cap[0], "")) : short(t), cap ? `max ${cap[1]}` : pts(v)));
+    }
     out.push(row("lg-total", "=", "Score", "", "", `<b>${r1(c.rating)}</b>`));
     return `<div class="dsec lg"><span class="dh">How the score was made</span><div class="lg-list">${out.join("")}</div>${track(c.rating, qv(c.rating))}</div>`;
   };
