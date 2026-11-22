@@ -184,7 +184,8 @@ function panel2SVG(data, di = 0) {
   hrs.forEach((h, k) => {
     const g = H(h).grid || {}, x0 = CX(k) - bw / 2;
     // lift: one rounded column per hour, the 500 ft steps as sharp colour bands, shaded like a cylinder
-    const cells = Object.entries(g).filter(([, v]) => typeof v === 'number').map(([zk, v]) => [+zk, v]).filter(([z]) => z + 500 > zmin && z < zmax).sort((a, b) => a[0] - b[0]);
+    const cells = Object.entries(g).filter(([, v]) => typeof v === 'number').map(([zk, v]) => [+zk, Math.round(v * 2) / 2])   // the SkyGram in 0.5 m/s steps
+     .filter(([z]) => z + 500 > zmin && z < zmax).sort((a, b) => a[0] - b[0]);
     if (cells.length) {
       // each 500 ft segment as wide as its climb: full from 2 m/s, slimmer at 1.5, half at 1 and below. The segments
       // flow into one column: the outline curves from one width to the next and the colours blend a little at
@@ -285,7 +286,7 @@ function panel2SVG(data, di = 0) {
   // statistics
   let best = null, hi = null;
   hrs.forEach((h) => {
-    const c = Math.max(0, ...Object.values(H(h).grid || {}).filter(v => typeof v === 'number'));
+    const c = Math.round(Math.max(0, ...Object.values(H(h).grid || {}).filter(v => typeof v === 'number')) * 2) / 2;
     if (!best || c > best[0]) best = [c, h];
     if (H(h).top_max_ft && (!hi || H(h).top_max_ft > hi[0])) hi = [H(h).top_max_ft, h];
   });

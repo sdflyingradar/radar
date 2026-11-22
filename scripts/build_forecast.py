@@ -1221,7 +1221,7 @@ def region_climb(site_id, date_s, hour):
                         for hh, h in (d.get("hours") or {}).items():
                             v = [x for x in (h.get("grid") or {}).values() if isinstance(x, (int, float))]
                             if v:
-                                _REGION_HR[(z["id"], d["date"], int(hh))] = max(v)
+                                _REGION_HR[(z["id"], d["date"], int(hh))] = round(max(v) * 2) / 2   # in 0.5 steps, as the SkyGram shows it
         except Exception:
             pass
     rid = SITE_REGION.get(site_id)

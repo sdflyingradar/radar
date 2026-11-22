@@ -149,7 +149,7 @@ def blend_hours(per_model):
         if cw >= have / 2:
             grid[z] = "c"
         else:
-            grid[z] = round(wcombine(vals, mean_mode) * 2) / 2
+            grid[z] = round(wcombine(vals, mean_mode), 1)      # 0.1 m/s: the classic chart shows it; the SkyGram rounds to 0.5
     sfc = wind("sfc")
     gust = wcombine([(h["sfc"][2], W[m]) for m, h in hs.items()], True)
     bases = [(h["base_ft"], W[m]) for m, h in hs.items() if h["base_ft"]]
@@ -440,7 +440,7 @@ def region_grid(ps, terr=None):
         got = [(v, w) for v, w in got if v is not None]
         wg = sum(w for _, w in got)
         if wg >= 0.4 * wb:
-            cells[str(zft)] = round(sum(v * w for v, w in got) / wg * 2) / 2
+            cells[str(zft)] = round(sum(v * w for v, w in got) / wg, 1)
     return cells
 
 
