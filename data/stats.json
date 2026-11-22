@@ -1,12 +1,12 @@
 {
- "generated": "2026-11-22T20:44Z",
+ "generated": "2026-11-22T20:50Z",
  "week": {
-  "visits": 841,
-  "events": 595
+  "visits": 843,
+  "events": 596
  },
  "month": {
-  "visits": 841,
-  "events": 595
+  "visits": 843,
+  "events": 596
  },
  "daily": [
   {
@@ -35,11 +35,11 @@
   },
   {
    "day": "2026-11-22",
-   "n": 111
+   "n": 113
   }
  ],
  "today": {
-  "visits": 111
+  "visits": 113
  },
  "pages": [
   {
@@ -69,13 +69,13 @@
   {
    "path": "stay-15s",
    "title": "Stayed 15 s+",
-   "count": 112,
+   "count": 113,
    "event": true,
    "days": {
     "2026-11-19": 31,
     "2026-11-20": 37,
     "2026-11-21": 29,
-    "2026-11-22": 15
+    "2026-11-22": 16
    }
   },
   {
@@ -141,13 +141,13 @@
   {
    "path": "/radar/how.html",
    "title": "How SD Flying Radar Works",
-   "count": 23,
+   "count": 24,
    "event": false,
    "days": {
     "2026-11-19": 16,
     "2026-11-20": 2,
     "2026-11-21": 3,
-    "2026-11-22": 2
+    "2026-11-22": 3
    }
   },
   {
@@ -211,7 +211,7 @@
  "refs": [
   {
    "name": "(direct)",
-   "count": 758
+   "count": 759
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
@@ -219,13 +219,13 @@
   },
   {
    "name": "sdflyingradar.github.io/radar",
-   "count": 22
+   "count": 23
   }
  ],
  "sizes": [
   {
    "name": "Phone",
-   "count": 687
+   "count": 689
   },
   {
    "name": "Computer",
@@ -243,7 +243,7 @@
   },
   {
    "name": "Android",
-   "count": 278
+   "count": 280
   },
   {
    "name": "macOS",
@@ -265,7 +265,7 @@
   },
   {
    "name": "Germany",
-   "count": 71
+   "count": 73
   },
   {
    "name": "Croatia",
