@@ -1,12 +1,12 @@
 {
- "generated": "2026-11-22T22:27Z",
+ "generated": "2026-11-22T22:35Z",
  "week": {
-  "visits": 850,
-  "events": 602
+  "visits": 851,
+  "events": 603
  },
  "month": {
-  "visits": 850,
-  "events": 602
+  "visits": 851,
+  "events": 603
  },
  "daily": [
   {
@@ -35,11 +35,11 @@
   },
   {
    "day": "2026-11-22",
-   "n": 120
+   "n": 121
   }
  ],
  "today": {
-  "visits": 120
+  "visits": 121
  },
  "pages": [
   {
@@ -163,6 +163,18 @@
    }
   },
   {
+   "path": "do-skygram",
+   "title": "Used the SkyGram",
+   "count": 21,
+   "event": true,
+   "days": {
+    "2026-11-19": 5,
+    "2026-11-20": 5,
+    "2026-11-21": 5,
+    "2026-11-22": 6
+   }
+  },
+  {
    "path": "/radar/index.html",
    "title": "SD Flying Radar",
    "count": 21,
@@ -172,18 +184,6 @@
     "2026-11-20": 6,
     "2026-11-21": 2,
     "2026-11-22": 3
-   }
-  },
-  {
-   "path": "do-skygram",
-   "title": "Used the SkyGram",
-   "count": 20,
-   "event": true,
-   "days": {
-    "2026-11-19": 5,
-    "2026-11-20": 5,
-    "2026-11-21": 5,
-    "2026-11-22": 5
    }
   },
   {
@@ -224,7 +224,7 @@
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
-   "count": 65
+   "count": 66
   },
   {
    "name": "sdflyingradar.github.io/radar",
@@ -234,7 +234,7 @@
  "sizes": [
   {
    "name": "Phone",
-   "count": 696
+   "count": 697
   },
   {
    "name": "Computer",
@@ -252,7 +252,7 @@
   },
   {
    "name": "Android",
-   "count": 284
+   "count": 285
   },
   {
    "name": "macOS",
@@ -274,7 +274,7 @@
   },
   {
    "name": "Germany",
-   "count": 77
+   "count": 78
   },
   {
    "name": "Croatia",
