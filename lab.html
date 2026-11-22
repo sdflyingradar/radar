@@ -1496,7 +1496,7 @@ function sitePills(c) {
     [/gusts over 18/, "too windy"], [/gusts over 15/, "strong"], [/gusts over 12/, "gusty"], [/gusts over 10/, "windy"], [/^strong wind/, "strong"], [/top of lift over \d+ mph: (no-go|too windy)/, "too windy aloft"],
     [/top of lift over/, "strong wind aloft"], [/blown out/, "blown out"], [/not calm/, "not calm"],
     [/over the back aloft/, "over the back aloft"], [/off season/, "off season"], [/NW to N aloft/, "NW–N"], [/^offshore .*no-go/, "offshore flow aloft"], [/^offshore .*2 at most/, "offshore"], [/^offshore /, "light offshore"],
-    [/^under \d+ mph most of the day/, "too light"], [/^below [\d,]+ ft/, "low tops"], [/not into launch/, "wind not into launch"]];
+    [/^under \d+ mph most of the day/, "too light"], [/^below [\d,]+ ft/, "low tops"], [/breeze into launch/, "light or cross on launch"]];
   const seen = new Set(out.map((x) => x.replace(/<i[^>]*>.*?<\/i>/g, "").replace(/<[^>]+>/g, "").trim().toLowerCase()));
   adj.filter(([t]) => !/edge of the launch window/.test(t)).filter(([t]) => !/rain|sun|4 at most$/.test(t) || /outside the launch window|blown|calm|season/.test(t)).forEach(([t]) => {
     // a chip says what's wrong, never how the score works (no ": 3 at most")

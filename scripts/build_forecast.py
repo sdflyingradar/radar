@@ -1291,7 +1291,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     if site["kind"] != "ridge" and site.get("style") != "switch":
         cand = [sc for h, sc in hours if w0 - 1 <= h <= w1 and (sc.get("peak_top") or 0) * FT >= site["launch_ft"] + 500]
         if cand:
-            lslot = [max(cand, key=lambda x: (x.get("launch_pts", 1.0 if x["good_launch"] else 0.0),
+            lslot = [max(cand, key=lambda x: (x.get("launch_pts", 1.0 if x["good_launch"] else 0.0), bool(x.get("into")),
                                                -(x.get("lg") or 0), x["q"]))]
     rating, best_h, peak = 1.0, None, None
     xc_now = False
@@ -1525,7 +1525,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "launch_q": (sum(s.get("launch_pts", 1.0 if s["good_launch"] else 0.0) for _, s in win) / len(win)) if win
         else sum(s.get("launch_pts", 1.0 if s["good_launch"] else 0.0) for s in blk) / len(blk),
         # launch wind: in the launch slot (one good hour as it turns lifty; the best 3-hour block at ridge/switch sites)
-        "into": sum(1 for s in lslot if s.get("into")) / len(lslot),
+        "into": sum(1 for s in blk if s.get("into")) / len(blk),          # a 5 needs a breeze into launch through the window
         "gust12": sum(1 for s in lslot if s.get("gcat", 0) >= 1) / len(lslot),
         "gust10": sum(1 for s in lslot if (s.get("lg") or 0) > 10) / len(lslot),
         "gust15": sum(1 for s in lslot if (s.get("lg") or 0) > 15) / len(lslot),
@@ -2342,7 +2342,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             if s.get("style") in ("thermal", "window") and D and rating >= 4.5:
                 into = sum(model_weight(k, D) * a.get("into", 0) for k, a in D.items()) / (sum(model_weight(k, D) for k in D) or 1)
                 if into < 0.5:
-                    caps.append((4.24, "wind not into launch: 4 at most"))
+                    caps.append((4.24, "a 5 needs a breeze into launch: 4 at most"))
             # gusts through most of the window (thermal sites): over 10 mph windy -0.5, over 12 gusty -1,
             # over 15 strong -1.5, over 18 too windy. A mean of 10+ with gusts 15+ is 2.5 at most (strong day).
             if s.get("kind") != "ridge" and D:
@@ -2542,7 +2542,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                         else:
                             pts += sum(v for k_, v in pts_by.items() if k_ in lab)
                     return 0.2 if capped else round(max(0.2, 1 - 0.4 * pts), 2)
-                lq = bar_from({"gusts over 12": 1, "crosswind, up to 20°": 1, "edge of the launch window": 0.3, "not into launch": 0.5},
+                lq = bar_from({"gusts over 12": 1, "crosswind, up to 20°": 1, "edge of the launch window": 0.3, "breeze into launch": 0.5},
                               ("gusts over 18", "from behind, 20°+", "not calm"))
                 aq = bar_from({"top of lift over 15": 0.5, "top of lift over 20": 1, "NW to N aloft": 0.5},
                               ("top of lift over 25", "over the back aloft", "offshore"))
