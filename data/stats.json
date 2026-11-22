@@ -1,12 +1,12 @@
 {
- "generated": "2026-11-22T20:53Z",
+ "generated": "2026-11-22T21:49Z",
  "week": {
-  "visits": 843,
-  "events": 596
+  "visits": 849,
+  "events": 602
  },
  "month": {
-  "visits": 843,
-  "events": 596
+  "visits": 849,
+  "events": 602
  },
  "daily": [
   {
@@ -35,11 +35,11 @@
   },
   {
    "day": "2026-11-22",
-   "n": 113
+   "n": 119
   }
  ],
  "today": {
-  "visits": 113
+  "visits": 119
  },
  "pages": [
   {
@@ -69,61 +69,61 @@
   {
    "path": "stay-15s",
    "title": "Stayed 15 s+",
-   "count": 113,
+   "count": 114,
    "event": true,
    "days": {
     "2026-11-19": 31,
     "2026-11-20": 37,
     "2026-11-21": 29,
-    "2026-11-22": 16
+    "2026-11-22": 17
    }
   },
   {
    "path": "stay-30s",
    "title": "Stayed 30 s+",
-   "count": 93,
+   "count": 95,
    "event": true,
    "days": {
     "2026-11-19": 25,
     "2026-11-20": 29,
     "2026-11-21": 27,
-    "2026-11-22": 12
+    "2026-11-22": 14
    }
   },
   {
    "path": "do-site",
    "title": "Opened a site",
-   "count": 71,
+   "count": 72,
    "event": true,
    "days": {
     "2026-11-19": 12,
     "2026-11-20": 27,
     "2026-11-21": 19,
-    "2026-11-22": 13
+    "2026-11-22": 14
    }
   },
   {
    "path": "stay-1m",
    "title": "Stayed 1 min+",
-   "count": 66,
+   "count": 67,
    "event": true,
    "days": {
     "2026-11-19": 18,
     "2026-11-20": 20,
     "2026-11-21": 18,
-    "2026-11-22": 10
+    "2026-11-22": 11
    }
   },
   {
    "path": "do-day",
    "title": "Looked at another day",
-   "count": 46,
+   "count": 47,
    "event": true,
    "days": {
     "2026-11-19": 11,
     "2026-11-20": 17,
     "2026-11-21": 12,
-    "2026-11-22": 6
+    "2026-11-22": 7
    }
   },
   {
@@ -211,11 +211,11 @@
  "refs": [
   {
    "name": "(direct)",
-   "count": 759
+   "count": 762
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
-   "count": 61
+   "count": 64
   },
   {
    "name": "sdflyingradar.github.io/radar",
@@ -225,7 +225,7 @@
  "sizes": [
   {
    "name": "Phone",
-   "count": 689
+   "count": 695
   },
   {
    "name": "Computer",
@@ -239,11 +239,11 @@
  "systems": [
   {
    "name": "iOS",
-   "count": 409
+   "count": 412
   },
   {
    "name": "Android",
-   "count": 280
+   "count": 283
   },
   {
    "name": "macOS",
@@ -261,11 +261,11 @@
  "locations": [
   {
    "name": "United States",
-   "count": 759
+   "count": 762
   },
   {
    "name": "Germany",
-   "count": 73
+   "count": 76
   },
   {
    "name": "Croatia",
