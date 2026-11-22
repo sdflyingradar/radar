@@ -62,7 +62,7 @@ def cells(s):
     if s.get("kind") == "ridge" or s.get("style") == "switch":
         c["Hours"] = hours(s["window"])
     else:
-        c["Hours"] = "best 3 h, start 10–1"
+        c["Hours"] = "best 3 h, 10 am – glass-off"
     c["Good"] = f"{s['wind_mph'][0]}–{s['wind_mph'][1]} mph" if s.get("wind_mph") else ""
     if s.get("min_mph"):
         c["Good"] += f"<br>under {s['min_mph']}: too light"
@@ -134,15 +134,15 @@ GROUPS = [("Site", ["Type", "Launch", "Faces", "LZ", "Hours"]),
           ("Height of usable lift (MSL)", ["3 Site fly", "4 XC", "5 Great XC", "Height points"]),
           ("Special", ["Glass-off", "Special", "XC blocked"])]
 RULES = [("Start", "height of usable lift on the site's scale × how good launch wind and climb are (ridge: ridge wind)"),
-         ("Hours", "best 3 hours starting 10 am – 1 pm; launch wind and gusts from the best launch hour once it's lifty"),
+         ("Hours", "best 3 hours between 10 am and glass-off (height and climbs pick them)"),
          ("Rain", "30% of runs wet −0.5 · 45% −1 · 60% −1.5 · showers −1 at most · real rain −2 at most · all window: no-go"),
          ("Cloud", "mid/high cloud over half the sky: sun lost 20% −0.3 · 30% −0.5 · 45% −0.7 · 60%+ −1"),
-         ("Gusts", "over 10 −0.5 · 12 −1 · 15 −1.5 · 18 through the window: too windy · 10+ gusting 15+: max 2.5"),
-         ("Launch direction", "outer 20° of the window −0.3 · up to 20° outside (cross) −1 · further (behind) −2"),
-         ("Top of lift wind", "over 15 mph −0.5 · 20 −1 · 25 too windy · over the back aloft −1.5"),
+         ("Gusts", "through most of the window: over 10 −0.5 · 12 −1 · 15 −1.5 · 18 too windy · 10+ gusting 15+: max 2.5"),
+         ("Launch direction", "outer 20° of the window −0.3 · up to 20° outside (cross) −1 · further (behind): max 2"),
+         ("Top of lift wind", "over 15 mph −0.5 · 20 −1 · 25 too windy · over the back aloft: max 2"),
          ("Offshore", "3+ mph or LAX–DAG −3 mb −1 · 4+ or −4 mb max 2 · 6+ no-go"),
          ("Climb", "weak climbs scale the score down (0 m/s ×0.35 · 1 ×0.7 · 2+ ×1); XC needs 1 m/s"),
-         ("A 5", "needs a breeze into launch (else max 4)"),
+         ("A 5", "needs the site's great height, a breeze into launch and a clean day (else max 4)"),
          ("Models", "HRRR + RRFS the next 2 days, then ECMWF, GFS, ICON; weighted blend"),
          ("Day colour", "average of the two best San Diego mountain sites and Elsinore")]
 

@@ -272,10 +272,7 @@ def om_url(base, sites, model, hourly, past_days=0, days=None):
     if past_days:
         q["past_days"] = past_days                          # the day type needs the days before
     if all(s.get("lz_ft") is not None or s.get("_hpoint") for s in sites):    # thermals start from the valley ground
-        # height points: the model's own ground, except peaks with their real height (elev_ft), where the model's
-        # smoothed terrain sits far below the summit
-        q["elevation"] = ",".join((f"{s['_elev_ft'] / FT:.0f}" if s.get("_elev_ft") else "nan") if s.get("_hpoint")
-                                  else f"{s.get('model_ground_ft', s['lz_ft']) / FT:.0f}" for s in sites)
+        q["elevation"] = ",".join("nan" if s.get("_hpoint") else f"{s.get('model_ground_ft', s['lz_ft']) / FT:.0f}" for s in sites)
     return base + "?" + urllib.parse.urlencode(q)
 
 
@@ -1138,31 +1135,14 @@ def ceil_level(site, ft):
     return 5.0
 
 
-DEEP_M = 300      # a height point's top counts once its lift reaches this deep over the point's own ground (~1,000 ft)
-
-
-def deep(reads):
-    """The readings (u, name, ground): a peak's (ground given) only with lift at least DEEP_M deep over its summit;
-    a thin layer over a high peak on a weak day is high ground, not a top you can climb to. All of them when
-    nothing is left."""
-    d = [r for r in reads if r[2] is None or r[0] - r[2] >= DEEP_M]
-    return d or list(reads)
-
-
-def depth_mean(pts):
-    """The highest top among the points with deep enough lift (see deep)."""
-    d = deep(pts)
-    return max(u for u, _, _ in d) if d else None
-
-
 def best4_height(hour_list, bias=0.0):
-    """Height of the day from a site's height points: the average of the four best readings (point x hour) in the
-    given hours with deep enough lift (see deep), at most two from any one point. None without height points."""
-    reads = deep([r for _, sc in hour_list for r in (sc.get("pts") or [])])
+    """Height of the day from a site's height points: the average of the four best readings (point x hour)
+    in the given hours, at most two from any one point. None when the site has no height points."""
+    reads = [(u, name) for _, sc in hour_list for u, name in (sc.get("pts") or [])]
     if not reads:
         return None
     take, per = [], {}
-    for u, name, _ in sorted(reads, reverse=True):
+    for u, name in sorted(reads, reverse=True):
         if per.get(name, 0) >= 2:
             continue
         take.append(u); per[name] = per.get(name, 0) + 1
@@ -1185,37 +1165,34 @@ WIN_H = 3                                   # the flying window is 3 hours at ev
 
 
 def pick_window(site, hours, sunset_h):
-    """The day's flying window: 3 hours, slid to where the day is best: hours pilots can launch and stay up
-    in (wind on), height of lift, thermal strength. It may sit anywhere from 10 am to the last hour before sunset, so on
-    a short winter day it can run into the glass-off hours; ties go to the site's usual start.
+    """The day's flying window: 3 hours, slid to where the lift is best -- height of lift first, thermal
+    strength second (wind plays no part). It may sit anywhere from 10 am up to the start of glass-off (the
+    last 3 hours before sunset, which are rated on their own); ties go to the site's usual start.
     Torrey and Elsinore's switch keep their own window."""
     f0, f1 = site.get("window") or [11, 13]
     if site["kind"] == "ridge" or site.get("style") == "switch":
         return f0, f1
     n = WIN_H
-    lo, hi = 10, max(10 + n - 1, math.floor(sunset_h) - 1)
+    lo, hi = 10, max(10 + n - 1, math.floor(sunset_h) - 3)
     f0 = min(max(f0, lo), hi - n + 1)
     by_h = dict(hours)
     bias = site.get("_bias_m", 0.0)
     def top_ft(s):
-        tops = [s["peak_top"]] + ([depth_mean(s["pts"]) - bias] if s.get("pts") else [])
+        tops = [s["peak_top"]] + [u - bias for u, _ in (s.get("pts") or [])]
         return max(x for x in tops if x is not None) * FT
     best = None
-    for a in range(lo, min(hi - n + 1, LATEST_START) + 1):     # an XC day doesn't start after 1 pm
+    for a in range(lo, hi - n + 2):
         blk = [by_h[h] for h in range(a, a + n) if h in by_h]
         if len(blk) < n:
             continue
         height = sum(ceil_level(site, top_ft(s)) for s in blk) / n            # 1-5, the site's own scale
         thermals = sum(clamp(((s["wstar"] or 0) - 0.5) / 2.0) for s in blk) / n  # 0-1
-        # launch counts once: the best hour to get off at the start of the window (its first hour or the one before)
-        flyable = max(clamp(by_h[h].get("q", 1.0) / 0.6) for h in (a - 1, a, a + 1) if h in by_h)
-        m = height + 0.5 * thermals + 1.5 * flyable - 0.03 * abs(a - f0)
+        m = height + 0.5 * thermals - 0.03 * abs(a - f0)
         if best is None or m > best[0] + 1e-9:
             best = (m, a)
     return (best[1], best[1] + n - 1) if best else (f0, f0 + n - 1)
 
 
-LATEST_START = 13       # the flying window starts by 1 pm at the latest
 RIDGE_GOOD_MPH = 10      # Torrey: under this the ridge is flyable but weak (yellow at best)
 
 
@@ -1301,15 +1278,6 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     style = site.get("style") or ("ridge" if ridge else site["kind"] if site["kind"] == "convergence" else "thermal")
     w0, w1 = pick_window(site, hours, sunset_h)
     win = [(h, sc) for h, sc in hours if w0 <= h <= w1]
-    # the launch slot: one good hour to get off once it's lifty (from the hour before the window to its end, with
-    # some lift above launch). Launch wind (direction, gusts) is judged there; once in the air the later hours
-    # only count for height, climbs and the wind up high. Ridge and switch sites keep their own launch rules.
-    lslot = blk
-    if site["kind"] != "ridge" and site.get("style") != "switch":
-        cand = [sc for h, sc in hours if w0 - 1 <= h <= w1 and (sc.get("peak_top") or 0) * FT >= site["launch_ft"] + 500]
-        if cand:
-            lslot = [max(cand, key=lambda x: (x.get("launch_pts", 1.0 if x["good_launch"] else 0.0), bool(x.get("into")),
-                                               -(x.get("lg") or 0), x["q"]))]
     rating, best_h, peak = 1.0, None, None
     xc_now = False
     windy_share = 0.0
@@ -1542,18 +1510,17 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         # the launch-wind bar: share of the whole window with a good launch (gusts, direction and speed in range)
         "launch_q": (sum(s.get("launch_pts", 1.0 if s["good_launch"] else 0.0) for _, s in win) / len(win)) if win
         else sum(s.get("launch_pts", 1.0 if s["good_launch"] else 0.0) for s in blk) / len(blk),
-        # launch wind: in the launch slot (one good hour as it turns lifty; the best 3-hour block at ridge/switch sites)
-        "into": sum(1 for s in blk if s.get("into")) / len(blk),          # a 5 needs a breeze into launch through the window
-        "gust12": sum(1 for s in lslot if s.get("gcat", 0) >= 1) / len(lslot),
-        "gust10": sum(1 for s in lslot if (s.get("lg") or 0) > 10) / len(lslot),
-        "gust15": sum(1 for s in lslot if (s.get("lg") or 0) > 15) / len(lslot),
-        "strong": sum(1 for s in lslot if (s.get("lw") or 0) >= 10 and (s.get("lg") or 0) >= 15) / len(lslot),
+        "into": sum(1 for s in blk if s.get("into")) / len(blk),
+        "gust12": sum(1 for s in blk if s.get("gcat", 0) >= 1) / len(blk),
+        "gust10": sum(1 for s in blk if (s.get("lg") or 0) > 10) / len(blk),
+        "gust15": sum(1 for s in blk if (s.get("lg") or 0) > 15) / len(blk),
+        "strong": sum(1 for s in blk if (s.get("lw") or 0) >= 10 and (s.get("lg") or 0) >= 15) / len(blk),
         "top_wind": (lambda v: sorted(v)[len(v) // 2] if v else None)([s["tw"][1] * 1.15078 for s in blk if s.get("tw")]),
         "gust18": sum(1 for s in blk if s.get("gcat", 0) >= 2) / len(blk),
         "offcat": (lambda offs: sum(0 if o <= 0 else 1 if o <= 20 else 2 for o in offs) / len(offs) if offs else 0.0)(   # off = outside the window
-            [s["off"] for s in lslot if s.get("off") is not None]),
+            [s["off"] for s in blk if s.get("off") is not None]),
         "rim": (lambda offs: sum(1 for o in offs if -RIM_DEG < o <= 0) / len(offs) if offs else 0.0)(
-            [s["off"] for s in lslot if s.get("off") is not None]),
+            [s["off"] for s in blk if s.get("off") is not None]),
         "launch": max(set(x["launch"] for x in blk if x["launch"]) or {None}, key=lambda v: sum(1 for x in blk if x["launch"] == v)),
         "a_max": med("a_max"), "a_spd": a_spd, "a_dir": a_dir,
         "aloftdir": sum(1 for s in blk if {"aloftdir", "drift"} & set(s["codes"])) >= 2,
@@ -2028,7 +1995,6 @@ def expand_sites(sites):
             if s.get("launches"):
                 c.update({kk: vv for kk, vv in s["launches"][0].items() if kk not in ("name", "lat", "lon", "glass_off")})
             c.update({"id": f"{s['id']}#h{k}", "parent": s["id"], "_hpoint": True, "lat": hp["lat"], "lon": hp["lon"],
-                      "_elev_ft": hp.get("elev_ft"),
                       "hp_name": f"{s.get('short', s['id'])}: {hp.get('name', f'point {k}')}"})
             out.append(c)
     return out
@@ -2058,15 +2024,9 @@ def corridor_heights(sites, det):
                         [round(elev * FT), round(sc["usable_show"] * FT)] + [
                             round(x * FT) if x is not None else None for x in (sc.get("dbg") or [])]
                 if sc:
-                    # peaks (elev_ft) carry their ground, so a thin layer on top of them can be left out (see deep)
-                    pts = (dst[t][3] if t in dst else []) + [(sc["usable_show"], s["hp_name"], elev if s.get("_elev_ft") else None)]
+                    pts = (dst[t][3] if t in dst else []) + [(sc["usable_show"], s["hp_name"])]
                     best = dst[t] if t in dst and dst[t][0] >= sc["usable_show"] else (sc["usable_show"], sc["wstar"], s["hp_name"])
                     dst[t] = (best[0], best[1], best[2], pts)
-    # the corridor's top each hour: the highest top among the points with deep enough lift (see deep)
-    for m in out.values():
-        for dd in m.values():
-            for t, (u, w, nm, pts) in list(dd.items()):
-                dd[t] = (depth_mean(pts) or u, w, nm, pts)
     return out
 
 
@@ -2359,7 +2319,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             # least the best model; short of it the day shows 4 at most (Torrey's ridge scale is its own)
             great_ft = (s.get("xc_top_ft") or 0) + (s.get("xc_span_ft") or 1000)
             tops = [v["top"] * FT for v in D.values() if v.get("top")] if D else []
-            # (no cap: the height is already the base of the score)
+            if s.get("style") != "ridge" and s.get("xc_top_ft") and tops and max(tops) < great_ft:
+                caps.append((4.24, f"below {great_ft:,.0f} ft: 4 at most"))
             # a 5 also needs the wind blowing nicely into the launch for most of the window: light air from any
             # side, or a cross wind, is launchable but makes it a 4 at most (thermal sites; Torrey has its own rules)
             if s.get("style") in ("thermal", "window") and D and rating >= 4.5:
@@ -2396,7 +2357,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             # the ridge: rotor and a blown-out or cross launch, even when the surface wind looks light): 2 at most
             if s.get("style") in ("thermal", "window") and D:
                 if blend({k: a.get("otb_aloft_share", 0.0) for k, a in D.items()}) >= 0.5:
-                    r0 = rating; rating = max(1.0, rating - 1.5); note_adj("over the back aloft", r0)
+                    caps.append((2.0, "over the back aloft: 2 at most"))
             # offshore (Santa Ana) through the flying layer for most of the window: a no-go, even when the top of
             # lift is lower and the valley wind looks fine (LB, Blossom, Otay, Whale's V; N-E at Soboba and Marshall: "offshore_nogo")
             onog = s.get("offshore_nogo")
@@ -2437,7 +2398,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             if s.get("style") in ("thermal", "window") and D and site_face(s) is not None:
                 oc = sum(model_weight(k, D) * a.get("offcat", 0.0) for k, a in D.items()) / (sum(model_weight(k, D) for k in D) or 1)
                 if oc >= 1.5:
-                    r0 = rating; rating = max(1.0, rating - 2.0); note_adj("wind from behind, 20°+ outside the launch window", r0)
+                    caps.append((2.0, "wind from behind, 20°+ outside the launch window: 2 at most"))
                 elif oc >= 0.5:
                     r0 = rating; rating = max(1.0, rating - 1.0); note_adj("crosswind, up to 20° outside the launch window", r0)
                 elif sum(model_weight(k, D) * a.get("rim", 0.0) for k, a in D.items()) / (sum(model_weight(k, D) for k in D) or 1) >= 0.5:
@@ -2453,6 +2414,9 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             for cap_v, cap_l in sorted(caps, key=lambda c: c[0]):
                 if rating > cap_v:
                     r0 = rating; rating = cap_v; note_adj(cap_l, r0)
+            # a 5 is a clean day: any deduction above (rain, cloud, gusts, wind, direction) makes it a 4 at most
+            if rating >= 4.5 and any(v < 0 for _, v in adj):
+                r0 = rating; rating = 4.24; note_adj("a 5 needs a clean day: 4 at most", r0)
             if ens_r:
                 shift = rating - median(ens_r)
                 p_fly = sum(r + shift >= 2.5 for r in ens_r) / len(ens_r)

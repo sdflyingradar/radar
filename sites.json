@@ -265,8 +265,7 @@
         {
           "name": "El Cajon Mountain peak",
           "lat": 32.914825,
-          "lon": -116.820044,
-          "elev_ft": 3675
+          "lon": -116.820044
         }
       ],
       "cross": [
@@ -361,8 +360,7 @@
         {
           "name": "Santiago Peak",
           "lat": 33.7117,
-          "lon": -117.5342,
-          "elev_ft": 5689
+          "lon": -117.5342
         },
         {
           "name": "10 km E",
@@ -750,20 +748,17 @@
         {
           "name": "Monument Peak (Mt Laguna)",
           "lat": 32.8919,
-          "lon": -116.4194,
-          "elev_ft": 6271
+          "lon": -116.4194
         },
         {
           "name": "Granite Mtn",
           "lat": 33.0512,
-          "lon": -116.4792,
-          "elev_ft": 5633
+          "lon": -116.4792
         },
         {
           "name": "Stonewall Peak",
           "lat": 32.96088,
-          "lon": -116.571959,
-          "elev_ft": 5730
+          "lon": -116.571959
         }
       ]
     },
@@ -953,8 +948,7 @@
         {
           "name": "La Cumbre Peak",
           "lat": 34.4944,
-          "lon": -119.7125,
-          "elev_ft": 3985
+          "lon": -119.7125
         },
         {
           "name": "Montecito crest",
@@ -962,16 +956,10 @@
           "lon": -119.5758
         },
         {
-          "name": "Old Man Mountain",
-          "lat": 34.5172,
-          "lon": -119.4535,
-          "elev_ft": 5538
-        },
-        {
-          "name": "Topatopa Bluff",
-          "lat": 34.4987,
-          "lon": -119.1072,
-          "elev_ft": 6367
+          "name": "Peak 4864",
+          "lat": 34.4797,
+          "lon": -119.4319,
+          "label": "below"
         }
       ],
       "launches": [
@@ -1125,14 +1113,12 @@
         {
           "name": "Mazourka (Inyos)",
           "lat": 36.9767,
-          "lon": -118.1228,
-          "elev_ft": 9412
+          "lon": -118.1228
         },
         {
           "name": "Mt Whitney",
           "lat": 36.5785,
-          "lon": -118.2923,
-          "elev_ft": 14505
+          "lon": -118.2923
         }
       ],
       "calm": {
