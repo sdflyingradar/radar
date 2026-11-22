@@ -1,12 +1,12 @@
 {
- "generated": "2026-11-22T17:31Z",
+ "generated": "2026-11-22T18:02Z",
  "week": {
-  "visits": 792,
-  "events": 556
+  "visits": 811,
+  "events": 571
  },
  "month": {
-  "visits": 792,
-  "events": 556
+  "visits": 811,
+  "events": 571
  },
  "daily": [
   {
@@ -35,95 +35,95 @@
   },
   {
    "day": "2026-11-22",
-   "n": 62
+   "n": 81
   }
  ],
  "today": {
-  "visits": 62
+  "visits": 81
  },
  "pages": [
   {
    "path": "/radar",
    "title": "SD Flying Radar",
-   "count": 195,
+   "count": 198,
    "event": false,
    "days": {
     "2026-11-19": 104,
     "2026-11-20": 46,
     "2026-11-21": 36,
-    "2026-11-22": 9
+    "2026-11-22": 12
    }
   },
   {
    "path": "stay-start",
    "title": "Timed visit",
-   "count": 115,
+   "count": 118,
    "event": true,
    "days": {
     "2026-11-19": 23,
     "2026-11-20": 46,
     "2026-11-21": 35,
-    "2026-11-22": 11
+    "2026-11-22": 14
    }
   },
   {
    "path": "stay-15s",
    "title": "Stayed 15 s+",
-   "count": 105,
+   "count": 108,
    "event": true,
    "days": {
     "2026-11-19": 31,
     "2026-11-20": 37,
     "2026-11-21": 29,
-    "2026-11-22": 8
+    "2026-11-22": 11
    }
   },
   {
    "path": "stay-30s",
    "title": "Stayed 30 s+",
-   "count": 89,
+   "count": 91,
    "event": true,
    "days": {
     "2026-11-19": 25,
     "2026-11-20": 29,
     "2026-11-21": 27,
-    "2026-11-22": 8
+    "2026-11-22": 10
    }
   },
   {
    "path": "do-site",
    "title": "Opened a site",
-   "count": 66,
+   "count": 68,
    "event": true,
    "days": {
     "2026-11-19": 12,
     "2026-11-20": 27,
     "2026-11-21": 19,
-    "2026-11-22": 8
+    "2026-11-22": 10
    }
   },
   {
    "path": "stay-1m",
    "title": "Stayed 1 min+",
-   "count": 63,
+   "count": 64,
    "event": true,
    "days": {
     "2026-11-19": 18,
     "2026-11-20": 20,
     "2026-11-21": 18,
-    "2026-11-22": 7
+    "2026-11-22": 8
    }
   },
   {
    "path": "do-day",
    "title": "Looked at another day",
-   "count": 43,
+   "count": 44,
    "event": true,
    "days": {
     "2026-11-19": 11,
     "2026-11-20": 17,
     "2026-11-21": 12,
-    "2026-11-22": 3
+    "2026-11-22": 4
    }
   },
   {
@@ -141,12 +141,13 @@
   {
    "path": "/radar/how.html",
    "title": "How SD Flying Radar Works",
-   "count": 21,
+   "count": 22,
    "event": false,
    "days": {
     "2026-11-19": 16,
     "2026-11-20": 2,
-    "2026-11-21": 3
+    "2026-11-21": 3,
+    "2026-11-22": 1
    }
   },
   {
@@ -176,12 +177,23 @@
   {
    "path": "do-skygram",
    "title": "Used the SkyGram",
-   "count": 16,
+   "count": 18,
    "event": true,
    "days": {
     "2026-11-19": 5,
     "2026-11-20": 5,
     "2026-11-21": 5,
+    "2026-11-22": 3
+   }
+  },
+  {
+   "path": "do-trips",
+   "title": "Opened trips",
+   "count": 4,
+   "event": true,
+   "days": {
+    "2026-11-19": 2,
+    "2026-11-20": 1,
     "2026-11-22": 1
    }
   },
@@ -194,22 +206,12 @@
     "2026-11-19": 2,
     "2026-11-20": 2
    }
-  },
-  {
-   "path": "do-trips",
-   "title": "Opened trips",
-   "count": 3,
-   "event": true,
-   "days": {
-    "2026-11-19": 2,
-    "2026-11-20": 1
-   }
   }
  ],
  "refs": [
   {
    "name": "(direct)",
-   "count": 711
+   "count": 729
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
@@ -217,17 +219,17 @@
   },
   {
    "name": "sdflyingradar.github.io/radar",
-   "count": 20
+   "count": 21
   }
  ],
  "sizes": [
   {
    "name": "Phone",
-   "count": 658
+   "count": 667
   },
   {
    "name": "Computer",
-   "count": 116
+   "count": 126
   },
   {
    "name": "Large computer screen",
@@ -237,15 +239,15 @@
  "systems": [
   {
    "name": "iOS",
-   "count": 397
+   "count": 400
   },
   {
    "name": "Android",
-   "count": 261
+   "count": 267
   },
   {
    "name": "macOS",
-   "count": 105
+   "count": 115
   },
   {
    "name": "Windows",
@@ -255,11 +257,15 @@
  "locations": [
   {
    "name": "United States",
-   "count": 722
+   "count": 738
   },
   {
    "name": "Germany",
    "count": 64
+  },
+  {
+   "name": "Croatia",
+   "count": 3
   },
   {
    "name": "Austria",
