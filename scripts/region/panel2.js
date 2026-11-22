@@ -1,14 +1,12 @@
 // Detailed region thermal chart (our own design): the day hour by hour, from the ground up.
 //   top strip   each hour in the radar's verdict colours (no-go red ... great XC blue)
-//   clouds      high / mid / low layers in % of the sky (from oktas, darker = more), weather symbol per hour
+//   clouds      high / mid / low layers in oktas (darker = more), weather symbol per hour
 //   main chart  thermal strength (m/s) as orange cells per 500 ft, cumulus as grey columns from base to top,
 //               inversions as pink bands, wind arrows at every 1,000 ft: the fill is the mean wind over the region,
 //               the rim the strongest wind in the region at that height (a strong rim = somewhere it blows hard)
 //   statistics  strongest climb and highest top of the day, with their times
 // panel2SVG(data, dayIndex) -> SVG string; same data as panelSVG (data/region/regions.json, one region).
 
-// cloud cover in % of the sky (from eighths), in steps of 10: easier to read than 5/8
-const okPct = (n) => Math.round(n * 1.25) * 10;
 const P2_LIFT = [[0, '#ffeedd'], [0.5, '#fdd0a2'], [1, '#fbb068'], [1.5, '#f89039'], [2, '#f2683f'], [2.5, '#dc4658'], [3, '#b52f72'], [3.5, '#7a2081'], [4, '#3f1468']];   // lift m/s: the familiar orange up to 1.5, then sunrise (coral, raspberry, magenta, purple) to 4
 // wind, mph (from the usual pilot scale in km/h: 0-6 calm, 7-14 fine, 15-24 noticeable, 25-30 strong, 31-36 stop, over 36 no-go)
 const P2_WIND = [[0, '#ffffff'], [4, '#3fc25a'], [9.5, '#f5d90a'], [15.5, '#f08a1c'], [19, '#e0262a'], [22.5, '#111111']];   // over 36 km/h: black (only in this chart; tiles and classic stop at red)
@@ -154,10 +152,10 @@ function panel2SVG(data, di = 0) {
     o.push(`<text x="${L - 8}" y="${f(yC + r * ch + ch / 2 + 4 * fs)}" text-anchor="end" font-size="${11 * fs}">${lab}</text>`);
     hrs.forEach((h, k) => {
       const n = (H(h).okta || [0, 0, 0])[2 - r];
-      if (n > 0) o.push(`<rect x="${f(X(k) + 0.8)}" y="${yC + r * ch + 1}" width="${f(cw - 1.6)}" height="${ch - 2}" rx="3" fill="${P2_OKTA(n)}"/><text x="${f(CX(k))}" y="${f(yC + r * ch + ch / 2 + 4 * fs)}" text-anchor="middle" font-size="${11 * fs}" fill="${n >= 6 ? '#fff' : INK}">${okPct(n)}</text>`);
+      if (n > 0) o.push(`<rect x="${f(X(k) + 0.8)}" y="${yC + r * ch + 1}" width="${f(cw - 1.6)}" height="${ch - 2}" rx="3" fill="${P2_OKTA(n)}"/><text x="${f(CX(k))}" y="${f(yC + r * ch + ch / 2 + 4 * fs)}" text-anchor="middle" font-size="${11 * fs}" fill="${n >= 6 ? '#fff' : INK}">${n}</text>`);
     });
   });
-  o.push(`<text transform="translate(${f(14 * fs)} ${yC + 1.5 * ch + 4}) rotate(-90)" text-anchor="middle" font-size="${12 * fs}" font-weight="700">Clouds %</text>`);
+  o.push(`<text transform="translate(${f(14 * fs)} ${yC + 1.5 * ch + 4}) rotate(-90)" text-anchor="middle" font-size="${12 * fs}" font-weight="700">Clouds</text>`);
   // weather symbols
   const pts = data.poly || [];
   const la = pts.length ? pts.reduce((a, q) => a + q[0], 0) / pts.length : 33, lo = pts.length ? pts.reduce((a, q) => a + q[1], 0) / pts.length : -117;

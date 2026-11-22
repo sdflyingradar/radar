@@ -126,7 +126,7 @@
     if (c.rain_p != null && c.rain_p < 0.3 && !touched.has("Rain")) fine.push(c.rain_p < 0.05 ? "dry" : `${Math.round(c.rain_p * 100)}% rain`);
     /* cloud only counts at thermal sites; "sunny" only when the ground really gets the sun (low cloud included) */
     if (c.cloud && c.style !== "ridge" && !touched.has("Cloud"))
-      fine.push(c.cloud.okta ? `cloud ${Math.round(c.cloud.okta * 1.25) * 10}%` : (c.cloud.sun_loss || 0) < 0.25 ? "sunny" : "low cloud");
+      fine.push(c.cloud.okta ? `cloud ${c.cloud.okta}/8` : (c.cloud.sun_loss || 0) < 0.25 ? "sunny" : "low cloud");
     const out = [];
     if (bp) out.push(row("lg-base", "", "Height", h ? h.v : "", "", `<b>${r1(bp.lv)}</b>`));
     else {

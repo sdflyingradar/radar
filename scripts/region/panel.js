@@ -1,4 +1,4 @@
-// Region panel, classic view (graphic): clouds H/M/L (% of the sky), wind ground / 5k ft (arrows on speed colour),
+// Region panel, classic view (graphic): clouds H/M/L (oktas), wind ground / 5k ft (arrows on speed colour),
 // then a time x height grid of expected climb (m/s) in hourly columns, cumulus as cloud icons.
 // panelSVG(data, dayIndex) -> SVG string; panelText(data, dayIndex) -> HTML. data = data/region/sd.json
 
@@ -83,7 +83,7 @@ function panelSVG(data, di = 0) {
     cols.forEach((c, k) => {
       const ok = Math.max(0, Math.min(8, (c.d.okta || [0, 0, 0])[2 - r] || 0));
       o.push(`<rect x="${f(X(k))}" y="${y}" width="${f(cw)}" height="${ch}" fill="${OKTA[ok]}" stroke="#fff" stroke-width="1.5"/>`);
-      if (ok) o.push(`<text x="${f(X(k) + cw / 2)}" y="${y + 17}" text-anchor="middle" font-size="13" fill="${ok >= 6 ? '#f3f4f6' : INK}">${Math.round(ok * 1.25) * 10}</text>`);
+      if (ok) o.push(`<text x="${f(X(k) + cw / 2)}" y="${y + 17}" text-anchor="middle" font-size="13" fill="${ok >= 6 ? '#f3f4f6' : INK}">${ok}</text>`);
     });
     o.push(`<path d="M${L} ${y + ch}H${W - R}" stroke="${GRID}" stroke-width=".8"/>`);
   });
