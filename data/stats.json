@@ -1,12 +1,12 @@
 {
- "generated": "2026-11-22T00:38Z",
+ "generated": "2026-11-22T02:39Z",
  "week": {
-  "visits": 709,
-  "events": 488
+  "visits": 722,
+  "events": 498
  },
  "month": {
-  "visits": 709,
-  "events": 488
+  "visits": 722,
+  "events": 498
  },
  "daily": [
   {
@@ -35,77 +35,77 @@
   },
   {
    "day": "2026-11-21",
-   "n": 175
+   "n": 188
   }
  ],
  "today": {
-  "visits": 175
+  "visits": 188
  },
  "pages": [
   {
    "path": "/radar",
    "title": "SD Flying Radar",
-   "count": 182,
+   "count": 185,
    "event": false,
    "days": {
     "2026-11-19": 104,
     "2026-11-20": 46,
-    "2026-11-21": 32
+    "2026-11-21": 35
    }
   },
   {
    "path": "stay-start",
    "title": "Timed visit",
-   "count": 100,
+   "count": 103,
    "event": true,
    "days": {
     "2026-11-19": 23,
     "2026-11-20": 46,
-    "2026-11-21": 31
+    "2026-11-21": 34
    }
   },
   {
    "path": "stay-15s",
    "title": "Stayed 15 s+",
-   "count": 94,
+   "count": 96,
    "event": true,
    "days": {
     "2026-11-19": 31,
     "2026-11-20": 37,
-    "2026-11-21": 26
+    "2026-11-21": 28
    }
   },
   {
    "path": "stay-30s",
    "title": "Stayed 30 s+",
-   "count": 78,
+   "count": 80,
    "event": true,
    "days": {
     "2026-11-19": 25,
     "2026-11-20": 29,
-    "2026-11-21": 24
-   }
-  },
-  {
-   "path": "stay-1m",
-   "title": "Stayed 1 min+",
-   "count": 54,
-   "event": true,
-   "days": {
-    "2026-11-19": 18,
-    "2026-11-20": 20,
-    "2026-11-21": 16
+    "2026-11-21": 26
    }
   },
   {
    "path": "do-site",
    "title": "Opened a site",
-   "count": 54,
+   "count": 56,
    "event": true,
    "days": {
     "2026-11-19": 12,
     "2026-11-20": 27,
-    "2026-11-21": 15
+    "2026-11-21": 17
+   }
+  },
+  {
+   "path": "stay-1m",
+   "title": "Stayed 1 min+",
+   "count": 55,
+   "event": true,
+   "days": {
+    "2026-11-19": 18,
+    "2026-11-20": 20,
+    "2026-11-21": 17
    }
   },
   {
@@ -198,7 +198,7 @@
  "refs": [
   {
    "name": "(direct)",
-   "count": 628
+   "count": 641
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
