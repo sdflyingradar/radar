@@ -2336,8 +2336,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             # least the best model; short of it the day shows 4 at most (Torrey's ridge scale is its own)
             great_ft = (s.get("xc_top_ft") or 0) + (s.get("xc_span_ft") or 1000)
             tops = [v["top"] * FT for v in D.values() if v.get("top")] if D else []
-            if s.get("style") != "ridge" and s.get("xc_top_ft") and tops and max(tops) < great_ft:
-                caps.append((4.24, f"below {great_ft:,.0f} ft: 4 at most"))
+            # (no cap: the height is already the base of the score)
             # a 5 also needs the wind blowing nicely into the launch for most of the window: light air from any
             # side, or a cross wind, is launchable but makes it a 4 at most (thermal sites; Torrey has its own rules)
             if s.get("style") in ("thermal", "window") and D and rating >= 4.5:
@@ -2374,7 +2373,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             # the ridge: rotor and a blown-out or cross launch, even when the surface wind looks light): 2 at most
             if s.get("style") in ("thermal", "window") and D:
                 if blend({k: a.get("otb_aloft_share", 0.0) for k, a in D.items()}) >= 0.5:
-                    caps.append((2.0, "over the back aloft: 2 at most"))
+                    r0 = rating; rating = max(1.0, rating - 1.5); note_adj("over the back aloft", r0)
             # offshore (Santa Ana) through the flying layer for most of the window: a no-go, even when the top of
             # lift is lower and the valley wind looks fine (LB, Blossom, Otay, Whale's V; N-E at Soboba and Marshall: "offshore_nogo")
             onog = s.get("offshore_nogo")
@@ -2415,7 +2414,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             if s.get("style") in ("thermal", "window") and D and site_face(s) is not None:
                 oc = sum(model_weight(k, D) * a.get("offcat", 0.0) for k, a in D.items()) / (sum(model_weight(k, D) for k in D) or 1)
                 if oc >= 1.5:
-                    caps.append((2.0, "wind from behind, 20°+ outside the launch window: 2 at most"))
+                    r0 = rating; rating = max(1.0, rating - 2.0); note_adj("wind from behind, 20°+ outside the launch window", r0)
                 elif oc >= 0.5:
                     r0 = rating; rating = max(1.0, rating - 1.0); note_adj("crosswind, up to 20° outside the launch window", r0)
                 elif sum(model_weight(k, D) * a.get("rim", 0.0) for k, a in D.items()) / (sum(model_weight(k, D) for k in D) or 1) >= 0.5:
@@ -2431,9 +2430,6 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             for cap_v, cap_l in sorted(caps, key=lambda c: c[0]):
                 if rating > cap_v:
                     r0 = rating; rating = cap_v; note_adj(cap_l, r0)
-            # a 5 is a clean day: any deduction above (rain, cloud, gusts, wind, direction) makes it a 4 at most
-            if rating >= 4.5 and any(v < 0 for _, v in adj):
-                r0 = rating; rating = 4.24; note_adj("a 5 needs a clean day: 4 at most", r0)
             if ens_r:
                 shift = rating - median(ens_r)
                 p_fly = sum(r + shift >= 2.5 for r in ens_r) / len(ens_r)
