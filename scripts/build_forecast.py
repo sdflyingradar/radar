@@ -53,6 +53,8 @@ ENS_MODELS = {
 # the high-res models are fetched every run but only for the days they cover; the global models and the
 # ensembles, which update about every 6 hours, are reused from the last run while they are fresher than this
 MODEL_DAYS = {"HRRR": 3, "RRFS": 4}          # forecast days asked for (HRRR runs 48 h, RRFS a bit longer)
+# RESCORE=1: score again from the stored model runs, without asking Open-Meteo for anything (a rule or text change)
+RESCORE = os.environ.get("RESCORE") == "1"
 REUSE_H = float(os.environ.get("REUSE_H", 5.5))         # global models: fetch again only when older than this (the 2:30 am run: 99)
 SLOW_PARENTS = {"santabarbara", "owens"}      # trip areas: their high-res data too is refreshed only every REUSE_H
 ENS_REUSE_H = float(os.environ.get("ENS_REUSE_H", 11.5))  # ensembles (each member counts, so they are the costly part): twice a day
@@ -222,7 +224,13 @@ SURFACE_VARS = ["temperature_2m", "dew_point_2m", "precipitation", "cape", "shor
 
 
 # ---------------------------------------------------------------- fetching
+class Limited(Exception):
+    """Open-Meteo said no: its minute, hour or day limit (429), with its own reason."""
+
+
 def http_json(url: str, tries: int = 3, timeout: int = 90) -> object:
+    if RESCORE and "open-meteo.com" in url:
+        raise Limited("rescore: no fetching")
     last = None
     for i in range(tries):
         try:
@@ -230,6 +238,12 @@ def http_json(url: str, tries: int = 3, timeout: int = 90) -> object:
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 return json.loads(r.read().decode())
         except urllib.error.HTTPError as e:
+            if e.code == 429:      # over a limit: asking again only adds to the count
+                try:
+                    why = json.loads(e.read().decode()).get("reason") or ""
+                except Exception:  # noqa: BLE001
+                    why = ""
+                raise Limited(f"429 {why}".strip()[:120]) from None
             if e.code == 400:      # bad model id or variable: don't retry
                 raise
             last = e
@@ -337,6 +351,8 @@ def cache_load(name, log, max_h=None):
 
 def fetch_model(kind, name, ids, sites, log):
     key = name if kind == "det" else f"ens {name}"
+    if RESCORE:
+        return cache_load(key, log, max_h=72) or _fetch_model(kind, name, ids, sites, log)
     if name not in HIRES:                      # global models and ensembles: reuse a fresh enough last run
         fresh = cache_load(key, log, max_h=REUSE_H if kind == "det" else ENS_REUSE_H)
         if fresh:
@@ -422,6 +438,11 @@ def _fetch_model(kind, name, ids, sites, log):
                         "run": model_run_time(kind, mid), "fetched": now_iso(),
                         "url": "https://open-meteo.com/en/docs" + ("" if kind == "det" else "/ensemble-api")}
                 return mid, [d for d in data], info
+            except Limited as e:          # over the limit: stop here (the last good run fills in), every retry counts
+                log.append(f"{name}: {mid} rejected ({e})")
+                return None, None, {"name": name, "kind": "model" if kind == "det" else "ensemble",
+                                    "provider": "Open-Meteo", "id": ids[0], "status": "failed",
+                                    "run": None, "fetched": now_iso(), "url": "https://open-meteo.com/en/docs"}
             except urllib.error.HTTPError as e:
                 log.append(f"{name}: {mid} rejected ({e.code})")
             except Exception as e:
@@ -1753,12 +1774,26 @@ def fetch_gradient(log):
     for name, ids in DET_MODELS.items():
         for mid in ids:
             try:
-                q = {"latitude": ",".join(str(p[1]) for p in GRAD_PTS), "longitude": ",".join(str(p[2]) for p in GRAD_PTS),
-                     "hourly": "pressure_msl", "models": mid, "timezone": "UTC", "past_days": 3, "forecast_days": DAYS + 1}
-                data = http_json("https://api.open-meteo.com/v1/forecast?" + urllib.parse.urlencode(q))
-                lax, dag = [d.get("hourly", {}) for d in data]
-                hours = {t[:13]: a - b for t, a, b in zip(lax.get("time", []), lax.get("pressure_msl", []), dag.get("pressure_msl", []))
-                         if a is not None and b is not None}
+                c = cache_load(f"grad {name}", log, max_h=72) if RESCORE else None
+                if c:
+                    hours = c[1]
+                else:
+                    q = {"latitude": ",".join(str(p[1]) for p in GRAD_PTS), "longitude": ",".join(str(p[2]) for p in GRAD_PTS),
+                         "hourly": "pressure_msl", "models": mid, "timezone": "UTC", "past_days": 3, "forecast_days": DAYS + 1}
+                    try:
+                        data = http_json("https://api.open-meteo.com/v1/forecast?" + urllib.parse.urlencode(q))
+                    except Limited:   # over the limit (or a rescore): the last good gradient run of this model
+                        c = cache_load(f"grad {name}", log, max_h=72)
+                        if not c:
+                            raise
+                        data = None
+                        hours = c[1]
+                    if data is not None:
+                        lax, dag = [d.get("hourly", {}) for d in data]
+                        hours = {t[:13]: a - b for t, a, b in zip(lax.get("time", []), lax.get("pressure_msl", []), dag.get("pressure_msl", []))
+                                 if a is not None and b is not None}
+                        if len(hours) >= 24:
+                            cache_save(f"grad {name}", mid, hours, {"fetched": now_iso()})
                 if len(hours) < 24:
                     continue
                 bias, n, corr = model_gradient(hours, obs)
@@ -2964,8 +2999,8 @@ def fetch_clouds(parents, log):
             owner.append(s["id"])
     out = {}
     for name, mid in CLOUD_MODELS.items():
-        if name not in HIRES:                  # the global models' cloud: reuse while fresh, like their other fields
-            fresh = cache_load(f"clouds {name}", log, max_h=REUSE_H)
+        if name not in HIRES or RESCORE:       # the global models' cloud: reuse while fresh, like their other fields
+            fresh = cache_load(f"clouds {name}", log, max_h=72 if RESCORE else REUSE_H)
             if fresh:
                 out[name] = fresh[1]
                 continue
@@ -2980,11 +3015,13 @@ def fetch_clouds(parents, log):
                 hr["_utc_offset_h"] = (d.get("utc_offset_seconds") or -7 * 3600) / 3600
                 per.setdefault(sid, []).append(hr)
             out[name] = per
-            if name not in HIRES:
-                cache_save(f"clouds {name}", mid, per, {"fetched": now_iso()})
+            cache_save(f"clouds {name}", mid, per, {"fetched": now_iso()})   # hi-res too: a rescore reads it
             log.append(f"clouds {name}: ok ({mid})")
         except Exception as e:
             log.append(f"clouds {name}: failed ({e})")
+            c = cache_load(f"clouds {name}", log, max_h=72)   # over the limit: the last good cloud run
+            if c:
+                out[name] = c[1]
     return out
 
 

@@ -12,6 +12,10 @@ on:
         description: "HRRR / RRFS only (reuse the global models)"
         type: boolean
         default: false
+      rescore:
+        description: "Score again from the stored model runs, no new data (after a rule change)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -65,6 +69,7 @@ jobs:
         run: |
           # the 2:30 am run only refreshes HRRR / RRFS; the global models and ensembles come from the last run
           if [ "${{ github.event.schedule }}" = "30 10 * * *" ] || [ "${{ inputs.light }}" = "true" ]; then export REUSE_H=99 ENS_REUSE_H=99; fi
+          if [ "${{ inputs.rescore }}" = "true" ]; then export RESCORE=1; fi   # no Open-Meteo calls at all
           python -u scripts/build_forecast.py
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}   # optional: Claude summary of the NWS discussion
