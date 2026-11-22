@@ -1,12 +1,12 @@
 {
- "generated": "2026-11-22T19:08Z",
+ "generated": "2026-11-22T19:42Z",
  "week": {
-  "visits": 836,
-  "events": 591
+  "visits": 837,
+  "events": 592
  },
  "month": {
-  "visits": 836,
-  "events": 591
+  "visits": 837,
+  "events": 592
  },
  "daily": [
   {
@@ -35,11 +35,11 @@
   },
   {
    "day": "2026-11-22",
-   "n": 106
+   "n": 107
   }
  ],
  "today": {
-  "visits": 106
+  "visits": 107
  },
  "pages": [
   {
@@ -177,13 +177,13 @@
   {
    "path": "do-skygram",
    "title": "Used the SkyGram",
-   "count": 19,
+   "count": 20,
    "event": true,
    "days": {
     "2026-11-19": 5,
     "2026-11-20": 5,
     "2026-11-21": 5,
-    "2026-11-22": 4
+    "2026-11-22": 5
    }
   },
   {
@@ -211,7 +211,7 @@
  "refs": [
   {
    "name": "(direct)",
-   "count": 753
+   "count": 754
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
@@ -225,7 +225,7 @@
  "sizes": [
   {
    "name": "Phone",
-   "count": 682
+   "count": 683
   },
   {
    "name": "Computer",
@@ -243,7 +243,7 @@
   },
   {
    "name": "Android",
-   "count": 273
+   "count": 274
   },
   {
    "name": "macOS",
@@ -265,7 +265,7 @@
   },
   {
    "name": "Germany",
-   "count": 66
+   "count": 67
   },
   {
    "name": "Croatia",
