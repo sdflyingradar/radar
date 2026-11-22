@@ -1,8 +1,16 @@
 /* ===== LAB bar ===== */
 #labbar { position: fixed; left: 50%; bottom: max(10px, env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 50; display: flex; align-items: center; gap: 4px;
   padding: 4px; border-radius: 999px; background: #1f2937; box-shadow: 0 6px 20px -6px rgba(0,0,0,.45); font: 600 .74rem/1 system-ui, sans-serif; }
+#labbar span, #labbar button, #labbar a { white-space: nowrap; }
 #labbar b { color: #fbbf24; padding: 0 8px 0 10px; letter-spacing: .08em; font-size: .66rem; }
 #labbar span { color: #cbd5e1; font-size: .7rem; padding: 0 12px 0 2px; }
 #labbar button { border: 0; border-radius: 999px; padding: 8px 13px; background: transparent; color: #cbd5e1; font: inherit; cursor: pointer; }
 #labbar button[aria-pressed="true"] { background: #fff; color: #111827; }
 #labbar a { color: #fbbf24; text-decoration: none; padding: 8px 12px 8px 8px; }
+#labDlg { border: none; border-radius: 16px; padding: 0; max-width: min(420px, 94vw); width: 100%; max-height: 80vh; box-shadow: 0 12px 40px rgba(16,24,40,.22); }
+#labDlg::backdrop { background: rgba(16,24,40,.35); }
+.lbw { padding: 14px 16px; font: .86rem/1.4 system-ui, sans-serif; color: #1f2328; }
+.lbw h3 { margin: 0 0 2px; font: 650 1rem system-ui, sans-serif; } .lbw p { margin: 0 0 10px; color: #667085; }
+.lbw table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.lbw td { padding: 4px 4px; border-top: 1px solid #eef0f3; } .lbw td.up { color: #1f9d55; text-align: right; } .lbw td.dn { color: #d8402f; text-align: right; }
+.lbx { margin-top: 12px; border: 0; background: #f2f4f7; border-radius: 999px; padding: 6px 14px; font: inherit; cursor: pointer; }

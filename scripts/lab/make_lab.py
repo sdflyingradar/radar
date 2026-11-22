@@ -14,6 +14,9 @@ def sub(a, b):
 
 sub("<title>SD Flying Radar</title>", '<title>SD Flying Radar · lab</title>\n<meta name="robots" content="noindex,nofollow">')
 sub("</head>", "<style>\n" + lab_css + "\n</style>\n</head>")
+# the lab's own scores (lab.yml writes data/lab/forecast.json when the 'lab' branch's rules differ); ?live shows live
+sub("return fetch(`data/forecast.json?t=${Date.now()}`, { cache: \"no-store\" })",
+    "return fetch(`data/lab/forecast.json?t=${Date.now()}`, { cache: \"no-store\" }).then((r) => (r.ok && !/[?&]live/.test(location.search) ? r : fetch(`data/forecast.json?t=${Date.now()}`, { cache: \"no-store\" })))")
 sub("</body>", "<script>\n" + lab_js + "\n</script>\n</body>")
 (root / "lab.html").write_text(s)
 print("lab.html written")

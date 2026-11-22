@@ -55,6 +55,7 @@ ENS_MODELS = {
 MODEL_DAYS = {"HRRR": 3, "RRFS": 4}          # forecast days asked for (HRRR runs 48 h, RRFS a bit longer)
 # RESCORE=1: score again from the stored model runs, without asking Open-Meteo for anything (a rule or text change)
 RESCORE = os.environ.get("RESCORE") == "1"
+LAB = os.environ.get("LAB") == "1"    # the lab's scores (lab.yml): only --out is written, no trend, archive or history
 REUSE_H = float(os.environ.get("REUSE_H", 5.5))         # global models: fetch again only when older than this (the 2:30 am run: 99)
 SLOW_PARENTS = {"santabarbara", "owens"}      # trip areas: their high-res data too is refreshed only every REUSE_H
 ENS_REUSE_H = float(os.environ.get("ENS_REUSE_H", 11.5))  # ensembles (each member counts, so they are the costly part): twice a day
@@ -3325,6 +3326,12 @@ def main(argv=None):
         except Exception as e:
             log.append(f"clouds: failed ({e})")
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+    if LAB:
+        result["lab"] = {"note": os.environ.get("LAB_NOTE", ""), "rescored": now_iso()}
+        Path(args.out).write_text(json.dumps(result, separators=(",", ":")))
+        print("\n".join(log))
+        print(f"lab: wrote {args.out}")
+        return
     if not args.sample:
         add_trend(result, ROOT / "data" / "trend.json")
         ap_ = archive_midday(result, ROOT / "data" / "archive")      # today keeps updating; the archive gets the midday read

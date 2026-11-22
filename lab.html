@@ -964,11 +964,19 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
 /* ===== LAB bar ===== */
 #labbar { position: fixed; left: 50%; bottom: max(10px, env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 50; display: flex; align-items: center; gap: 4px;
   padding: 4px; border-radius: 999px; background: #1f2937; box-shadow: 0 6px 20px -6px rgba(0,0,0,.45); font: 600 .74rem/1 system-ui, sans-serif; }
+#labbar span, #labbar button, #labbar a { white-space: nowrap; }
 #labbar b { color: #fbbf24; padding: 0 8px 0 10px; letter-spacing: .08em; font-size: .66rem; }
 #labbar span { color: #cbd5e1; font-size: .7rem; padding: 0 12px 0 2px; }
 #labbar button { border: 0; border-radius: 999px; padding: 8px 13px; background: transparent; color: #cbd5e1; font: inherit; cursor: pointer; }
 #labbar button[aria-pressed="true"] { background: #fff; color: #111827; }
 #labbar a { color: #fbbf24; text-decoration: none; padding: 8px 12px 8px 8px; }
+#labDlg { border: none; border-radius: 16px; padding: 0; max-width: min(420px, 94vw); width: 100%; max-height: 80vh; box-shadow: 0 12px 40px rgba(16,24,40,.22); }
+#labDlg::backdrop { background: rgba(16,24,40,.35); }
+.lbw { padding: 14px 16px; font: .86rem/1.4 system-ui, sans-serif; color: #1f2328; }
+.lbw h3 { margin: 0 0 2px; font: 650 1rem system-ui, sans-serif; } .lbw p { margin: 0 0 10px; color: #667085; }
+.lbw table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.lbw td { padding: 4px 4px; border-top: 1px solid #eef0f3; } .lbw td.up { color: #1f9d55; text-align: right; } .lbw td.dn { color: #d8402f; text-align: right; }
+.lbx { margin-top: 12px; border: 0; background: #f2f4f7; border-radius: 999px; padding: 6px 14px; font: inherit; cursor: pointer; }
 
 </style>
 </head>
@@ -1861,7 +1869,7 @@ let lastGen = null;
 function load() {
   const btn = $("#reload");
   btn.disabled = true; btn.textContent = "Reloading…";
-  return fetch(`data/forecast.json?t=${Date.now()}`, { cache: "no-store" })
+  return fetch(`data/lab/forecast.json?t=${Date.now()}`, { cache: "no-store" }).then((r) => (r.ok && !/[?&]live/.test(location.search) ? r : fetch(`data/forecast.json?t=${Date.now()}`, { cache: "no-store" })))
     .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then((d) => { const same = lastGen === d.generated; lastGen = d.generated; render(d);
       btn.textContent = same ? "No newer data" : "Reload"; })
@@ -1927,14 +1935,47 @@ document.addEventListener("click", (e) => {
 <script src="scripts/ui/grid.js?v=202611221358"></script>
 <script src="scripts/ui/first.js?v=202611082340"></script>
 <script>
-/* LAB bar */
+/* LAB bar: which scores the lab shows (lab rules from the 'lab' branch, or live), and what the lab changes */
 (function () {
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const bar = document.createElement("div");
   bar.id = "labbar";
-  bar.innerHTML = "<b>LAB</b><span>tile icons</span>";
+  bar.innerHTML = "<b>LAB</b><span>same as live</span>";
   document.body.appendChild(bar);
+  const get = (u) => fetch(`${u}?t=${Date.now()}`, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  const live = /[?&]live/.test(location.search);
+  Promise.all([get("data/lab/forecast.json"), get("data/forecast.json")]).then(([L, F]) => {
+    if (!L) return;
+    const sp = bar.querySelector("span");
+    const t = (L.lab && L.lab.rescored) ? new Date(L.lab.rescored).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : "";
+    /* every site/day where the lab score moves by a quarter point or more */
+    const ch = [];
+    (L.days || []).forEach((d) => {
+      const f = (F && F.days || []).find((x) => x.date === d.date);
+      if (!f) return;
+      Object.entries(d.sites || {}).forEach(([k, c]) => {
+        const o = f.sites && f.sites[k];
+        if (c && o && c.rating != null && o.rating != null && Math.abs(c.rating - o.rating) >= 0.25) ch.push([d.date, k, o.rating, c.rating]);
+      });
+    });
+    sp.textContent = live ? "showing live" : `lab rules · ${ch.length} change${ch.length === 1 ? "" : "s"}`;
+    const sw = document.createElement("a");
+    sw.href = live ? "lab.html" : "lab.html?live"; sw.textContent = live ? "lab ›" : "live ›";
+    const cb = document.createElement("button"); cb.textContent = "what changed"; cb.type = "button";
+    bar.append(cb, sw);
+    cb.onclick = () => {
+      let dl = document.getElementById("labDlg");
+      if (!dl) { dl = document.createElement("dialog"); dl.id = "labDlg"; document.body.appendChild(dl); dl.addEventListener("click", (e) => { if (e.target === dl) dl.close(); }); }
+      const wd = (s) => new Date(s + "T12:00").toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" });
+      const f1 = (v) => (Math.round(v * 10) / 10).toFixed(1);
+      dl.innerHTML = `<div class="lbw"><h3>Lab vs live</h3><p>${esc((L.lab && L.lab.note) || "lab rules")}${t ? ` · scored ${esc(t)}` : ""}</p>
+        ${ch.length ? `<table>${ch.map(([d, k, o, n]) => `<tr><td>${esc(wd(d))}</td><td>${esc(k)}</td><td>${f1(o)} → <b>${f1(n)}</b></td><td class="${n > o ? "up" : "dn"}">${n > o ? "+" : "−"}${f1(Math.abs(n - o))}</td></tr>`).join("")}</table>` : "<p>No score moves by a quarter point or more.</p>"}
+        <button type="button" class="lbx">Close</button></div>`;
+      dl.querySelector(".lbx").onclick = () => dl.close();
+      dl.showModal();
+    };
+  });
 })();
-
 
 </script>
 </body>

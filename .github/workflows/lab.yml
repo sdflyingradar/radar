@@ -1,0 +1,76 @@
+name: Lab scores
+
+# The lab (lab.html) shows the radar scored with the rules on the 'lab' branch: build_forecast.py and sites.json
+# from there, the model runs the live radar already fetched (no Open-Meteo calls). It runs after every forecast
+# update and by hand. When the lab branch's rules are the same as live, the lab shows the live scores.
+on:
+  workflow_run:
+    workflows: ["Update forecast"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      note:
+        description: "What the lab is trying (shown in the lab bar)"
+        type: string
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lab
+  cancel-in-progress: true
+
+jobs:
+  lab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Lab rules
+        id: rules
+        run: |
+          same=1
+          if git fetch -q origin lab 2>/dev/null; then
+            git diff --quiet HEAD FETCH_HEAD -- scripts/build_forecast.py sites.json || same=0
+            [ "$same" = "0" ] && git checkout FETCH_HEAD -- scripts/build_forecast.py sites.json
+            echo "note=$(git log -1 --format=%s FETCH_HEAD -- scripts/build_forecast.py sites.json | cut -c1-140)" >> "$GITHUB_OUTPUT"
+          fi
+          echo "same=$same" >> "$GITHUB_OUTPUT"
+          echo "lab rules differ from live: $([ $same = 0 ] && echo yes || echo no)"
+      - name: Restore the live radar's model runs
+        if: steps.rules.outputs.same == '0'
+        uses: actions/cache/restore@v4
+        with:
+          path: cache
+          key: om-lab-${{ github.run_id }}
+          restore-keys: om-
+      - name: Score with the lab rules (no fetching)
+        if: steps.rules.outputs.same == '0'
+        env:
+          RESCORE: "1"
+          LAB: "1"
+          LAB_NOTE: ${{ inputs.note || steps.rules.outputs.note }}
+        run: python -u scripts/build_forecast.py --out data/lab/forecast.json
+      - name: Same rules as live: the lab shows the live scores
+        if: steps.rules.outputs.same == '1'
+        run: git rm -q --ignore-unmatch data/lab/forecast.json
+      - name: Commit
+        run: |
+          git checkout HEAD -- scripts/build_forecast.py sites.json
+          git config user.name "forecast-bot"
+          git config user.email "forecast-bot@users.noreply.github.com"
+          git add -A data/lab
+          git diff --cached --quiet && exit 0
+          git commit -m "Lab scores $(date -u +%Y-%m-%dT%H:%MZ)"
+          for i in 1 2 3; do
+            git pull --rebase -X theirs origin main && git push && exit 0
+            sleep 5
+          done
+          exit 1
