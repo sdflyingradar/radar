@@ -1,0 +1,346 @@
+# source: https://weather.uwyo.edu/wsgi/sounding?datetime=2026-11-11%2012:00:00&id=72393&type=TEXT:LIST&src=UNKNOWN
+# fetched: 2026-11-11T17:25Z
+72393 VBG Vandenberg Observations at 12Z 11 Nov 2026
+
+
+
+Wyoming Weather Web
+
+
+
+
+
+
+
+
+
+ 
+  
+   
+  
+   
+    
+     
+      Wyoming Weather Web
+    
+    
+     
+     
+      Atmospheric Science |
+      Engineering and Applied Science |
+      UWyo Home
+     
+     
+    
+   
+  
+ 
+
+
+
+
+
+
+
+Other data for Station 72393
+
+00Z Nov 11 
+
+              Thermodyamic Indices
+
+              Aviation Units
+
+              Comma Separated Values
+
+              Skew-T PNG image
+
+              Skew-T PDF file
+
+              Stuve PNG image
+
+              Stuve PDF file
+
+              Stuve PNG image to 10 hPa
+
+              Stuve PDF file to 10 hPa
+
+              Inventory for year
+
+
+
+Observations for Station 72393 at 12 UTC 11 Nov 2026
+VANDENBERG AFB, CA., USA
+
+
+.collapsible {
+  background-color: #777;
+  color: white;
+  cursor: pointer;
+  padding: 8px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.active, .collapsible:hover {
+  background-color: #555;
+}
+
+.collapsible:before {
+  content: "\2212 ";
+  color: white;
+  font-weight: bold;
+  float: left;
+  margin-left: 5px;
+}
+
+.active:before {
+  content: '\002B ';
+}
+
+.content {
+  padding: 0 18px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+  background-color: #f1f1f1;
+}
+
+Latitude: 34.750 Longitude: -120.560
+
+Profile
+
+-----------------------------------------------------------------------------
+   PRES   HGHT   TEMP   DWPT   RELH   MIXR   DRCT   SPED   THTA   THTE   THTV
+    hPa      m      C      C      %   g/kg    deg    m/s      K      K      K 
+-----------------------------------------------------------------------------
+ 1005.0    121   10.8    8.2     84   6.80     10    1.0  283.5  302.5  284.7
+ 1004.0    125   15.2    6.2     55   5.92     29    1.3  288.0  305.0  289.1
+ 1000.0    141   17.0    5.0     45   5.47    105    2.6  290.1  306.0  291.1
+  994.0    193   19.4    3.4     35   4.91    112    2.7  293.1  307.6  293.9
+  990.0    228   23.2    2.2     25   4.53    116    2.8  297.2  310.9  298.0
+  937.0    707   23.4   -9.6     10   1.97    176    4.3  302.1  308.4  302.5
+  925.0    819   22.4   -9.6     11   1.99    190    4.6  302.2  308.6  302.6
+  895.0   1103   20.1   -7.7     15   2.39    185    5.2  302.7  310.3  303.1
+  862.0   1426   17.4   -5.6     20   2.92    177    5.2  303.1  312.4  303.7
+  852.0   1526   17.4   -6.4     19   2.77    175    5.2  304.2  313.0  304.7
+  850.0   1546   17.4   -6.6     19   2.74    175    4.6  304.4  313.1  304.9
+  824.0   1806   15.8  -10.6     15   2.07    135    5.2  305.4  312.1  305.8
+  717.0   2972    8.6  -28.4      5   0.51    144    3.4  309.8  311.7  309.9
+  700.0   3169    6.8  -19.2     14   1.20    145    3.1  310.0  314.1  310.2
+  628.0   4050   -0.3  -18.3     24   1.44     82    1.8  311.6  316.5  311.9
+  545.0   5166   -9.0  -30.7     15   0.54      0    0.0  314.1  316.1  314.3
+  539.0   5253   -9.7  -31.7     15   0.50     15    1.5  314.3  316.1  314.4
+  525.0   5455  -10.8  -38.0      9   0.28     50    5.2  315.4  316.5  315.5
+  500.0   5830  -12.7  -49.7      3   0.08     55    5.7  317.5  317.8  317.5
+  494.0   5922  -13.1  -52.1      2   0.06     55    5.8  318.1  318.4  318.1
+  471.0   6277  -15.8  -51.7      3   0.07     55    6.2  319.1  319.3  319.1
+  443.0   6734  -19.4  -51.2      4   0.08      5    5.7  320.3  320.6  320.3
+  418.0   7167  -22.7  -50.7      6   0.09     14    9.0  321.3  321.7  321.4
+  416.0   7202  -22.1  -52.1      5   0.08     15    9.3  322.5  322.9  322.6
+  412.0   7273  -20.9  -54.9      3   0.05     14    8.9  325.0  325.2  325.0
+  400.0   7490  -22.5  -55.5      3   0.05     10    7.7  325.7  325.9  325.7
+  383.0   7807  -24.1  -54.0      5   0.07      5   10.3  327.6  327.9  327.6
+  373.0   8001  -25.1  -53.1      6   0.07    343   10.0  328.8  329.1  328.8
+  365.0   8159  -25.0  -56.6      4   0.05    325    9.8  331.0  331.2  331.0
+  362.0   8219  -24.9  -57.9      3   0.04    328    9.5  331.9  332.1  331.9
+  355.0   8360  -25.5  -58.5      3   0.04    335    8.8  332.9  333.1  332.9
+  346.0   8547  -26.3  -59.3      3   0.04      0   11.8  334.3  334.5  334.3
+  300.0   9560  -35.3  -56.3     10   0.06    355   22.1  335.5  335.8  335.5
+  295.0   9676  -36.3  -56.7     11   0.06      0   23.2  335.7  336.0  335.7
+  292.0   9747  -36.9  -56.9     11   0.06      0   22.6  335.8  336.1  335.8
+  266.0  10379  -41.0  -61.0     10   0.04      0   17.5  338.9  339.1  338.9
+  250.0  10800  -43.7  -63.7      9   0.03    350   12.9  341.0  341.1  341.0
+  248.0  10853  -44.1  -63.9     10   0.03    345   12.4  341.1  341.3  341.1
+  210.0  11952  -52.8  -68.4     14   0.02    315   14.9  344.1  344.2  344.1
+  205.0  12111  -54.1  -69.1     15   0.02    304   17.8  344.5  344.6  344.5
+  201.0  12238  -54.6  -69.6     14   0.02    295   20.1  345.7  345.8  345.7
+  200.0  12270  -54.7  -69.7     14   0.02    295   20.6  346.0  346.1  346.0
+  172.0  13225  -57.7  -75.7      9   0.01    291   31.5  356.3  356.3  356.3
+  165.0  13484  -58.4  -77.6      7   0.01    290   34.5  359.3  359.3  359.3
+  150.0  14080  -60.1  -82.1      4   0.00    300   26.8  366.3  366.4  366.3
+  144.0  14335  -60.3  -83.3      4   0.00    304   19.9  370.3  370.3  370.3
+  142.0  14419  -60.9  -83.5      4   0.00    305   17.5  370.7  370.7  370.7
+  133.0  14813  -63.7  -84.5      5   0.00    285    9.3  372.7  372.8  372.7
+  130.0  14951  -64.7  -84.9      5   0.00    265    7.2  373.4  373.4  373.4
+  128.0  15044  -65.3  -85.1      5   0.00    255    8.2  373.9  373.9  373.9
+  120.0  15433  -68.1  -86.1      7   0.00    240   13.9  375.8  375.8  375.8
+  104.0  16294  -74.2  -88.3     11   0.00    245   20.6  379.8  379.8  379.8
+  100.0  16530  -75.9  -88.9     12   0.00    260   20.1  380.8  380.8  380.8
+   99.2  16576  -76.1  -89.1     12   0.00    265   19.6  381.3  381.3  381.3
+   70.0  18610  -70.9  -87.9      7   0.00    255    9.3  432.4  432.4  432.4
+   58.5  19675  -69.7  -89.7      4   0.00    255   12.3  457.8  457.8  457.8
+   50.0  20620  -65.1  -89.1      3   0.00    255   14.9  489.7  489.7  489.7
+   46.8  21025  -63.5  -89.5      2   0.00    260   14.7  502.8  502.9  502.8
+   34.8  22838  -65.7  -91.7      2   0.00    280   13.5  541.5  541.5  541.5
+   30.0  23750  -61.7  -90.7      1   0.00    290   12.9  575.9  575.9  575.9
+   29.5  23854  -60.9  -89.9      1   0.00    289   12.9  580.8  580.9  580.8
+   27.2  24357  -61.9  -89.9      1   0.01    284   13.1  591.6  591.7  591.6
+   22.1  25643  -60.7  -89.7      1   0.01    271   13.6  631.4  631.4  631.4
+   20.0  26270  -56.5  -88.5      1   0.01    265   13.9  662.5  662.6  662.5
+   19.1  26563  -55.3  -87.3      1   0.01    265   15.0  675.0  675.1  675.0
+   16.6  27453  -57.1  -88.1      1   0.01    266   18.3  696.8  696.9  696.8
+   13.8  28627  -54.7  -86.7      1   0.02    268   22.7  742.7  742.9  742.7
+   12.8  29107  -55.9  -86.9      1   0.02    268   24.5  754.7  754.9  754.7
+   10.9  30145  -48.5  -84.5      1   0.03    269   28.3  817.0  817.4  817.1
+   10.0  30710  -49.9  -84.9      1   0.03    270   30.4  832.2  832.6  832.2
+    8.9  31475  -47.7  -83.7      1   0.05    269   35.2  868.8  869.4  868.9
+    7.0  33087  -39.9  -80.9      1   0.09    266   45.0  962.7  964.0  962.8
+    6.7  33386  -40.1  -80.1      1   0.11    265   46.8  974.0  975.6  974.1
+
+Indicies
+Sounding Indices
+
+
+  SLAT
+  Station Latitude
+  34.75
+  degrees_north
+
+
+  SLON
+  Station Longitude
+  -120.56
+  degrees_east
+
+
+  SELV
+  Station Elevation
+  121
+  meter
+
+
+  SHOW
+  Showalter Index
+  7.8
+  delta_degree_Celsius
+
+
+  LFVT
+  Virtual Lifted Index
+  9.9
+  delta_degree_Celsius
+
+
+  SWET
+  SWEAT Index
+  14.9
+  dimensionless
+
+
+  KINX
+  K Index
+  -2.5
+  degree_Celsius
+
+
+  CTOT
+  Cross Totals
+  6.1
+  delta_degree_Celsius
+
+
+  VTOT
+  Vertical Totals
+  30.1
+  delta_degree_Celsius
+
+
+  TOTL
+  Total Totals
+  36.2
+  delta_degree_Celsius
+
+
+  DCAPE
+  Downward CAPE
+  980.5
+  joule / kilogram
+
+
+  MUCAPE
+  Most Unstable CAPE
+  0
+  joule / kilogram
+
+
+  MUCIN
+  Most Unstable CIN
+  0
+  joule / kilogram
+
+
+  LCLP
+  Lifted Condensation Level
+  703.0
+  hectopascal
+
+
+  LCLT
+  Temperature of the Lifted Condensation Level
+  -4.4
+  degree_Celsius
+
+
+  LCLZ
+  Height of the Lifted Condensation Level
+  3132.0
+  meter
+
+
+  CCLP
+  Convective Condensation Level
+  560.0
+  hectopascal
+
+
+  CCLT
+  Temperature of the Convective Condensation Level
+  -7.4
+  degree_Celsius
+
+
+  CCLC
+  Convective Temperature
+  41.0
+  degree_Celsius
+
+
+  PWAT
+  Precipitable Water
+  9.0
+  millimeter
+
+
+
+Description of the columns
+
+
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i 
+
+
+
+
+Interested in graduate studies in atmospheric science?
+Check out our program at the
+University of Wyoming
+
+
+Contributions to support this server may be made to the 
+
+University of Wyoming Foundation
+
+Questions about the weather data provided by this site can be
+addressed to 
+Larry Oolman (ldoolman@uwyo.edu)
+
+
+
+
+
+
