@@ -143,7 +143,10 @@ function panel2SVG(data, di = 0) {
     o.push(`<text x="${L}" y="50" font-size="14" fill="${MUTED}">${d.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })} · ${models}${run ? ' · run ' + run : ''}</text>`);
   }
   // top strip: how good each hour is
-  hrs.forEach((h, k) => o.push(`<rect x="${f(X(k) + 0.6)}" y="${yS}" width="${f(cw - 1.2)}" height="13" fill="${P2_RATE(H(h).score)}"/>`));
+  // the verdict row: inside a radar site card, the radar's own hourly score for that site (so the chart and the
+  // tile agree); on its own (the regions page), the chart's general score
+  const vOf = (h) => (data.verdict ? (data.verdict[String(h)] ?? null) : H(h).score);
+  hrs.forEach((h, k) => o.push(`<rect x="${f(X(k) + 0.6)}" y="${yS}" width="${f(cw - 1.2)}" height="13" fill="${P2_RATE(vOf(h))}"/>`));
   o.push(`<text x="${L - 8}" y="${f(yS + 6.5 + 4 * fs)}" text-anchor="end" font-size="${12 * fs}" font-weight="700">Verdict</text>`);
   // cloud layers: high, mid, low
   // a quiet grid: one faint cell per hour and layer, so clear skies don't read as a dark empty block
