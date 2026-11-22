@@ -2,7 +2,7 @@
 // then a time x height grid of expected climb (m/s) in half-hour columns, cumulus as cloud icons.
 // panelSVG(data, dayIndex) -> SVG string; panelText(data, dayIndex) -> HTML. data = data/region/sd.json
 
-const PANEL_CLIMB = [[0, '#ffeedd'], [0.5, '#fdd0a2'], [1, '#fbb068'], [1.5, '#f89039'], [2, '#f2683f'], [2.5, '#dc4658'], [3, '#b52f72'], [3.5, '#7a2081'], [4, '#3f1468']];   // the same lift colours as the SkyGram
+const PANEL_CLIMB = [[0, '#eeebf7'], [0.5, '#c3c8ee'], [1, '#94d2dc'], [1.5, '#9ddfa6'], [2, '#d4ea78'], [2.5, '#f7d45a'], [3, '#f5a25a'], [3.5, '#ec7363'], [4, '#d2457a']];   // climb m/s, cool to warm: lilac, periwinkle, teal, mint, lime, sun, tangerine, coral, rose
 const PANEL_WIND = [[0, '#eef1f4'], [4, '#a6e3b3'], [9.5, '#f9eb87'], [15.5, '#f7bb7a'], [19, '#f08486'], [22.5, '#3a3f45']];   // over 36 km/h: dark (as the detailed chart's black, a touch softer)   // the detailed chart's wind colours, lighter
 const pick = (scale, v) => { let c = scale[0][1]; for (const [k, col] of scale) if (v >= k - 1e-9) c = col; return c; };
 const OKTA = ['#eef4fb', '#e3e7ec', '#d6dbe1', '#c6ccd3', '#b4bbc3', '#9fa7b0', '#8a929c', '#747c86', '#5f6670'];   // the same cloud shades as the detailed chart
@@ -141,7 +141,7 @@ function panelSVG(data, di = 0) {
       if (y < yG) return;
       if (v === 'c') { o.push(cloud(X(k) + cw / 2, y + rh / 2 + 1, cuShade(c)) + rainy(c, X(k) + cw / 2, y + rh / 2 + 1)); return; }
       o.push(`<rect x="${f(X(k) + 1)}" y="${y + 1}" width="${f(cw - 2)}" height="${rh - 2}" rx="1.5" fill="${pick(PANEL_CLIMB, v)}"/>`);
-      o.push(`<text x="${f(X(k) + cw / 2)}" y="${y + rh / 2 + 4.5}" text-anchor="middle" font-size="12.5" fill="${v >= 2.5 ? '#fff' : INK}">${v.toFixed(1)}</text>`);
+      o.push(`<text x="${f(X(k) + cw / 2)}" y="${y + rh / 2 + 4.5}" text-anchor="middle" font-size="12.5" fill="${v >= 4 ? '#fff' : INK}">${v.toFixed(1)}</text>`);
     });
   });
   // the site's flying window and glass-off (radar card): dashed outlines behind the grid; on short winter days
