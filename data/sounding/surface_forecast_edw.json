@@ -1,10 +1,10 @@
 {
-  "day": "2026-11-22",
-  "label": "today",
-  "median_f": 56.0,
-  "p10_f": 54.5,
-  "p90_f": 57.4,
-  "hrrr_f": 56.8,
+  "day": "2026-11-23",
+  "label": "tomorrow",
+  "median_f": 57.6,
+  "p10_f": 55.6,
+  "p90_f": 59.1,
+  "hrrr_f": 59.2,
   "members": 122,
   "models": [
     "GFS ens (31)",
@@ -15,5 +15,5 @@
   "lon": -117.92,
   "window": "10:00-17:00 local",
   "source": "https://open-meteo.com/en/docs/ensemble-api",
-  "fetched": "2026-11-22T20:14Z"
+  "fetched": "2026-11-22T22:25Z"
 }
