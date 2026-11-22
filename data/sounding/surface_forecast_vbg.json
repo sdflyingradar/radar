@@ -1,9 +1,9 @@
 {
   "day": "2026-11-21",
   "label": "today",
-  "median_f": 59.7,
-  "p10_f": 58.8,
-  "p90_f": 60.7,
+  "median_f": 59.8,
+  "p10_f": 58.9,
+  "p90_f": 60.8,
   "hrrr_f": 61.1,
   "members": 122,
   "models": [
@@ -15,5 +15,5 @@
   "lon": -120.57,
   "window": "10:00-17:00 local",
   "source": "https://open-meteo.com/en/docs/ensemble-api",
-  "fetched": "2026-11-21T23:46Z"
+  "fetched": "2026-11-22T03:32Z"
 }
