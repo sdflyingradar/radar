@@ -1,12 +1,12 @@
 {
- "generated": "2026-11-22T19:42Z",
+ "generated": "2026-11-22T20:44Z",
  "week": {
-  "visits": 837,
-  "events": 592
+  "visits": 841,
+  "events": 595
  },
  "month": {
-  "visits": 837,
-  "events": 592
+  "visits": 841,
+  "events": 595
  },
  "daily": [
   {
@@ -35,35 +35,35 @@
   },
   {
    "day": "2026-11-22",
-   "n": 107
+   "n": 111
   }
  ],
  "today": {
-  "visits": 107
+  "visits": 111
  },
  "pages": [
   {
    "path": "/radar",
    "title": "SD Flying Radar",
-   "count": 201,
+   "count": 202,
    "event": false,
    "days": {
     "2026-11-19": 104,
     "2026-11-20": 46,
     "2026-11-21": 36,
-    "2026-11-22": 15
+    "2026-11-22": 16
    }
   },
   {
    "path": "stay-start",
    "title": "Timed visit",
-   "count": 122,
+   "count": 123,
    "event": true,
    "days": {
     "2026-11-19": 23,
     "2026-11-20": 46,
     "2026-11-21": 35,
-    "2026-11-22": 18
+    "2026-11-22": 19
    }
   },
   {
@@ -93,13 +93,13 @@
   {
    "path": "do-site",
    "title": "Opened a site",
-   "count": 70,
+   "count": 71,
    "event": true,
    "days": {
     "2026-11-19": 12,
     "2026-11-20": 27,
     "2026-11-21": 19,
-    "2026-11-22": 12
+    "2026-11-22": 13
    }
   },
   {
@@ -129,13 +129,13 @@
   {
    "path": "app-open",
    "title": "Opened from home screen",
-   "count": 33,
+   "count": 34,
    "event": true,
    "days": {
     "2026-11-19": 13,
     "2026-11-20": 9,
     "2026-11-21": 7,
-    "2026-11-22": 4
+    "2026-11-22": 5
    }
   },
   {
@@ -211,7 +211,7 @@
  "refs": [
   {
    "name": "(direct)",
-   "count": 754
+   "count": 758
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
@@ -225,7 +225,7 @@
  "sizes": [
   {
    "name": "Phone",
-   "count": 683
+   "count": 687
   },
   {
    "name": "Computer",
@@ -243,7 +243,7 @@
   },
   {
    "name": "Android",
-   "count": 274
+   "count": 278
   },
   {
    "name": "macOS",
@@ -265,7 +265,7 @@
   },
   {
    "name": "Germany",
-   "count": 67
+   "count": 71
   },
   {
    "name": "Croatia",
