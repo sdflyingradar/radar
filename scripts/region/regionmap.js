@@ -129,6 +129,20 @@ function miniMapSVG(D, day, radar) {
   return o.join('');
 }
 
+/* every point the numbers are read at: the SkyGram's (per region) and the radar's (launches and height points of
+   each site, from sites.json); "inset" names the trip-area inset a point is drawn in */
+function measurePoints(D, sites) {
+  const insetOf = (la, lo) => { for (const ins of INSETS) { const [a0, a1, b0, b1] = ins.bounds; if (la >= a0 && la <= a1 && lo >= b0 && lo <= b1) return ins.id; } return null; };
+  const out = [];
+  for (const rg of D.regions || []) for (const p of rg.points || [])
+    out.push({ lat: p.lat, lon: p.lon, name: `SkyGram ${rg.name}: ${p.name}`, sg: true, inset: rg.inset ? rg.id : insetOf(p.lat, p.lon) });
+  for (const s of sites || []) {
+    const pts = [...(s.launches || (s.lat != null ? [{ name: s.short || s.name, lat: s.lat, lon: s.lon }] : [])), ...(s.height_points || [])];
+    for (const p of pts) if (p.lat != null) out.push({ lat: p.lat, lon: p.lon, name: `${s.short || s.name}: ${p.name}${p.elev_ft ? ` (${p.elev_ft.toLocaleString('en-US')} ft)` : ''}`, sg: false, inset: insetOf(p.lat, p.lon) });
+  }
+  return out;
+}
+
 function mapSVG(D, day = 0, radar = null, opts = {}) {
   const MTN = opts.mtn || 'peaks';
   BOXES.length = 0;
@@ -218,6 +232,16 @@ function mapSVG(D, day = 0, radar = null, opts = {}) {
     box('shield', sx, sy + 5, iw, 14, 0, 'middle');
     o.push(`<g transform="translate(${f(sx)} ${f(sy)})"><rect x="${-iw / 2}" y="-7" width="${iw}" height="13" rx="3" fill="#fff" stroke="#9ca3af" stroke-width=".8"/><text y="3.2" font-size="9" font-weight="700" text-anchor="middle" fill="#4b5563">${num}</text></g>`);
   }
+  // where the numbers come from: the SkyGram's points (open blue rings) and the radar's launches and height points
+  // (red dots); hover / long-press shows the name
+  const RADAR_COL = '#d23a2a', SG_COL = '#2563eb';
+  const mpts = measurePoints(D, opts.sites);
+  for (const m of mpts) {
+    const x = fx(m.lon), y = fy(m.lat);
+    if (x < 4 || x > W - 4 || y < 4 || y > H - 4 || m.inset) continue;
+    o.push(m.sg ? `<circle cx="${f(x)}" cy="${f(y)}" r="3.4" fill="#fff" fill-opacity=".7" stroke="${SG_COL}" stroke-width="1.5"><title>${m.name}</title></circle>`
+                : `<circle cx="${f(x)}" cy="${f(y)}" r="2.8" fill="${RADAR_COL}" stroke="#fff" stroke-width=".9"><title>${m.name}</title></circle>`);
+  }
   // summits
   for (const [n, la, lo, ft] of SUMMITS) {
     const x = fx(lo), y = fy(la);
@@ -272,6 +296,11 @@ function mapSVG(D, day = 0, radar = null, opts = {}) {
     o.push(`<clipPath id="ic_${ins.id}"><rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="10"/></clipPath><g clip-path="url(#ic_${ins.id})">`);
     if (ins.coast) o.push(`<polygon points="${ins.coast.map(IP).join(' ')} ${bx - 20},${by + bh + 20}" fill="${WATER}" stroke="${SHORE}" stroke-width="1.1"/>`);
     o.push(`<polygon points="${rg.poly.map(IP).join(' ')}" fill="${v != null ? scoreCol(v) : '#cbd5e1'}" fill-opacity=".5" stroke="#fff" stroke-width="1.4"/>`);
+    for (const m of mpts.filter((q) => q.inset === ins.id)) {
+      const x = ix(m.lon), y = iy(m.lat);
+      o.push(m.sg ? `<circle cx="${f(x)}" cy="${f(y)}" r="2.8" fill="#fff" fill-opacity=".7" stroke="${SG_COL}" stroke-width="1.3"><title>${m.name}</title></circle>`
+                  : `<circle cx="${f(x)}" cy="${f(y)}" r="2.4" fill="${RADAR_COL}" stroke="#fff" stroke-width=".8"><title>${m.name}</title></circle>`);
+    }
     for (const [n, la, lo] of ins.sites) {
       const x = ix(lo), y = iy(la);
       o.push(`<circle cx="${f(x)}" cy="${f(y)}" r="3.6" fill="#ea580c" stroke="#fff" stroke-width="1.3"/>`);
@@ -292,6 +321,12 @@ function mapSVG(D, day = 0, radar = null, opts = {}) {
   const cx = W - 34, cy = 98;
   box('compass', cx, cy + 12, 30, 40, 0, 'middle');
   o.push(`<g transform="translate(${cx} ${cy})" filter="url(#shadow)"><circle r="13" fill="#fff"/><path d="M0 -9 L4.5 5 L0 2.4 L-4.5 5 Z" fill="${INK}"/></g><text x="${cx}" y="${cy - 17}" text-anchor="middle" font-size="10" font-weight="700" fill="${MUTED}">N</text>`);
+  if (mpts.length) {
+    const kx = W - 214, ky = H - 74;
+    o.push(`<g filter="url(#shadow)"><rect x="${kx}" y="${ky}" width="196" height="36" rx="8" fill="#fff" fill-opacity=".95"/></g>`);
+    o.push(`<circle cx="${kx + 12}" cy="${ky + 12}" r="2.8" fill="${RADAR_COL}"/><text x="${kx + 20}" y="${ky + 15}" font-size="9.5" fill="${MUTED}">radar: launches and height points</text>`);
+    o.push(`<circle cx="${kx + 12}" cy="${ky + 26}" r="3.2" fill="#fff" stroke="${SG_COL}" stroke-width="1.5"/><text x="${kx + 20}" y="${ky + 29}" font-size="9.5" fill="${MUTED}">SkyGram points</text>`);
+  }
   const mi = 10 / 69 / Math.cos(33.2 * Math.PI / 180) / (FM.lon1 - FM.lon0) * W;
   o.push(`<g transform="translate(${f(W - 22 - mi)} ${H - 22})"><rect width="${f(mi)}" height="4" rx="2" fill="#9ca3af"/><rect width="${f(mi / 2)}" height="4" rx="2" fill="#4b5563"/><text y="-5" font-size="9.5" fill="${MUTED}">0</text><text x="${f(mi)}" y="-5" font-size="9.5" text-anchor="end" fill="${MUTED}">10 mi</text></g>`);
   o.push(`</g><rect x=".5" y=".5" width="${W - 1}" height="${H - 1}" rx="12" fill="none" stroke="#d1d5db"/>`);
