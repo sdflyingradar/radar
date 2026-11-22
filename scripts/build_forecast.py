@@ -1165,15 +1165,15 @@ WIN_H = 3                                   # the flying window is 3 hours at ev
 
 
 def pick_window(site, hours, sunset_h):
-    """The day's flying window: 3 hours, slid to where the lift is best -- height of lift first, thermal
-    strength second (wind plays no part). It may sit anywhere from 10 am up to the start of glass-off (the
-    last 3 hours before sunset, which are rated on their own); ties go to the site's usual start.
+    """The day's flying window: 3 hours, slid to where the day is best: hours pilots can launch and stay up
+    in (wind on), height of lift, thermal strength. It may sit anywhere from 10 am to the last hour before sunset, so on
+    a short winter day it can run into the glass-off hours; ties go to the site's usual start.
     Torrey and Elsinore's switch keep their own window."""
     f0, f1 = site.get("window") or [11, 13]
     if site["kind"] == "ridge" or site.get("style") == "switch":
         return f0, f1
     n = WIN_H
-    lo, hi = 10, max(10 + n - 1, math.floor(sunset_h) - 3)
+    lo, hi = 10, max(10 + n - 1, math.floor(sunset_h) - 1)
     f0 = min(max(f0, lo), hi - n + 1)
     by_h = dict(hours)
     bias = site.get("_bias_m", 0.0)
@@ -1187,7 +1187,8 @@ def pick_window(site, hours, sunset_h):
             continue
         height = sum(ceil_level(site, top_ft(s)) for s in blk) / n            # 1-5, the site's own scale
         thermals = sum(clamp(((s["wstar"] or 0) - 0.5) / 2.0) for s in blk) / n  # 0-1
-        m = height + 0.5 * thermals - 0.03 * abs(a - f0)
+        flyable = sum(clamp(s.get("q", 1.0) / 0.6) for s in blk) / n               # 0-1: wind on, launchable
+        m = height + 0.5 * thermals + 1.5 * flyable - 0.03 * abs(a - f0)
         if best is None or m > best[0] + 1e-9:
             best = (m, a)
     return (best[1], best[1] + n - 1) if best else (f0, f0 + n - 1)

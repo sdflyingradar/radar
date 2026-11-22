@@ -403,7 +403,7 @@ class PickWindow(unittest.TestCase):
 
     def test_slides_to_the_best_height(self):
         hrs = self.hours({10: 1500, 11: 1600, 12: 1800, 13: 2400, 14: 3000, 15: 3200, 16: 2500})
-        self.assertEqual(bf.pick_window(self.site(), hrs, 17.9), (12, 14))   # glass-off starts at 3 pm
+        self.assertEqual(bf.pick_window(self.site(), hrs, 17.9), (13, 15))   # up to the last hour before sunset
 
     def test_ties_keep_the_usual_window(self):
         hrs = self.hours({h: 2500 for h in range(10, 17)})
