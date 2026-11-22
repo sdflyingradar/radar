@@ -1,12 +1,12 @@
 {
- "generated": "2026-11-22T22:35Z",
+ "generated": "2026-11-22T22:42Z",
  "week": {
-  "visits": 851,
-  "events": 603
+  "visits": 857,
+  "events": 608
  },
  "month": {
-  "visits": 851,
-  "events": 603
+  "visits": 857,
+  "events": 608
  },
  "daily": [
   {
@@ -35,71 +35,71 @@
   },
   {
    "day": "2026-11-22",
-   "n": 121
+   "n": 127
   }
  ],
  "today": {
-  "visits": 121
+  "visits": 127
  },
  "pages": [
   {
    "path": "/radar",
    "title": "SD Flying Radar",
-   "count": 202,
+   "count": 203,
    "event": false,
    "days": {
     "2026-11-19": 104,
     "2026-11-20": 46,
     "2026-11-21": 36,
-    "2026-11-22": 16
+    "2026-11-22": 17
    }
   },
   {
    "path": "stay-start",
    "title": "Timed visit",
-   "count": 123,
+   "count": 124,
    "event": true,
    "days": {
     "2026-11-19": 23,
     "2026-11-20": 46,
     "2026-11-21": 35,
-    "2026-11-22": 19
+    "2026-11-22": 20
    }
   },
   {
    "path": "stay-15s",
    "title": "Stayed 15 s+",
-   "count": 114,
+   "count": 115,
    "event": true,
    "days": {
     "2026-11-19": 31,
     "2026-11-20": 37,
     "2026-11-21": 29,
-    "2026-11-22": 17
+    "2026-11-22": 18
    }
   },
   {
    "path": "stay-30s",
    "title": "Stayed 30 s+",
-   "count": 95,
+   "count": 96,
    "event": true,
    "days": {
     "2026-11-19": 25,
     "2026-11-20": 29,
     "2026-11-21": 27,
-    "2026-11-22": 14
+    "2026-11-22": 15
    }
   },
   {
    "path": "do-site",
    "title": "Opened a site",
-   "count": 72,
+   "count": 73,
    "event": true,
    "days": {
     "2026-11-19": 12,
     "2026-11-20": 27,
     "2026-11-21": 19,
-    "2026-11-22": 14
+    "2026-11-22": 15
    }
   },
   {
@@ -129,13 +129,13 @@
   {
    "path": "app-open",
    "title": "Opened from home screen",
-   "count": 34,
+   "count": 35,
    "event": true,
    "days": {
     "2026-11-19": 13,
     "2026-11-20": 9,
     "2026-11-21": 7,
-    "2026-11-22": 5
+    "2026-11-22": 6
    }
   },
   {
@@ -224,7 +224,7 @@
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
-   "count": 66
+   "count": 72
   },
   {
    "name": "sdflyingradar.github.io/radar",
@@ -234,7 +234,7 @@
  "sizes": [
   {
    "name": "Phone",
-   "count": 697
+   "count": 703
   },
   {
    "name": "Computer",
@@ -252,7 +252,7 @@
   },
   {
    "name": "Android",
-   "count": 285
+   "count": 291
   },
   {
    "name": "macOS",
@@ -274,7 +274,7 @@
   },
   {
    "name": "Germany",
-   "count": 78
+   "count": 84
   },
   {
    "name": "Croatia",
