@@ -1181,7 +1181,7 @@ def pick_window(site, hours, sunset_h):
         tops = [s["peak_top"]] + [u - bias for u, _ in (s.get("pts") or [])]
         return max(x for x in tops if x is not None) * FT
     best = None
-    for a in range(lo, hi - n + 2):
+    for a in range(lo, min(hi - n + 1, LATEST_START) + 1):     # an XC day doesn't start after 1 pm
         blk = [by_h[h] for h in range(a, a + n) if h in by_h]
         if len(blk) < n:
             continue
@@ -1195,6 +1195,7 @@ def pick_window(site, hours, sunset_h):
     return (best[1], best[1] + n - 1) if best else (f0, f0 + n - 1)
 
 
+LATEST_START = 13       # the flying window starts by 1 pm at the latest
 RIDGE_GOOD_MPH = 10      # Torrey: under this the ridge is flyable but weak (yellow at best)
 
 
