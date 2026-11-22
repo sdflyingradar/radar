@@ -1037,8 +1037,8 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
 <div class="scrim" id="scrim" hidden></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Site details" hidden></div>
 <script id="seed" type="application/json"></script>
-<script src="scripts/region/panel.js?v=202611221129"></script>
-<script src="scripts/region/panel2.js?v=202611111553"></script>
+<script src="scripts/region/panel.js?v=202611221130"></script>
+<script src="scripts/region/panel2.js?v=202611221130"></script>
 <script>
 (() => {
 "use strict";
@@ -1122,7 +1122,7 @@ function dayBoxes(d) {
     b(lidL, "lid", SIG.lid, lidL ? `Low lid / inversion, weak thermals: ${names(low)}` : "Low lid: no")}${
     b(wL, "wind", SIG.windy, wL ? `Windy: ${names(windy)}` : "Windy: no")}${
     b(lv(rp >= 0.6, rp >= 0.3), "rain", DROP, `Rain: ${Math.round(rp * 100)}% of model runs${rp >= 0.3 && rp < 0.6 ? " (possible)" : ""}`)}${
-    b(lv(ok >= 6, 0), "cloud", `<i class="ic" aria-hidden="true">${ICON.cloud}\uFE0E</i>`, d.cloud ? `Cloud: mid/high ${ok}/8` : "Cloud: clear")}</span>`;
+    b(lv(ok >= 6, 0), "cloud", `<i class="ic" aria-hidden="true">${ICON.cloud}\uFE0E</i>`, d.cloud ? `Cloud: mid/high ${Math.round(ok * 1.25) * 10}%` : "Cloud: clear")}</span>`;
 }
 /* trend since about a day ago: an arrow when the shown number changed */
 const trendHtml = (c) => "";   // trend arrows switched off
@@ -1146,7 +1146,7 @@ const rainPill = (d, small) => {
 /* mid/high cloud (cirrus, alto-) over the SD sites from 10 am to sunset: a heads-up, never part of the rating */
 const cloudPill = (d) => {
   const c = d.cloud; if (!c || !c.level) return "";
-  const tip = `mid/high cloud ${c.okta}/8 over Torrey, Little Black, Blossom and Elsinore, 10 am to sunset; sun at the ground ${Math.round(c.sun_loss * 100)}% below clear sky`;
+  const tip = `mid/high cloud ${Math.round(c.okta * 1.25) * 10}% over Torrey, Little Black, Blossom and Elsinore, 10 am to sunset; sun at the ground ${Math.round(c.sun_loss * 100)}% below clear sky`;
   return `<span class="rx rx-cloud${c.weak ? " rx-weak" : ""}${c.level === "shade" && !c.weak ? " strong" : ""}" title="${esc(tip)}">${ico("cloud")}${c.okta}/8 <span class="lg">high </span>cloud</span>`;
 };
 const regimeHtml = (rg, small) => {
@@ -1484,7 +1484,7 @@ function sitePills(c) {
   const rr = take(/rain/);
   if (c.rain_p >= 0.3 || rr < 0) out.push(`<span class="rx${c.rain_p >= 0.6 ? " strong" : ""}">${ico("rain")}${Math.round((c.rain_p || 0) * 100)}% rain${dv(rr)}</span>`);
   const cc = take(/sun/);
-  if ((c.cloud && c.cloud.okta >= 5) || cc < 0) out.push(`<span class="rx${cc < 0 ? " strong" : ""}">${ico("cloud")}${c.cloud ? c.cloud.okta + "/8 " : ""}cloud${dv(cc)}</span>`);
+  if ((c.cloud && c.cloud.okta >= 5) || cc < 0) out.push(`<span class="rx${cc < 0 ? " strong" : ""}">${ico("cloud")}${c.cloud ? Math.round(c.cloud.okta * 1.25) * 10 + "% " : ""}cloud${dv(cc)}</span>`);
   /* warnings; Torrey shows all of them across its flying day, with when they show up (am, midday, pm) */
   const when = c.when || {};
   const SAME = { offshore: /^offshore/, gusty: /gust/, aloft: /top of lift/, windy: /too windy|blown/, cross: /outside the launch window/ };   // no pill twice
@@ -1723,7 +1723,7 @@ function detail(d, s, inline) {
     ? barRow("Climb rate", Math.max(0, Math.min(1, climb / 2.5)), `${climb.toFixed(1)} m/s`, "") : "";
   const rows = fac.filter((f) => !isFlag(f) && !((c.hwind || (c.hwind_avg && Object.keys(c.hwind_avg).length)) && f.k === "Wind 1 pm")).map((f) => barRow(f.k === "Wind 1 pm" ? "Launch wind" : f.k, f.q, f.v, f.sub, f.qs)).join("").replace(/(<\/div>)/, `$1${strength}`)
     + (c.rain_p != null ? barRow("Dry", 1 - c.rain_p, `${Math.round(c.rain_p * 100)}% rain`, "") : "")
-    + (c.cloud ? barRow("Sun", 1 - (c.cloud.sun_loss || 0), `−${Math.round((c.cloud.sun_loss || 0) * 100)}%`, `mid/high cloud ${c.cloud.okta}/8`) : "");
+    + (c.cloud ? barRow("Sun", 1 - (c.cloud.sun_loss || 0), `−${Math.round((c.cloud.sun_loss || 0) * 100)}%`, `mid/high cloud ${Math.round(c.cloud.okta * 1.25) * 10}%`) : "");
   const agreeF = fac.find((f) => f.k === "Model agreement");
   const extraBars = [
     agreeF ? barRow("Models agree", agreeF.q, agreeF.v, agreeF.sub) : "",
@@ -1921,7 +1921,7 @@ document.addEventListener("click", (e) => {
 </script>
 <script src="scripts/ui/facts.js?v=202611182152"></script>
 <script src="scripts/ui/sched.js?v=202611152000"></script>
-<script src="scripts/ui/grid.js?v=202611191417"></script>
+<script src="scripts/ui/grid.js?v=202611221130"></script>
 <script src="scripts/ui/first.js?v=202611082340"></script>
 <script>
 /* LAB bar */
