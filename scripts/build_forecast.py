@@ -1187,7 +1187,8 @@ def pick_window(site, hours, sunset_h):
             continue
         height = sum(ceil_level(site, top_ft(s)) for s in blk) / n            # 1-5, the site's own scale
         thermals = sum(clamp(((s["wstar"] or 0) - 0.5) / 2.0) for s in blk) / n  # 0-1
-        flyable = sum(clamp(s.get("q", 1.0) / 0.6) for s in blk) / n               # 0-1: wind on, launchable
+        # launch counts once: the best hour to get off at the start of the window (its first hour or the one before)
+        flyable = max(clamp(by_h[h].get("q", 1.0) / 0.6) for h in (a - 1, a, a + 1) if h in by_h)
         m = height + 0.5 * thermals + 1.5 * flyable - 0.03 * abs(a - f0)
         if best is None or m > best[0] + 1e-9:
             best = (m, a)
@@ -1279,6 +1280,15 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     style = site.get("style") or ("ridge" if ridge else site["kind"] if site["kind"] == "convergence" else "thermal")
     w0, w1 = pick_window(site, hours, sunset_h)
     win = [(h, sc) for h, sc in hours if w0 <= h <= w1]
+    # the launch slot: one good hour to get off once it's lifty (from the hour before the window to its end, with
+    # some lift above launch). Launch wind (direction, gusts) is judged there; once in the air the later hours
+    # only count for height, climbs and the wind up high. Ridge and switch sites keep their own launch rules.
+    lslot = blk
+    if site["kind"] != "ridge" and site.get("style") != "switch":
+        cand = [sc for h, sc in hours if w0 - 1 <= h <= w1 and (sc.get("peak_top") or 0) * FT >= site["launch_ft"] + 500]
+        if cand:
+            lslot = [max(cand, key=lambda x: (x.get("launch_pts", 1.0 if x["good_launch"] else 0.0),
+                                               -(x.get("lg") or 0), x["q"]))]
     rating, best_h, peak = 1.0, None, None
     xc_now = False
     windy_share = 0.0
@@ -1510,17 +1520,18 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         # the launch-wind bar: share of the whole window with a good launch (gusts, direction and speed in range)
         "launch_q": (sum(s.get("launch_pts", 1.0 if s["good_launch"] else 0.0) for _, s in win) / len(win)) if win
         else sum(s.get("launch_pts", 1.0 if s["good_launch"] else 0.0) for s in blk) / len(blk),
-        "into": sum(1 for s in blk if s.get("into")) / len(blk),
-        "gust12": sum(1 for s in blk if s.get("gcat", 0) >= 1) / len(blk),
-        "gust10": sum(1 for s in blk if (s.get("lg") or 0) > 10) / len(blk),
-        "gust15": sum(1 for s in blk if (s.get("lg") or 0) > 15) / len(blk),
-        "strong": sum(1 for s in blk if (s.get("lw") or 0) >= 10 and (s.get("lg") or 0) >= 15) / len(blk),
+        # launch wind: in the launch slot (one good hour as it turns lifty; the best 3-hour block at ridge/switch sites)
+        "into": sum(1 for s in lslot if s.get("into")) / len(lslot),
+        "gust12": sum(1 for s in lslot if s.get("gcat", 0) >= 1) / len(lslot),
+        "gust10": sum(1 for s in lslot if (s.get("lg") or 0) > 10) / len(lslot),
+        "gust15": sum(1 for s in lslot if (s.get("lg") or 0) > 15) / len(lslot),
+        "strong": sum(1 for s in lslot if (s.get("lw") or 0) >= 10 and (s.get("lg") or 0) >= 15) / len(lslot),
         "top_wind": (lambda v: sorted(v)[len(v) // 2] if v else None)([s["tw"][1] * 1.15078 for s in blk if s.get("tw")]),
         "gust18": sum(1 for s in blk if s.get("gcat", 0) >= 2) / len(blk),
         "offcat": (lambda offs: sum(0 if o <= 0 else 1 if o <= 20 else 2 for o in offs) / len(offs) if offs else 0.0)(   # off = outside the window
-            [s["off"] for s in blk if s.get("off") is not None]),
+            [s["off"] for s in lslot if s.get("off") is not None]),
         "rim": (lambda offs: sum(1 for o in offs if -RIM_DEG < o <= 0) / len(offs) if offs else 0.0)(
-            [s["off"] for s in blk if s.get("off") is not None]),
+            [s["off"] for s in lslot if s.get("off") is not None]),
         "launch": max(set(x["launch"] for x in blk if x["launch"]) or {None}, key=lambda v: sum(1 for x in blk if x["launch"] == v)),
         "a_max": med("a_max"), "a_spd": a_spd, "a_dir": a_dir,
         "aloftdir": sum(1 for s in blk if {"aloftdir", "drift"} & set(s["codes"])) >= 2,
