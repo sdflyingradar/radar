@@ -78,9 +78,10 @@ def chart(sid, big, wide=False):
     FS = {"pl": 29, "ll": 31, "km": 24} if big else {"pl": 18, "ll": 19, "km": 15}
     boxes = []                                       # [x0, y0, x1, y1] already taken: wedges, dots, labels
     def tbox(x, y, txt, cls, anchor):
-        w = len(txt) * FS[cls] * 0.56
+        lines = txt.split("\n")                     # a peak: its name, then its height on a second line
+        w = max(len(t) for t in lines) * FS[cls] * 0.56
         x0 = x if anchor == "start" else x - w if anchor == "end" else x - w / 2
-        return [x0 - 2, y - FS[cls] * 0.8, x0 + w + 2, y + FS[cls] * 0.25]
+        return [x0 - 2, y - FS[cls] * 0.8, x0 + w + 2, y + FS[cls] * (0.25 + 1.1 * (len(lines) - 1))]
     def free(bx):
         if bx[0] < 2 or bx[2] > W - 2 or bx[1] < 2 or bx[3] > Hh - 2:
             return False
@@ -126,18 +127,21 @@ def chart(sid, big, wide=False):
         x1, y1, an = place(cands, t, "ll")
         o.append(f'<text x="{x1:.1f}" y="{y1:.1f}" text-anchor="{an}" class="ll">{html.escape(t)}</text>')
     # height points: right, left, above, below the dot
+    elev = {p["name"]: p.get("elev_ft") for p in hp}
     for (x, y), n in pts:
         X, Y = P(x, y)
-        if n.endswith("launch") or any(math.hypot(x - a, y - b) < 1.5 for (a, b), _ in L):
+        if not elev.get(n) and (n.endswith("launch") or any(math.hypot(x - a, y - b) < 1.5 for (a, b), _ in L)):
             continue                                  # a point at (or right by) a launch: the launch name says it
-        t = short_label(n)
+        t = short_label(n) + (f"\n{elev[n]:,} ft" if elev.get(n) else "")   # peaks: read at their summit height
         g = FS["pl"]
         d = dot + 4
         cands = [(X + d, Y + g * 0.35, "start"), (X - d, Y + g * 0.35, "end"), (X, Y - d - 2, "middle"), (X, Y + d + g * 0.8, "middle"),
                  (X + d, Y - d, "start"), (X - d, Y - d, "end"), (X + d, Y + d + g * 0.6, "start"), (X - d, Y + d + g * 0.6, "end")]
         cands += [(cx + (cx - X) * 0.8, cy + (cy - Y) * 0.8, an) for cx, cy, an in cands]     # a bit further out
         x1, y1, an = place(cands, t, "pl")
-        o.append(f'<text x="{x1:.1f}" y="{y1:.1f}" text-anchor="{an}" class="pl">{html.escape(t)}</text>')
+        nm, _, el = t.partition("\n")
+        o.append(f'<text x="{x1:.1f}" y="{y1:.1f}" text-anchor="{an}" class="pl">{html.escape(nm)}'
+                 + (f'<tspan x="{x1:.1f}" dy="{g * 1.1:.1f}" class="pe">{html.escape(el)}</tspan>' if el else "") + '</text>')
     # distance on each ring: lower left first, else the other diagonals
     for r in rings:
         rr = r * R * 0.707
