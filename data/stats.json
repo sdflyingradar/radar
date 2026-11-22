@@ -1,12 +1,12 @@
 {
- "generated": "2026-11-22T03:32Z",
+ "generated": "2026-11-22T07:16Z",
  "week": {
-  "visits": 722,
-  "events": 498
+  "visits": 730,
+  "events": 505
  },
  "month": {
-  "visits": 722,
-  "events": 498
+  "visits": 730,
+  "events": 505
  },
  "daily": [
   {
@@ -35,88 +35,88 @@
   },
   {
    "day": "2026-11-21",
-   "n": 188
+   "n": 196
   }
  ],
  "today": {
-  "visits": 188
+  "visits": 196
  },
  "pages": [
   {
    "path": "/radar",
    "title": "SD Flying Radar",
-   "count": 185,
+   "count": 186,
    "event": false,
    "days": {
     "2026-11-19": 104,
     "2026-11-20": 46,
-    "2026-11-21": 35
+    "2026-11-21": 36
    }
   },
   {
    "path": "stay-start",
    "title": "Timed visit",
-   "count": 103,
+   "count": 104,
    "event": true,
    "days": {
     "2026-11-19": 23,
     "2026-11-20": 46,
-    "2026-11-21": 34
+    "2026-11-21": 35
    }
   },
   {
    "path": "stay-15s",
    "title": "Stayed 15 s+",
-   "count": 96,
+   "count": 97,
    "event": true,
    "days": {
     "2026-11-19": 31,
     "2026-11-20": 37,
-    "2026-11-21": 28
+    "2026-11-21": 29
    }
   },
   {
    "path": "stay-30s",
    "title": "Stayed 30 s+",
-   "count": 80,
+   "count": 81,
    "event": true,
    "days": {
     "2026-11-19": 25,
     "2026-11-20": 29,
-    "2026-11-21": 26
+    "2026-11-21": 27
    }
   },
   {
    "path": "do-site",
    "title": "Opened a site",
-   "count": 56,
+   "count": 58,
    "event": true,
    "days": {
     "2026-11-19": 12,
     "2026-11-20": 27,
-    "2026-11-21": 17
+    "2026-11-21": 19
    }
   },
   {
    "path": "stay-1m",
    "title": "Stayed 1 min+",
-   "count": 55,
+   "count": 56,
    "event": true,
    "days": {
     "2026-11-19": 18,
     "2026-11-20": 20,
-    "2026-11-21": 17
+    "2026-11-21": 18
    }
   },
   {
    "path": "do-day",
    "title": "Looked at another day",
-   "count": 39,
+   "count": 40,
    "event": true,
    "days": {
     "2026-11-19": 11,
     "2026-11-20": 17,
-    "2026-11-21": 11
+    "2026-11-21": 12
    }
   },
   {
@@ -198,7 +198,7 @@
  "refs": [
   {
    "name": "(direct)",
-   "count": 641
+   "count": 649
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
