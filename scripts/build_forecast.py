@@ -272,7 +272,10 @@ def om_url(base, sites, model, hourly, past_days=0, days=None):
     if past_days:
         q["past_days"] = past_days                          # the day type needs the days before
     if all(s.get("lz_ft") is not None or s.get("_hpoint") for s in sites):    # thermals start from the valley ground
-        q["elevation"] = ",".join("nan" if s.get("_hpoint") else f"{s.get('model_ground_ft', s['lz_ft']) / FT:.0f}" for s in sites)
+        # height points: the model's own ground, except peaks with their real height (elev_ft), where the model's
+        # smoothed terrain sits far below the summit
+        q["elevation"] = ",".join((f"{s['_elev_ft'] / FT:.0f}" if s.get("_elev_ft") else "nan") if s.get("_hpoint")
+                                  else f"{s.get('model_ground_ft', s['lz_ft']) / FT:.0f}" for s in sites)
     return base + "?" + urllib.parse.urlencode(q)
 
 
@@ -2007,6 +2010,7 @@ def expand_sites(sites):
             if s.get("launches"):
                 c.update({kk: vv for kk, vv in s["launches"][0].items() if kk not in ("name", "lat", "lon", "glass_off")})
             c.update({"id": f"{s['id']}#h{k}", "parent": s["id"], "_hpoint": True, "lat": hp["lat"], "lon": hp["lon"],
+                      "_elev_ft": hp.get("elev_ft"),
                       "hp_name": f"{s.get('short', s['id'])}: {hp.get('name', f'point {k}')}"})
             out.append(c)
     return out
