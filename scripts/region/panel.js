@@ -1,5 +1,5 @@
 // Region panel, classic view (graphic): clouds H/M/L (oktas), wind ground / 5k ft (arrows on speed colour),
-// then a time x height grid of expected climb (m/s) in half-hour columns, cumulus as cloud icons.
+// then a time x height grid of expected climb (m/s) in hourly columns, cumulus as cloud icons.
 // panelSVG(data, dayIndex) -> SVG string; panelText(data, dayIndex) -> HTML. data = data/region/sd.json
 
 const PANEL_CLIMB = [[0, '#eeebf7'], [0.5, '#c3c8ee'], [1, '#94d2dc'], [1.5, '#9ddfa6'], [2, '#d4ea78'], [2.5, '#f7d45a'], [3, '#f5a25a'], [3.5, '#ec7363'], [4, '#d2457a']];   // climb m/s, cool to warm: lilac, periwinkle, teal, mint, lime, sun, tangerine, coral, rose
@@ -7,6 +7,9 @@ const PANEL_WIND = [[0, '#eef1f4'], [4, '#a6e3b3'], [9.5, '#f9eb87'], [15.5, '#f
 const pick = (scale, v) => { let c = scale[0][1]; for (const [k, col] of scale) if (v >= k - 1e-9) c = col; return c; };
 const OKTA = ['#eef4fb', '#e3e7ec', '#d6dbe1', '#c6ccd3', '#b4bbc3', '#9fa7b0', '#8a929c', '#747c86', '#5f6670'];   // the same cloud shades as the detailed chart
 
+// the models give hourly values, so the chart shows full hours only (HALF_HOURS adds made-up half-past columns,
+// the mean of the two hours: off)
+const HALF_HOURS = false;
 // half-hour columns from hourly data: on the hour as forecast, half past = mean of the two hours
 function halfHours(day) {
   const hrs = Object.keys(day.hours).map(Number).sort((a, b) => a - b);
@@ -14,7 +17,7 @@ function halfHours(day) {
   hrs.forEach((h, k) => {
     cols.push({ t: h, d: day.hours[h] });
     const n = hrs[k + 1];
-    if (n === h + 1) {
+    if (HALF_HOURS && n === h + 1) {
       const a = day.hours[h], b = day.hours[n], g = {};
       for (const z of new Set([...Object.keys(a.grid || {}), ...Object.keys(b.grid || {})])) {
         const va = (a.grid || {})[z], vb = (b.grid || {})[z];
