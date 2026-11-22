@@ -959,7 +959,7 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
 <link rel="stylesheet" href="scripts/ui/first.css?v=202611161220">
 <script src="scripts/ui/stats.js?v=202611191636" defer></script>
 <script src="scripts/ui/install.js?v=202611210153" defer></script>
-<script src="scripts/ui/statsview.js?v=202611191636" defer></script>
+<script src="scripts/ui/statsview.js?v=202611221455" defer></script>
 <style>
 /* ===== LAB bar ===== */
 #labbar { position: fixed; left: 50%; bottom: max(10px, env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 50; display: flex; align-items: center; gap: 4px;
@@ -1251,7 +1251,10 @@ function render(data) {
     fetch(`data/sounding/nkx_latest.json?t=${Date.now()}`, { cache: "no-store" }).then((r) => r.json()).then((j) => {
       const fh = j.forecast_high && j.forecast_high.thermal_tops;
       const el = document.getElementById("as-snd");
-      if (el && fh && fh.median_ft) el.textContent = `~${fh.median_ft.toLocaleString()} ft`;
+      /* an old balloon (none flown or posted for a day and a half) says so instead of an old thermal top */
+      const m = /_(\d{2})00Z_(\d{1,2})_(\w{3})_(\d{4})/.exec(j.title || ""), at = m ? Date.parse(`${m[2]} ${m[3]} ${m[4]} ${m[1]}:00 UTC`) : NaN;
+      if (el && at && Date.now() - at > 36 * 3600e3) el.textContent = "old balloon";
+      else if (el && fh && fh.median_ft) el.textContent = `~${fh.median_ft.toLocaleString()} ft`;
     }).catch(() => {});
   }
 

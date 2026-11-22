@@ -28,7 +28,7 @@
   /* a row with a thin bar: label, share of radar visitors, count */
   const meter = (label, c, base) => {
     const p = base ? Math.min(100, Math.round(c / base * 100)) : 0;
-    return `<div class="stm"><span>${esc(label)}</span><span class="stmb"><i style="width:${p}%"></i></span><b>${base ? p + "%" : c}</b></div>`;
+    return `<div class="stm"><span>${esc(label)}</span><span class="stmb"><i style="width:${p}%"></i></span><b>${base ? (c && !p ? "&lt;1" : p) + "%" : c}</b></div>`;
   };
   const chips = (title, rows) => rows && rows.length ? `<div class="stc"><span>${title}</span>${rows.map((r) => `<em>${esc(r.name)} <b>${r.count}</b></em>`).join("")}</div>` : "";
 
