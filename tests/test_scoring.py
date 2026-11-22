@@ -359,11 +359,15 @@ class Venturi(unittest.TestCase):
 
 class BestFour(unittest.TestCase):
     def test_best_four_two_per_point(self):
-        hrs = [(12, {"pts": [(1000, "a"), (900, "b"), (500, "c")]}), (13, {"pts": [(1100, "a"), (800, "b"), (700, "c")]}),
-               (14, {"pts": [(1200, "a"), (600, "b"), (400, "c")]})]
-        # a: 1200, 1100 (third reading of a skipped), b: 900, 800
+        g = 0   # valley points: deep lift everywhere
+        hrs = [(12, {"pts": [(1000, "a", g), (900, "b", g), (500, "c", g)]}), (13, {"pts": [(1100, "a", g), (800, "b", g), (700, "c", g)]}),
+               (14, {"pts": [(1200, "a", g), (600, "b", g), (400, "c", g)]})]
         self.assertAlmostEqual(bf.best4_height(hrs), (1200 + 1100 + 900 + 800) / 4)
         self.assertIsNone(bf.best4_height([(12, {"pts": None})]))
+
+    def test_thin_lift_over_a_peak_does_not_count(self):
+        hrs = [(12, {"pts": [(1100, "peak", 1000), (900, "valley", 0)]})]   # 100 m over the peak, 900 m in the valley
+        self.assertAlmostEqual(bf.best4_height(hrs), 900)
 
 
 class PostFrontalFlow(unittest.TestCase):

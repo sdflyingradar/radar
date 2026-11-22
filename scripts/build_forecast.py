@@ -1138,14 +1138,31 @@ def ceil_level(site, ft):
     return 5.0
 
 
+DEEP_M = 300      # a height point's top counts once its lift reaches this deep over the point's own ground (~1,000 ft)
+
+
+def deep(reads):
+    """The readings (u, name, ground): a peak's (ground given) only with lift at least DEEP_M deep over its summit;
+    a thin layer over a high peak on a weak day is high ground, not a top you can climb to. All of them when
+    nothing is left."""
+    d = [r for r in reads if r[2] is None or r[0] - r[2] >= DEEP_M]
+    return d or list(reads)
+
+
+def depth_mean(pts):
+    """The highest top among the points with deep enough lift (see deep)."""
+    d = deep(pts)
+    return max(u for u, _, _ in d) if d else None
+
+
 def best4_height(hour_list, bias=0.0):
-    """Height of the day from a site's height points: the average of the four best readings (point x hour)
-    in the given hours, at most two from any one point. None when the site has no height points."""
-    reads = [(u, name) for _, sc in hour_list for u, name in (sc.get("pts") or [])]
+    """Height of the day from a site's height points: the average of the four best readings (point x hour) in the
+    given hours with deep enough lift (see deep), at most two from any one point. None without height points."""
+    reads = deep([r for _, sc in hour_list for r in (sc.get("pts") or [])])
     if not reads:
         return None
     take, per = [], {}
-    for u, name in sorted(reads, reverse=True):
+    for u, name, _ in sorted(reads, reverse=True):
         if per.get(name, 0) >= 2:
             continue
         take.append(u); per[name] = per.get(name, 0) + 1
@@ -1181,7 +1198,7 @@ def pick_window(site, hours, sunset_h):
     by_h = dict(hours)
     bias = site.get("_bias_m", 0.0)
     def top_ft(s):
-        tops = [s["peak_top"]] + [u - bias for u, _ in (s.get("pts") or [])]
+        tops = [s["peak_top"]] + ([depth_mean(s["pts"]) - bias] if s.get("pts") else [])
         return max(x for x in tops if x is not None) * FT
     best = None
     for a in range(lo, min(hi - n + 1, LATEST_START) + 1):     # an XC day doesn't start after 1 pm
@@ -2041,9 +2058,15 @@ def corridor_heights(sites, det):
                         [round(elev * FT), round(sc["usable_show"] * FT)] + [
                             round(x * FT) if x is not None else None for x in (sc.get("dbg") or [])]
                 if sc:
-                    pts = (dst[t][3] if t in dst else []) + [(sc["usable_show"], s["hp_name"])]
+                    # peaks (elev_ft) carry their ground, so a thin layer on top of them can be left out (see deep)
+                    pts = (dst[t][3] if t in dst else []) + [(sc["usable_show"], s["hp_name"], elev if s.get("_elev_ft") else None)]
                     best = dst[t] if t in dst and dst[t][0] >= sc["usable_show"] else (sc["usable_show"], sc["wstar"], s["hp_name"])
                     dst[t] = (best[0], best[1], best[2], pts)
+    # the corridor's top each hour: the highest top among the points with deep enough lift (see deep)
+    for m in out.values():
+        for dd in m.values():
+            for t, (u, w, nm, pts) in list(dd.items()):
+                dd[t] = (depth_mean(pts) or u, w, nm, pts)
     return out
 
 
