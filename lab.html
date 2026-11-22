@@ -586,7 +586,6 @@ details.day > summary.hd .sum .sc.sc.trip { font-size: .76rem; min-height: 26px;
 .srow .nmw { column-gap: 6px; }
 .srow .nmw .lab { margin-right: 2px; }
 .srow .nmw .lnch { flex: 0 0 auto; font-size: .74rem; color: var(--muted, #8a94a3); font-weight: 500; }
-.srow .nmw .lnch::before { content: "from "; }
 .srow .nmw .nm, .srow .nmw .lab, .srow .nmw .xcmark { flex: 0 0 auto; overflow: visible; text-overflow: clip; }
 
 /* top right: the way in to "what this is and how it works" — quiet but easy to find */
@@ -1380,7 +1379,8 @@ function morphStrip(from, det) {
   } catch (e) {}
 }
 const chipHtml = (c, prefix) => `<span class="chip"><i style="background:${qv(c.rating)}"></i>${prefix ? `<span class="muted">${esc(prefix)}</span> ` : ""}${r1(c.rating)}${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span>`;
-const styleLab = (c) => c.xc ? "Cross-country" : (c.label === "XC" ? "" : String(c.label || "").replace(/ day$/, ""));
+/* the verdict on a tile: a flyable day that isn't XC is "Site fly" (Torrey keeps "Thermal" / "Ridge soaring") */
+const styleLab = (c) => c.xc ? "Cross-country" : (c.label === "XC" ? "" : c.label === "Thermal" ? "Site fly" : String(c.label || "").replace(/ day$/, ""));
 /* "Ridge soaring" (Torrey) reads green; every other label keeps the score colour */
 const labCol = (c) => (c.label === "Ridge soaring" && !c.xc ? "#1f9d55" : qv(c.rating));
 const labelHtml = (c) => `<span class="label">${styleLab(c) ? `<span class="lab" style="color:${labCol(c)}">${esc(styleLab(c))}</span>` : ""}</span>`;
@@ -1555,7 +1555,6 @@ const CHIP_TIPS = [
   [/glass-off/, "Glass-off: after a strong afternoon, a smooth evening breeze straight in before sunset"],
   [/no switch/, "Elsinore: no west switch in the forecast"],
   [/late switch/, "Elsinore: the west switch comes late (after 4 pm)"],
-  [/site flying/, "No convergence line: a site-flying day at Horse, not XC"],
   [/no launch window/, "Elsinore: no launchable wind before the switch"],
   [/switch ~/, "Elsinore: when the west wind switch is expected"],
 ];
@@ -1646,7 +1645,7 @@ function siteRow(d, s, i, kind) {
   if (!c) return `<div class="srow ${kind}"><span class="nm">${esc(name)}</span><span class="muted">no data</span></div>`;
   const pills = sitePills(c);
   return `<button type="button" class="srow ${kind}" style="--rc:${qv(c.rating)}" data-site="${s.id}" data-day="${i}" aria-expanded="false">
-    <span class="nmrow"><span class="nmw"><span class="nm">${esc(name)}</span>${styleLab(c) ? `<span class="lab" style="color:${labCol(c)}">${esc(styleLab(c))}</span>` : ""}${launchOf(c) ? `<span class="lnch" title="the launch the score is for">${esc(launchOf(c))}</span>` : ""}</span><span class="dscore sm" style="--rc:${qv(c.rating)}"><span class="dsl">Score:</span><b>${(Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2))).toFixed(1).replace(".0", "")}</b><small>/5</small></span></span>
+    <span class="nmrow"><span class="nmw"><span class="nm">${esc(name)}</span>${styleLab(c) ? `<span class="lab" style="color:${labCol(c)}">${esc(styleLab(c))}</span>` : ""}${launchOf(c) ? `<span class="lnch" title="the launch the score is for">${c.xc ? "from" : "at"} ${esc(launchOf(c))}</span>` : ""}</span><span class="dscore sm" style="--rc:${qv(c.rating)}"><span class="dsl">Score:</span><b>${(Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2))).toFixed(1).replace(".0", "")}</b><small>/5</small></span></span>
     ${pills ? `<span class="spills">${pills}</span>` : ""}<span class="tx"><span class="facts">${siteFacts(c, s)}</span></span>${c.hwind_m && Object.keys(c.hwind_m).length ? `<span class="wtab">${windTable(c)}</span>` : miniStrip(c)}
     <span class="exp sm" aria-hidden="true"><span class="chev"></span></span>
   </button>`;
