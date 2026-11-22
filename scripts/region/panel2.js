@@ -152,7 +152,7 @@ function panel2SVG(data, di = 0) {
     o.push(`<text x="${L - 8}" y="${f(yC + r * ch + ch / 2 + 4 * fs)}" text-anchor="end" font-size="${11 * fs}">${lab}</text>`);
     hrs.forEach((h, k) => {
       const n = (H(h).okta || [0, 0, 0])[2 - r];
-      if (n > 0) o.push(`<rect x="${f(X(k) + 0.8)}" y="${yC + r * ch + 1}" width="${f(cw - 1.6)}" height="${ch - 2}" rx="3" fill="${P2_OKTA(n)}"/><text x="${f(CX(k))}" y="${f(yC + r * ch + ch / 2 + 4 * fs)}" text-anchor="middle" font-size="${11 * fs}" fill="${n >= 6 ? '#fff' : INK}">${n}</text>`);
+      if (n > 0) o.push(`<rect x="${f(X(k) + 0.8)}" y="${yC + r * ch + 1}" width="${f(cw - 1.6)}" height="${ch - 2}" rx="3" fill="${P2_OKTA(n)}"/><text x="${f(CX(k))}" y="${f(yC + r * ch + ch / 2 + 4 * fs)}" text-anchor="middle" font-size="${11 * fs}" fill="${n >= 6 ? '#fff' : INK}">${n}/8</text>`);
     });
   });
   o.push(`<text transform="translate(${f(14 * fs)} ${yC + 1.5 * ch + 4}) rotate(-90)" text-anchor="middle" font-size="${12 * fs}" font-weight="700">Clouds</text>`);

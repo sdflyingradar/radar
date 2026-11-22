@@ -83,7 +83,7 @@ function panelSVG(data, di = 0) {
     cols.forEach((c, k) => {
       const ok = Math.max(0, Math.min(8, (c.d.okta || [0, 0, 0])[2 - r] || 0));
       o.push(`<rect x="${f(X(k))}" y="${y}" width="${f(cw)}" height="${ch}" fill="${OKTA[ok]}" stroke="#fff" stroke-width="1.5"/>`);
-      if (ok) o.push(`<text x="${f(X(k) + cw / 2)}" y="${y + 17}" text-anchor="middle" font-size="13" fill="${ok >= 6 ? '#f3f4f6' : INK}">${ok}</text>`);
+      if (ok) o.push(`<text x="${f(X(k) + cw / 2)}" y="${y + 17}" text-anchor="middle" font-size="13" fill="${ok >= 6 ? '#f3f4f6' : INK}">${ok}/8</text>`);
     });
     o.push(`<path d="M${L} ${y + ch}H${W - R}" stroke="${GRID}" stroke-width=".8"/>`);
   });
