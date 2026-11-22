@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-22T19:07+00:00",
+ "generated": "2026-11-22T19:08+00:00",
  "sample": false,
  "calib": {
   "2026-11-22": {
@@ -33862,15 +33862,15 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus), surface heat flux (6500 values)",
-  "HRRR trips: using the last good run, fetched 4.9 h ago",
+  "HRRR trips: using the last good run, fetched 5.0 h ago",
   "RRFS: ok (ncep_rrfs_conus), surface heat flux (8372 values)",
   "RRFS trips: using the last good run, fetched 5.0 h ago",
   "GFS: using the last good run, fetched 5.0 h ago",
   "ECMWF: using the last good run, fetched 5.0 h ago",
-  "ICON: using the last good run, fetched 4.9 h ago",
-  "ens GFS ens: using the last good run, fetched 4.9 h ago",
-  "ens ECMWF ens: using the last good run, fetched 9.0 h ago",
-  "ICON ens: ok (icon_global)",
+  "ICON: using the last good run, fetched 5.0 h ago",
+  "ens GFS ens: using the last good run, fetched 5.0 h ago",
+  "ens ECMWF ens: using the last good run, fetched 9.1 h ago",
+  "ens ICON ens: using the last good run, fetched 0.0 h ago",
   "NWS AFD: ok",
   "gradient HRRR: bias +0.3 mb over 44 h",
   "gradient RRFS: bias -0.2 mb over 44 h",
@@ -33891,7 +33891,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-11-22T17:00+00:00",
-   "fetched": "2026-11-22T19:03+00:00",
+   "fetched": "2026-11-22T19:08+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -33901,7 +33901,7 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": "2026-11-22T12:00+00:00",
-   "fetched": "2026-11-22T19:05+00:00",
+   "fetched": "2026-11-22T19:08+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -33967,7 +33967,8 @@
    "status": "ok",
    "run": null,
    "fetched": "2026-11-22T19:06+00:00",
-   "url": "https://open-meteo.com/en/docs/ensemble-api"
+   "url": "https://open-meteo.com/en/docs/ensemble-api",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "NWS San Diego forecast discussion",
@@ -33976,7 +33977,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-11-22T11:33:00+00:00",
-   "fetched": "2026-11-22T19:06+00:00",
+   "fetched": "2026-11-22T19:08+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -33986,7 +33987,7 @@
    "id": "LAX-DAG",
    "status": "ok",
    "run": "2026-11-22T10:00Z",
-   "fetched": "2026-11-22T19:06+00:00",
+   "fetched": "2026-11-22T19:08+00:00",
    "url": "https://www.weather.gov/lox/LAXGRDNEW"
   },
   {
@@ -33996,7 +33997,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-22T19:07+00:00",
+   "fetched": "2026-11-22T19:08+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
@@ -41915,7 +41916,7 @@
       {
        "k": "Wind 1 pm",
        "v": "NE 6g9",
-       "sub": "later ENE 9g13 \u00b7 over the back",
+       "sub": "later ENE 9g13",
        "q": 0.0
       },
       {

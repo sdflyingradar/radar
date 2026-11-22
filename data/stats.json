@@ -1,8 +1,12 @@
 {
- "generated": "2026-11-22T19:07Z",
+ "generated": "2026-11-22T19:08Z",
+ "week": {
+  "visits": 836,
+  "events": 591
+ },
  "month": {
-  "visits": 835,
-  "events": 590
+  "visits": 836,
+  "events": 591
  },
  "daily": [
   {
@@ -31,11 +35,11 @@
   },
   {
    "day": "2026-11-22",
-   "n": 105
+   "n": 106
   }
  ],
  "today": {
-  "visits": 105
+  "visits": 106
  },
  "pages": [
   {
@@ -113,13 +117,13 @@
   {
    "path": "do-day",
    "title": "Looked at another day",
-   "count": 45,
+   "count": 46,
    "event": true,
    "days": {
     "2026-11-19": 11,
     "2026-11-20": 17,
     "2026-11-21": 12,
-    "2026-11-22": 5
+    "2026-11-22": 6
    }
   },
   {
@@ -207,7 +211,7 @@
  "refs": [
   {
    "name": "(direct)",
-   "count": 752
+   "count": 753
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
@@ -221,7 +225,7 @@
  "sizes": [
   {
    "name": "Phone",
-   "count": 681
+   "count": 682
   },
   {
    "name": "Computer",
@@ -235,7 +239,7 @@
  "systems": [
   {
    "name": "iOS",
-   "count": 408
+   "count": 409
   },
   {
    "name": "Android",
@@ -257,7 +261,7 @@
  "locations": [
   {
    "name": "United States",
-   "count": 758
+   "count": 759
   },
   {
    "name": "Germany",
