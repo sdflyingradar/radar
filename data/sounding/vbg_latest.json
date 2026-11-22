@@ -10,24 +10,25 @@
   "forecast_high": {
     "day": "2026-11-21",
     "label": "Nov 21",
-    "median_f": 59.6,
-    "p10_f": 58.8,
-    "p90_f": 60.9,
+    "median_f": 59.8,
+    "p10_f": 58.9,
+    "p90_f": 60.7,
     "hrrr_f": 61.1,
-    "members": 71,
+    "members": 122,
     "models": [
       "GFS ens (31)",
+      "ECMWF ens (51)",
       "ICON ens (40)"
     ],
     "lat": 34.75,
     "lon": -120.57,
     "window": "10:00-17:00 local",
     "source": "https://open-meteo.com/en/docs/ensemble-api",
-    "fetched": "2026-11-22T10:02Z",
+    "fetched": "2026-11-22T12:00Z",
     "thermal_tops": {
       "median_ft": 1500,
       "low_ft": 1400,
-      "high_ft": 2200
+      "high_ft": 2000
     }
   },
   "thermal_tops_ft": [
