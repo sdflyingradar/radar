@@ -1,11 +1,11 @@
 {
- "generated": "2026-11-22T21:50Z",
+ "generated": "2026-11-22T22:27Z",
  "week": {
-  "visits": 849,
+  "visits": 850,
   "events": 602
  },
  "month": {
-  "visits": 849,
+  "visits": 850,
   "events": 602
  },
  "daily": [
@@ -35,11 +35,11 @@
   },
   {
    "day": "2026-11-22",
-   "n": 119
+   "n": 120
   }
  ],
  "today": {
-  "visits": 119
+  "visits": 120
  },
  "pages": [
   {
@@ -206,6 +206,15 @@
     "2026-11-19": 2,
     "2026-11-20": 2
    }
+  },
+  {
+   "path": "/radar/regions.html",
+   "title": "Regions \u2013 SoCal Flying Radar",
+   "count": 1,
+   "event": false,
+   "days": {
+    "2026-11-22": 1
+   }
   }
  ],
  "refs": [
@@ -215,7 +224,7 @@
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
-   "count": 64
+   "count": 65
   },
   {
    "name": "sdflyingradar.github.io/radar",
@@ -225,7 +234,7 @@
  "sizes": [
   {
    "name": "Phone",
-   "count": 695
+   "count": 696
   },
   {
    "name": "Computer",
@@ -243,7 +252,7 @@
   },
   {
    "name": "Android",
-   "count": 283
+   "count": 284
   },
   {
    "name": "macOS",
@@ -265,7 +274,7 @@
   },
   {
    "name": "Germany",
-   "count": 76
+   "count": 77
   },
   {
    "name": "Croatia",
