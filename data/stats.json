@@ -1,12 +1,12 @@
 {
- "generated": "2026-11-23T08:13Z",
+ "generated": "2026-11-23T10:31Z",
  "week": {
-  "visits": 943,
-  "events": 673
+  "visits": 950,
+  "events": 679
  },
  "month": {
-  "visits": 943,
-  "events": 673
+  "visits": 950,
+  "events": 679
  },
  "daily": [
   {
@@ -35,59 +35,63 @@
   },
   {
    "day": "2026-11-23",
-   "n": 0
+   "n": 7
   }
  ],
  "today": {
-  "visits": 0
+  "visits": 7
  },
  "pages": [
   {
    "path": "/radar",
    "title": "SD Flying Radar",
-   "count": 219,
+   "count": 220,
    "event": false,
    "days": {
     "2026-11-19": 104,
     "2026-11-20": 46,
     "2026-11-21": 36,
-    "2026-11-22": 33
+    "2026-11-22": 33,
+    "2026-11-23": 1
    }
   },
   {
    "path": "stay-start",
    "title": "Timed visit",
-   "count": 140,
+   "count": 141,
    "event": true,
    "days": {
     "2026-11-19": 23,
     "2026-11-20": 46,
     "2026-11-21": 35,
-    "2026-11-22": 36
+    "2026-11-22": 36,
+    "2026-11-23": 1
    }
   },
   {
    "path": "stay-15s",
    "title": "Stayed 15 s+",
-   "count": 127,
+   "count": 128,
    "event": true,
    "days": {
     "2026-11-19": 31,
     "2026-11-20": 37,
     "2026-11-21": 29,
-    "2026-11-22": 30
+    "2026-11-22": 30,
+    "2026-11-23": 1
    }
   },
   {
    "path": "stay-30s",
    "title": "Stayed 30 s+",
-   "count": 105,
+   "count": 106,
    "event": true,
    "days": {
     "2026-11-19": 25,
     "2026-11-20": 29,
     "2026-11-21": 27,
-    "2026-11-22": 24
+    "2026-11-22": 24,
+    "2026-11-23": 1
    }
   },
   {
@@ -105,13 +109,14 @@
   {
    "path": "stay-1m",
    "title": "Stayed 1 min+",
-   "count": 74,
+   "count": 75,
    "event": true,
    "days": {
     "2026-11-19": 18,
     "2026-11-20": 20,
     "2026-11-21": 18,
-    "2026-11-22": 18
+    "2026-11-22": 18,
+    "2026-11-23": 1
    }
   },
   {
@@ -151,6 +156,19 @@
    }
   },
   {
+   "path": "stay-3m",
+   "title": "Stayed 3 min+",
+   "count": 24,
+   "event": true,
+   "days": {
+    "2026-11-19": 9,
+    "2026-11-20": 6,
+    "2026-11-21": 3,
+    "2026-11-22": 5,
+    "2026-11-23": 1
+   }
+  },
+  {
    "path": "do-skygram",
    "title": "Used the SkyGram",
    "count": 24,
@@ -160,18 +178,6 @@
     "2026-11-20": 5,
     "2026-11-21": 5,
     "2026-11-22": 9
-   }
-  },
-  {
-   "path": "stay-3m",
-   "title": "Stayed 3 min+",
-   "count": 23,
-   "event": true,
-   "days": {
-    "2026-11-19": 9,
-    "2026-11-20": 6,
-    "2026-11-21": 3,
-    "2026-11-22": 5
    }
   },
   {
@@ -189,12 +195,13 @@
   {
    "path": "do-trips",
    "title": "Opened trips",
-   "count": 5,
+   "count": 6,
    "event": true,
    "days": {
     "2026-11-19": 2,
     "2026-11-20": 1,
-    "2026-11-22": 2
+    "2026-11-22": 2,
+    "2026-11-23": 1
    }
   },
   {
@@ -220,7 +227,7 @@
  "refs": [
   {
    "name": "(direct)",
-   "count": 832
+   "count": 839
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
@@ -238,7 +245,7 @@
   },
   {
    "name": "Computer",
-   "count": 154
+   "count": 161
   },
   {
    "name": "Large computer screen",
@@ -256,7 +263,7 @@
   },
   {
    "name": "macOS",
-   "count": 128
+   "count": 135
   },
   {
    "name": "Windows",
@@ -270,7 +277,7 @@
  "locations": [
   {
    "name": "United States",
-   "count": 833
+   "count": 840
   },
   {
    "name": "Germany",
