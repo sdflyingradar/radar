@@ -1,12 +1,12 @@
 {
- "generated": "2026-11-22T23:49Z",
+ "generated": "2026-11-23T01:07Z",
  "week": {
-  "visits": 857,
-  "events": 608
+  "visits": 875,
+  "events": 620
  },
  "month": {
-  "visits": 857,
-  "events": 608
+  "visits": 875,
+  "events": 620
  },
  "daily": [
   {
@@ -35,59 +35,59 @@
   },
   {
    "day": "2026-11-22",
-   "n": 127
+   "n": 145
   }
  ],
  "today": {
-  "visits": 127
+  "visits": 145
  },
  "pages": [
   {
    "path": "/radar",
    "title": "SD Flying Radar",
-   "count": 203,
+   "count": 208,
    "event": false,
    "days": {
     "2026-11-19": 104,
     "2026-11-20": 46,
     "2026-11-21": 36,
-    "2026-11-22": 17
+    "2026-11-22": 22
    }
   },
   {
    "path": "stay-start",
    "title": "Timed visit",
-   "count": 124,
+   "count": 128,
    "event": true,
    "days": {
     "2026-11-19": 23,
     "2026-11-20": 46,
     "2026-11-21": 35,
-    "2026-11-22": 20
+    "2026-11-22": 24
    }
   },
   {
    "path": "stay-15s",
    "title": "Stayed 15 s+",
-   "count": 115,
+   "count": 117,
    "event": true,
    "days": {
     "2026-11-19": 31,
     "2026-11-20": 37,
     "2026-11-21": 29,
-    "2026-11-22": 18
+    "2026-11-22": 20
    }
   },
   {
    "path": "stay-30s",
    "title": "Stayed 30 s+",
-   "count": 96,
+   "count": 98,
    "event": true,
    "days": {
     "2026-11-19": 25,
     "2026-11-20": 29,
     "2026-11-21": 27,
-    "2026-11-22": 15
+    "2026-11-22": 17
    }
   },
   {
@@ -105,37 +105,37 @@
   {
    "path": "stay-1m",
    "title": "Stayed 1 min+",
-   "count": 67,
+   "count": 69,
    "event": true,
    "days": {
     "2026-11-19": 18,
     "2026-11-20": 20,
     "2026-11-21": 18,
-    "2026-11-22": 11
+    "2026-11-22": 13
    }
   },
   {
    "path": "do-day",
    "title": "Looked at another day",
-   "count": 47,
+   "count": 48,
    "event": true,
    "days": {
     "2026-11-19": 11,
     "2026-11-20": 17,
     "2026-11-21": 12,
-    "2026-11-22": 7
+    "2026-11-22": 8
    }
   },
   {
    "path": "app-open",
    "title": "Opened from home screen",
-   "count": 35,
+   "count": 36,
    "event": true,
    "days": {
     "2026-11-19": 13,
     "2026-11-20": 9,
     "2026-11-21": 7,
-    "2026-11-22": 6
+    "2026-11-22": 7
    }
   },
   {
@@ -148,6 +148,18 @@
     "2026-11-20": 2,
     "2026-11-21": 3,
     "2026-11-22": 3
+   }
+  },
+  {
+   "path": "/radar/index.html",
+   "title": "SD Flying Radar",
+   "count": 22,
+   "event": false,
+   "days": {
+    "2026-11-19": 10,
+    "2026-11-20": 6,
+    "2026-11-21": 2,
+    "2026-11-22": 4
    }
   },
   {
@@ -172,18 +184,6 @@
     "2026-11-20": 5,
     "2026-11-21": 5,
     "2026-11-22": 6
-   }
-  },
-  {
-   "path": "/radar/index.html",
-   "title": "SD Flying Radar",
-   "count": 21,
-   "event": false,
-   "days": {
-    "2026-11-19": 10,
-    "2026-11-20": 6,
-    "2026-11-21": 2,
-    "2026-11-22": 3
    }
   },
   {
@@ -220,11 +220,11 @@
  "refs": [
   {
    "name": "(direct)",
-   "count": 762
+   "count": 778
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
-   "count": 72
+   "count": 74
   },
   {
    "name": "sdflyingradar.github.io/radar",
