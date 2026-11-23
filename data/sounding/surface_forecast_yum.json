@@ -2,7 +2,7 @@
   "day": "2026-11-23",
   "label": "tomorrow",
   "median_f": 71.2,
-  "p10_f": 68.7,
+  "p10_f": 68.9,
   "p90_f": 72.2,
   "hrrr_f": 70.8,
   "members": 122,
@@ -15,5 +15,5 @@
   "lon": -114.33,
   "window": "10:00-17:00 local",
   "source": "https://open-meteo.com/en/docs/ensemble-api",
-  "fetched": "2026-11-22T22:26Z"
+  "fetched": "2026-11-23T00:31Z"
 }
