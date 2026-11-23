@@ -181,7 +181,7 @@ function mapSVG(D, day = 0, radar = null, opts = {}) {
   const regs = D.regions;
   for (const rg of regs.filter(x => !x.inset)) {
     const v = rate(rg, rg.days[Math.min(day, rg.days.length - 1)]), pts = rg.poly.map(P).join(' ');
-    o.push(`<clipPath id="rc_${rg.id}"><polygon points="${pts}"/></clipPath><polygon points="${pts}" clip-path="url(#rc_${rg.id})" fill="none" stroke="${v != null ? scoreCol(v) : '#cbd5e1'}" stroke-width="14" stroke-opacity=".85" stroke-linejoin="round"/>`);
+    o.push(`<clipPath id="rc_${rg.id}"><polygon points="${pts}"/></clipPath><polygon points="${pts}" clip-path="url(#rc_${rg.id})" fill="${v != null ? scoreCol(v) : '#cbd5e1'}" fill-opacity=".14" stroke="${v != null ? scoreCol(v) : '#cbd5e1'}" stroke-width="14" stroke-opacity=".85" stroke-linejoin="round"/>`);
   }
   for (const rg of regs.filter(x => !x.inset)) o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-opacity=".9"/>`);
   // mountains over the colours, in the chosen style
@@ -294,7 +294,7 @@ function mapSVG(D, day = 0, radar = null, opts = {}) {
     o.push(`<clipPath id="ic_${ins.id}"><rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="10"/></clipPath><g clip-path="url(#ic_${ins.id})">`);
     if (ins.coast) o.push(`<polygon points="${ins.coast.map(IP).join(' ')} ${bx - 20},${by + bh + 20}" fill="${WATER}" stroke="${SHORE}" stroke-width="1.1"/>`);
     const ipts = rg.poly.map(IP).join(' ');
-    o.push(`<clipPath id="ri_${ins.id}"><polygon points="${ipts}"/></clipPath><polygon points="${ipts}" clip-path="url(#ri_${ins.id})" fill="none" stroke="${v != null ? scoreCol(v) : '#cbd5e1'}" stroke-width="10" stroke-opacity=".85" stroke-linejoin="round"/><polygon points="${ipts}" fill="none" stroke="#fff" stroke-width="1.4"/>`);
+    o.push(`<clipPath id="ri_${ins.id}"><polygon points="${ipts}"/></clipPath><polygon points="${ipts}" clip-path="url(#ri_${ins.id})" fill="${v != null ? scoreCol(v) : '#cbd5e1'}" fill-opacity=".14" stroke="${v != null ? scoreCol(v) : '#cbd5e1'}" stroke-width="10" stroke-opacity=".85" stroke-linejoin="round"/><polygon points="${ipts}" fill="none" stroke="#fff" stroke-width="1.4"/>`);
     for (const m of mpts.filter((q) => q.inset === ins.id)) {
       const x = ix(m.lon), y = iy(m.lat);
       o.push(m.sg ? `<circle cx="${f(x)}" cy="${f(y)}" r="2.8" fill="#fff" fill-opacity=".7" stroke="${SG_COL}" stroke-width="1.3"><title>${m.name}</title></circle>`
