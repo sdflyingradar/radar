@@ -177,14 +177,12 @@ function mapSVG(D, day = 0, radar = null, opts = {}) {
   o.push(`<ellipse cx="${f(fx(-117.355))}" cy="${f(fy(33.665))}" rx="9" ry="5" transform="rotate(-25 ${f(fx(-117.355))} ${f(fy(33.665))})" fill="${WATER}" stroke="${SHORE}"/>`);
   o.push(`<path d="M${f(fx(-117.125))} ${f(fy(32.535))} L${W} ${f(fy(32.62))}" stroke="#a3a3a3" stroke-width="1" stroke-dasharray="6 4" fill="none"/>`);
   o.push(`<text x="${f(fx(-116.55))}" y="${f(fy(32.57) + 14)}" font-size="10" fill="${MUTED}" letter-spacing="2">MEXICO</text>`);
-  // regions: heat glow in score colours + thin white borders
+  // regions: a rim in the score colour just inside each border (the map stays readable) + thin white borders
   const regs = D.regions;
-  o.push(`<g opacity=".55">`);
   for (const rg of regs.filter(x => !x.inset)) {
-    const v = rate(rg, rg.days[Math.min(day, rg.days.length - 1)]);
-    o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="${v != null ? scoreCol(v) : '#cbd5e1'}" filter="url(#soft)"/>`);
+    const v = rate(rg, rg.days[Math.min(day, rg.days.length - 1)]), pts = rg.poly.map(P).join(' ');
+    o.push(`<clipPath id="rc_${rg.id}"><polygon points="${pts}"/></clipPath><polygon points="${pts}" clip-path="url(#rc_${rg.id})" fill="none" stroke="${v != null ? scoreCol(v) : '#cbd5e1'}" stroke-width="14" stroke-opacity=".85" stroke-linejoin="round"/>`);
   }
-  o.push(`</g>`);
   for (const rg of regs.filter(x => !x.inset)) o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-opacity=".9"/>`);
   // mountains over the colours, in the chosen style
   const along = (spine, n, cb) => { for (let i = 0; i <= n; i++) {
@@ -295,7 +293,8 @@ function mapSVG(D, day = 0, radar = null, opts = {}) {
     o.push(`<g filter="url(#shadow)"><rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="10" fill="${LAND}"/></g>`);
     o.push(`<clipPath id="ic_${ins.id}"><rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="10"/></clipPath><g clip-path="url(#ic_${ins.id})">`);
     if (ins.coast) o.push(`<polygon points="${ins.coast.map(IP).join(' ')} ${bx - 20},${by + bh + 20}" fill="${WATER}" stroke="${SHORE}" stroke-width="1.1"/>`);
-    o.push(`<polygon points="${rg.poly.map(IP).join(' ')}" fill="${v != null ? scoreCol(v) : '#cbd5e1'}" fill-opacity=".5" stroke="#fff" stroke-width="1.4"/>`);
+    const ipts = rg.poly.map(IP).join(' ');
+    o.push(`<clipPath id="ri_${ins.id}"><polygon points="${ipts}"/></clipPath><polygon points="${ipts}" clip-path="url(#ri_${ins.id})" fill="none" stroke="${v != null ? scoreCol(v) : '#cbd5e1'}" stroke-width="10" stroke-opacity=".85" stroke-linejoin="round"/><polygon points="${ipts}" fill="none" stroke="#fff" stroke-width="1.4"/>`);
     for (const m of mpts.filter((q) => q.inset === ins.id)) {
       const x = ix(m.lon), y = iy(m.lat);
       o.push(m.sg ? `<circle cx="${f(x)}" cy="${f(y)}" r="2.8" fill="#fff" fill-opacity=".7" stroke="${SG_COL}" stroke-width="1.3"><title>${m.name}</title></circle>`
