@@ -1,6 +1,6 @@
 {
   "day": "2026-11-22",
-  "label": "today",
+  "label": "Nov 22",
   "median_f": 60.3,
   "p10_f": 58.2,
   "p90_f": 61.6,
@@ -15,5 +15,5 @@
   "lon": -120.57,
   "window": "10:00-17:00 local",
   "source": "https://open-meteo.com/en/docs/ensemble-api",
-  "fetched": "2026-11-23T07:39Z"
+  "fetched": "2026-11-23T08:16Z"
 }
