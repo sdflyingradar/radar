@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-23T01:07+00:00",
+ "generated": "2026-11-23T01:10+00:00",
  "sample": false,
  "calib": {
   "2026-11-22": {
@@ -33861,33 +33861,30 @@
   "ICON ens": "icon_global"
  },
  "log": [
-  "HRRR: ok (ncep_hrrr_conus), surface heat flux (6812 values)",
-  "HRRR trips: using the last good run, fetched 2.4 h ago",
-  "RRFS: ok (ncep_rrfs_conus), surface heat flux (8684 values)",
-  "RRFS trips: using the last good run, fetched 4.3 h ago",
-  "RRFS: ok (ncep_rrfs_conus), surface heat flux (3340 values)",
+  "HRRR: using the last good run, fetched 0.1 h ago",
+  "RRFS: using the last good run, fetched 0.1 h ago",
   "GFS: using the last good run, fetched 5.5 h ago",
   "ECMWF: using the last good run, fetched 5.5 h ago",
-  "ICON: using the last good run, fetched 5.4 h ago",
+  "ICON: using the last good run, fetched 5.5 h ago",
   "ens GFS ens: using the last good run, fetched 11.0 h ago",
-  "ens ECMWF ens: using the last good run, fetched 2.5 h ago",
-  "ens ICON ens: using the last good run, fetched 6.0 h ago",
+  "ens ECMWF ens: using the last good run, fetched 2.6 h ago",
+  "ens ICON ens: using the last good run, fetched 6.1 h ago",
   "NWS AFD: ok",
-  "gradient HRRR (ncep_hrrr_conus): 429 Minutely API request limit exceeded. Please try again in one minute.",
-  "gradient HRRR (gfs_hrrr): 429 Minutely API request limit exceeded. Please try again in one minute.",
-  "gradient RRFS (ncep_rrfs_conus): 429 Minutely API request limit exceeded. Please try again in one minute.",
-  "gradient RRFS (rrfs_conus): 429 Minutely API request limit exceeded. Please try again in one minute.",
-  "gradient RRFS (ncep_rrfs): 429 Minutely API request limit exceeded. Please try again in one minute.",
-  "gradient GFS (gfs_global): 429 Minutely API request limit exceeded. Please try again in one minute.",
-  "gradient GFS (ncep_gfs025): 429 Minutely API request limit exceeded. Please try again in one minute.",
-  "gradient GFS (gfs025): 429 Minutely API request limit exceeded. Please try again in one minute.",
-  "gradient ECMWF (ecmwf_ifs025): 429 Minutely API request limit exceeded. Please try again in one minute.",
-  "gradient ECMWF (ecmwf_ifs): 429 Minutely API request limit exceeded. Please try again in one minute.",
-  "gradient ICON (icon_global): 429 Minutely API request limit exceeded. Please try again in one minute.",
-  "gradient ICON (icon_seamless): 429 Minutely API request limit exceeded. Please try again in one minute.",
-  "clouds HRRR: failed (429 Minutely API request limit exceeded. Please try again in one minute.)",
-  "clouds RRFS: failed (429 Minutely API request limit exceeded. Please try again in one minute.)",
-  "clouds ECMWF: using the last good run, fetched 5.4 h ago",
+  "gradient HRRR (ncep_hrrr_conus): rescore: no fetching",
+  "gradient HRRR (gfs_hrrr): rescore: no fetching",
+  "gradient RRFS (ncep_rrfs_conus): rescore: no fetching",
+  "gradient RRFS (rrfs_conus): rescore: no fetching",
+  "gradient RRFS (ncep_rrfs): rescore: no fetching",
+  "gradient GFS (gfs_global): rescore: no fetching",
+  "gradient GFS (ncep_gfs025): rescore: no fetching",
+  "gradient GFS (gfs025): rescore: no fetching",
+  "gradient ECMWF (ecmwf_ifs025): rescore: no fetching",
+  "gradient ECMWF (ecmwf_ifs): rescore: no fetching",
+  "gradient ICON (icon_global): rescore: no fetching",
+  "gradient ICON (icon_seamless): rescore: no fetching",
+  "clouds HRRR: failed (rescore: no fetching)",
+  "clouds RRFS: failed (rescore: no fetching)",
+  "clouds ECMWF: using the last good run, fetched 5.5 h ago",
   "clouds ICON: using the last good run, fetched 4.4 h ago",
   "wind: GFS and ICON use ECMWF's winds where RRFS and ECMWF overlap"
  ],
@@ -33900,7 +33897,8 @@
    "status": "ok",
    "run": "2026-11-22T23:00+00:00",
    "fetched": "2026-11-23T01:07+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "RRFS",
@@ -33910,7 +33908,8 @@
    "status": "ok",
    "run": "2026-11-22T18:00+00:00",
    "fetched": "2026-11-23T01:07+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "GFS",
@@ -33921,7 +33920,7 @@
    "run": null,
    "fetched": "2026-11-22T19:40+00:00",
    "url": "https://open-meteo.com/en/docs",
-   "note": "cached, fetched 5 h ago"
+   "note": "cached, fetched 6 h ago"
   },
   {
    "name": "ECMWF",
@@ -33932,7 +33931,7 @@
    "run": "2026-11-22T06:00+00:00",
    "fetched": "2026-11-22T19:40+00:00",
    "url": "https://open-meteo.com/en/docs",
-   "note": "cached, fetched 5 h ago"
+   "note": "cached, fetched 6 h ago"
   },
   {
    "name": "ICON",
@@ -33985,7 +33984,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-11-23T00:45:00+00:00",
-   "fetched": "2026-11-23T01:07+00:00",
+   "fetched": "2026-11-23T01:10+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -33995,7 +33994,7 @@
    "id": "LAX-DAG",
    "status": "ok",
    "run": "2026-11-22T10:00Z",
-   "fetched": "2026-11-23T01:07+00:00",
+   "fetched": "2026-11-23T01:10+00:00",
    "url": "https://www.weather.gov/lox/LAXGRDNEW"
   },
   {
@@ -34005,7 +34004,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-23T01:07+00:00",
+   "fetched": "2026-11-23T01:10+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
@@ -45770,7 +45769,7 @@
       {
        "k": "Wind 1 pm",
        "v": "SW 2g4",
-       "sub": "later NNW 7g9",
+       "sub": "later NNW 7g9 \u00b7 gusty",
        "q": 0.93
       },
       {
