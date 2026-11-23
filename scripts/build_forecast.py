@@ -232,8 +232,8 @@ class Limited(Exception):
 def http_json(url: str, tries: int = 3, timeout: int = 90) -> object:
     if RESCORE and "open-meteo.com" in url:
         raise Limited("rescore: no fetching")
-    last = None
-    for i in range(tries):
+    last, waited, i = None, False, 0
+    while i < tries + waited:   # the one-minute wait gets its own try
         try:
             req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json"})
             with urllib.request.urlopen(req, timeout=timeout) as r:
@@ -244,13 +244,18 @@ def http_json(url: str, tries: int = 3, timeout: int = 90) -> object:
                     why = json.loads(e.read().decode()).get("reason") or ""
                 except Exception:  # noqa: BLE001
                     why = ""
+                if "minutely" in why.lower() and not waited:   # the per-minute limit clears in a minute: wait once
+                    waited = True
+                    time.sleep(61)
+                    continue
                 raise Limited(f"429 {why}".strip()[:120]) from None
             if e.code == 400:      # bad model id or variable: don't retry
                 raise
             last = e
         except Exception as e:     # network hiccup
             last = e
-        time.sleep(2 * (i + 1))
+        i += 1
+        time.sleep(2 * i)
     raise last  # type: ignore[misc]
 
 
@@ -1800,6 +1805,9 @@ def fetch_gradient(log):
                 bias, n, corr = model_gradient(hours, obs)
                 res["models"][name] = {"bias": bias, "n": n, "daily": daily_gradient(corr), "hourly": corr}
                 log.append(f"gradient {name}: bias {bias:+.1f} mb over {n} h")
+                break
+            except Limited as e:    # the other ids of this model would be refused too
+                log.append(f"gradient {name} ({mid}): {str(e)[:80]}")
                 break
             except Exception as e:  # noqa: BLE001
                 log.append(f"gradient {name} ({mid}): {str(e)[:80]}")

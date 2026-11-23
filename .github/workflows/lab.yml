@@ -66,7 +66,7 @@ jobs:
           git checkout HEAD -- scripts/build_forecast.py sites.json
           git config user.name "forecast-bot"
           git config user.email "forecast-bot@users.noreply.github.com"
-          git add -A data/lab
+          git add -A data/lab 2>/dev/null || true   # nothing there when the lab = live
           git diff --cached --quiet && exit 0
           git commit -m "Lab scores $(date -u +%Y-%m-%dT%H:%MZ)"
           for i in 1 2 3; do
