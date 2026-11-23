@@ -58,7 +58,7 @@ jobs:
           LAB: "1"
           LAB_NOTE: ${{ inputs.note || steps.rules.outputs.note }}
         run: python -u scripts/build_forecast.py --out data/lab/forecast.json
-      - name: Same rules as live: the lab shows the live scores
+      - name: "Same rules as live: the lab shows the live scores"
         if: steps.rules.outputs.same == '1'
         run: git rm -q --ignore-unmatch data/lab/forecast.json
       - name: Commit
