@@ -1,18 +1,14 @@
 {
- "generated": "2026-11-23T07:45Z",
+ "generated": "2026-11-23T08:13Z",
  "week": {
-  "visits": 941,
-  "events": 672
+  "visits": 943,
+  "events": 673
  },
  "month": {
-  "visits": 941,
-  "events": 672
+  "visits": 943,
+  "events": 673
  },
  "daily": [
-  {
-   "day": "2026-11-16",
-   "n": 0
-  },
   {
    "day": "2026-11-17",
    "n": 0
@@ -35,35 +31,39 @@
   },
   {
    "day": "2026-11-22",
-   "n": 211
+   "n": 213
+  },
+  {
+   "day": "2026-11-23",
+   "n": 0
   }
  ],
  "today": {
-  "visits": 211
+  "visits": 0
  },
  "pages": [
   {
    "path": "/radar",
    "title": "SD Flying Radar",
-   "count": 218,
+   "count": 219,
    "event": false,
    "days": {
     "2026-11-19": 104,
     "2026-11-20": 46,
     "2026-11-21": 36,
-    "2026-11-22": 32
+    "2026-11-22": 33
    }
   },
   {
    "path": "stay-start",
    "title": "Timed visit",
-   "count": 139,
+   "count": 140,
    "event": true,
    "days": {
     "2026-11-19": 23,
     "2026-11-20": 46,
     "2026-11-21": 35,
-    "2026-11-22": 35
+    "2026-11-22": 36
    }
   },
   {
@@ -220,7 +220,7 @@
  "refs": [
   {
    "name": "(direct)",
-   "count": 830
+   "count": 832
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
@@ -234,11 +234,11 @@
  "sizes": [
   {
    "name": "Phone",
-   "count": 703
+   "count": 771
   },
   {
    "name": "Computer",
-   "count": 136
+   "count": 154
   },
   {
    "name": "Large computer screen",
@@ -248,19 +248,19 @@
  "systems": [
   {
    "name": "iOS",
-   "count": 412
+   "count": 446
   },
   {
    "name": "Android",
-   "count": 291
+   "count": 325
   },
   {
    "name": "macOS",
-   "count": 123
+   "count": 128
   },
   {
    "name": "Windows",
-   "count": 29
+   "count": 42
   },
   {
    "name": "Linux",
@@ -270,22 +270,22 @@
  "locations": [
   {
    "name": "United States",
-   "count": 762
+   "count": 833
   },
   {
    "name": "Germany",
-   "count": 84
+   "count": 95
   },
   {
    "name": "Croatia",
+   "count": 6
+  },
+  {
+   "name": "Fiji",
    "count": 3
   },
   {
    "name": "Austria",
-   "count": 2
-  },
-  {
-   "name": "Fiji",
    "count": 2
   },
   {
