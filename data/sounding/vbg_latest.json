@@ -1,19 +1,19 @@
 {
-  "title": "vbg_1200Z_22_Nov_2026",
-  "source": "https://weather.uwyo.edu/wsgi/sounding?datetime=2026-11-22%2012:00:00&id=72393&type=TEXT:LIST&src=UNKNOWN",
-  "fetched": "2026-11-22T14:04Z",
+  "title": "vbg_0000Z_22_Nov_2026",
+  "source": "https://mesonet.agron.iastate.edu/cgi-bin/request/raob.py?station=KVBG&sts=2026-11-16T14:00Z&ets=2026-11-23T14:59Z",
+  "fetched": "2026-11-23T14:06Z",
   "surface_ft": 397,
-  "surface_temp_f": 48,
-  "surface_dewpoint_f": 44,
-  "cloudbase_ft_msl": 7500,
-  "trigger_temp_f": 76,
+  "surface_temp_f": 63,
+  "surface_dewpoint_f": 43,
+  "cloudbase_ft_msl": 9300,
+  "trigger_temp_f": 82,
   "forecast_high": {
     "day": "2026-11-22",
     "label": "Nov 22",
     "median_f": 60.3,
     "p10_f": 58.2,
     "p90_f": 61.6,
-    "hrrr_f": 60.9,
+    "hrrr_f": null,
     "members": 122,
     "models": [
       "GFS ens (31)",
@@ -24,33 +24,29 @@
     "lon": -120.57,
     "window": "10:00-17:00 local",
     "source": "https://open-meteo.com/en/docs/ensemble-api",
-    "fetched": "2026-11-23T10:31Z",
+    "fetched": "2026-11-23T14:05Z",
     "thermal_tops": {
-      "median_ft": 2100,
-      "low_ft": 700,
-      "high_ft": 2900
+      "median_ft": 400,
+      "low_ft": 400,
+      "high_ft": 2700
     }
   },
   "thermal_tops_ft": [
-    {
-      "surface_f": 50,
-      "top_ft": 400
-    },
     {
       "surface_f": 55,
       "top_ft": 400
     },
     {
       "surface_f": 60,
-      "top_ft": 1800
+      "top_ft": 400
     },
     {
       "surface_f": 65,
-      "top_ft": 4000
+      "top_ft": 3400
     },
     {
       "surface_f": 70,
-      "top_ft": 4800
+      "top_ft": 4400
     }
   ]
 }
