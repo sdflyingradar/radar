@@ -11,19 +11,20 @@
     "day": "2026-11-22",
     "label": "Nov 22",
     "median_f": 60.3,
-    "p10_f": 57.6,
+    "p10_f": 58.2,
     "p90_f": 61.6,
     "hrrr_f": 60.9,
-    "members": 71,
+    "members": 122,
     "models": [
       "GFS ens (31)",
+      "ECMWF ens (51)",
       "ICON ens (40)"
     ],
     "lat": 34.75,
     "lon": -120.57,
     "window": "10:00-17:00 local",
     "source": "https://open-meteo.com/en/docs/ensemble-api",
-    "fetched": "2026-11-23T08:58Z",
+    "fetched": "2026-11-23T10:29Z",
     "thermal_tops": {
       "median_ft": 2100,
       "low_ft": 700,
