@@ -3,8 +3,8 @@
   "label": "tomorrow",
   "median_f": 61.2,
   "p10_f": 59.6,
-  "p90_f": 62.7,
-  "hrrr_f": 63.1,
+  "p90_f": 62.8,
+  "hrrr_f": 62.8,
   "members": 122,
   "models": [
     "GFS ens (31)",
@@ -15,5 +15,5 @@
   "lon": -117.92,
   "window": "10:00-17:00 local",
   "source": "https://open-meteo.com/en/docs/ensemble-api",
-  "fetched": "2026-11-24T00:46Z"
+  "fetched": "2026-11-24T04:53Z"
 }
