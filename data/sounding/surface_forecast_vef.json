@@ -1,8 +1,8 @@
 {
   "day": "2026-11-23",
-  "label": "today",
+  "label": "Nov 23",
   "median_f": 59.8,
-  "p10_f": 57.8,
+  "p10_f": 57.3,
   "p90_f": 60.8,
   "hrrr_f": 60.8,
   "members": 122,
@@ -15,5 +15,5 @@
   "lon": -115.18,
   "window": "10:00-17:00 local",
   "source": "https://open-meteo.com/en/docs/ensemble-api",
-  "fetched": "2026-11-24T04:54Z"
+  "fetched": "2026-11-24T10:04Z"
 }
