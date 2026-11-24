@@ -86,10 +86,10 @@ a{color:#2563eb}
     // which launch this chart shows (nominal 00Z/12Z), for the balloon timeline
     const tm = snd.title.match(/_(\d\d)00Z_(\d\d)_(\w{3})_(\d{4})$/);
     const shown = tm ? new Date(Date.UTC(+tm[4], ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].indexOf(tm[3]), +tm[2], +tm[1])) : null;
-    // a red note on top when the balloon is more than 14 h old (a flight missed or not posted)
+    // a red note on top when the balloon is more than 24 h old (two flights missed or not posted)
     if (shown) {
       const h = (Date.now() - shown) / 3.6e6;
-      if (h > 14) {
+      if (h > 24) {
         const when = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', hour: 'numeric', month: 'short', day: 'numeric' }).format(shown);
         const el = document.getElementById('stale');
         el.innerHTML = `<b>Old balloon:</b> no new ${INFO.name} flight since ${when} (${Math.round(h)} h ago). The chart shows that flight.`;
