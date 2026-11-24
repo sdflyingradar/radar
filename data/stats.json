@@ -1,12 +1,12 @@
 {
- "generated": "2026-11-24T00:48Z",
+ "generated": "2026-11-24T01:39Z",
  "week": {
-  "visits": 1055,
-  "events": 762
+  "visits": 1058,
+  "events": 764
  },
  "month": {
-  "visits": 1055,
-  "events": 762
+  "visits": 1058,
+  "events": 764
  },
  "daily": [
   {
@@ -35,37 +35,37 @@
   },
   {
    "day": "2026-11-23",
-   "n": 112
+   "n": 115
   }
  ],
  "today": {
-  "visits": 112
+  "visits": 115
  },
  "pages": [
   {
    "path": "/radar",
    "title": "SD Flying Radar",
-   "count": 241,
+   "count": 242,
    "event": false,
    "days": {
     "2026-11-19": 104,
     "2026-11-20": 46,
     "2026-11-21": 36,
     "2026-11-22": 33,
-    "2026-11-23": 22
+    "2026-11-23": 23
    }
   },
   {
    "path": "stay-start",
    "title": "Timed visit",
-   "count": 162,
+   "count": 163,
    "event": true,
    "days": {
     "2026-11-19": 23,
     "2026-11-20": 46,
     "2026-11-21": 35,
     "2026-11-22": 36,
-    "2026-11-23": 22
+    "2026-11-23": 23
    }
   },
   {
@@ -123,14 +123,14 @@
   {
    "path": "do-day",
    "title": "Looked at another day",
-   "count": 56,
+   "count": 57,
    "event": true,
    "days": {
     "2026-11-19": 11,
     "2026-11-20": 17,
     "2026-11-21": 12,
     "2026-11-22": 12,
-    "2026-11-23": 4
+    "2026-11-23": 5
    }
   },
   {
@@ -232,7 +232,7 @@
  "refs": [
   {
    "name": "(direct)",
-   "count": 936
+   "count": 939
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
