@@ -13,7 +13,7 @@
     "median_f": 59.7,
     "p10_f": 57.8,
     "p90_f": 60.8,
-    "hrrr_f": 61.3,
+    "hrrr_f": 60.8,
     "members": 122,
     "models": [
       "GFS ens (31)",
@@ -24,7 +24,7 @@
     "lon": -115.18,
     "window": "10:00-17:00 local",
     "source": "https://open-meteo.com/en/docs/ensemble-api",
-    "fetched": "2026-11-23T20:24Z",
+    "fetched": "2026-11-24T00:41Z",
     "thermal_tops": {
       "median_ft": 5900,
       "low_ft": 5100,
