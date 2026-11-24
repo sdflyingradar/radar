@@ -122,7 +122,15 @@ a{color:#2563eb}
     // the balloon's path: published track if the data has positions, else reconstructed from the winds
     try {
       let tr = null, how = '';
-      try { const r2 = await fetch(INFO.track + '?' + Date.now()); if (r2.ok) { tr = trackFromCSV(await r2.text()); how = 'published track'; } } catch (e) {}
+      try {
+        const r2 = await fetch(INFO.track + '?' + Date.now());
+        if (r2.ok) {
+          const csv = await r2.text(), t0 = (csv.split(/\r?\n/)[1] || '').split(',')[0];
+          const at = Date.parse(t0.replace(' ', 'T') + 'Z');
+          // only when the track is this balloon's (a track left over from an earlier flight would show the wrong path)
+          if (shown && isFinite(at) && Math.abs(at - shown) < 3 * 3.6e6) { tr = trackFromCSV(csv); how = 'published track'; }
+        }
+      } catch (e) {}
       if (!tr) { tr = trackFromWinds(snd.levels, INFO.lat, INFO.lon); how = 'reconstructed from the winds, assuming the usual ~1,000 ft/min climb'; }
       // the last 5 earlier flights from the archive, as grey lines with a tiny local date/time
       const past = [];

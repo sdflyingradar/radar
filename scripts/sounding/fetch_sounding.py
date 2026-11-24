@@ -81,6 +81,17 @@ def main():
                 with open(os.path.join(OUT, name), "w") as f:
                     f.write(header + text)
             print(f"saved {c:%Y-%m-%d %HZ} from {fn.__name__}")
+            # the balloon's own track (positions in the high-resolution data), so the path map shows this flight
+            try:
+                csv = get(f"https://weather.uwyo.edu/wsgi/sounding?datetime={c:%Y-%m-%d}%20{c:%H}:00:00&id={WMO}&type=TEXT:CSV&src=UNKNOWN")
+                head = csv.strip().splitlines()[0].lower() if csv.strip() else ""
+                if "lat" in head and "lon" in head:
+                    os.makedirs(os.path.join(OUT, "stations"), exist_ok=True)
+                    with open(os.path.join(OUT, "stations", "NKX_track.csv"), "w") as f:
+                        f.write(csv)
+                    print("saved the balloon track")
+            except Exception as e:  # noqa: BLE001
+                print(f"no balloon track ({str(e)[:80]})")
             return 0
     # no new San Diego balloon (sometimes one isn't flown or posted): keep the last one and carry on, so the
     # nearby balloons and the forecast high still update
