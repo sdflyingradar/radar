@@ -72,9 +72,9 @@
 <circle cx="338.9" cy="519.1" r="3.6" fill="#fff" stroke="#0000ff" stroke-width="1.8"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#00c400" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="362.8,795.7 360.6,791.3 360.6,787.5 359.5,776.1 356.2,741.7 352.6,704.7 349.8,674.9 340.1,645.0 335.2,622.8 322.9,567.4 284.1,489.4 266.9,457.0 264.7,419.8 247.5,408.7 183.9,393.2 151.6,388.7 132.2,363.9 130.1,361.6 78.3,331.8 65.4,306.2 41.7,275.4 7.2,212.3 -69.4,192.4 -117.7,179.9 -148.3,159.6 -152.2,157.0 -59.6,139.1 -3.5,81.5"/>
 <polyline clip-path="url(#c0)" fill="none" stroke="#ff0000" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="459.7,795.7 446.8,791.3 446.8,787.5 441.6,776.1 425.8,741.7 408.8,704.7 395.1,674.9 386.5,645.0 377.8,622.8 356.3,567.4 328.3,489.4 317.5,457.0 302.4,419.8 298.1,408.7 302.4,393.2 302.4,388.7 293.8,363.9 291.7,361.6 304.6,331.8 302.4,306.2 311.0,275.4 298.1,212.3 307.4,192.4 313.2,179.9 311.3,159.6 311.0,157.0 306.7,139.1 298.1,81.5"/>
-<polyline clip-path="url(#c0)" fill="none" stroke="#e07b00" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round" points="502.4,795.7 310.5,395.0"/>
-<circle cx="310.5" cy="395.0" r="4.6" fill="#e07b00" stroke="#fff" stroke-width="1.8"/>
-<text x="502.4" y="840" text-anchor="middle" font-size="12" font-weight="800" fill="#e07b00">74</text>
+<polyline clip-path="url(#c0)" fill="none" stroke="#e07b00" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round" points="501.8,795.7 310.5,396.3"/>
+<circle cx="310.5" cy="396.3" r="4.6" fill="#e07b00" stroke="#fff" stroke-width="1.8"/>
+<text x="501.8" y="840" text-anchor="middle" font-size="12" font-weight="800" fill="#e07b00">74</text>
 <text x="450.4" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">65</text>
 <text x="480.3" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">70</text>
 <text x="540.1" y="840" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d08a00">80</text>
@@ -88,9 +88,9 @@
 <path d="M600 345.4L605 345.4" stroke="#3b6fd8" stroke-width="1.2"/>
 <rect x="605" y="337.9" width="29.2" height="15" rx="3.5" fill="#3b6fd8"/>
 <text x="619.6" y="349.2" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">INV</text>
-<path d="M600 395.0L605 395.0" stroke="#e07b00" stroke-width="1.2"/>
-<rect x="605" y="387.5" width="61.2" height="15" rx="3.5" fill="#e07b00"/>
-<text x="635.6" y="398.8" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Top 6.4k</text>
+<path d="M600 396.3L605 396.3" stroke="#e07b00" stroke-width="1.2"/>
+<rect x="605" y="388.8" width="61.2" height="15" rx="3.5" fill="#e07b00"/>
+<text x="635.6" y="400.1" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Top 6.4k</text>
 <path d="M600 519.1L605 519.1" stroke="#0000ff" stroke-width="1.2"/>
 <rect x="605" y="511.6" width="54.8" height="15" rx="3.5" fill="#0000ff"/>
 <text x="632.4" y="522.9" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">CB 4.6k</text>

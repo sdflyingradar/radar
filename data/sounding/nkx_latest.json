@@ -10,7 +10,7 @@
   "forecast_high": {
     "day": "2026-11-24",
     "label": "Nov 24",
-    "median_f": 73.7,
+    "median_f": 73.6,
     "p10_f": 70.8,
     "p90_f": 75.1,
     "hrrr_f": 71.9,
@@ -24,7 +24,7 @@
     "lon": -117.12,
     "window": "10:00-17:00 local",
     "source": "https://open-meteo.com/en/docs/ensemble-api",
-    "fetched": "2026-11-25T09:46Z",
+    "fetched": "2026-11-25T13:26Z",
     "thermal_tops": {
       "median_ft": 6400,
       "low_ft": 5100,
