@@ -1,12 +1,8 @@
 {
- "generated": "2026-11-25T20:10Z",
- "week": {
-  "visits": 1450,
-  "events": 1069
- },
+ "generated": "2026-11-25T20:46Z",
  "month": {
-  "visits": 1450,
-  "events": 1069
+  "visits": 1453,
+  "events": 1071
  },
  "daily": [
   {
@@ -35,17 +31,17 @@
   },
   {
    "day": "2026-11-25",
-   "n": 103
+   "n": 106
   }
  ],
  "today": {
-  "visits": 103
+  "visits": 106
  },
  "pages": [
   {
    "path": "/radar",
    "title": "SD Flying Radar",
-   "count": 308,
+   "count": 309,
    "event": false,
    "days": {
     "2026-11-19": 104,
@@ -54,13 +50,13 @@
     "2026-11-22": 33,
     "2026-11-23": 32,
     "2026-11-24": 40,
-    "2026-11-25": 17
+    "2026-11-25": 18
    }
   },
   {
    "path": "stay-start",
    "title": "Timed visit",
-   "count": 236,
+   "count": 237,
    "event": true,
    "days": {
     "2026-11-19": 23,
@@ -69,7 +65,7 @@
     "2026-11-22": 36,
     "2026-11-23": 32,
     "2026-11-24": 44,
-    "2026-11-25": 20
+    "2026-11-25": 21
    }
   },
   {
@@ -150,7 +146,7 @@
   {
    "path": "app-open",
    "title": "Opened from home screen",
-   "count": 58,
+   "count": 59,
    "event": true,
    "days": {
     "2026-11-19": 13,
@@ -159,7 +155,7 @@
     "2026-11-22": 11,
     "2026-11-23": 3,
     "2026-11-24": 9,
-    "2026-11-25": 6
+    "2026-11-25": 7
    }
   },
   {
@@ -259,7 +255,7 @@
  "refs": [
   {
    "name": "(direct)",
-   "count": 1299
+   "count": 1302
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
@@ -273,7 +269,7 @@
  "sizes": [
   {
    "name": "Phone",
-   "count": 1141
+   "count": 1144
   },
   {
    "name": "Tablet",
@@ -295,7 +291,7 @@
   },
   {
    "name": "Android",
-   "count": 480
+   "count": 483
   },
   {
    "name": "macOS",
@@ -317,7 +313,7 @@
   },
   {
    "name": "Germany",
-   "count": 128
+   "count": 131
   },
   {
    "name": "Fiji",
