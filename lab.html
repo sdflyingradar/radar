@@ -954,6 +954,10 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
 .dtsw.sm input:checked + i::after { transform: translateX(10px); }
 @media (max-width: 640px) { .tnav { gap: 6px; } .tnav .tnb { min-width: 58px; padding: 5px 10px; } .tnav .tmid { gap: 8px; } }
 .dtsw input:focus-visible + i { outline: 2px solid #c26a24; outline-offset: 2px; }
+/* the opened site: every warning, styled like the card chips (red warnings, green good news) */
+html body .allw .rx { display: inline-flex; align-items: center; gap: 4px; margin: 0; height: 22px; padding: 0 8px; border-radius: 5px; background: #fff !important; color: #c23434 !important; box-shadow: 0 0 0 1px #efc4c4 !important; font-size: .62rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+html body .allw .rx.ok { color: #2f7d3a !important; box-shadow: 0 0 0 1px #bfe0c4 !important; }
+html body .allw .rx .ic-svg, html body .allw .rx .ic { color: inherit; width: 13px; height: 13px; }
 </style>
 <link rel="stylesheet" href="scripts/ui/grid.css?v=202611251228">
 <link rel="stylesheet" href="scripts/ui/first.css?v=202611161220">
@@ -1491,7 +1495,7 @@ function siteFacts(c, s) {
   /* scripts/ui/facts.js?v=202611182152 colours the facts (window.siteFactsHook) */
   return window.siteFactsHook ? window.siteFactsHook(out, c, s, { LIFT, LAUNCH_IC, ALOFT_IC }) : out;
 }
-function sitePills(c) {
+function sitePills(c, full) {   // full: the opened site shows every warning, nothing trimmed
   const adj = c.adj || [];
   const take = (re) => adj.filter(([t]) => re.test(t)).reduce((x, [, v]) => x + v, 0);
   const dv = () => "";   // the points each item takes off are shown when the site is opened (What made the score)
@@ -1503,7 +1507,7 @@ function sitePills(c) {
   /* warnings; Torrey shows all of them across its flying day, with when they show up (am, midday, pm) */
   const when = c.when || {};
   const SAME = { offshore: /^offshore/, gusty: /gust/, aloft: /top of lift/, windy: /too windy|blown/, cross: /outside the launch window/ };   // no pill twice
-  (c.why || []).filter((k) => WHY_TXT[k] && !/rain|showers|cape/.test(k) && !(SAME[k] && adj.some(([t]) => SAME[k].test(t)))).slice(0, Object.keys(when).length ? 4 : 2)
+  (c.why || []).filter((k) => WHY_TXT[k] && !/rain|showers|cape/.test(k) && !(SAME[k] && adj.some(([t]) => SAME[k].test(t)))).slice(0, full ? 99 : Object.keys(when).length ? 4 : 2)
     .forEach((k) => out.push(`<span class="rx">${ico(k === "lid" || k === "weak" ? "lid" : k === "windy" || k === "gusty" ? "windy" : "warn")}${esc(WHY_TXT[k])}${when[k] ? ` <span class="dv">${esc(when[k])}</span>` : ""}</span>`));
   /* deductions as short chips (the full wording and the points stay in the detail view); the ones that only
      cap a 5 at 4 don't get a chip */
@@ -1513,7 +1517,7 @@ function sitePills(c) {
     [/over the back aloft/, "over the back aloft"], [/off season/, "off season"], [/NW to N aloft/, "NW–N"], [/^offshore .*no-go/, "offshore flow aloft"], [/^offshore .*2 at most/, "offshore"], [/^offshore /, "light offshore"],
     [/^under \d+ mph most of the day/, "too light"], [/^below [\d,]+ ft/, "low tops"], [/breeze into launch/, "light or cross on launch"]];
   const seen = new Set(out.map((x) => x.replace(/<i[^>]*>.*?<\/i>/g, "").replace(/<[^>]+>/g, "").trim().toLowerCase()));
-  adj.filter(([t]) => !/edge of the launch window/.test(t)).filter(([t]) => !/rain|sun|4 at most$/.test(t) || /outside the launch window|blown|calm|season/.test(t)).forEach(([t]) => {
+  adj.filter(([t]) => full || !/edge of the launch window/.test(t)).filter(([t]) => !(full ? /rain|sun/ : /rain|sun|4 at most$/).test(t) || /outside the launch window|blown|calm|season/.test(t)).forEach(([t]) => {
     // a chip says what's wrong, never how the score works (no ": 3 at most")
     const s = (SHORT.find(([re]) => re.test(t)) || [null, t.replace(/: (\d at most|no-go|too windy)$/, "")])[1];
     if (seen.has(s.toLowerCase())) return;
@@ -1757,6 +1761,7 @@ function detail(d, s, inline) {
       <h3 style="font-size:1.1rem;font-family:var(--font-body);font-weight:600">${esc(s.name)} <span class="muted" style="font-size:.9rem;font-weight:500">${r1(c.rating)}/5</span></h3>${labelHtml(c)}</div>
     ${c.note && !/thermals/i.test(c.note) ? `<p class="note">${esc(c.note)}</p>` : ""}`;
   return `${head}
+    ${(() => { const w = sitePills(c, true); return w ? `<div class="dsec"><span class="dh">Warnings</span><span class="spills allw" style="display:flex;flex-wrap:wrap;gap:5px">${w}</span></div>` : ""; })()}
     ${hm ? `<div class="dsec"><span class="dh">Launch wind by model</span>${modelWindTable(c)}</div>` : ""}
     ${tp ? `<div class="dsec">${tp}</div>` : hourStrip ? `<div class="dsec"><span class="dh">Hour by hour</span>${hourStrip}</div>` : ""}
     ${window.scoreLedger ? window.scoreLedger(c, qv) : ""}
