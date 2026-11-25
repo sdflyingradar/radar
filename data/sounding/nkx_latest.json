@@ -1,12 +1,12 @@
 {
-  "title": "nkx_0000Z_24_Nov_2026",
-  "source": "https://www.spc.noaa.gov/exper/soundings/26112400_OBS/NKX.txt",
-  "fetched": "2026-11-24T22:57Z",
+  "title": "nkx_1200Z_25_Nov_2026",
+  "source": "https://www.spc.noaa.gov/exper/soundings/26112512_OBS/NKX.txt",
+  "fetched": "2026-11-25T15:09Z",
   "surface_ft": 449,
-  "surface_temp_f": 67,
-  "surface_dewpoint_f": 50,
-  "cloudbase_ft_msl": 4600,
-  "trigger_temp_f": 69,
+  "surface_temp_f": 53,
+  "surface_dewpoint_f": 38,
+  "cloudbase_ft_msl": 13700,
+  "trigger_temp_f": 98,
   "forecast_high": {
     "day": "2026-11-24",
     "label": "Nov 24",
@@ -24,33 +24,33 @@
     "lon": -117.12,
     "window": "10:00-17:00 local",
     "source": "https://open-meteo.com/en/docs/ensemble-api",
-    "fetched": "2026-11-25T13:26Z",
+    "fetched": "2026-11-25T15:09Z",
     "thermal_tops": {
-      "median_ft": 6400,
-      "low_ft": 5100,
-      "high_ft": 6900
+      "median_ft": 2900,
+      "low_ft": 2300,
+      "high_ft": 3600
     }
   },
   "thermal_tops_ft": [
     {
       "surface_f": 65,
-      "top_ft": 500
+      "top_ft": 700
     },
     {
       "surface_f": 70,
-      "top_ft": 4500
+      "top_ft": 1900
     },
     {
       "surface_f": 75,
-      "top_ft": 6900
+      "top_ft": 3500
     },
     {
       "surface_f": 80,
-      "top_ft": 7500
+      "top_ft": 5300
     },
     {
       "surface_f": 85,
-      "top_ft": 8200
+      "top_ft": 6300
     }
   ]
 }

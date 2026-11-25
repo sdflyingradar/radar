@@ -1,18 +1,19 @@
 {
   "day": "2026-11-25",
   "label": "today",
-  "median_f": 76.0,
-  "p10_f": 73.8,
-  "p90_f": 77.6,
-  "hrrr_f": 77.8,
-  "members": 71,
+  "median_f": 76.4,
+  "p10_f": 74.0,
+  "p90_f": 77.7,
+  "hrrr_f": 78.8,
+  "members": 122,
   "models": [
     "GFS ens (31)",
+    "ECMWF ens (51)",
     "ICON ens (40)"
   ],
   "lat": 32.87,
   "lon": -114.33,
   "window": "10:00-17:00 local",
   "source": "https://open-meteo.com/en/docs/ensemble-api",
-  "fetched": "2026-11-25T13:27Z"
+  "fetched": "2026-11-25T15:10Z"
 }
