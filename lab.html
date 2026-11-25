@@ -955,7 +955,7 @@ html body details.day:not(#story) .list .srow.srow .spills { gap: 3px !important
 @media (max-width: 640px) { .tnav { gap: 6px; } .tnav .tnb { min-width: 58px; padding: 5px 10px; } .tnav .tmid { gap: 8px; } }
 .dtsw input:focus-visible + i { outline: 2px solid #c26a24; outline-offset: 2px; }
 </style>
-<link rel="stylesheet" href="scripts/ui/grid.css?v=202611182038">
+<link rel="stylesheet" href="scripts/ui/grid.css?v=202611251228">
 <link rel="stylesheet" href="scripts/ui/first.css?v=202611161220">
 <script src="scripts/ui/stats.js?v=202611191636" defer></script>
 <script src="scripts/ui/install.js?v=202611210153" defer></script>
@@ -1524,7 +1524,7 @@ function sitePills(c) {
   if ((c.tags || []).includes("windy") && ![...seen].some((x) => /too windy|blown out|strong wind aloft/.test(x)))
     out.push(`<span class="rx">${ico("windy")}windy</span>`);
   /* a strong offshore gradient whose east wind doesn't reach the site: a warning, no points */
-  (c.tags || []).filter((t) => /^offshore gradient/.test(t)).forEach((t) => out.push(`<span class="rx">${ico("warn")}${esc(t)}</span>`));
+  (c.tags || []).filter((t) => /^offshore gradient/.test(t)).forEach((t) => out.push(`<span class="rx" title="${esc(t)}: offshore flow, not reaching the site (no points off)">${ico("warn")}offshore gradient</span>`));
   (c.tags || []).filter((t) => /^glass-off$|switch|no launch window/.test(t))
     .forEach((t) => out.push(`<span class="rx">${t === "glass-off" ? SIG.glass : ico("Switch day")}${esc(t)}</span>`));
   /* good news first, then warnings, then what takes points off, the worst last */

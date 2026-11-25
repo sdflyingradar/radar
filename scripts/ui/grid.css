@@ -21,7 +21,8 @@ html[data-lay] body details.day:not(#story) .list .srow .dscore .dsl { display: 
 html[data-lay="grid"] body details.day:not(#story) .list .srow .tx { display: block; font-size: .7rem; line-height: 1.35; }
 html[data-lay="grid"] body details.day:not(#story) .list .srow .tx .facts { font-size: .8rem; }
 html[data-lay="grid"] body details.day:not(#story) .list .srow .mstrip { max-width: none; margin-top: auto; padding-top: 10px; }
-html[data-lay="grid"] body details.day:not(#story) .list .srow .spills .rx:nth-child(n+3) { display: none; }
+/* two chips fit a grid card: keep the last two, the worst ones (the chips are sorted good news first, worst last) */
+html[data-lay="grid"] body details.day:not(#story) .list .srow .spills .rx:nth-last-child(n+3) { display: none; }
 html[data-lay="grid"] body details.day:not(#story) .list .srow .wtab { display: none; }
 /* Torrey takes the whole row in the grid and keeps its wind table */
 html[data-lay="grid"] body details.day:not(#story) .list .srow[data-site="torrey"] { grid-column: 1 / -1; }
