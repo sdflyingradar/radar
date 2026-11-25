@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-25T07:32Z",
+ "generated": "2026-11-25T08:55Z",
  "week": {
   "visits": 1347,
   "events": 988
@@ -9,10 +9,6 @@
   "events": 988
  },
  "daily": [
-  {
-   "day": "2026-11-18",
-   "n": 0
-  },
   {
    "day": "2026-11-19",
    "n": 281
@@ -36,10 +32,14 @@
   {
    "day": "2026-11-24",
    "n": 241
+  },
+  {
+   "day": "2026-11-25",
+   "n": 0
   }
  ],
  "today": {
-  "visits": 241
+  "visits": 0
  },
  "pages": [
   {
@@ -261,7 +261,7 @@
  "sizes": [
   {
    "name": "Phone",
-   "count": 985
+   "count": 1060
   },
   {
    "name": "Tablet",
@@ -269,7 +269,7 @@
   },
   {
    "name": "Computer",
-   "count": 235
+   "count": 249
   },
   {
    "name": "Large computer screen",
@@ -279,15 +279,15 @@
  "systems": [
   {
    "name": "iOS",
-   "count": 565
+   "count": 618
   },
   {
    "name": "Android",
-   "count": 428
+   "count": 450
   },
   {
    "name": "macOS",
-   "count": 208
+   "count": 222
   },
   {
    "name": "Windows",
@@ -301,11 +301,11 @@
  "locations": [
   {
    "name": "United States",
-   "count": 1130
+   "count": 1216
   },
   {
    "name": "Germany",
-   "count": 110
+   "count": 113
   },
   {
    "name": "Fiji",
