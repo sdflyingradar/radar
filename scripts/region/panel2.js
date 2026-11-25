@@ -11,7 +11,7 @@ const P2_LIFT = [[0, '#ffeedd'], [0.5, '#fdd0a2'], [1, '#fbb068'], [1.5, '#f8903
 // wind, mph (from the usual pilot scale in km/h: 0-6 calm, 7-14 fine, 15-24 noticeable, 25-30 strong, 31-36 stop, over 36 no-go)
 const P2_WIND = [[0, '#ffffff'], [4, '#3fc25a'], [9.5, '#f5d90a'], [15.5, '#f08a1c'], [19, '#e0262a'], [22.5, '#111111']];   // over 36 km/h: black (only in this chart; tiles and classic stop at red)
 // the radar's own verdicts and colours: 1 no-go (red), 2 marginal (orange), 3 site fly (yellow), 4 XC (green), 5 great XC (blue)
-const P2_VERDICT = [[1, '#d8402f', 'No-go'], [2, '#ee8a1c', 'Marginal'], [3, '#f1c72b', 'Site fly'], [4, '#3aa457', 'XC'], [5, '#2f7fcf', 'Great XC']];
+const P2_VERDICT = [[1, '#d8402f', 'No-go'], [2, '#f2a623', 'Marginal'], [3, '#d6cd34', 'Site fly'], [4, '#3aa457', 'XC'], [5, '#2f7fcf', 'Great XC']];
 const P2_RATE = (s) => s == null ? '#e5e7eb' : P2_VERDICT[Math.max(0, Math.min(4, Math.round(s) - 1))][1];
 const p2pick = (scale, v) => { let c = scale[0][1]; for (const [k, col] of scale) if (v >= k - 1e-9) c = col; return c; };
 const P2_OKTA = (n) => ['#eef4fb', '#e3e7ec', '#d6dbe1', '#c6ccd3', '#b4bbc3', '#9fa7b0', '#8a929c', '#747c86', '#5f6670'][Math.max(0, Math.min(8, n | 0))];

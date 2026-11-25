@@ -6,7 +6,7 @@ FM.H = Math.round(FM.W * (FM.lat1 - FM.lat0) / ((FM.lon1 - FM.lon0) * Math.cos(3
 const fx = lo => (lo - FM.lon0) / (FM.lon1 - FM.lon0) * FM.W;
 const fy = la => (FM.lat1 - la) / (FM.lat1 - FM.lat0) * FM.H;
 const P = ([la, lo]) => `${fx(lo).toFixed(1)},${fy(la).toFixed(1)}`;
-const SCORE_COL = { 1: '#d8402f', 2: '#ee8a1c', 3: '#f1c72b', 4: '#3aa457', 5: '#2f7fcf' };
+const SCORE_COL = { 1: '#d8402f', 2: '#f2a623', 3: '#d6cd34', 4: '#3aa457', 5: '#2f7fcf' };
 function scoreCol(r) {
   const x = Math.max(1, Math.min(5, r)), lo = Math.floor(x), hi = Math.min(5, lo + 1), t = x - lo;
   const h = c => [1, 3, 5].map(k => parseInt(c.slice(k, k + 2), 16));

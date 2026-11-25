@@ -109,7 +109,7 @@ function dayScoreSVG(S, win) {
   const W = 760, H = 74, L = 40, R = 14, T = 8, B = 18;
   const now = Date.now(), t0 = win ? win.t0 : now - 2 * 864e5, t1 = win ? win.t1 : now + 7 * 864e5;
   const X = (t) => L + (t - t0) / (t1 - t0) * (W - L - R), Y = (v) => T + (5 - v) / 4 * (H - T - B), f = (v) => v.toFixed(1);
-  const COL = ['#d8402f', '#ee8a1c', '#f1c72b', '#3aa457', '#2f7fcf'], col = (v) => COL[Math.max(1, Math.min(5, Math.round(v))) - 1];
+  const COL = ['#d8402f', '#f2a623', '#d6cd34', '#3aa457', '#2f7fcf'], col = (v) => COL[Math.max(1, Math.min(5, Math.round(v))) - 1];
   const noon = (d) => Date.parse(d + 'T20:00:00Z');                       // local noon (PST)
   const pts = Object.entries(S || {}).map(([d, x]) => [noon(d), x.s, !!x.obs]).filter(([t]) => t >= t0 - 864e5 && t <= t1 + 864e5).sort((a, b) => a[0] - b[0]);
   const o = [`<svg viewBox="0 0 ${W} ${H}" class="dscore" role="img" aria-label="San Diego day score"><defs><clipPath id="dsc"><rect x="${L}" y="0" width="${W - L - R}" height="${H}"/></clipPath></defs>`];
