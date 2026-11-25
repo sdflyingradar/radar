@@ -1018,9 +1018,14 @@ def score_hour(site, hr, i, levels, elev_m):
             # a gusty but otherwise fine hour still mostly counts on the launch-wind bar (0.8); too windy = 0
             launch_pts = 0.8 * (launch_pts or 0.0) if gcat == 1 else 0.0
             good_launch = False
-    # offshore through the flying layer: this hour is a no-go however the valley wind looks
-    if off_mph is not None and off_mph >= onog.get("mph", 6):
-        qx("offshore", 0.0); codes.append("offshore"); launch = "offshore aloft"
+    # offshore through the flying layer: under OFF_FREE mph costs nothing, then the hour loses more the stronger it
+    # blows, down to a no-go at OFF_FULL mph however the valley wind looks
+    if off_mph is not None and off_mph >= OFF_FREE:
+        qx("offshore", 1.0 - clamp((off_mph - OFF_FREE) / (OFF_FULL - OFF_FREE)))
+        if off_mph >= onog.get("mph", 6):
+            codes.append("offshore")
+        if off_mph >= OFF_FULL:
+            launch = "offshore aloft"
     # wind aloft: strength and direction
     if a_max is not None and a_max > site["aloft_max_kt"]:
         if site["kind"] in ("ridge", "convergence"):
@@ -1519,9 +1524,11 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
                                 and not any(wrap_in(sc["tw"][0], c[0], c[1]) for c in site.get("cross", [])))
                             / len(win)) if win else 0.0,
         # share of the window with offshore wind at the site's "offshore_nogo" speed or more below its top_ft
-        "offshore_share": (sum(1 for _, sc in win if (sc.get("offshore") or 0) >= site["offshore_nogo"].get("mph", 6))
+        "offshore_share": (sum(1 for _, sc in win if (sc.get("offshore") or 0) >= OFF_FULL)
                            / len(win)) if win and site.get("offshore_nogo") else 0.0,
         # lighter offshore through the window: 3+ and 4+ mph (graded steps before the no-go)
+        # the window's average offshore wind in the flying layer (mph), for the graded day deduction
+        "off_mean": (sum((sc.get("offshore") or 0) for _, sc in win) / len(win)) if win and site.get("offshore_nogo") else 0.0,
         "off3_share": (sum(1 for _, sc in win if (sc.get("offshore") or 0) >= OFF_STEP[0]) / len(win)) if win and site.get("offshore_nogo") else 0.0,
         "off4_share": (sum(1 for _, sc in win if (sc.get("offshore") or 0) >= OFF_STEP[1]) / len(win)) if win and site.get("offshore_nogo") else 0.0,
         # share of the window with a sustained breeze: 10 mph+ on launch or 13 mph+ at the top of lift ("windy" chip)
@@ -1540,6 +1547,8 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "into": sum(1 for s in blk if s.get("into")) / len(blk),
         "gust12": sum(1 for s in blk if s.get("gcat", 0) >= 1) / len(blk),
         "gust10": sum(1 for s in blk if (s.get("lg") or 0) > 10) / len(blk),
+        # the window's typical gust at launch (median), for the graded gust deduction
+        "gust_med": median([s.get("lg") or 0 for s in blk]),
         "gust15": sum(1 for s in blk if (s.get("lg") or 0) > 15) / len(blk),
         "strong": sum(1 for s in blk if (s.get("lw") or 0) >= 10 and (s.get("lg") or 0) >= 15) / len(blk),
         "top_wind": (lambda v: sorted(v)[len(v) // 2] if v else None)([s["tw"][1] * 1.15078 for s in blk if s.get("tw")]),
@@ -1650,6 +1659,7 @@ GRAD_SA, GRAD_WEAK = -4.0, -2.0          # alone a Santa Ana / with some offshor
 # offshore sites (offshore_nogo): light offshore through the window costs before the no-go. East wind in the flying
 # layer of 3+ mph, or LAX-DAG of -3 mb or less: -1; 4+ mph, or -4 mb or less: 2 at most; 6+ mph: no-go
 OFF_STEP = (3.0, 4.0)
+OFF_FREE, OFF_FULL = 4.0, 13.0           # offshore in the flying layer costs from 4 mph, a no-go from 13 mph
 GRAD_STEP = (-3.0, -4.0)
 OBS_SLP = {}                              # the latest sea-level pressure at both airports (for the map)
 GRAD = {}                                 # filled in main(): {"obs": {...}, "models": {name: {"bias", "daily", "n"}}}
@@ -2379,11 +2389,16 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 if gf("gust18") >= 0.5:
                     caps.append((1.4, "gusts over 18 mph: too windy"))
                 else:
-                    for key, cut, lab in (("gust15", 1.5, "gusts over 15 mph"), ("gust12", 1.0, "gusts over 12 mph"),
-                                          ("gust10", 0.5, "gusts over 10 mph")):
-                        if gf(key) >= 0.5:
-                            r0 = rating; rating = max(1.0, rating - cut); note_adj(lab, r0)
-                            break
+                    # graded, from the window's typical gust (models blended): nothing to 8 mph, then
+                    # 10 mph -0.2, 12 -0.5, 14 -1, 16+ -1.5 (straight lines between)
+                    g = gf("gust_med")
+                    pts_ = ((8, 0.0), (10, 0.2), (12, 0.5), (14, 1.0), (16, 1.5))
+                    cut = 1.5 if g >= 16 else next((c0 + (c1 - c0) * (g - g0) / (g1 - g0) for (g0, c0), (g1, c1)
+                                                    in zip(pts_, pts_[1:]) if g0 <= g < g1), 0.0)
+                    if cut >= 0.05:
+                        lab = ("gusts over 15 mph" if g > 15 else "gusts over 12 mph" if g > 12 else
+                               "gusts over 10 mph" if g > 10 else f"gusts {g:.0f} mph")
+                        r0 = rating; rating = max(1.0, rating - cut); note_adj(lab, r0)
                     if gf("strong") >= 0.5:
                         caps.append((2.5, "strong wind: 2.5 at most"))
             # wind at the top of lift: over 15 mph costs half a point, over 20 mph a full point, over 25 mph
@@ -2405,20 +2420,34 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             # offshore (Santa Ana) through the flying layer for most of the window: a no-go, even when the top of
             # lift is lower and the valley wind looks fine (LB, Blossom, Otay, Whale's V; N-E at Soboba and Marshall: "offshore_nogo")
             onog = s.get("offshore_nogo")
+            grad_warn = None
             if onog and D and blend({k: a.get("offshore_share", 0.0) for k, a in D.items()}) >= 0.5:
-                caps.append((1.0, f"offshore {onog.get('mph', 6)}+ mph below {onog.get('top_ft', 4000):,} ft: no-go"))
+                caps.append((1.0, f"offshore {OFF_FULL:.0f}+ mph below {onog.get('top_ft', 4000):,} ft: no-go"))
             elif onog and D:
-                # lighter offshore: the east wind in the flying layer, or the LAX-DAG gradient, whichever is worse
-                o4 = blend({k: a.get("off4_share", 0.0) for k, a in D.items()}) >= 0.5
-                o3 = blend({k: a.get("off3_share", 0.0) for k, a in D.items()}) >= 0.5
+                # lighter offshore wind is scored hour by hour (from OFF_FREE mph, above); the LAX-DAG gradient
+                # still caps or cuts the day
+                o4 = o3 = False
+                # graded: nothing under OFF_FREE mph averaged over the window, then up to 3 points off at OFF_FULL
+                om = blend({k: a.get("off_mean", 0.0) for k, a in D.items()}) or 0.0
+                wcut = 3.0 * clamp((om - OFF_FREE) / (OFF_FULL - OFF_FREE)) if om >= OFF_FREE else 0.0
                 grs = [((GRAD.get("models", {}).get(k) or {}).get("daily") or {}).get(dstr) for k in D]
                 grs = [x for x in grs if x is not None]
                 gday = median(grs) if grs else None
-                if o4 or (gday is not None and gday <= GRAD_STEP[1]):
-                    caps.append((2.0, "offshore " + (f"{OFF_STEP[1]:.0f}+ mph aloft" if o4 else f"LAX-DAG {gday:.1f} mb") + ": 2 at most"))
-                elif o3 or (gday is not None and gday <= GRAD_STEP[0]):
-                    r0 = rating; rating = max(1.0, rating - 1.0)
-                    note_adj("offshore " + (f"{OFF_STEP[0]:.0f}+ mph aloft" if o3 else f"LAX-DAG {gday:.1f} mb"), r0)
+                if gday is not None and gday <= GRAD_STEP[1] and om >= 6.0:
+                    # a Santa Ana: the gradient and a real east wind at the site together
+                    caps.append((1.0, f"Santa Ana (LAX-DAG {gday:.1f} mb, offshore {om:.0f} mph aloft): no-go"))
+                # the gradient only counts when the site itself sees east wind (OFF_FREE mph or more): offshore flow
+                # that doesn't reach the site costs nothing. Then the east wind or the gradient, whichever costs
+                # more (not both: they are the same flow)
+                gcut = 0.0
+                if gday is not None and om >= OFF_FREE:
+                    gcut = 1.5 if gday <= GRAD_STEP[1] else 1.0 if gday <= GRAD_STEP[0] else 0.0
+                # a warning only (no points) when the gradient is offshore but the east wind isn't at the site
+                if gday is not None and gday <= GRAD_STEP[0] and om < OFF_FREE:
+                    grad_warn = f"offshore gradient {gday:.1f} mb"
+                if max(wcut, gcut) > 0:
+                    r0 = rating; rating = max(1.0, rating - max(wcut, gcut))
+                    note_adj(f"offshore {om:.0f} mph aloft" if wcut >= gcut else f"offshore LAX-DAG {gday:.1f} mb", r0)
             # NW to N at the top of lift through the window (Little Black, Blossom): -0.3
             if s.get("nw_nick") and D:
                 nws_ = blend({k: a.get("nw_share", 0.0) for k, a in D.items()})
@@ -2503,6 +2532,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             # which needs the wind)
             if not ridge and D and blend({k: a.get("breezy_share", 0.0) for k, a in D.items()}) >= 0.6:
                 tags.append("windy")
+            if grad_warn:
+                tags.append(grad_warn)
             spread = (max(det_r.values()) - min(det_r.values())) if len(det_r) > 1 else 0
 
             # key values: median across the regular models (directions from the lead model)
