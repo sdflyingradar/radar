@@ -10,10 +10,10 @@
   "forecast_high": {
     "day": "2026-11-24",
     "label": "today",
-    "median_f": 59.9,
-    "p10_f": 57.8,
-    "p90_f": 60.5,
-    "hrrr_f": 62,
+    "median_f": 60,
+    "p10_f": 58.2,
+    "p90_f": 60.7,
+    "hrrr_f": 62.1,
     "members": 122,
     "models": [
       "GFS ens (31)",
@@ -24,11 +24,11 @@
     "lon": -115.18,
     "window": "10:00-17:00 local",
     "source": "https://open-meteo.com/en/docs/ensemble-api",
-    "fetched": "2026-11-24T22:58Z",
+    "fetched": "2026-11-25T07:28Z",
     "thermal_tops": {
-      "median_ft": 4900,
-      "low_ft": 3500,
-      "high_ft": 5300
+      "median_ft": 5100,
+      "low_ft": 3700,
+      "high_ft": 5400
     }
   },
   "thermal_tops_ft": [
