@@ -959,7 +959,7 @@ html body .allw .rx { display: inline-flex; align-items: center; gap: 4px; margi
 html body .allw .rx.ok { color: #2f7d3a !important; box-shadow: 0 0 0 1px #bfe0c4 !important; }
 html body .allw .rx .ic-svg, html body .allw .rx .ic { color: inherit; width: 13px; height: 13px; }
 </style>
-<link rel="stylesheet" href="scripts/ui/grid.css?v=202611251228">
+<link rel="stylesheet" href="scripts/ui/grid.css?v=202611251243">
 <link rel="stylesheet" href="scripts/ui/first.css?v=202611161220">
 <script src="scripts/ui/stats.js?v=202611191636" defer></script>
 <script src="scripts/ui/install.js?v=202611210153" defer></script>
@@ -1711,6 +1711,20 @@ function thermPanel(d, s, c) {
   } catch (e) { return ""; }
 }
 
+/* the opened site: the warnings the small card had no room for (a grid card shows good news first, then the
+   worst one or two; a list card shows its whole short list) */
+function chipsOf(html) { const t = document.createElement("div"); t.innerHTML = html; return [...t.children]; }
+function otherWarnings(c, id) {
+  const key = (x) => x.textContent.replace(/\s+/g, " ").trim().toLowerCase();
+  const card = chipsOf(sitePills(c));
+  let shown = card;
+  if (document.documentElement.dataset.lay === "grid" && id !== "torrey") {   // Torrey's wide card shows them all
+    const ok = card.filter((x) => x.classList.contains("ok")), bad = card.filter((x) => !x.classList.contains("ok"));
+    shown = ok.concat(bad.slice(ok.length ? -1 : -2));
+  }
+  const seen = new Set(shown.map(key));
+  return chipsOf(sitePills(c, true)).filter((x) => !seen.has(key(x))).map((x) => x.outerHTML).join("");
+}
 function detail(d, s, inline) {
   const c = d.sites[s.id];
   /* bars use the same continuous colour scale as the ratings (0 = red ... 1 = blue) */
@@ -1761,7 +1775,7 @@ function detail(d, s, inline) {
       <h3 style="font-size:1.1rem;font-family:var(--font-body);font-weight:600">${esc(s.name)} <span class="muted" style="font-size:.9rem;font-weight:500">${r1(c.rating)}/5</span></h3>${labelHtml(c)}</div>
     ${c.note && !/thermals/i.test(c.note) ? `<p class="note">${esc(c.note)}</p>` : ""}`;
   return `${head}
-    ${(() => { const w = sitePills(c, true); return w ? `<div class="dsec"><span class="dh">Warnings</span><span class="spills allw" style="display:flex;flex-wrap:wrap;gap:5px">${w}</span></div>` : ""; })()}
+    ${(() => { const w = otherWarnings(c, s.id); return w ? `<div class="dsec"><span class="dh">Other warnings</span><span class="spills allw" style="display:flex;flex-wrap:wrap;gap:5px">${w}</span></div>` : ""; })()}
     ${hm ? `<div class="dsec"><span class="dh">Launch wind by model</span>${modelWindTable(c)}</div>` : ""}
     ${tp ? `<div class="dsec">${tp}</div>` : hourStrip ? `<div class="dsec"><span class="dh">Hour by hour</span>${hourStrip}</div>` : ""}
     ${window.scoreLedger ? window.scoreLedger(c, qv) : ""}
