@@ -672,7 +672,7 @@ details.day > summary.hd .notes > .sig { flex: 0 0 100%; }
 
 /* the day's level in words, coloured red to blue (text, no background); yellow and orange a shade darker to read */
 .dword { font-size: .85rem; font-weight: 800; letter-spacing: .02em; white-space: nowrap; align-self: baseline; margin-left: 4px; line-height: 1;
-  color: color-mix(in srgb, var(--dc) 78%, #000); }
+  color: color-mix(in srgb, var(--dc) 78%, #4a2a00); }   /* darkened toward brown: black turns the yellows olive */
 
 /* spacing: day boxes, then (if any) the day type a little apart, then the sites close under it */
 details.day > summary.hd .notes { row-gap: 12px; }
@@ -959,7 +959,7 @@ html body .allw .rx.ok { color: #2f7d3a !important; box-shadow: 0 0 0 1px #bfe0c
 html body .allw .rx .ic-svg, html body .allw .rx .ic { color: inherit; width: 13px; height: 13px; }
 </style>
 <link rel="stylesheet" href="scripts/ui/grid.css?v=202611251243">
-<link rel="stylesheet" href="scripts/ui/first.css?v=202611161220">
+<link rel="stylesheet" href="scripts/ui/first.css?v=202611260316">
 <script src="scripts/ui/stats.js?v=202611191636" defer></script>
 <script src="scripts/ui/install.js?v=202611210153" defer></script>
 <script src="scripts/ui/statsview.js?v=202611221455" defer></script>
@@ -1382,7 +1382,7 @@ const chipHtml = (c, prefix) => `<span class="chip"><i style="background:${qv(c.
 const styleLab = (c) => c.xc ? "Cross-country" : (c.label === "XC" ? "" : c.label === "Thermal" ? "Site fly" : String(c.label || "").replace(/ day$/, ""));
 /* "Ridge soaring" (Torrey) reads green; every other label keeps the score colour */
 /* the label text: the score colour a shade darker, so the yellows stay readable on the light card */
-const labCol = (c) => (c.label === "Ridge soaring" && !c.xc ? "#1f9d55" : `color-mix(in srgb, ${qv(c.rating)} 82%, #000)`);
+const labCol = (c) => (c.label === "Ridge soaring" && !c.xc ? "#1f9d55" : `color-mix(in srgb, ${qv(c.rating)} 85%, #6b3a00)`);
 const labelHtml = (c) => `<span class="label">${styleLab(c) ? `<span class="lab" style="color:${labCol(c)}">${esc(styleLab(c))}</span>` : ""}</span>`;
 const bar = (r, thin) => `<span class="bar${thin ? " thin" : ""}"><i style="width:${Math.max(4, Math.min(100, r * 20))}%;background:${qv(r)}"></i></span>`;
 
