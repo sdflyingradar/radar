@@ -355,12 +355,32 @@ def cache_load(name, log, max_h=None):
         return None
 
 
+def _for_sites(c, sites, log, name):
+    """A cached run matched to this run's sites by id (a run is a list in site order: when sites.json gains,
+    loses or moves a site or a height point, the old order would hand every later site its neighbour's data).
+    None when a site has no data in the cached run."""
+    if not c:
+        return None
+    mid, data, info = c
+    want = [s.get("id") for s in sites]
+    have = info.get("ids")
+    if have == want:
+        return c
+    if have is None:                           # a run cached before ids were kept: only if nothing moved
+        return c if data is not None and len(data) == len(want) else None
+    pos = {sid: k for k, sid in enumerate(have)}
+    if data is None or any(sid not in pos for sid in want):
+        log.append(f"{name}: the last run has no data for the new sites, not used")
+        return None
+    return mid, [data[pos[sid]] for sid in want], dict(info, ids=want)
+
+
 def fetch_model(kind, name, ids, sites, log):
     key = name if kind == "det" else f"ens {name}"
     if RESCORE:
-        return cache_load(key, log, max_h=72) or _fetch_model(kind, name, ids, sites, log)
+        return _for_sites(cache_load(key, log, max_h=72), sites, log, key) or _fetch_model(kind, name, ids, sites, log)
     if name not in HIRES:                      # global models and ensembles: reuse a fresh enough last run
-        fresh = cache_load(key, log, max_h=REUSE_H if kind == "det" else ENS_REUSE_H)
+        fresh = _for_sites(cache_load(key, log, max_h=REUSE_H if kind == "det" else ENS_REUSE_H), sites, log, key)
         if fresh:
             return fresh
     slow = [k for k, s in enumerate(sites) if s.get("parent") in SLOW_PARENTS] if kind == "det" else []
@@ -369,9 +389,9 @@ def fetch_model(kind, name, ids, sites, log):
     else:
         res = _fetch_model(kind, name, ids, sites, log)
     if res[0]:
-        cache_save(key, *res)
+        cache_save(key, res[0], res[1], dict(res[2] or {}, ids=[s.get("id") for s in sites]))
     else:
-        res = cache_load(key, log) or res
+        res = _for_sites(cache_load(key, log), sites, log, key) or res
     return res
 
 
@@ -383,13 +403,13 @@ def _fetch_split(kind, name, ids, sites, slow, log):
     mid, fast, info = _fetch_model(kind, name, ids, fast_sites, log)
     if not mid:
         return mid, fast, info
-    c = cache_load(f"{name} trips", log, max_h=REUSE_H)
+    c = _for_sites(cache_load(f"{name} trips", log, max_h=REUSE_H), slow_sites, log, f"{name} trips")
     if c and c[1] and len(c[1]) == len(slow_sites):
         slow_data = c[1]
     else:
         m2, slow_data, i2 = _fetch_model(kind, name, ids, slow_sites, log)
         if m2:
-            cache_save(f"{name} trips", m2, slow_data, i2)
+            cache_save(f"{name} trips", m2, slow_data, dict(i2 or {}, ids=[s.get("id") for s in slow_sites]))
         else:
             slow_data = [None] * len(slow_sites)
     it_f, it_s, data = iter(fast), iter(slow_data), []
