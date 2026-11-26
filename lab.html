@@ -24,7 +24,7 @@
    Same paper/ink look as the PG logbook; colour is reserved for day quality (1-5) and the day type. */
 :root {
   --bg: #ffffff; --surface: #ffffff; --sunk: #f3f4f3; --ink: #0b0b0b; --muted: #676d69; --line: #e2e4e2;
-  --q0: #d8402f; --q1: #f2a623; --q2: #d6cd34; --q3: #5fb24f; --q4: #3aa457; --q5: #2f7fcf;
+  --q0: #d8402f; --q1: #f0991e; --q2: #e6cb2e; --q3: #5fb24f; --q4: #3aa457; --q5: #2f7fcf;
   --font-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
   --font-body: "Work Sans", "Helvetica Neue", Arial, sans-serif;
   --font-data: "JetBrains Mono", ui-monospace, Menlo, monospace;
@@ -1050,7 +1050,7 @@ html body .allw .rx .ic-svg, html body .allw .rx .ic { color: inherit; width: 13
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Site details" hidden></div>
 <script id="seed" type="application/json"></script>
 <script src="scripts/region/panel.js?v=202611221133"></script>
-<script src="scripts/region/panel2.js?v=202611251254"></script>
+<script src="scripts/region/panel2.js?v=202611260315"></script>
 <script>
 (() => {
 "use strict";
@@ -1093,9 +1093,9 @@ const ico = (k) => (k === "rain" ? DROP : SIG[k] || `<i class="ic" aria-hidden="
 /* the day boxes' symbols; the same ones mark the matching chips on the site cards */
 const SIG = {
   up: '<svg class="ic-svg" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5 L13.5 7.5 H10 V14.5 H6 V7.5 H2.5 Z" fill="#3aa457"/></svg>',
-  lid: '<svg class="ic-svg" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2" width="12" height="2.2" rx="1" fill="currentColor"/><path d="M8 6 L11.5 9.6 H9.4 V14.5 H6.6 V9.6 H4.5 Z" fill="#f2a623"/></svg>',
+  lid: '<svg class="ic-svg" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2" width="12" height="2.2" rx="1" fill="currentColor"/><path d="M8 6 L11.5 9.6 H9.4 V14.5 H6.6 V9.6 H4.5 Z" fill="#f0991e"/></svg>',
   windy: '<svg class="ic-svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M1.5 5.5 H10 A2 2 0 1 0 8 3.5"/><path d="M1.5 8.5 H13 A2 2 0 1 1 11 10.5"/><path d="M1.5 11.5 H7"/></svg>',
-  glass: '<svg class="ic-svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4.6 11.5 A3.4 3.4 0 0 1 11.4 11.5" fill="#d6cd34" stroke="#c98a00"/><path d="M1.5 11.5 H14.5"/><path d="M8 3.2 V5.4 M3.4 5.4 L4.8 6.8 M12.6 5.4 L11.2 6.8 M1.6 8.9 H3.2 M12.8 8.9 H14.4"/><path d="M4.5 14 H11.5" opacity=".55"/></svg>',
+  glass: '<svg class="ic-svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4.6 11.5 A3.4 3.4 0 0 1 11.4 11.5" fill="#e6cb2e" stroke="#c98a00"/><path d="M1.5 11.5 H14.5"/><path d="M8 3.2 V5.4 M3.4 5.4 L4.8 6.8 M12.6 5.4 L11.2 6.8 M1.6 8.9 H3.2 M12.8 8.9 H14.4"/><path d="M4.5 14 H11.5" opacity=".55"/></svg>',
 };
 /* the day boxes: always the same six in the same place, lit by the home sites (Little Black, Blossom, Elsinore).
    Good news lights up when any of them has it, a warning when most of them do; tap or hover says where. */
