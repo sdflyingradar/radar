@@ -1,8 +1,12 @@
 {
- "generated": "2026-11-26T21:58Z",
+ "generated": "2026-11-26T22:35Z",
+ "week": {
+  "visits": 1468,
+  "events": 1154
+ },
  "month": {
-  "visits": 1592,
-  "events": 1180
+  "visits": 1593,
+  "events": 1181
  },
  "daily": [
   {
@@ -35,11 +39,11 @@
   },
   {
    "day": "2026-11-26",
-   "n": 75
+   "n": 76
   }
  ],
  "today": {
-  "visits": 75
+  "visits": 76
  },
  "pages": [
   {
@@ -109,7 +113,7 @@
   {
    "path": "do-site",
    "title": "Opened a site",
-   "count": 133,
+   "count": 134,
    "event": true,
    "days": {
     "2026-11-19": 12,
@@ -119,7 +123,7 @@
     "2026-11-23": 14,
     "2026-11-24": 21,
     "2026-11-25": 14,
-    "2026-11-26": 5
+    "2026-11-26": 6
    }
   },
   {
@@ -271,7 +275,7 @@
  "refs": [
   {
    "name": "(direct)",
-   "count": 1434
+   "count": 1435
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
@@ -285,7 +289,7 @@
  "sizes": [
   {
    "name": "Phone",
-   "count": 1268
+   "count": 1269
   },
   {
    "name": "Tablet",
@@ -307,7 +311,7 @@
   },
   {
    "name": "Android",
-   "count": 560
+   "count": 561
   },
   {
    "name": "macOS",
@@ -329,7 +333,7 @@
   },
   {
    "name": "Germany",
-   "count": 167
+   "count": 168
   },
   {
    "name": "Fiji",
