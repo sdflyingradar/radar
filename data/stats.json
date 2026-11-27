@@ -1,12 +1,8 @@
 {
- "generated": "2026-11-27T21:07Z",
- "week": {
-  "visits": 1232,
-  "events": 969
- },
+ "generated": "2026-11-27T22:14Z",
  "month": {
-  "visits": 1684,
-  "events": 1255
+  "visits": 1695,
+  "events": 1263
  },
  "daily": [
   {
@@ -43,17 +39,17 @@
   },
   {
    "day": "2026-11-27",
-   "n": 73
+   "n": 84
   }
  ],
  "today": {
-  "visits": 73
+  "visits": 84
  },
  "pages": [
   {
    "path": "/radar",
    "title": "SD Flying Radar",
-   "count": 345,
+   "count": 348,
    "event": false,
    "days": {
     "2026-11-19": 104,
@@ -64,13 +60,13 @@
     "2026-11-24": 40,
     "2026-11-25": 28,
     "2026-11-26": 16,
-    "2026-11-27": 10
+    "2026-11-27": 13
    }
   },
   {
    "path": "stay-start",
    "title": "Timed visit",
-   "count": 280,
+   "count": 283,
    "event": true,
    "days": {
     "2026-11-19": 23,
@@ -81,13 +77,13 @@
     "2026-11-24": 44,
     "2026-11-25": 32,
     "2026-11-26": 19,
-    "2026-11-27": 13
+    "2026-11-27": 16
    }
   },
   {
    "path": "stay-15s",
    "title": "Stayed 15 s+",
-   "count": 240,
+   "count": 242,
    "event": true,
    "days": {
     "2026-11-19": 31,
@@ -98,13 +94,13 @@
     "2026-11-24": 36,
     "2026-11-25": 27,
     "2026-11-26": 13,
-    "2026-11-27": 11
+    "2026-11-27": 13
    }
   },
   {
    "path": "stay-30s",
    "title": "Stayed 30 s+",
-   "count": 197,
+   "count": 199,
    "event": true,
    "days": {
     "2026-11-19": 25,
@@ -115,7 +111,7 @@
     "2026-11-24": 31,
     "2026-11-25": 21,
     "2026-11-26": 11,
-    "2026-11-27": 8
+    "2026-11-27": 10
    }
   },
   {
@@ -155,7 +151,7 @@
   {
    "path": "do-day",
    "title": "Looked at another day",
-   "count": 98,
+   "count": 99,
    "event": true,
    "days": {
     "2026-11-19": 11,
@@ -166,7 +162,7 @@
     "2026-11-24": 15,
     "2026-11-25": 14,
     "2026-11-26": 6,
-    "2026-11-27": 4
+    "2026-11-27": 5
    }
   },
   {
@@ -292,7 +288,7 @@
  "refs": [
   {
    "name": "(direct)",
-   "count": 1505
+   "count": 1516
   },
   {
    "name": "sdflyingradar.github.io/radar/how.html",
@@ -306,7 +302,7 @@
  "sizes": [
   {
    "name": "Phone",
-   "count": 1347
+   "count": 1354
   },
   {
    "name": "Tablet",
@@ -314,7 +310,7 @@
   },
   {
    "name": "Computer",
-   "count": 291
+   "count": 295
   },
   {
    "name": "Large computer screen",
@@ -324,15 +320,15 @@
  "systems": [
   {
    "name": "iOS",
-   "count": 752
+   "count": 757
   },
   {
    "name": "Android",
-   "count": 607
+   "count": 609
   },
   {
    "name": "macOS",
-   "count": 265
+   "count": 269
   },
   {
    "name": "Windows",
@@ -346,7 +342,7 @@
  "locations": [
   {
    "name": "United States",
-   "count": 1480
+   "count": 1491
   },
   {
    "name": "Germany",
