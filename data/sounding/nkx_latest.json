@@ -1,7 +1,7 @@
 {
   "title": "nkx_1200Z_27_Nov_2026",
   "source": "https://weather.uwyo.edu/wsgi/sounding?datetime=2026-11-27%2012:00:00&id=72293&type=TEXT:LIST&src=UNKNOWN",
-  "fetched": "2026-11-27T16:29Z",
+  "fetched": "2026-11-27T21:52Z",
   "surface_ft": 440,
   "surface_temp_f": 57,
   "surface_dewpoint_f": 36,
@@ -10,10 +10,10 @@
   "forecast_high": {
     "day": "2026-11-27",
     "label": "today",
-    "median_f": 83.4,
-    "p10_f": 77.7,
-    "p90_f": 85.3,
-    "hrrr_f": 83.3,
+    "median_f": 83.3,
+    "p10_f": 78.5,
+    "p90_f": 84.9,
+    "hrrr_f": 84,
     "members": 122,
     "models": [
       "GFS ens (31)",
@@ -24,11 +24,11 @@
     "lon": -117.12,
     "window": "10:00-17:00 local",
     "source": "https://open-meteo.com/en/docs/ensemble-api",
-    "fetched": "2026-11-27T16:29Z",
+    "fetched": "2026-11-27T21:52Z",
     "thermal_tops": {
       "median_ft": 1400,
       "low_ft": 1200,
-      "high_ft": 1900
+      "high_ft": 1600
     }
   },
   "thermal_tops_ft": [
@@ -51,10 +51,6 @@
     {
       "surface_f": 90,
       "top_ft": 2800
-    },
-    {
-      "surface_f": 95,
-      "top_ft": 5400
     }
   ]
 }

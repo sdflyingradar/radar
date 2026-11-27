@@ -21,9 +21,9 @@
   "name": "Las Vegas",
   "lat": 36.05,
   "lon": -115.18,
-  "obs": "2026-11-26T12:00Z",
+  "obs": "2026-11-27T12:00Z",
   "file": "stations/VEF_latest.txt",
-  "levels": 6100,
+  "levels": 6775,
   "v": 2
  }
 }

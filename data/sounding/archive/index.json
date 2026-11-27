@@ -200,6 +200,11 @@
  ],
  "VEF": [
   {
+   "t": "2026-11-27T12Z",
+   "txt": "archive/VEF_20261127_12Z.txt",
+   "track": "archive/VEF_20261127_12Z_track.csv"
+  },
+  {
    "t": "2026-11-26T12Z",
    "txt": "archive/VEF_20261126_12Z.txt",
    "track": "archive/VEF_20261126_12Z_track.csv"
