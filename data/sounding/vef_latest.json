@@ -10,9 +10,9 @@
   "forecast_high": {
     "day": "2026-11-26",
     "label": "Nov 26",
-    "median_f": 65.3,
+    "median_f": 65.4,
     "p10_f": 64.2,
-    "p90_f": 66.4,
+    "p90_f": 66.5,
     "hrrr_f": 66.6,
     "members": 122,
     "models": [
@@ -24,7 +24,7 @@
     "lon": -115.18,
     "window": "10:00-17:00 local",
     "source": "https://open-meteo.com/en/docs/ensemble-api",
-    "fetched": "2026-11-27T09:39Z",
+    "fetched": "2026-11-27T11:00Z",
     "thermal_tops": {
       "median_ft": 4300,
       "low_ft": 4100,
